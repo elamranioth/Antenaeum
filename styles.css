@@ -161,10 +161,22 @@ svg {
   line-height: 1;
 }
 
+.rail-menu-line {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.rail-toggle {
+  width: 44px;
+  height: 44px;
+}
+
 .rail-menu {
   display: grid;
   gap: 14px;
-  margin-top: 28px;
+  margin-top: 10px;
 }
 
 .menu-item,
@@ -329,6 +341,14 @@ svg {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.reopen-rail {
+  display: none;
+}
+
+.app-shell.rail-closed .reopen-rail {
+  display: inline-flex;
 }
 
 .icon-button,
@@ -938,7 +958,12 @@ mark.reader-highlight {
   .rail-menu {
     max-width: 360px;
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 8px;
+  }
+
+  .rail-menu-line {
+    max-width: 360px;
+    margin-top: 12px;
   }
 
   .menu-item {

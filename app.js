@@ -101,9 +101,11 @@ function persist() {
 }
 
 function bindEvents() {
-  $("#toggleRailBtn").addEventListener("click", () => {
+  const toggleRail = () => {
     els.app.classList.toggle("rail-closed");
-  });
+  };
+  $("#toggleRailBtn").addEventListener("click", toggleRail);
+  $("#reopenRailBtn").addEventListener("click", toggleRail);
 
   $$(".menu-item").forEach((button) => {
     button.addEventListener("click", () => {
