@@ -105,7 +105,6 @@ function bindEvents() {
     els.app.classList.toggle("rail-closed");
   };
   $("#toggleRailBtn").addEventListener("click", toggleRail);
-  $("#reopenRailBtn").addEventListener("click", toggleRail);
 
   $$(".menu-item").forEach((button) => {
     button.addEventListener("click", () => {
