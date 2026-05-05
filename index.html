@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Antenaeum | Personal Reading Desk</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true">
+    <symbol id="icon-book" viewBox="0 0 24 24">
+      <path d="M4 5.5c0-1 .8-1.8 1.8-1.8H10c1.1 0 2 .4 2.7 1.1.7-.7 1.6-1.1 2.7-1.1h2.8c1 0 1.8.8 1.8 1.8v13.1c0 .7-.7 1.2-1.4.9-1-.4-2.1-.6-3.2-.6-1 0-2 .2-2.8.7-.5.3-1.1.3-1.6 0-.8-.5-1.8-.7-2.8-.7-1.1 0-2.2.2-3.2.6-.7.3-1.4-.2-1.4-.9V5.5Z"/>
+      <path d="M12.7 4.8v14.7"/>
+    </symbol>
+    <symbol id="icon-word" viewBox="0 0 24 24">
+      <path d="M4 18 9.2 6h1.7L16 18"/>
+      <path d="M6.2 13.3h7.4"/>
+      <path d="M18 9v9"/>
+      <path d="M18 6.2v.1"/>
+    </symbol>
+    <symbol id="icon-quote" viewBox="0 0 24 24">
+      <path d="M9 7H6.8C5.3 7 4 8.2 4 9.8V17h5V7Z"/>
+      <path d="M20 7h-2.2C16.3 7 15 8.2 15 9.8V17h5V7Z"/>
+    </symbol>
+    <symbol id="icon-highlight" viewBox="0 0 24 24">
+      <path d="m4 17 8.8-8.8 3 3L7 20H4v-3Z"/>
+      <path d="m14.8 6.2 2-2 3 3-2 2"/>
+      <path d="M13 20h7"/>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6.5"/>
+      <path d="m16 16 4 4"/>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14"/>
+      <path d="M5 12h14"/>
+    </symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24">
+      <path d="M4 20h4l11-11-4-4L4 16v4Z"/>
+      <path d="m13.5 6.5 4 4"/>
+    </symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24">
+      <rect x="8" y="8" width="11" height="11" rx="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/>
+    </symbol>
+    <symbol id="icon-sound" viewBox="0 0 24 24">
+      <path d="M4 14v-4h4l5-4v12l-5-4H4Z"/>
+      <path d="M17 9.5c.7.7 1 1.5 1 2.5s-.3 1.8-1 2.5"/>
+      <path d="M19.5 7c1.4 1.4 2 3 2 5s-.6 3.6-2 5"/>
+    </symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24">
+      <path d="M4 7h16"/>
+      <path d="M10 11v6"/>
+      <path d="M14 11v6"/>
+      <path d="M6 7l1 14h10l1-14"/>
+      <path d="M9 7V4h6v3"/>
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24">
+      <path d="M12 4v11"/>
+      <path d="m8 11 4 4 4-4"/>
+      <path d="M4 20h16"/>
+    </symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24">
+      <path d="M12 15V4"/>
+      <path d="m8 8 4-4 4 4"/>
+      <path d="M4 20h16"/>
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 7h16"/>
+      <path d="M4 12h16"/>
+      <path d="M4 17h16"/>
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="M6 6l12 12"/>
+      <path d="M18 6 6 18"/>
+    </symbol>
+  </svg>
+
+  <div class="app-shell" id="app">
+    <aside class="library-rail">
+      <header class="brand-block">
+        <div class="brand-emblem" aria-hidden="true">
+          <svg><use href="#icon-book"></use></svg>
+        </div>
+        <div>
+          <p>Personal Library</p>
+          <h1>Antenaeum</h1>
+        </div>
+      </header>
+
+      <nav class="rail-nav" aria-label="Primary">
+        <button class="rail-link active" type="button" data-view="reader">
+          <svg><use href="#icon-book"></use></svg>
+          Reader
+        </button>
+        <button class="rail-link" type="button" data-view="words">
+          <svg><use href="#icon-word"></use></svg>
+          Words
+        </button>
+        <button class="rail-link" type="button" data-view="quotes">
+          <svg><use href="#icon-quote"></use></svg>
+          Quotes
+        </button>
+        <button class="rail-link" type="button" data-view="highlights">
+          <svg><use href="#icon-highlight"></use></svg>
+          Highlights
+        </button>
+      </nav>
+
+      <section class="rail-section">
+        <div class="rail-section-head">
+          <h2>Texts</h2>
+          <button class="icon-button inverse" id="newDocBtn" type="button" title="New text" aria-label="New text">
+            <svg><use href="#icon-plus"></use></svg>
+          </button>
+        </div>
+        <div class="doc-list" id="docList"></div>
+      </section>
+
+      <section class="rail-tools" aria-label="Library tools">
+        <button class="tool-button inverse" id="exportBtn" type="button">
+          <svg><use href="#icon-download"></use></svg>
+          Export
+        </button>
+        <button class="tool-button inverse" id="importBtn" type="button">
+          <svg><use href="#icon-upload"></use></svg>
+          Import
+        </button>
+        <input id="importFile" type="file" accept="application/json" hidden>
+      </section>
+    </aside>
+
+    <main class="desk">
+      <header class="desk-topbar">
+        <button class="icon-button" id="toggleRailBtn" type="button" title="Toggle sidebar" aria-label="Toggle sidebar">
+          <svg><use href="#icon-menu"></use></svg>
+        </button>
+
+        <label class="search-field">
+          <svg><use href="#icon-search"></use></svg>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Search words, quotes, highlights">
+        </label>
+
+        <div class="topbar-actions">
+          <button class="tool-button" id="editDocBtn" type="button">
+            <svg><use href="#icon-edit"></use></svg>
+            Edit
+          </button>
+          <button class="tool-button primary" id="quickSaveBtn" type="button">
+            <svg><use href="#icon-word"></use></svg>
+            Save Selection
+          </button>
+        </div>
+      </header>
+
+      <section class="view active" data-panel="reader">
+        <div class="reader-layout">
+          <article class="reading-page">
+            <header class="reader-header">
+              <div>
+                <p class="eyebrow" id="docAuthor">Reading Desk</p>
+                <h2 id="docTitle">Antenaeum Notes</h2>
+              </div>
+              <div class="reading-tools">
+                <div class="swatch-group" aria-label="Highlight color">
+                  <button class="swatch active" type="button" data-color="gold" title="Gold highlight" aria-label="Gold highlight"></button>
+                  <button class="swatch" type="button" data-color="green" title="Green highlight" aria-label="Green highlight"></button>
+                  <button class="swatch" type="button" data-color="blue" title="Blue highlight" aria-label="Blue highlight"></button>
+                  <button class="swatch" type="button" data-color="rose" title="Rose highlight" aria-label="Rose highlight"></button>
+                </div>
+              </div>
+            </header>
+            <div class="reader-body" id="reader" contenteditable="true" spellcheck="false" dir="auto"></div>
+          </article>
+
+          <aside class="capture-panel">
+            <section class="panel-block">
+              <div class="panel-head">
+                <h3>Library</h3>
+                <span id="libraryCount">0 saved</span>
+              </div>
+              <div class="metric-grid">
+                <button class="metric" type="button" data-jump="words">
+                  <strong id="wordCount">0</strong>
+                  <span>Words</span>
+                </button>
+                <button class="metric" type="button" data-jump="quotes">
+                  <strong id="quoteCount">0</strong>
+                  <span>Quotes</span>
+                </button>
+                <button class="metric" type="button" data-jump="highlights">
+                  <strong id="highlightCount">0</strong>
+                  <span>Highlights</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="panel-block">
+              <div class="panel-head">
+                <h3>Recent Words</h3>
+                <button class="text-button" type="button" data-jump="words">View all</button>
+              </div>
+              <div class="mini-list" id="recentWords"></div>
+            </section>
+
+            <section class="panel-block">
+              <div class="panel-head">
+                <h3>Last Capture</h3>
+              </div>
+              <div class="last-capture" id="lastCapture">
+                Select a word or passage in the reader.
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" data-panel="words">
+        <div class="collection-head">
+          <div>
+            <p class="eyebrow">Vocabulary Shelf</p>
+            <h2>Saved Words</h2>
+          </div>
+          <button class="tool-button" id="copyWordsBtn" type="button">
+            <svg><use href="#icon-copy"></use></svg>
+            Copy List
+          </button>
+        </div>
+        <div class="collection-grid" id="wordsGrid"></div>
+      </section>
+
+      <section class="view" data-panel="quotes">
+        <div class="collection-head">
+          <div>
+            <p class="eyebrow">Reference Shelf</p>
+            <h2>Saved Quotes</h2>
+          </div>
+          <button class="tool-button" id="copyQuotesBtn" type="button">
+            <svg><use href="#icon-copy"></use></svg>
+            Copy List
+          </button>
+        </div>
+        <div class="collection-grid" id="quotesGrid"></div>
+      </section>
+
+      <section class="view" data-panel="highlights">
+        <div class="collection-head">
+          <div>
+            <p class="eyebrow">Marked Passages</p>
+            <h2>Highlights</h2>
+          </div>
+          <button class="tool-button" id="clearHighlightsBtn" type="button">
+            <svg><use href="#icon-trash"></use></svg>
+            Clear All
+          </button>
+        </div>
+        <div class="collection-grid" id="highlightsGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="selection-popover" id="selectionPopover" aria-hidden="true">
+    <button type="button" data-selection-action="save">
+      <svg><use href="#icon-word"></use></svg>
+      <span>Save Word</span>
+    </button>
+    <button type="button" data-selection-action="highlight">
+      <svg><use href="#icon-highlight"></use></svg>
+      <span>Highlight</span>
+    </button>
+    <button type="button" data-selection-action="copy">
+      <svg><use href="#icon-copy"></use></svg>
+      <span>Copy</span>
+    </button>
+    <button type="button" data-selection-action="speak">
+      <svg><use href="#icon-sound"></use></svg>
+      <span>Listen</span>
+    </button>
+  </div>
+
+  <dialog class="editor-dialog" id="editorDialog">
+    <div class="dialog-shell">
+      <header class="dialog-head">
+        <div>
+          <p class="eyebrow">Text Editor</p>
+          <h2 id="dialogTitle">New Text</h2>
+        </div>
+        <button class="icon-button" id="closeDialogBtn" type="button" title="Close editor" aria-label="Close editor">
+          <svg><use href="#icon-close"></use></svg>
+        </button>
+      </header>
+
+      <div class="editor-fields">
+        <label>
+          <span>Title</span>
+          <input id="docTitleInput" type="text" autocomplete="off">
+        </label>
+        <label>
+          <span>Author</span>
+          <input id="docAuthorInput" type="text" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="format-bar" aria-label="Formatting">
+        <button type="button" data-format="bold">B</button>
+        <button type="button" data-format="italic">I</button>
+        <button type="button" data-format="insertUnorderedList">List</button>
+        <button type="button" data-format="formatBlock" data-value="h2">H2</button>
+        <button type="button" data-format="formatBlock" data-value="p">P</button>
+      </div>
+
+      <div class="doc-editor" id="docEditor" contenteditable="true" spellcheck="false"></div>
+
+      <footer class="dialog-actions">
+        <button class="tool-button danger" id="deleteDocBtn" type="button">
+          <svg><use href="#icon-trash"></use></svg>
+          Delete
+        </button>
+        <div>
+          <button class="tool-button" id="cancelDialogBtn" type="button">Cancel</button>
+          <button class="tool-button primary" id="saveDocBtn" type="button">Save Text</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
