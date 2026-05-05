@@ -1,9 +1,17 @@
 const STORAGE_KEY = "antenaeum_reading_desk_v1";
 
+const SHELVES = {
+  law: "Law",
+  economic: "Economic",
+  philosophy: "Philosophy",
+  "book-summaries": "Book Summaries"
+};
+
 const starterDoc = {
   id: "starter",
   title: "Antenaeum Reading Desk",
   author: "Personal Knowledge Library",
+  shelf: "book-summaries",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   html: `
@@ -17,6 +25,7 @@ const starterDoc = {
 
 let state = loadState();
 let activeView = "reader";
+let activeShelf = "book-summaries";
 let selectionSnapshot = null;
 let editorMode = "edit";
 let saveTimer = null;
@@ -45,6 +54,7 @@ const els = {
   dialogTitle: $("#dialogTitle"),
   docTitleInput: $("#docTitleInput"),
   docAuthorInput: $("#docAuthorInput"),
+  docShelfInput: $("#docShelfInput"),
   docEditor: $("#docEditor"),
   deleteDocBtn: $("#deleteDocBtn"),
   importFile: $("#importFile"),
@@ -65,10 +75,15 @@ function ensureStarterState() {
     state.docs = [starterDoc];
     state.activeDocId = starterDoc.id;
   }
+  state.docs.forEach((doc) => {
+    if (!doc.shelf || !SHELVES[doc.shelf]) doc.shelf = "book-summaries";
+  });
   state.words = Array.isArray(state.words) ? state.words : [];
   state.quotes = Array.isArray(state.quotes) ? state.quotes : [];
   state.highlights = Array.isArray(state.highlights) ? state.highlights : [];
   state.settings = { highlightColor: "gold", ...(state.settings || {}) };
+  activeShelf = state.activeShelf && SHELVES[state.activeShelf] ? state.activeShelf : "book-summaries";
+  state.activeShelf = activeShelf;
 }
 
 function loadState() {
@@ -90,8 +105,11 @@ function bindEvents() {
     els.app.classList.toggle("rail-closed");
   });
 
-  $$(".rail-link").forEach((button) => {
-    button.addEventListener("click", () => setView(button.dataset.view));
+  $$(".menu-item").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.shelf) setShelf(button.dataset.shelf);
+      if (button.dataset.view) setView(button.dataset.view);
+    });
   });
 
   $$("[data-jump]").forEach((button) => {
@@ -151,6 +169,7 @@ function bindEvents() {
 }
 
 function renderAll() {
+  updateMenuState();
   renderDocumentList();
   renderReaderHeader();
   renderSwatches();
@@ -167,6 +186,8 @@ function activeDocument() {
 function setActiveDocument(id, rerender = true) {
   const doc = state.docs.find((item) => item.id === id) || state.docs[0];
   state.activeDocId = doc.id;
+  activeShelf = doc.shelf || activeShelf;
+  state.activeShelf = activeShelf;
   els.reader.innerHTML = doc.html || "";
   persist();
   if (rerender) renderAll();
@@ -174,9 +195,7 @@ function setActiveDocument(id, rerender = true) {
 
 function setView(view) {
   activeView = view;
-  $$(".rail-link").forEach((button) => {
-    button.classList.toggle("active", button.dataset.view === view);
-  });
+  updateMenuState();
   $$("[data-panel]").forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.panel === view);
   });
@@ -184,15 +203,51 @@ function setView(view) {
   renderCollections();
 }
 
+function setShelf(shelf) {
+  if (!SHELVES[shelf]) return;
+  activeShelf = shelf;
+  state.activeShelf = shelf;
+  activeView = "reader";
+
+  const matchingDocs = state.docs.filter((doc) => doc.shelf === shelf);
+  const activeDoc = activeDocument();
+  if (matchingDocs.length && activeDoc.shelf !== shelf) {
+    state.activeDocId = matchingDocs[0].id;
+    els.reader.innerHTML = matchingDocs[0].html || "";
+  }
+
+  persist();
+  $$("[data-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.panel === "reader");
+  });
+  hideSelectionPopover();
+  renderAll();
+}
+
+function updateMenuState() {
+  $$(".menu-item").forEach((button) => {
+    const isShelfActive = activeView === "reader" && button.dataset.shelf === activeShelf;
+    const isViewActive = button.dataset.view === activeView;
+    button.classList.toggle("active", isShelfActive || isViewActive);
+  });
+}
+
 function renderDocumentList() {
   els.docList.innerHTML = "";
-  state.docs.forEach((doc) => {
+  const visibleDocs = state.docs.filter((doc) => doc.shelf === activeShelf);
+  if (!visibleDocs.length) {
+    els.docList.innerHTML = `<div class="empty-state rail-empty">No ${SHELVES[activeShelf]} texts yet.</div>`;
+    return;
+  }
+
+  visibleDocs.forEach((doc) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `doc-tab${doc.id === state.activeDocId ? " active" : ""}`;
     button.innerHTML = `
       <strong>${escapeHTML(doc.title || "Untitled")}</strong>
       <span>${escapeHTML(doc.author || "Unknown author")}</span>
+      <em>${escapeHTML(SHELVES[doc.shelf] || "Text")}</em>
     `;
     button.addEventListener("click", () => setActiveDocument(doc.id));
     els.docList.appendChild(button);
@@ -202,7 +257,7 @@ function renderDocumentList() {
 function renderReaderHeader() {
   const doc = activeDocument();
   els.docTitle.textContent = doc.title || "Untitled";
-  els.docAuthor.textContent = `${doc.author || "Unknown author"} | ${formatDate(doc.updatedAt || doc.createdAt)}`;
+  els.docAuthor.textContent = `${SHELVES[doc.shelf] || "Reading Desk"} | ${doc.author || "Unknown author"} | ${formatDate(doc.updatedAt || doc.createdAt)}`;
 }
 
 function renderSwatches() {
@@ -705,12 +760,13 @@ function unwrapNode(node) {
 function openEditor(mode) {
   editorMode = mode;
   const doc = mode === "new"
-    ? { title: "", author: "", html: "<p></p>" }
+    ? { title: "", author: "", shelf: activeShelf, html: "<p></p>" }
     : activeDocument();
 
   els.dialogTitle.textContent = mode === "new" ? "New Text" : "Edit Text";
   els.docTitleInput.value = doc.title || "";
   els.docAuthorInput.value = doc.author || "";
+  els.docShelfInput.value = doc.shelf || activeShelf || "book-summaries";
   els.docEditor.innerHTML = doc.html || "<p></p>";
   els.deleteDocBtn.hidden = mode === "new" || state.docs.length <= 1;
 
@@ -726,21 +782,25 @@ function closeEditor() {
 function saveEditorDocument() {
   const title = clean(els.docTitleInput.value) || "Untitled Text";
   const author = clean(els.docAuthorInput.value) || "Unknown author";
+  const shelf = SHELVES[els.docShelfInput.value] ? els.docShelfInput.value : "book-summaries";
   const html = sanitizeHTML(els.docEditor.innerHTML || "<p></p>");
   const now = new Date().toISOString();
 
   if (editorMode === "new") {
-    const doc = { id: uid(), title, author, html, createdAt: now, updatedAt: now };
+    const doc = { id: uid(), title, author, shelf, html, createdAt: now, updatedAt: now };
     state.docs.unshift(doc);
     state.activeDocId = doc.id;
   } else {
     const doc = activeDocument();
     doc.title = title;
     doc.author = author;
+    doc.shelf = shelf;
     doc.html = html;
     doc.updatedAt = now;
   }
 
+  activeShelf = shelf;
+  state.activeShelf = shelf;
   persist();
   setActiveDocument(state.activeDocId);
   closeEditor();

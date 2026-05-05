@@ -12,6 +12,27 @@
       <path d="M4 5.5c0-1 .8-1.8 1.8-1.8H10c1.1 0 2 .4 2.7 1.1.7-.7 1.6-1.1 2.7-1.1h2.8c1 0 1.8.8 1.8 1.8v13.1c0 .7-.7 1.2-1.4.9-1-.4-2.1-.6-3.2-.6-1 0-2 .2-2.8.7-.5.3-1.1.3-1.6 0-.8-.5-1.8-.7-2.8-.7-1.1 0-2.2.2-3.2.6-.7.3-1.4-.2-1.4-.9V5.5Z"/>
       <path d="M12.7 4.8v14.7"/>
     </symbol>
+    <symbol id="icon-scale" viewBox="0 0 24 24">
+      <path d="M12 4v16"/>
+      <path d="M5 8h14"/>
+      <path d="m7 8-3 6h6L7 8Z"/>
+      <path d="m17 8-3 6h6l-3-6Z"/>
+      <path d="M8 20h8"/>
+      <path d="M10 4h4"/>
+    </symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24">
+      <path d="M4 19h16"/>
+      <path d="M6 16v-4"/>
+      <path d="M11 16V8"/>
+      <path d="M16 16v-6"/>
+      <path d="m5 10 5-4 4 3 5-5"/>
+    </symbol>
+    <symbol id="icon-bulb" viewBox="0 0 24 24">
+      <path d="M9 18h6"/>
+      <path d="M10 22h4"/>
+      <path d="M8.5 14.5A6 6 0 1 1 15.5 14c-.8.6-1.2 1.4-1.4 2.3H9.9c-.2-.8-.6-1.4-1.4-1.8Z"/>
+      <path d="M12 9v3"/>
+    </symbol>
     <symbol id="icon-word" viewBox="0 0 24 24">
       <path d="M4 18 9.2 6h1.7L16 18"/>
       <path d="M6.2 13.3h7.4"/>
@@ -79,31 +100,40 @@
   <div class="app-shell" id="app">
     <aside class="library-rail">
       <header class="brand-block">
-        <div class="brand-emblem" aria-hidden="true">
+        <div class="brand-logo" aria-hidden="true">
+          <span>A</span>
           <svg><use href="#icon-book"></use></svg>
         </div>
         <div>
-          <p>Personal Library</p>
+          <p>Digital Library</p>
           <h1>Antenaeum</h1>
         </div>
       </header>
 
-      <nav class="rail-nav" aria-label="Primary">
-        <button class="rail-link active" type="button" data-view="reader">
-          <svg><use href="#icon-book"></use></svg>
-          Reader
+      <nav class="rail-menu" aria-label="Digital library menu">
+        <button class="menu-item" type="button" data-shelf="law">
+          <span class="menu-icon"><svg><use href="#icon-scale"></use></svg></span>
+          <span>Law</span>
         </button>
-        <button class="rail-link" type="button" data-view="words">
-          <svg><use href="#icon-word"></use></svg>
-          Words
+        <button class="menu-item" type="button" data-shelf="economic">
+          <span class="menu-icon"><svg><use href="#icon-chart"></use></svg></span>
+          <span>Economic</span>
         </button>
-        <button class="rail-link" type="button" data-view="quotes">
-          <svg><use href="#icon-quote"></use></svg>
-          Quotes
+        <button class="menu-item" type="button" data-shelf="philosophy">
+          <span class="menu-icon"><svg><use href="#icon-bulb"></use></svg></span>
+          <span>Philosophy</span>
         </button>
-        <button class="rail-link" type="button" data-view="highlights">
-          <svg><use href="#icon-highlight"></use></svg>
-          Highlights
+        <button class="menu-item active" type="button" data-shelf="book-summaries">
+          <span class="menu-icon"><svg><use href="#icon-book"></use></svg></span>
+          <span>Book Summaries</span>
+        </button>
+        <button class="menu-item" type="button" data-view="quotes">
+          <span class="menu-icon"><svg><use href="#icon-quote"></use></svg></span>
+          <span>Quotes</span>
+        </button>
+        <button class="menu-item" type="button" data-view="words">
+          <span class="menu-icon"><svg><use href="#icon-word"></use></svg></span>
+          <span>Vocabulary</span>
         </button>
       </nav>
 
@@ -298,6 +328,15 @@
         <label>
           <span>Author</span>
           <input id="docAuthorInput" type="text" autocomplete="off">
+        </label>
+        <label>
+          <span>Menu</span>
+          <select id="docShelfInput">
+            <option value="law">Law</option>
+            <option value="economic">Economic</option>
+            <option value="philosophy">Philosophy</option>
+            <option value="book-summaries">Book Summaries</option>
+          </select>
         </label>
       </div>
 

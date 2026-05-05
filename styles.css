@@ -2,8 +2,9 @@
   color-scheme: light;
   --ink: #171923;
   --ink-soft: #2b3040;
-  --rail: #151a2d;
-  --rail-2: #20263d;
+  --rail: #111a31;
+  --rail-2: #17213a;
+  --rail-card: #273149;
   --paper: #f7f2e8;
   --page: #fffdf7;
   --panel: #fdf8ee;
@@ -40,7 +41,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -74,7 +76,7 @@ svg {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 292px minmax(0, 1fr);
+  grid-template-columns: 340px minmax(0, 1fr);
 }
 
 .app-shell.rail-closed {
@@ -86,9 +88,9 @@ svg {
   top: 0;
   height: 100vh;
   overflow: auto;
-  padding: 18px;
+  padding: 28px 24px;
   background:
-    linear-gradient(180deg, rgba(217, 170, 66, 0.12), transparent 220px),
+    radial-gradient(circle at 18% 0, rgba(255, 255, 255, 0.08), transparent 210px),
     linear-gradient(180deg, var(--rail), var(--rail-2));
   color: #fbf6ec;
   transition: opacity 0.18s ease, padding 0.18s ease;
@@ -103,20 +105,41 @@ svg {
 .brand-block {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--line-dark);
+  gap: 18px;
+  min-height: 136px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  background: var(--rail-card);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 18px 46px rgba(0, 0, 0, 0.2);
 }
 
-.brand-emblem {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius);
+.brand-logo {
+  width: 74px;
+  height: 74px;
+  border-radius: 20px;
   display: grid;
   place-items: center;
   background: #f9ead0;
   color: var(--rail);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  position: relative;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(217, 170, 66, 0.3);
+}
+
+.brand-logo span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.brand-logo svg {
+  position: absolute;
+  bottom: 12px;
+  width: 22px;
+  height: 22px;
+  color: var(--gold);
+  stroke-width: 1.6;
 }
 
 .brand-block p,
@@ -132,19 +155,19 @@ svg {
 }
 
 .brand-block h1 {
-  margin: 2px 0 0;
+  margin: 8px 0 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 25px;
+  font-size: 31px;
   line-height: 1;
 }
 
-.rail-nav {
+.rail-menu {
   display: grid;
-  gap: 6px;
-  margin-top: 18px;
+  gap: 26px;
+  margin-top: 46px;
 }
 
-.rail-link,
+.menu-item,
 .doc-tab,
 .metric,
 .mini-card,
@@ -154,26 +177,56 @@ svg {
   color: inherit;
 }
 
-.rail-link {
-  min-height: 46px;
-  border-radius: var(--radius);
+.menu-item {
+  min-height: 76px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 11px;
-  color: #d9dded;
-  font-weight: 750;
+  gap: 18px;
+  padding: 0 20px;
+  color: #f3efe8;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+  font-weight: 800;
   text-align: left;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
 }
 
-.rail-link:hover,
-.rail-link.active {
-  background: #fbf6ec;
-  color: var(--rail);
+.menu-item:hover,
+.menu-item.active {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+.menu-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #f7f2e8;
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.22), transparent 36%),
+    linear-gradient(180deg, #344057, #222b42);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.menu-icon svg {
+  width: 31px;
+  height: 31px;
+  stroke-width: 1.9;
+}
+
+.menu-item.active .menu-icon,
+.menu-item:hover .menu-icon {
+  color: var(--gold);
+  border-color: rgba(217, 170, 66, 0.34);
 }
 
 .rail-section {
-  margin-top: 24px;
+  margin-top: 36px;
 }
 
 .rail-section-head,
@@ -216,6 +269,15 @@ svg {
   font-size: 12px;
 }
 
+.doc-tab em {
+  color: #d9aa42;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .doc-tab.active {
   background: rgba(249, 234, 208, 0.95);
   border-color: transparent;
@@ -227,6 +289,14 @@ svg {
 
 .doc-tab.active span {
   color: #5f6474;
+}
+
+.rail-empty {
+  grid-column: auto;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #aeb5c8;
+  text-align: left;
 }
 
 .rail-tools {
@@ -735,7 +805,7 @@ mark.reader-highlight {
 
 .editor-fields {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 230px) minmax(170px, 220px);
   gap: 12px;
   margin-top: 16px;
 }
@@ -745,13 +815,15 @@ mark.reader-highlight {
   gap: 6px;
 }
 
-.editor-fields input {
+.editor-fields input,
+.editor-fields select {
   min-height: 42px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   outline: 0;
   padding: 0 11px;
   background: #fffaf2;
+  color: var(--ink);
 }
 
 .format-bar {
@@ -813,7 +885,7 @@ mark.reader-highlight {
 
 @media (max-width: 1080px) {
   .app-shell {
-    grid-template-columns: 250px minmax(0, 1fr);
+    grid-template-columns: 320px minmax(0, 1fr);
   }
 
   .reader-layout {
