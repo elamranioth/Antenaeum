@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Antenaeum | Personal Reading Desk</title>
-  <link rel="stylesheet" href="styles.css?v=rail-toggle-3">
+  <link rel="stylesheet" href="styles.css?v=drawer-states-1">
 </head>
 <body>
   <svg class="icon-defs" aria-hidden="true">
@@ -110,12 +110,6 @@
         </div>
       </header>
 
-      <div class="rail-menu-line">
-        <button class="icon-button inverse rail-toggle" id="toggleRailBtn" type="button" title="Toggle sidebar" aria-label="Toggle sidebar">
-          <svg><use href="#icon-menu"></use></svg>
-        </button>
-      </div>
-
       <nav class="rail-menu" aria-label="Digital library menu">
         <button class="menu-item" type="button" data-shelf="law">
           <span class="menu-icon"><svg><use href="#icon-scale"></use></svg></span>
@@ -166,12 +160,38 @@
       </section>
     </aside>
 
+    <button class="drawer-scrim" id="drawerScrim" type="button" aria-label="Close library menu"></button>
+
     <main class="desk">
       <header class="desk-topbar">
+        <button class="icon-button top-menu-toggle" id="toggleRailBtn" type="button" title="Open library menu" aria-label="Open library menu" aria-expanded="false">
+          <svg><use href="#icon-menu"></use></svg>
+        </button>
+
+        <div class="topbar-brand">
+          <div class="topbar-logo" aria-hidden="true">
+            <span>A</span>
+            <svg><use href="#icon-book"></use></svg>
+          </div>
+          <div>
+            <p>Personal Knowledge Library</p>
+            <h1 id="topbarTitle">Book Summaries</h1>
+          </div>
+        </div>
+
         <label class="search-field">
           <svg><use href="#icon-search"></use></svg>
           <input id="searchInput" type="search" autocomplete="off" placeholder="Search words, quotes, highlights">
         </label>
+
+        <div class="font-controls" aria-label="Reader font size">
+          <button class="font-button" id="fontDownBtn" type="button" title="Smaller text" aria-label="Smaller reader text">
+            <span>A</span><small>-</small>
+          </button>
+          <button class="font-button" id="fontUpBtn" type="button" title="Larger text" aria-label="Larger reader text">
+            <span>A</span><small>+</small>
+          </button>
+        </div>
 
         <div class="topbar-actions">
           <button class="tool-button" id="editDocBtn" type="button">
@@ -366,6 +386,6 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=drawer-states-1"></script>
 </body>
 </html>

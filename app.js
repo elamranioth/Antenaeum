@@ -35,10 +35,12 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
 
 const els = {
   app: $("#app"),
+  drawerScrim: $("#drawerScrim"),
   docList: $("#docList"),
   reader: $("#reader"),
   docTitle: $("#docTitle"),
   docAuthor: $("#docAuthor"),
+  topbarTitle: $("#topbarTitle"),
   searchInput: $("#searchInput"),
   selectionPopover: $("#selectionPopover"),
   libraryCount: $("#libraryCount"),
@@ -67,6 +69,7 @@ function init() {
   ensureStarterState();
   setActiveDocument(state.activeDocId || state.docs[0].id, false);
   bindEvents();
+  applyReaderScale();
   renderAll();
 }
 
@@ -81,7 +84,8 @@ function ensureStarterState() {
   state.words = Array.isArray(state.words) ? state.words : [];
   state.quotes = Array.isArray(state.quotes) ? state.quotes : [];
   state.highlights = Array.isArray(state.highlights) ? state.highlights : [];
-  state.settings = { highlightColor: "gold", ...(state.settings || {}) };
+  state.settings = { highlightColor: "gold", readerScale: 1, ...(state.settings || {}) };
+  state.settings.readerScale = clamp(Number(state.settings.readerScale) || 1, 0.88, 1.18);
   activeShelf = state.activeShelf && SHELVES[state.activeShelf] ? state.activeShelf : "book-summaries";
   state.activeShelf = activeShelf;
 }
@@ -101,15 +105,26 @@ function persist() {
 }
 
 function bindEvents() {
+  const closeRail = () => {
+    els.app.classList.remove("rail-open");
+    $("#toggleRailBtn").setAttribute("aria-expanded", "false");
+  };
   const toggleRail = () => {
-    els.app.classList.toggle("rail-closed");
+    const isOpen = els.app.classList.toggle("rail-open");
+    $("#toggleRailBtn").setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) hideSelectionPopover();
   };
   $("#toggleRailBtn").addEventListener("click", toggleRail);
+  els.drawerScrim.addEventListener("click", closeRail);
+  els.docList.addEventListener("click", (event) => {
+    if (event.target.closest(".doc-tab")) closeRail();
+  });
 
   $$(".menu-item").forEach((button) => {
     button.addEventListener("click", () => {
       if (button.dataset.shelf) setShelf(button.dataset.shelf);
       if (button.dataset.view) setView(button.dataset.view);
+      closeRail();
     });
   });
 
@@ -117,7 +132,10 @@ function bindEvents() {
     button.addEventListener("click", () => setView(button.dataset.jump));
   });
 
-  $("#newDocBtn").addEventListener("click", () => openEditor("new"));
+  $("#newDocBtn").addEventListener("click", () => {
+    closeRail();
+    openEditor("new");
+  });
   $("#editDocBtn").addEventListener("click", () => openEditor("edit"));
   $("#quickSaveBtn").addEventListener("click", saveCurrentSelection);
   $("#exportBtn").addEventListener("click", exportLibrary);
@@ -128,6 +146,9 @@ function bindEvents() {
   $("#clearHighlightsBtn").addEventListener("click", clearHighlights);
 
   els.searchInput.addEventListener("input", renderCollections);
+  $("#fontDownBtn").addEventListener("click", () => changeReaderScale(-0.06));
+  $("#fontUpBtn").addEventListener("click", () => changeReaderScale(0.06));
+  window.addEventListener("resize", applyReaderScale);
 
   els.reader.addEventListener("input", scheduleReaderSave);
   els.reader.addEventListener("mouseup", () => scheduleSelectionPopover(70));
@@ -165,8 +186,22 @@ function bindEvents() {
   els.highlightsGrid.addEventListener("click", handleHighlightCardClick);
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") hideSelectionPopover();
+    if (event.key === "Escape") {
+      hideSelectionPopover();
+      closeRail();
+    }
   });
+}
+
+function changeReaderScale(delta) {
+  state.settings.readerScale = clamp((Number(state.settings.readerScale) || 1) + delta, 0.88, 1.18);
+  persist();
+  applyReaderScale();
+}
+
+function applyReaderScale() {
+  const base = clamp(window.innerWidth * 0.02, 19, 24);
+  document.documentElement.style.setProperty("--reader-font-size", `${Math.round(base * (state.settings.readerScale || 1))}px`);
 }
 
 function renderAll() {
@@ -231,6 +266,15 @@ function updateMenuState() {
     const isViewActive = button.dataset.view === activeView;
     button.classList.toggle("active", isShelfActive || isViewActive);
   });
+  if (els.topbarTitle) els.topbarTitle.textContent = currentTopbarTitle();
+}
+
+function currentTopbarTitle() {
+  if (activeView === "reader") return SHELVES[activeShelf] || "Reading Desk";
+  if (activeView === "words") return "Vocabulary";
+  if (activeView === "quotes") return "Quotes";
+  if (activeView === "highlights") return "Highlights";
+  return "Reading Desk";
 }
 
 function renderDocumentList() {
