@@ -328,7 +328,7 @@ svg {
   top: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: auto minmax(220px, 1fr) auto;
+  grid-template-columns: minmax(220px, 1fr) auto;
   align-items: center;
   gap: 12px;
   padding: 14px 20px;
@@ -343,11 +343,16 @@ svg {
   align-items: center;
 }
 
-.reopen-rail {
+.floating-reopen {
   display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 50;
+  box-shadow: 0 12px 30px rgba(25, 22, 17, 0.18);
 }
 
-.app-shell.rail-closed .reopen-rail {
+.app-shell.rail-closed .floating-reopen {
   display: inline-flex;
 }
 
@@ -987,7 +992,7 @@ mark.reader-highlight {
   }
 
   .desk-topbar {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
   }
 
   .topbar-actions {

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Antenaeum | Personal Reading Desk</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=rail-toggle-2">
 </head>
 <body>
   <svg class="icon-defs" aria-hidden="true">
@@ -166,12 +166,12 @@
       </section>
     </aside>
 
+    <button class="icon-button floating-reopen" id="reopenRailBtn" type="button" title="Open sidebar" aria-label="Open sidebar">
+      <svg><use href="#icon-menu"></use></svg>
+    </button>
+
     <main class="desk">
       <header class="desk-topbar">
-        <button class="icon-button reopen-rail" id="reopenRailBtn" type="button" title="Open sidebar" aria-label="Open sidebar">
-          <svg><use href="#icon-menu"></use></svg>
-        </button>
-
         <label class="search-field">
           <svg><use href="#icon-search"></use></svg>
           <input id="searchInput" type="search" autocomplete="off" placeholder="Search words, quotes, highlights">
