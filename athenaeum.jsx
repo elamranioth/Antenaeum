@@ -1,0 +1,9987 @@
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import {
+  Scale, TrendingUp, Lightbulb, BookOpen, Quote, BookMarked,
+  Plus, Menu, Search, Highlighter, Languages, X, Trash2, Volume2,
+  ArrowLeft, Save, Type, ChevronDown, Bookmark, Sparkles, Cpu
+} from "lucide-react";
+
+/* ════════════════════════════════════════════════════════════════
+   ATHENAEUM — Personal Knowledge Library
+   ════════════════════════════════════════════════════════════════ */
+
+const GlobalStyles = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Naskh+Arabic:wght@400;700&family=DM+Mono:wght@300;400;500&display=swap');
+
+    :root {
+      /* === BOOX Kaleido 3 e-ink optimized palette === */
+      --navy:        #000000;             /* pure black sidebar — cleanest e-ink */
+      --navy-2:      #0A0A0A;
+      --navy-3:      #181818;
+      --navy-soft:   #1A1A1A;
+      --cream:       #F2EAD0;             /* warm paper */
+      --cream-2:     #EFE6C8;
+      --cream-3:     #FAF5E1;             /* card surface */
+      --cream-tag:   #E0D29E;
+      --gold:        #9E6F1A;             /* deeper gold — survives e-ink desaturation */
+      --gold-deep:   #5C3F0A;
+      --gold-soft:   #E0D29E;
+      --ink:         #0A0A0A;             /* near-black body text */
+      --ink-2:       #1F1F1F;
+      --ink-3:       #4A4A4A;             /* darker than before, no more low-contrast grey */
+      --rule:        #1A1A1A;             /* solid borders, not rgba */
+      --rule-soft:   #8A8472;             /* still solid, lighter tone */
+      --shadow:      none;                /* shadows kill e-ink — use borders */
+      --shadow-lg:   none;
+      --highlight:   #E8C770;             /* solid gold underline behind highlights */
+    }
+
+    body { background: var(--cream); margin: 0; }
+
+    .display { font-family: 'Cormorant Garamond', 'Lora', Georgia, serif; }
+    .body    { font-family: 'Literata', 'Lora', Georgia, serif; }
+    .ui      { font-family: 'DM Mono', ui-monospace, monospace; }
+    .arabic-font { font-family: 'Noto Naskh Arabic', serif; direction: rtl; }
+
+    /* RTL Arabic content — apply to articles in the arabic-law category */
+    .rtl-arabic {
+      direction: rtl !important;
+      text-align: right;
+      font-family: 'Noto Naskh Arabic', 'Lora', serif !important;
+      line-height: 1.95;
+    }
+    .rtl-arabic.reading-column {
+      text-align: justify;
+      font-size: 1.15rem;
+    }
+    .rtl-arabic h1, .rtl-arabic h2, .rtl-arabic h3 {
+      font-family: 'Noto Naskh Arabic', serif !important;
+      font-weight: 700;
+    }
+    /* Editor inputs in RTL mode */
+    .editor-input.rtl-arabic {
+      text-align: right;
+      direction: rtl;
+    }
+    /* Drop cap doesn't make sense in Arabic — disable when RTL */
+    .article-body.rtl-arabic > p:first-of-type::first-letter {
+      font-size: 1em !important;
+      float: none !important;
+      padding: 0 !important;
+      color: inherit !important;
+    }
+
+    /* Core principle pull-quote — refined legal headnote
+       Design language: a single editorial card with a thick gold accent on the
+       starting edge (right side for RTL, left for LTR), a small inset eyebrow
+       label that sits inside the corner, and a clean source rule. The opening
+       guillemet is set as a true drop-glyph rather than a floating decoration. */
+    .core-principle {
+      max-width: 44rem;
+      margin: 1.75rem auto 2.5rem;
+      background: var(--cream-3);
+      border: 1px solid var(--rule);
+      border-right: 4px solid var(--gold);    /* RTL: accent on the start side */
+      border-radius: 4px 12px 12px 4px;
+      padding: 1.5rem 2rem 1.4rem;
+      position: relative;
+    }
+    /* For LTR (non-Arabic), flip the accent to the left side */
+    .core-principle.ltr {
+      border-right: 1px solid var(--rule);
+      border-left: 4px solid var(--gold);
+      border-radius: 12px 4px 4px 12px;
+    }
+
+    .core-principle__label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .core-principle__label::before {
+      content: "";
+      display: inline-block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--gold);
+    }
+
+    .core-principle__text {
+      font-family: 'Noto Naskh Arabic', serif;
+      direction: rtl;
+      text-align: justify;
+      font-size: 1.18rem;
+      line-height: 1.95;
+      color: var(--ink);
+      font-weight: 500;
+      margin: 0 0 1rem;
+      letter-spacing: 0.005em;
+    }
+    /* LTR variant uses Cormorant for elegance */
+    .core-principle.ltr .core-principle__text {
+      font-family: 'Cormorant Garamond', serif;
+      direction: ltr;
+      text-align: left;
+      font-style: italic;
+      font-size: 1.3rem;
+      line-height: 1.7;
+    }
+
+    .core-principle__source {
+      font-family: 'DM Mono', monospace;
+      direction: rtl;
+      text-align: right;
+      font-size: 10.5px;
+      color: var(--gold-deep);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .core-principle__source::before {
+      content: "§";
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      letter-spacing: 0;
+    }
+    .core-principle.ltr .core-principle__source {
+      direction: ltr;
+      text-align: left;
+    }
+
+    /* When two principles stack, soften the gap and add a tiny gold dot between them */
+    .core-principle + .core-principle {
+      margin-top: 1rem;
+    }
+
+    /* Reading column — never wraps mid-word */
+    .reading-column {
+      max-width: 38rem;
+      line-height: 1.78;
+      letter-spacing: 0.005em;
+      text-align: justify;
+      hyphens: none;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      color: var(--ink);
+    }
+    .reading-column p { margin-bottom: 1.45em; }
+
+    /* Drop cap */
+    .article-body > p:first-of-type::first-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 4.5em;
+      float: left;
+      line-height: 0.85;
+      padding: 0.05em 0.12em 0 0;
+      color: var(--gold);
+    }
+
+    /* Highlight mark */
+    mark.user-highlight {
+      background: var(--highlight);
+      color: var(--ink);
+      padding: 0 1px;
+      border-radius: 1px;
+    }
+
+    ::selection { background: var(--gold); color: var(--cream-3); }
+
+    /* Animations */
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .rise { animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .fade { animation: fade 0.2s ease-out both; }
+    @keyframes slideR { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .slide-r { animation: slideR 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+    /* Sidebar nav button */
+    .nav-btn:hover { background: #1A1A1A; }
+    .nav-btn[data-active="true"] {
+      background: #1A1A1A;
+      box-shadow: inset 4px 0 0 var(--gold);
+    }
+
+    /* Card */
+    .card {
+      background: var(--cream-3);
+      border: 1.5px solid var(--rule);
+      border-radius: 10px;
+    }
+    .card:hover { border-color: var(--gold); }
+
+    /* Tag pill */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      background: var(--cream-tag);
+      color: var(--gold-deep);
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1px solid var(--gold-deep);
+    }
+    .tag-light {
+      background: var(--cream-2);
+      color: var(--ink-3);
+      border: 1px solid var(--rule);
+    }
+
+    /* Reader button */
+    .reader-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--navy);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      border-radius: 999px;
+      border: 1px solid var(--navy);
+    }
+    .reader-btn:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
+
+    /* Pill button (light) */
+    .pill-light {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 18px;
+      background: var(--cream-2);
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      border-radius: 999px;
+      width: 100%;
+      font-weight: 500;
+    }
+    .pill-light:hover { background: var(--cream-tag); }
+
+    /* Logo mark — A inside square */
+    .logo-mark {
+      width: 38px; height: 38px;
+      border-radius: 6px;
+      background: var(--cream-3);
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--rule);
+    }
+    .logo-mark.dark { background: var(--cream-3); }
+    .logo-mark svg { width: 22px; height: 22px; }
+
+    /* Toolbar arrow */
+    .tooltail::after {
+      content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%) rotate(45deg);
+      width: 10px; height: 10px; background: inherit;
+      border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    }
+
+    /* Scrollbar */
+    .thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+    .thin-scroll::-webkit-scrollbar-thumb { background: rgba(15,27,61,0.15); border-radius: 3px; }
+
+    /* Floating selection toolbar */
+    .glow-card {
+      background: var(--cream-3);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+    }
+
+    /* Editor textarea */
+    .editor-input {
+      width: 100%;
+      background: var(--cream-3);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'Literata', 'Lora', serif;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .editor-input:focus { border-color: var(--gold); }
+    .editor-textarea {
+      min-height: 60vh;
+      resize: vertical;
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+
+    /* Section divider */
+    .gold-rule {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin: 2.5rem 0;
+    }
+    .gold-rule::before, .gold-rule::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+    .gold-rule__mark {
+      width: 5px; height: 5px; background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    /* Mobile sidebar overlay */
+    @media (max-width: 1024px) {
+      .sidebar-fixed { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar-fixed.open { transform: translateX(0); }
+    }
+  `}</style>
+);
+
+/* ════════════════════════════════════════════════════════════════
+   ATHENAEUM LOGO — small triangular A mark
+   ════════════════════════════════════════════════════════════════ */
+const AthenaeumMark = ({ size = 22 }) => (
+  <svg viewBox="0 0 32 32" width={size} height={size} fill="none">
+    <path d="M16 4 L28 28 L22.5 28 L20.5 23 L11.5 23 L9.5 28 L4 28 Z"
+          stroke="#0F1B3D" strokeWidth="1.4" strokeLinejoin="round" fill="#0F1B3D"/>
+    <path d="M13 19 L19 19 L16 11.5 Z" fill="#B8995A"/>
+  </svg>
+);
+
+/* ════════════════════════════════════════════════════════════════
+   DICTIONARY (EN → AR)
+   ════════════════════════════════════════════════════════════════ */
+const DICTIONARY = {
+  jurisprudence: { ar: "فقه القانون", ipa: "/ˌdʒʊə.rɪsˈpruː.dəns/", def: "the theory or philosophy of law." },
+  sovereignty:   { ar: "السيادة", ipa: "/ˈsɒv.rɪn.ti/", def: "supreme power or authority." },
+  precedent:     { ar: "سابقة قضائية", ipa: "/ˈpres.ɪ.dənt/", def: "an earlier event used as a guide." },
+  statute:       { ar: "تشريع", ipa: "/ˈstætʃ.uːt/", def: "a written law." },
+  tribunal:      { ar: "محكمة", ipa: "/traɪˈbjuː.nəl/", def: "a body to settle disputes." },
+  ontology:      { ar: "علم الوجود", ipa: "/ɒnˈtɒl.ə.dʒi/", def: "the philosophical study of being." },
+  epistemology:  { ar: "نظرية المعرفة", ipa: "/ɪˌpɪs.təˈmɒl.ə.dʒi/", def: "the theory of knowledge." },
+  metaphysics:   { ar: "ميتافيزيقا", ipa: "/ˌmet.əˈfɪz.ɪks/", def: "branch of philosophy on first principles." },
+  dialectic:     { ar: "جدل", ipa: "/ˌdaɪ.əˈlek.tɪk/", def: "discourse to reach truth." },
+  prince:        { ar: "أمير", ipa: "/prɪns/", def: "a ruler or sovereign." },
+  fortune:       { ar: "حظ", ipa: "/ˈfɔːr.tʃən/", def: "chance or luck affecting affairs." },
+  virtue:        { ar: "فضيلة", ipa: "/ˈvɜː.tʃuː/", def: "moral excellence." },
+  vice:          { ar: "رذيلة", ipa: "/vaɪs/", def: "immoral behaviour." },
+  liberty:       { ar: "حرية", ipa: "/ˈlɪb.ə.ti/", def: "the state of being free." },
+  justice:       { ar: "عدالة", ipa: "/ˈdʒʌs.tɪs/", def: "fair treatment." },
+  authority:     { ar: "سلطة", ipa: "/ɔːˈθɒr.ə.ti/", def: "the power to give orders." },
+  legitimacy:    { ar: "شرعية", ipa: "/lɪˈdʒɪt.ɪ.mə.si/", def: "conformity to law." },
+  hegemony:      { ar: "هيمنة", ipa: "/hɪˈɡem.ə.ni/", def: "leadership or dominance." },
+  capital:       { ar: "رأس المال", ipa: "/ˈkæp.ɪ.təl/", def: "wealth used for investment." },
+  market:        { ar: "سوق", ipa: "/ˈmɑː.kɪt/", def: "an arena for trade." },
+  inflation:     { ar: "تضخم", ipa: "/ɪnˈfleɪ.ʃən/", def: "general rise in prices." },
+  scarcity:      { ar: "ندرة", ipa: "/ˈskeə.sə.ti/", def: "shortage of supply." },
+  equilibrium:   { ar: "توازن", ipa: "/ˌiː.kwɪˈlɪb.ri.əm/", def: "a state of balance." },
+  liquidity:     { ar: "سيولة", ipa: "/lɪˈkwɪd.ə.ti/", def: "ease of converting to cash." },
+  interest:      { ar: "فائدة", ipa: "/ˈɪn.trəst/", def: "money paid for loans." },
+  recession:     { ar: "ركود", ipa: "/rɪˈseʃ.ən/", def: "economic decline." },
+  paradox:       { ar: "مفارقة", ipa: "/ˈpær.ə.dɒks/", def: "a seemingly contradictory statement." },
+  axiom:         { ar: "بديهية", ipa: "/ˈæk.si.əm/", def: "a self-evident truth." },
+  hypothesis:    { ar: "فرضية", ipa: "/haɪˈpɒθ.ə.sɪs/", def: "a proposed explanation." },
+  synthesis:     { ar: "تركيب", ipa: "/ˈsɪn.θə.sɪs/", def: "combination of ideas." },
+  empirical:     { ar: "تجريبي", ipa: "/ɪmˈpɪr.ɪ.kəl/", def: "based on observation." },
+  intuition:     { ar: "حدس", ipa: "/ˌɪn.tjuˈɪʃ.ən/", def: "understanding without reasoning." },
+  prudence:      { ar: "حكمة", ipa: "/ˈpruː.dəns/", def: "cautious wisdom." },
+  endure:        { ar: "يتحمل", ipa: "/ɪnˈdjʊə/", def: "to suffer patiently." },
+  transcend:     { ar: "يتجاوز", ipa: "/trænˈsend/", def: "to go beyond a limit." },
+  contemplate:   { ar: "يتأمل", ipa: "/ˈkɒn.təm.pleɪt/", def: "to consider thoughtfully." },
+  manifest:      { ar: "يتجلى", ipa: "/ˈmæn.ɪ.fest/", def: "to display clearly." },
+  inherent:      { ar: "متأصل", ipa: "/ɪnˈhɪər.ənt/", def: "existing as a permanent attribute." },
+  immutable:     { ar: "ثابت", ipa: "/ɪˈmjuː.tə.bəl/", def: "unchanging." },
+  bias:          { ar: "تحيز", ipa: "/ˈbaɪ.əs/", def: "prejudice for or against." },
+  heuristic:     { ar: "استدلال", ipa: "/hjʊəˈrɪs.tɪk/", def: "a mental shortcut." },
+  resilience:    { ar: "صمود", ipa: "/rɪˈzɪl.i.əns/", def: "capacity to recover." },
+  contract:      { ar: "عقد", ipa: "/ˈkɒn.trækt/", def: "a binding agreement." },
+  clause:        { ar: "بند", ipa: "/klɔːz/", def: "a separate part of a contract." },
+  provision:     { ar: "حكم", ipa: "/prəˈvɪʒ.ən/", def: "a stipulation in a legal document." },
+  stratagem:     { ar: "حيلة", ipa: "/ˈstræt.ə.dʒəm/", def: "a plan or scheme." },
+  deception:     { ar: "خداع", ipa: "/dɪˈsep.ʃən/", def: "the act of misleading." },
+  victory:       { ar: "نصر", ipa: "/ˈvɪk.tər.i/", def: "success against an adversary." },
+  discipline:    { ar: "انضباط", ipa: "/ˈdɪs.ə.plɪn/", def: "controlled behaviour." },
+  terrain:       { ar: "تضاريس", ipa: "/təˈreɪn/", def: "the physical features of land." },
+  sovereign:     { ar: "صاحب السيادة", ipa: "/ˈsɒv.rɪn/", def: "supreme ruler." },
+  adversary:     { ar: "خصم", ipa: "/ˈæd.və.sər.i/", def: "an opponent." },
+};
+
+/* ════════════════════════════════════════════════════════════════
+   READING-PROGRESS HELPERS
+   ════════════════════════════════════════════════════════════════ */
+function getReadStatus(article, library) {
+  const r = library?.reading?.[article.id];
+  if (!r) return "new";
+  if (article.richHtml) {
+    const read = (r.readSections || []).length;
+    const total = r.totalPanels || 0;
+    if (total > 0 && read >= total) return "done";
+    if (read > 0) return "reading";
+    return "new";
+  }
+  return r.marked ? "done" : "new";
+}
+
+function getReadProgress(article, library) {
+  const r = library?.reading?.[article.id];
+  if (!r) return 0;
+  if (article.richHtml) {
+    const total = r.totalPanels || 0;
+    if (!total) return 0;
+    return Math.min(1, (r.readSections || []).length / total);
+  }
+  return r.marked ? 1 : 0;
+}
+
+function StatusBadge({ status, percent }) {
+  const styles = {
+    new:     { background: "var(--gold)",     color: "var(--cream-3)", border: "1px solid var(--gold-deep)" },
+    reading: { background: "var(--cream-3)",  color: "var(--ink)",     border: "1.5px solid var(--ink)" },
+    done:    { background: "var(--ink)",      color: "var(--cream-3)", border: "1px solid var(--ink)" },
+  };
+  const labels = {
+    new:     "NEW",
+    reading: percent != null ? `READING · ${Math.round(percent * 100)}%` : "READING",
+    done:    "✓ READ",
+  };
+  return (
+    <span style={{
+      ...styles[status],
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "4px 10px",
+      fontFamily: "DM Mono, monospace",
+      fontSize: 9,
+      letterSpacing: "0.18em",
+      fontWeight: 700,
+      borderRadius: 999,
+      whiteSpace: "nowrap",
+    }}>
+      {labels[status]}
+    </span>
+  );
+}
+
+function ProgressBar({ percent }) {
+  const p = Math.max(0, Math.min(100, percent || 0));
+  return (
+    <div style={{
+      position: "sticky",
+      top: 0,
+      zIndex: 19,
+      height: 3,
+      background: "var(--rule-soft)",
+      width: "100%",
+    }}>
+      <div style={{
+        width: `${p}%`,
+        height: "100%",
+        background: "var(--gold)",
+      }}/>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DAILY QUOTE — deterministic per calendar day
+   ════════════════════════════════════════════════════════════════ */
+function getDailyQuoteIndex(quoteCount, date) {
+  if (!quoteCount) return -1;
+  // Hash the date string (YYYY-MM-DD) into an integer, then mod by count.
+  // This guarantees the same quote shows up all day, and changes at midnight.
+  const key = date.toISOString().slice(0, 10);
+  let h = 0;
+  for (let i = 0; i < key.length; i++) {
+    h = ((h << 5) - h + key.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h) % quoteCount;
+}
+
+function getDailyQuote(quotes) {
+  if (!quotes || quotes.length === 0) return null;
+  const idx = getDailyQuoteIndex(quotes.length, new Date());
+  return { quote: quotes[idx], index: idx, total: quotes.length };
+}
+
+function formatTodayDate() {
+  return new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CATEGORIES (sidebar nav)
+   ════════════════════════════════════════════════════════════════ */
+const CATEGORIES = [
+  { id: "law",            name: "Law",            icon: Scale },
+  { id: "economic",       name: "Economic",       icon: TrendingUp },
+  { id: "philosophy",     name: "Philosophy",     icon: Lightbulb },
+  { id: "tech",           name: "Tech",           icon: Cpu },
+  { id: "book-summaries", name: "Book Summaries", icon: BookOpen },
+  { id: "arabic-law",     name: "القانون",        icon: Scale, rtl: true },
+];
+
+// Quick lookup: is a given category id RTL/Arabic?
+const isRtlCategory = (id) => CATEGORIES.find(c => c.id === id)?.rtl === true;
+
+const COLLECTIONS = [
+  { id: "quotes",     name: "Quotes",     icon: Quote },
+  { id: "vocabulary", name: "Vocabulary", icon: BookMarked },
+];
+
+const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map(c => [c.id, c.name]));
+
+/* ════════════════════════════════════════════════════════════════
+   RICH-HTML ARTICLES — preserved exactly as their original files
+   ════════════════════════════════════════════════════════════════ */
+const WINNING_BRIEF_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --dark: #0c1220;
+    --dark2: #131c2e;
+    --maroon: #6a1a2a;
+    --maroon-light: #8a2a3a;
+    --maroon-bright: #b04050;
+    --gold: #c09030;
+    --gold-light: #daa840;
+    --cream: #f3eed8;
+    --cream-dark: #e3d8c0;
+    --border-c: #9080a0;
+    --blue: #1e3060;
+    --blue-light: #4060a0;
+    --text: #0c1220;
+    --muted: #2a1828;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body,.wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--text); }
+  .wrap { max-width:880px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero { background:var(--dark); color:var(--cream); padding:3.5rem 3rem 3rem; text-align:center; border-bottom:4px double var(--maroon-light); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(106,26,42,0.07) 29px); pointer-events:none; }
+  .hero-ornament { font-size:20px; color:var(--maroon-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.75; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:46px; line-height:1.1; color:var(--maroon-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.7); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:#7060a0; margin-top:0.5rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#503050; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#402040; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2rem; background:var(--dark); padding:1.2rem 2rem; border-bottom:1px solid var(--maroon); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:32px; color:var(--maroon-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#503050; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#080c18; border-bottom:2px solid var(--maroon); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.65rem 0.8rem; font-family:'IM Fell English',serif; font-size:11.5px; color:#503050; cursor:pointer; border-right:1px solid #131c2e; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--maroon-bright); background:#131c2e; }
+  .tab.active { color:var(--maroon-bright); background:#18101a; border-bottom:2px solid var(--maroon-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--cream); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.85; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--maroon); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:22px; color:var(--dark); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .tip-block { margin-bottom:1.8rem; padding:1rem 1.3rem; border-left:4px solid var(--maroon); background:rgba(106,26,42,0.04); }
+  .tip-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--maroon); margin-bottom:0.1rem; }
+  .tip-name { font-weight:600; font-size:17px; color:var(--blue); margin-bottom:0.3rem; }
+  .tip-body { font-size:15.5px; line-height:1.78; color:#0c1820; }
+  .tip-body p { margin-bottom:0.7rem; }
+  .tip-body p:last-child { margin-bottom:0; }
+
+  .part-banner { background:var(--dark); color:var(--cream); padding:1rem 1.5rem; margin:2rem -2rem 1.8rem; border-top:2px solid var(--maroon); border-bottom:2px solid var(--maroon); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--maroon-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:19px; color:var(--cream); }
+  .part-banner .p-desc { font-size:13px; color:#7060a0; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--dark); border:1px solid var(--maroon); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--maroon-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#7060a0; line-height:1.45; }
+
+  .do-dont { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:0.8rem 0 1.2rem; }
+  .do-box, .dont-box { padding:0.85rem 1rem; font-size:14px; line-height:1.6; }
+  .do-box { background:rgba(26,106,50,0.07); border-left:4px solid #2a7a3a; color:#0e2818; }
+  .dont-box { background:rgba(106,26,26,0.07); border-left:4px solid var(--maroon); color:#280e0e; }
+  .do-box strong, .dont-box strong { display:block; font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.35rem; }
+  .do-box strong { color:#2a7a3a; }
+  .dont-box strong { color:var(--maroon); }
+
+  .example-box { background:rgba(30,48,96,0.06); border:1px solid #9090c0; padding:0.85rem 1.1rem; margin:0.8rem 0 1.1rem; border-radius:2px; }
+  .example-box .ex-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--blue-light); margin-bottom:0.3rem; }
+  .example-box p { font-size:14.5px; line-height:1.65; color:var(--muted); font-style:italic; }
+
+  .quotes-section { background:var(--dark); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--maroon); }
+  .quotes-section .section-title { color:var(--maroon-bright); border-bottom-color:#2a1028; margin-top:0; }
+  .quote-item { border-left:3px solid var(--maroon); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(106,26,42,0.09); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--cream); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#503050; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--maroon); color:var(--cream); padding:2rem; text-align:center; border-top:3px double var(--maroon-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+
+  .divider { text-align:center; color:var(--maroon); font-size:18px; letter-spacing:10px; margin:1.4rem 0; opacity:0.4; }
+
+  .checklist { list-style:none; margin:0.5rem 0 1.2rem 0; }
+  .checklist li { font-size:15px; line-height:1.65; color:var(--muted); padding:0.3rem 0 0.3rem 1.5rem; position:relative; border-bottom:1px dotted #c0b0c0; }
+  .checklist li:last-child { border-bottom:none; }
+  .checklist li::before { content:'▸'; position:absolute; left:0; color:var(--maroon-bright); font-size:12px; top:0.45rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">✒ ✒ ✒</div>
+    <div class="hero-title">The Winning Brief</div>
+    <div class="hero-subtitle">100 Tips for Persuasive Briefing in Trial and Appellate Courts</div>
+    <div class="hero-author">Bryan A. Garner</div>
+    <div class="hero-year">Third Edition · Oxford University Press · All 100 Tips Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">100</div><div class="lbl">Tips</div></div>
+    <div class="stat"><div class="num">3rd</div><div class="lbl">Edition</div></div>
+    <div class="stat"><div class="num">12</div><div class="lbl">Thematic Groups</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Definitive Author</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('mindset',this)">Mindset</div>
+    <div class="tab" onclick="show('opening',this)">Opening Sections</div>
+    <div class="tab" onclick="show('facts',this)">Facts</div>
+    <div class="tab" onclick="show('headings',this)">Headings</div>
+    <div class="tab" onclick="show('argument',this)">Argument</div>
+    <div class="tab" onclick="show('authority',this)">Authority</div>
+    <div class="tab" onclick="show('sentences',this)">Sentences</div>
+    <div class="tab" onclick="show('words',this)">Words & Style</div>
+    <div class="tab" onclick="show('editing',this)">Editing</div>
+    <div class="tab" onclick="show('format',this)">Format & Layout</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>The most comprehensive, practical, and uncompromising manual ever written on the craft of legal brief-writing. Garner does not theorise about good legal writing — he demonstrates it, dissects it, and shows you exactly what separates the brief that persuades from the brief that merely informs. One hundred tips. No padding. All of it applicable the moment you finish reading.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is and Why It Matters</div>
+      <div class="tip-body">
+        <p>Bryan A. Garner is the editor-in-chief of <em>Black's Law Dictionary</em>, the author of <em>Garner's Modern English Usage</em>, and co-author (with Justice Antonin Scalia) of <em>Making Your Case</em> and <em>Reading Law</em>. He is, without serious competition, the foremost authority on legal writing in the English-speaking world. <em>The Winning Brief</em> is his most practically detailed work — a book not of principles stated in the abstract but of concrete, specific, immediately applicable guidance on every dimension of the brief-writing craft.</p>
+        <p>The book's structure is 100 numbered tips, organised loosely from the large-scale (overall strategy and structure) to the small-scale (individual word choices and punctuation). Each tip identifies a specific and common error or opportunity, explains why it matters, and illustrates the difference between the weak approach and the strong one with side-by-side examples. Garner's examples — often drawn from real briefs, with identifying information changed — are the engine of the book. Seeing the before and after on the same page makes the principle viscerally real in a way that abstract description cannot.</p>
+        <p>The audience is any lawyer who writes briefs — trial or appellate, state or federal. While Garner occasionally references the specific requirements of particular courts, the great majority of the tips apply universally. And while the book is addressed to lawyers, its underlying principles of clear, honest, reader-centred persuasive writing apply to any high-stakes written argument in any field.</p>
+      </div>
+
+      <div class="section-label">Central Argument</div>
+      <div class="section-title">The Philosophy Behind All 100 Tips</div>
+      <div class="tip-body">
+        <p>Garner's organising conviction is that most legal briefs fail not because the lawyer lacks knowledge of the law but because the lawyer writes for the wrong audience. They write for themselves (organising information the way they learned it), for the client (reassuring them that every argument has been made), for other lawyers (demonstying doctrinal sophistication), or for opposing counsel (anticipating every conceivable counter-argument). They do not write for the judge — the person who must read the brief quickly, under time pressure, while reading dozens of other briefs, and who must emerge from that reading with a clear enough understanding of the law and facts to justify a decision.</p>
+        <p>Writing for the judge means everything must earn its place by making the judge's job easier: easier to understand what the case is about, easier to follow the legal reasoning, easier to find the key propositions, easier to evaluate the argument's strengths. The brief that accomplishes these things persuades, not because it is clever or thorough or impressive, but because it is genuinely useful to the person who must decide.</p>
+        <p>A second organising conviction is that legal writing is a craft — learnable, improvable, and subject to the same kinds of specific, technical guidance that any other craft demands. Garner rejects the view that good legal writers are born rather than made. The specific techniques of effective brief-writing can be identified, practised, and mastered. What separates the best brief-writers from the average is not native talent but the disciplined application of specific principles that the average writer has never been explicitly taught.</p>
+      </div>
+
+      <div class="section-label">The Map</div>
+      <div class="section-title">All 100 Tips — Organised by Theme</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">Mindset & Strategy</div><div class="t-desc">Tips 1–8. The foundational orientation — who you are writing for and why most briefs fail before they begin.</div></div>
+        <div class="theme-card"><div class="t-name">Opening Sections</div><div class="t-desc">Tips 9–18. The introduction, the question presented, and the summary of argument — the parts read first and remembered longest.</div></div>
+        <div class="theme-card"><div class="t-name">Statement of Facts</div><div class="t-desc">Tips 19–27. The most underestimated section of any brief — how to tell a compelling and honest story.</div></div>
+        <div class="theme-card"><div class="t-name">Point Headings</div><div class="t-desc">Tips 28–35. The brief's skeleton — how to make every heading a complete, argumentative proposition.</div></div>
+        <div class="theme-card"><div class="t-name">Argument Structure</div><div class="t-desc">Tips 36–48. How to organise the argument for maximum persuasive impact, including the order and selection of arguments.</div></div>
+        <div class="theme-card"><div class="t-name">Authority & Analysis</div><div class="t-desc">Tips 49–58. How to use cases, statutes, and secondary sources — and how to handle adverse authority.</div></div>
+        <div class="theme-card"><div class="t-name">Sentence Craft</div><div class="t-desc">Tips 59–72. The architecture of the individual sentence — length, structure, emphasis, and rhythm.</div></div>
+        <div class="theme-card"><div class="t-name">Word Choice & Style</div><div class="t-desc">Tips 73–84. The specific words and constructions that weaken or strengthen legal prose.</div></div>
+        <div class="theme-card"><div class="t-name">Editing & Revision</div><div class="t-desc">Tips 85–92. The discipline of revision — how to turn a first draft into a winning brief.</div></div>
+        <div class="theme-card"><div class="t-name">Format & Presentation</div><div class="t-desc">Tips 93–100. Typography, white space, citations, and the visual presentation that either aids or impedes reading.</div></div>
+      </div>
+    </div>
+
+    <!-- MINDSET -->
+    <div id="mindset" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 1–8</div>
+        <div class="p-title">Mindset & Strategy</div>
+        <div class="p-desc">The foundational convictions that govern everything else. Before a word is written, these principles must be internalised — they determine whether the brief that follows will be written for the judge or for everyone else.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 1–2</div>
+        <div class="tip-name">Write for the Judge — Not for Yourself, the Client, or Opposing Counsel</div>
+        <div class="tip-body">
+          <p>The most fundamental error in brief-writing is audience confusion. Lawyers write briefs that are organised the way they learned the law (which is not the way judges receive it), that are padded with every available argument (to reassure the client that nothing has been omitted), that are larded with technical jargon (to demonstrate doctrinal sophistication to peers), and that are defensive in tone (anticipating every conceivable objection from the other side). None of these impulses serves the actual reader — the judge who must quickly understand the case and find a defensible basis for a decision.</p>
+          <p>Garner insists that every decision about the brief — what to include, how to organise it, how to phrase each proposition, how long to make each section — must be made by asking a single question: does this make the judge's job easier? If it does, it belongs. If it does not, it must be cut or rewritten regardless of how thorough, accurate, or legally impressive it might be. This is not a counsel of dumbing down — it is a counsel of radical reader-centredness that most lawyers have never been explicitly taught and most briefs conspicuously lack.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 3–4</div>
+        <div class="tip-name">Understand How Judges Actually Read Briefs</div>
+        <div class="tip-body">
+          <p>Judges do not read briefs the way lawyers write them — beginning on page one and proceeding linearly to the end. Most judges begin with the table of contents (to understand the structure of the argument), then read the question presented (to understand the issue), then the statement of facts (to understand the human and factual context), then the summary of argument (to understand the advocate's overall theory), and only then the argument section — often in a non-linear order, jumping to the points that the judge's preliminary reading has identified as most important.</p>
+          <p>This reading pattern has direct consequences for brief-writing. Every section must be able to stand on its own — the judge who skips to the summary of argument should find a complete and intelligible account of the case, not a reference back to earlier sections. The table of contents must be genuinely informative — the judge who reads only the point headings should understand the complete argument. And the opening of the argument section must establish context rather than assuming the judge has just read the statement of facts, because they may not have read it immediately before reaching the argument.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 5–6</div>
+        <div class="tip-name">Know the Difference Between a Good Argument and a Complete One</div>
+        <div class="tip-body">
+          <p>One of Garner's most important strategic insights: completeness and persuasiveness are not synonyms, and they are often inversely related. The brief that makes every available argument is usually less persuasive than the brief that makes the three best arguments fully and clearly. Every additional argument beyond the strongest ones dilutes the reader's attention, suggests that the author cannot distinguish good arguments from weak ones, and creates the impression of shotgun advocacy — throwing everything at the wall in hopes that something sticks.</p>
+          <p>Selecting arguments requires honest self-assessment and real discipline. The lawyer who has invested weeks in researching a secondary argument will feel genuine reluctance to omit it from the brief. Garner counsels ruthlessness: if the argument is not among the strongest, it does not belong in the brief — not in a footnote, not as a subsidiary point, not as a brief mention at the end. Its inclusion, however small, tells the judge that the lawyer's judgment cannot distinguish the strong from the weak, which undercuts confidence in the arguments that do belong.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Do This</strong>Select the two or three strongest arguments. Develop each fully, with complete analysis and citation. Let weaker arguments go entirely. Your brief will be shorter, cleaner, and far more persuasive.</div>
+            <div class="dont-box"><strong>✗ Not This</strong>List every argument you found in research, including the marginal ones, in the belief that comprehensiveness demonstrates thoroughness. It demonstrates the opposite: inability to evaluate.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 7–8</div>
+        <div class="tip-name">Lead with Your Theory of the Case — Give the Judge a Framework First</div>
+        <div class="tip-body">
+          <p>Before a judge can evaluate individual arguments, they need a framework — a theory of the case that explains, at the highest level of abstraction, why justice and law both require the result you are seeking. This theory should be articulable in two or three sentences and should govern the organisation and emphasis of every section that follows. A brief without a coherent theory of the case is a collection of legal arguments rather than a persuasive whole.</p>
+          <p>Garner recommends developing the theory of the case before writing a single word of the brief — and testing it by asking whether, if a judge accepted it, every specific argument in the brief would follow naturally. If there are arguments in the brief that do not connect to the theory of the case, either the theory needs to be revised or the arguments need to be cut. The theory should appear explicitly in the introduction, be reflected in the summary of argument, and be echoed — however implicitly — in each major point heading. By the time the judge reaches the argument section, they should have encountered the theory so consistently that each specific argument feels like the logical development of a position they already understand.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPENING SECTIONS -->
+    <div id="opening" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 9–18</div>
+        <div class="p-title">Opening Sections — Introduction, Question Presented & Summary</div>
+        <div class="p-desc">The parts of the brief that judges read first and that frame everything that follows. Most lawyers treat these as formalities. They are the most important pages in the document.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 9–11</div>
+        <div class="tip-name">Write a Powerful Prefatory Statement — This Is Your First and Best Chance</div>
+        <div class="tip-body">
+          <p>Many courts now allow or require a preliminary statement or introduction that precedes the statement of facts. Garner treats this section as perhaps the single most valuable real estate in the brief. It is the first prose the judge reads; it sets the tone and creates the frame through which everything that follows will be interpreted; and — crucially — it is read at the moment of maximum freshness and attention, before the judge has been taxed by the detail of facts and argument.</p>
+          <p>The introduction should accomplish three things: state the nature of the case and the specific result sought with complete clarity; establish the theory of the case in terms that are immediately comprehensible to a reader who knows nothing about the dispute; and create enough interest in the human or legal stakes that the judge approaches the rest of the brief with genuine engagement rather than the professional neutrality of someone processing documents.</p>
+          <p>The introduction should not summarise the argument (that is the summary of argument's job), should not recapitulate the procedural history in detail (that belongs in the statement of facts), and should not lead with the standard of review (which is technical and transitional, not thematic). It should lead with the most important, most sympathetic, most compelling aspect of the entire case — the thing that, if the judge understood nothing else about the dispute, would most incline them toward your client's position.</p>
+          <div class="example-box">
+            <div class="ex-label">Principle in Action</div>
+            <p>A poor introduction begins: "This is an appeal from the District Court's grant of summary judgment in favour of the defendant on plaintiff's claims under 42 U.S.C. § 1983..." — procedural, cold, and immediately forgettable. A strong introduction begins with the human reality of what happened and why the law requires the court to act. The procedural history can follow; the human reality must lead.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 12–14</div>
+        <div class="tip-name">The Question Presented: Frame the Issue So the Answer Is Obvious</div>
+        <div class="tip-body">
+          <p>Garner devotes significant attention to the question presented — one of the most powerful and most consistently mishandled sections of the brief. The question presented is typically the first substantive sentence the judge reads, and its function is not merely to identify the legal issue but to frame that issue in a way that makes the answer your client needs seem like the natural, correct, and fair resolution.</p>
+          <p>The ideal question presented, Garner argues, should be a single sentence (or at most two) that is answerable with a simple yes or no; that incorporates the key legally operative facts in a sympathetic but non-inflammatory way; that identifies the legal rule at issue with sufficient precision that the judge knows what kind of question they are being asked; and that, when read by an intelligent person unfamiliar with the case, makes the correct answer — your answer — seem immediately apparent.</p>
+          <p>The most common failure modes: the question presented that is so abstract it tells the judge nothing about the specific case ("Whether the evidence supported the verdict"); the one so long and fact-laden that it collapses under its own weight before reaching the question; the one that is neutral to the point of being useless to the reader; and the one that is so blatantly one-sided that it damages credibility. The target is the narrow zone between neutrality (which wastes the opportunity) and advocacy so obvious it reads as manipulation (which destroys credibility).</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Strong Question</strong>Incorporates legally material facts sympathetically. Names the specific legal standard. Is answerable yes or no. Makes the correct answer feel natural to a fair-minded reader. Is one or two clear sentences.</div>
+            <div class="dont-box"><strong>✗ Weak Question</strong>Too abstract to convey the issue. Or too long to follow. Or so one-sided it reads as argument. Or neutral to the point of irrelevance. Or stated as a statement rather than a question.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 15–18</div>
+        <div class="tip-name">The Summary of Argument: A Complete Brief in Miniature</div>
+        <div class="tip-body">
+          <p>Garner insists that the summary of argument is one of the most important and most underinvested sections of most briefs. Most lawyers write summaries that are either too short (a bare list of propositions without supporting reasoning) or too long (essentially a condensed version of the argument that saves the reader little). Neither serves the function the summary is designed to perform.</p>
+          <p>The correct approach is to write a summary that is genuinely self-contained — that gives the judge a complete and accurate understanding of every major argument, with enough reasoning that the logic of each is apparent, in a form short enough to be read in five minutes or less. A judge who reads only the summary of argument should finish it knowing exactly what the brief argues and why, without needing to read the argument section. This standard — the summary as a complete brief in miniature — is demanding, but it is the standard that makes the summary section genuinely valuable rather than merely conventional.</p>
+          <p>The summary should be written in full prose, not in bullet points or numbered lists. It should track the order of the argument section so that it functions as a preview that makes the full argument easier to follow. It should use the same key phrases and framing as the argument — the judge who has read the summary should feel, when they reach each section of the argument, that they are reading the promised elaboration of something they already understand at a general level.</p>
+          <p>Garner also warns against a common failure in long summaries: restating procedural history, standard of review arguments, and other threshold matters that belong in their proper sections rather than in the summary, which should focus on the merits of the argument. Every word in the summary should advance the judge's understanding of why you should win — not why the question is complicated or what the standard of review is.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FACTS -->
+    <div id="facts" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 19–27</div>
+        <div class="p-title">The Statement of Facts</div>
+        <div class="p-desc">The most underestimated section of any brief. A great statement of facts is the most powerful advocacy tool available — and most lawyers treat it as a neutral formality. Garner corrects this at length.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 19–20</div>
+        <div class="tip-name">The Statement of Facts Is Advocacy — Treat It That Way</div>
+        <div class="tip-body">
+          <p>The persistent misconception that the statement of facts must be "neutral" — that advocacy belongs in the argument section and the facts must be stated objectively — is one of the costliest errors in legal brief-writing. Garner dismantles it directly. The statement of facts is absolutely required to be accurate — every fact stated must be supported by the record, and nothing may be misstated or omitted in a materially misleading way. But within the constraints of accuracy, the advocate has enormous latitude: the choice of which facts to include and which to omit, the order in which they are presented, the amount of space devoted to sympathetic versus unsympathetic facts, and the specific language used to characterise events are all legitimate tools of advocacy.</p>
+          <p>A judge who finishes the statement of facts already sympathetic to your client — already understanding at a human level why justice points in your direction — will bring that sympathy to the legal analysis that follows. This is not manipulation; it is the recognition that legal decisions are made by human beings, and human beings respond to narrative. The advocate who fails to exploit the statement of facts because they have been taught it must be "neutral" has voluntarily disarmed themselves at the moment of their greatest opportunity.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 21–23</div>
+        <div class="tip-name">Tell a Story — Narrative Beats Chronology</div>
+        <div class="tip-body">
+          <p>The human mind is a narrative-processing machine. Facts presented as a story — with a beginning that establishes context, a development that builds understanding, and a resolution that makes the legal question feel urgent and important — are understood and remembered far better than facts organised by category, by witness, or (worst of all) by the order in which they were introduced at trial. Garner recommends that the statement of facts always be organised as a narrative — that it tell the story of what happened in a form that a non-lawyer could follow and find compelling.</p>
+          <p>Narrative organisation does not mean fiction — it means the selection and arrangement of true facts into a sequence that is both chronologically coherent (so that causation is clear) and thematically coherent (so that the human meaning of events is intelligible). The narrative should move forward; it should not interrupt itself with technical asides; it should not force the reader to hold multiple threads simultaneously before resolving any of them. The best statements of facts read almost like journalism — immediate, specific, human, and urgent — while remaining entirely accurate and entirely supported by the record.</p>
+          <div class="example-box">
+            <div class="ex-label">The Narrative Test</div>
+            <p>Read your statement of facts to someone who knows nothing about the case. Can they follow it? Do they understand what happened and why it matters? Do they feel something about the outcome — a sense that your client's position is the right one? If not, the statement is not yet doing its job.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 24–25</div>
+        <div class="tip-name">Lead with the Most Sympathetic Facts — Do Not Bury Them</div>
+        <div class="tip-body">
+          <p>The opening sentences of the statement of facts — the first paragraph, at minimum — are read with the greatest attention and remembered longest. Most lawyers waste these sentences on procedural background or identifying the parties. Garner recommends using them for the most sympathetic and compelling facts available: the human reality of the situation, the specific injustice or harm at issue, the element of the case that, if a reasonable person understood only this, would make them want to know more.</p>
+          <p>The procedural history — necessary but rarely sympathetic — should come after the essential facts have been established, not before them. The judge who has already understood the human stakes of the case will read the procedural history with active interest in its resolution; the judge who is introduced to the case through a procedural recitation will approach the human facts with the detachment of someone processing administrative history.</p>
+          <p>Adverse facts — those that support the other side — must be included where their omission would be materially misleading, but they can legitimately be placed in positions of lesser prominence, in contexts that minimise their weight, and with characterisations that accurately reflect their significance without overemphasising it. Every experienced lawyer knows how to do this; Garner's contribution is to make the technique explicit and to emphasise that it must be done within the strict constraint of accuracy.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 26–27</div>
+        <div class="tip-name">Use Specific, Concrete Details — Abstractions Lose Judges</div>
+        <div class="tip-body">
+          <p>Abstractions do not persuade. Specific, concrete, vivid details do. The difference between "the plaintiff suffered serious injuries" and "the plaintiff suffered a fractured pelvis, three broken ribs, and a traumatic brain injury that left him unable to recognise his children for six months" is not just quantitative — it is qualitative. The specific version creates a human reality that the abstract version entirely lacks, and that human reality is what makes the legal question feel like something worth deciding carefully rather than something to be processed and dispatched.</p>
+          <p>Garner counsels the use of specific numbers, specific dates, specific names, and specific descriptions throughout the statement of facts — not as padding, but as the material of real comprehension. A judge who knows exactly what happened — in the specific, sensory detail of real events — is a judge who is genuinely engaged with the case. A judge who has been given only abstractions is a judge processing a legal category rather than attending to a human situation.</p>
+          <p>The constraint is relevance: specific details that illuminate legally material facts belong; specific details that are merely colourful or interesting but legally irrelevant do not. The selection of which details to develop with specificity and which to handle briefly is itself an act of legal analysis — identifying which facts are genuinely driving the outcome and making sure those facts are as vivid and comprehensible as possible.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADINGS -->
+    <div id="headings" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 28–35</div>
+        <div class="p-title">Point Headings — The Brief's Argumentative Skeleton</div>
+        <div class="p-desc">Point headings are read by every judge before they read the argument. They constitute the table of contents. They are the brief in outline form. And most lawyers write them as bland topic labels rather than as the complete argumentative propositions they must be.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 28–30</div>
+        <div class="tip-name">Every Heading Must Be a Complete Argumentative Proposition</div>
+        <div class="tip-body">
+          <p>A point heading is not a label for a topic — it is the argument for that section, stated in complete sentence form. The difference is fundamental. "The Exclusion of Expert Testimony" is a topic label. "The trial court abused its discretion by excluding Dr. Smith's testimony about industry standards, which was directly relevant to the central negligence question and caused prejudicial error requiring reversal" is an argumentative proposition. The first tells the judge what the section is about; the second tells them what the section argues, why it matters, and what result it requires.</p>
+          <p>Garner's test for a point heading: does it state a complete legal proposition that, if accepted, advances the case? Could a judge who read only the point headings — every main heading and sub-heading in sequence — reconstruct the entire legal argument without reading the body of the brief? If not, the headings are not doing their job. The table of contents of a well-constructed brief is itself a complete summary of the argument, and every judge reads it.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Argumentative Heading</strong>"The district court violated Rule 23's commonality requirement by certifying a class whose members' claims turn on individualized fact issues that cannot be resolved on a classwide basis."</div>
+            <div class="dont-box"><strong>✗ Topic Label</strong>"The Class Certification Was Improper." This tells the judge nothing about why, what rule, or what the standard is. It is a chapter title, not an argument.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 31–33</div>
+        <div class="tip-name">Sub-Headings Must Support and Subdivide — Not Simply Add More Topics</div>
+        <div class="tip-body">
+          <p>Sub-headings should state the specific reasons that support the main heading, in a way that makes the logical structure of the argument immediately visible. If the main heading argues that the exclusion of expert testimony was reversible error, the sub-headings should state the specific elements of that argument: the first might establish that the testimony met the standard for admissibility; the second that its exclusion was not harmless; the third that the standard of review requires reversal for this category of error.</p>
+          <p>Each sub-heading should be a complete sentence, just like the main heading — never a phrase or a fragment. Together, the main heading and its sub-headings should constitute a miniature logical argument: here is the conclusion (main heading), and here are the reasons for it (sub-headings). A judge who accepts each sub-heading as stated should be compelled to accept the main heading as well.</p>
+          <p>Garner warns against sub-heading inflation — the proliferation of sub-headings that subdivide an argument into so many small pieces that the overall logical structure becomes invisible. Two or three well-constructed sub-headings are almost always better than five or six that fragment the reasoning. If you find yourself writing more than three sub-headings under a single main heading, consider whether the main heading is too broad or whether some of the sub-headings should be combined.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 34–35</div>
+        <div class="tip-name">Format and Grammar of Headings: Active Voice, Present Tense, Parallel Structure</div>
+        <div class="tip-body">
+          <p>Point headings should be written in the active voice wherever possible — the passive voice is weaker, wordier, and less direct, and in a heading that must make an immediate impact, directness matters even more than in body prose. "The district court abused its discretion" is stronger than "Discretion was abused by the district court." The grammatical subject should be the actor, and the verb should be active.</p>
+          <p>Headings should generally be written in the present tense, treating the argument as stating current law and its correct application rather than narrating past events. "The statute requires..." rather than "The statute required..." Where referring to specific past acts, use the past tense for those acts but present tense for legal conclusions about them: "Because the defendant failed to disclose the material terms, the contract is voidable."</p>
+          <p>Parallel structure among headings at the same level is essential. All main headings should have the same grammatical form; all sub-headings under a given main heading should have the same grammatical form as each other. Parallel structure signals logical organisation and makes the argument easier to follow; inconsistent structure creates the impression of disordered thinking even where the underlying reasoning is sound.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARGUMENT -->
+    <div id="argument" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 36–48</div>
+        <div class="p-title">Argument — Structure, Logic & Persuasive Architecture</div>
+        <div class="p-desc">How the argument section is built — from the ordering of major arguments to the internal logic of each section to the use of transitions, analogies, and counter-argument. The architecture of persuasion.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 36–38</div>
+        <div class="tip-name">Order Arguments by Strength — Lead with Your Best</div>
+        <div class="tip-body">
+          <p>Garner addresses the order of arguments with the same directness he brings to every other topic: lead with your strongest argument, full stop. Not the technically prerequisite argument. Not the one with the most case support. Not the one you find most intellectually interesting. The strongest — the one most likely to move the court toward your position if it succeeds. Judges read the beginning of the argument section with their greatest attention and bring the impressions formed there to everything that follows. Starting with a weak argument wastes the moment of maximum judicial engagement on the argument least likely to use it well.</p>
+          <p>The ordering principle is persuasive impact, not logical precedence. If a weaker argument must technically succeed before a stronger one becomes relevant, this presents a structural problem that must be solved — not a reason to lead with the weaker argument. Often the solution is to establish the threshold issue briefly and clearly before moving immediately to the argument with the most persuasive force. The weakest argument belongs in the middle of the brief, not at the beginning or end: beginning with weakness undermines the entire argument; ending with weakness leaves the judge with the worst possible final impression.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 39–41</div>
+        <div class="tip-name">Open Each Section with Your Best Punch — Not with Background</div>
+        <div class="tip-body">
+          <p>The first paragraph of each argument section — immediately following the point heading — is the second most important paragraph in that section (after the point heading itself). Most lawyers open argument sections with background: a recitation of the governing legal standard, a summary of the relevant legal framework, or an overview of the cases that will be cited. This is exactly wrong. The judge knows general legal standards; that is why they are judges. What they do not know — what they need you to tell them immediately — is why this specific case, on these specific facts, requires the result you are seeking under that standard.</p>
+          <p>Garner's prescription: open each section with your strongest point — the specific fact-law combination that most powerfully supports your position — and establish the governing legal framework only as needed to make that point intelligible. Background that precedes substance forces the judge through material they may already know before reaching the material they actually need. Substance that opens the section gives the judge an immediate reason to care about the background that follows.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 42–44</div>
+        <div class="tip-name">Use the CREX or IRAC Structure — But Subordinate Structure to Substance</div>
+        <div class="tip-body">
+          <p>Garner acknowledges the traditional IRAC (Issue, Rule, Application, Conclusion) structure as a useful framework for legal analysis, but he cautions strongly against letting the structure become mechanical — a template filled in regardless of whether the filling serves the argument. The best brief-writing uses the logical structure of IRAC (or his preferred variant, CREX: Conclusion, Rule, Explanation, Application) while subordinating that structure entirely to the demands of clear, persuasive exposition.</p>
+          <p>The Conclusion should come first — state the point immediately, before any supporting explanation. The Rule should be stated concisely and precisely, with citation, before the argument about its application begins. The Explanation should develop the rule through the most relevant authority, showing the court what the rule means in operation. The Application should be the most developed section — the specific demonstration that the rule, correctly understood, requires the result you seek on these facts. The whole should feel like a natural, flowing argument rather than a form completed according to formula.</p>
+          <p>The common failure mode is the argument section that states the rule at great length (safe and easy), applies it briefly and superficially (hard and essential), and ends with a conclusion that merely restates the opening. Garner insists that the application — the place where the lawyer must do real intellectual work connecting the abstract rule to the specific facts — must receive the greatest development and the most specific analysis.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 45–46</div>
+        <div class="tip-name">Transitions Are the Visible Joints of Your Argument — Make Them Substantive</div>
+        <div class="tip-body">
+          <p>The transition between paragraphs — the words and phrases that connect one idea to the next — is one of the most revealing signals of the quality of legal analysis. If a natural transition cannot be written, the logical connection between the ideas it would join is unclear, and the argument has a gap that the reader will feel even if they cannot identify it. Forced transitions ("Moreover," "Additionally," "Furthermore") that could be inserted anywhere signal the absence of logical connection rather than its presence.</p>
+          <p>Strong transitions state the relationship between the ideas they connect: "Because the statute does not define the term, the court must look to its ordinary meaning at the time of enactment" connects the absence of a definition to the interpretive approach in a way that reveals the logical link. "The court's holding in X rests on the same principle" connects two cases in a way that advances the analogical argument. The transition should earn its place by clarifying a logical relationship, not by filling a gap in the prose with a conjunction that could be replaced by a comma.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 47–48</div>
+        <div class="tip-name">Address Counter-Arguments — But Do Not Construct Them for the Other Side</div>
+        <div class="tip-body">
+          <p>The strongest brief addresses the best counter-arguments directly and honestly — not because ethics require it (though candour to the court does), but because credibility requires it. The judge who is aware of a powerful objection to your argument and does not find it addressed in your brief will either assume you are unaware of it (damaging your credibility) or that you have no good answer (damaging your case). Either way, not addressing it is worse than addressing it imperfectly.</p>
+          <p>The qualification Garner adds is equally important: address the counter-arguments the court will actually consider — the ones in the other side's brief, the ones that follow naturally from the applicable cases — not every conceivable objection to your position. Constructing elaborate counter-arguments that no judge would have thought of and then refuting them is self-defeating: it elevates objections to prominence they did not deserve and suggests that you are more interested in showing how clever you are than in winning the case. Identify the real counter-arguments; address them directly; move on.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTHORITY -->
+    <div id="authority" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 49–58</div>
+        <div class="p-title">Authority — Using Cases, Statutes & Secondary Sources</div>
+        <div class="p-desc">The specific craft of using legal authority — quoting accurately, citing correctly, synthesising multiple cases, handling adverse precedent, and distinguishing the use of primary from secondary sources.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 49–51</div>
+        <div class="tip-name">Quote Cases Accurately — And Only When the Exact Words Matter</div>
+        <div class="tip-body">
+          <p>Direct quotation from cases is appropriate when the exact language of the opinion is what the court needs to evaluate — when the specific words chosen by the earlier court are themselves legally significant, when the language is so precise that paraphrase would lose something essential, or when the other side has characterised the holding in a way that the actual quotation directly refutes. In these situations, quoting accurately is indispensable. In all other situations, paraphrasing — accurately, in your own words, with appropriate citation — is usually preferable.</p>
+          <p>The most common misuse of quotation is the long block quote — a passage of six or more lines pulled from an opinion and dropped into the brief. Block quotes are almost never read by judges, who skip over them and resume reading after them. They interrupt the flow of the brief, signal a failure to synthesise and analyse, and convey less understanding of the authority than a well-crafted paraphrase would. Garner's rule: if you are tempted to use a block quote, ask whether you could instead quote only the single most important sentence from the passage and paraphrase the rest. In most cases, the answer is yes, and the brief is stronger for it.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Effective Use of Quotation</strong>Quote the specific holding or key phrase. Keep it under two lines if possible. Follow immediately with your analysis of what it means for your case. Let the quotation support your analysis, not replace it.</div>
+            <div class="dont-box"><strong>✗ The Block Quote Trap</strong>Six-line indented passages that interrupt the argument, are skipped by most judges, and signal that the lawyer could not synthesise the case into a crisp paraphrase with citation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 52–53</div>
+        <div class="tip-name">Synthesise Cases — Do Not Simply Recite Them</div>
+        <div class="tip-body">
+          <p>The fundamental error in the use of legal authority is treating cases as discrete items to be catalogued rather than as related data points to be synthesised into a coherent account of what the law actually is. The brief that describes five cases in sequence — "In X, the court held... In Y, the court held... In Z, the court held..." — has told the judge what five courts said but has not told them what the law is. The brief that synthesises those five cases — identifying the common principle they establish, the specific elements they require, the factual variations that do and do not affect the analysis — has done the judge's work for them and demonstrated genuine legal understanding.</p>
+          <p>Synthesis is the highest form of legal analysis available in brief-writing. It requires that the lawyer understand not just what each case held but why — what principle drove the outcome — and how that principle relates to the principles underlying the other relevant cases. Cases that seem to point in different directions can almost always be reconciled by a more precise articulation of the governing principle; cases that genuinely cannot be reconciled require the advocate to acknowledge the conflict and explain why the line they are drawing is the correct one.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 54–55</div>
+        <div class="tip-name">Avoid String Citations — Cite Only What You Can Defend</div>
+        <div class="tip-body">
+          <p>A string citation — a list of five, eight, or ten cases following a single proposition — creates the impression of overwhelming authority while often providing very little of it. Judges who check string citations regularly find that most of the cited cases are only tangentially relevant, that several stand for slightly different propositions than the one being supported, and that one or two do not actually support the proposition at all. When this happens, the string citation has damaged credibility rather than building it.</p>
+          <p>Garner's rule is direct: cite only the cases you would be comfortable discussing in detail if a judge asked about them. If you cannot explain, in a sentence or two, exactly what each cited case holds and why it is relevant to the proposition it supports, it should not be cited. Two fully defensible, on-point citations are dramatically more credible than eight marginal ones.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 56–58</div>
+        <div class="tip-name">Confront Adverse Authority Directly — Honesty Is Strategy, Not Weakness</div>
+        <div class="tip-body">
+          <p>Garner's treatment of adverse authority is as emphatic as Scalia's. Every significant adverse case — every precedent that seems to require a result different from the one you are seeking — must be addressed directly in the brief. Not in a footnote. Not buried in the middle of a long paragraph about something else. In the body of the argument, with specific engagement: here is what the case held, here is why it does not control this case, and here is the specific factual or legal distinction that makes the difference.</p>
+          <p>The distinction between a genuine legal distinction and a sophistic reframing must be clear and honest. A genuine distinction is one where the difference between the cases is a difference that the governing legal principle would recognise as material. A sophistic distinction is one where the lawyer has found a difference between the cases that sounds significant but is legally irrelevant. Courts detect sophistic distinctions immediately — they spend their professional lives making and evaluating distinctions — and the advocate who offers them loses credibility on the entire brief.</p>
+          <p>If there is no genuine distinction — if the adverse case directly controls and you are asking the court to overrule or limit it — say so directly. Courts can overrule and limit prior cases when given compelling reason to do so. What they cannot do — what they will not do — is follow the reasoning of an advocate who has pretended an adverse case does not exist or has misrepresented its holding. The candid acknowledgment of a controlling adverse case, followed by a genuine argument for why it should not be followed, is infinitely preferable to any form of evasion.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SENTENCES -->
+    <div id="sentences" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 59–72</div>
+        <div class="p-title">Sentence Craft — The Architecture of Persuasive Prose</div>
+        <div class="p-desc">The most technically detailed section of the book — covering sentence length, structure, emphasis, active voice, the management of complexity, and the rhythm that makes legal prose genuinely readable.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 59–61</div>
+        <div class="tip-name">Average 20–25 Words Per Sentence — Vary the Length for Rhythm</div>
+        <div class="tip-body">
+          <p>Garner is specific where most writing guides are vague: the ideal average sentence length in legal prose is approximately 20 to 25 words. Below this average, the prose becomes choppy — a series of short declarative statements that exhausts the reader through the absence of development. Above it, complexity accumulates faster than comprehension can process, and the reader must re-read to follow the thread.</p>
+          <p>The average is a guide, not a straitjacket. Variety of sentence length is essential to readable prose. A key proposition benefits from the emphatic clarity of a short sentence: five to eight words, no qualification, maximum impact. A complex qualification or causal analysis may require thirty or thirty-five words to state accurately. The skill is in distributing length purposefully — reserving short sentences for the propositions that most need emphasis, using medium-length sentences for the bulk of the analytical development, and keeping long sentences syntactically clear so that their complexity does not impede comprehension.</p>
+          <div class="example-box">
+            <div class="ex-label">Rhythm in Action</div>
+            <p>"Three elements must be satisfied. First, the plaintiff must show actual injury — a concrete harm that has already occurred, not a speculative future risk. Second, the injury must be traceable to the defendant's conduct rather than to the independent action of a third party. Third, it must be redressable by a favourable court decision. Here, none of the three elements is met." — Short opener. Long development. Short close. Maximum impact on the key conclusion.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 62–64</div>
+        <div class="tip-name">Use Active Voice — Passive Voice Obscures Agency and Weakens Impact</div>
+        <div class="tip-body">
+          <p>Garner's analysis of the active/passive distinction goes beyond the standard writing-class advice. In legal prose specifically, the choice between active and passive voice often determines whether the critical question of agency — who did what — is clearly answered or conveniently obscured. "The contract was breached" is not merely stylistically weaker than "The defendant breached the contract" — it is legally weaker, because it allows the reader to momentarily forget who bears responsibility for the breach. This matters enormously in documents whose purpose is to assign legal responsibility.</p>
+          <p>The passive voice has legitimate uses: when the actor is genuinely unknown or unimportant; when the recipient of the action is the appropriate grammatical subject for contextual reasons; and occasionally when the passive creates a syntactic flow that the active would interrupt. These are exceptions to the active-voice default, not alternatives of equal status. The brief-writer who defaults to the passive is not merely making a stylistic choice — they are systematically weakening the attribution of responsibility that is the purpose of most legal argument.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Active</strong>"The city council approved the variance without notice." "The defendant concealed the defect." Actor, action, object. Who did what is immediately clear. The sentence has weight and direction.</div>
+            <div class="dont-box"><strong>✗ Passive</strong>"The variance was approved without notice having been given." "The defect was concealed." Agency is obscured. The sentence is longer, weaker, and easier to dismiss. Who is responsible disappears into the grammar.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 65–67</div>
+        <div class="tip-name">Place the Most Important Information at the End of the Sentence</div>
+        <div class="tip-body">
+          <p>English sentence rhythm places natural emphasis at the end — the last words of a sentence are remembered longer and weighted more heavily than words in the middle. This is not a stylistic preference; it reflects how the language actually works neurologically. The skilled legal writer exploits this consistently: the key conclusion, the damaging fact, the critical legal distinction belongs at the end of the sentence, in the position of maximum emphasis.</p>
+          <p>The corollary: qualifications, background, and contextual information belong at the beginning of sentences, where they receive the least emphasis. "Although the defendant disputes this characterisation, the contemporaneous documents establish beyond doubt that the agreement was reached" places the key conclusion — that the agreement was reached — in the position of maximum emphasis, while moving the caveat to the least prominent position. Reversing the order — "The agreement was reached, the contemporaneous documents establish, although the defendant disputes this characterisation" — places the dispute in the position of emphasis and buries the conclusion.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 68–70</div>
+        <div class="tip-name">Keep Subject and Verb Close Together — Do Not Separate Them with Long Modifying Clauses</div>
+        <div class="tip-body">
+          <p>One of the most common and most damaging errors in legal prose is the separation of the grammatical subject from its verb by a long modifying clause — a relative clause, a prepositional phrase, or a participial construction that forces the reader to hold the subject in memory while processing the interruption before reaching the verb that completes the thought. The longer the interruption, the harder the sentence becomes to follow.</p>
+          <p>The principle: whenever possible, let the verb follow the subject quickly. "The statute, which was enacted in 1972 as part of a broader legislative reform of the environmental regulatory framework that had been in place since the 1960s, requires annual reporting." The subject ("statute") is separated from its verb ("requires") by a twenty-word interruption. "Enacted in 1972 as part of a broader environmental regulatory reform, the statute requires annual reporting" keeps subject and verb adjacent while preserving all necessary information.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 71–72</div>
+        <div class="tip-name">Parallel Structure — Match Like Forms to Like Content</div>
+        <div class="tip-body">
+          <p>Parallel grammatical structure — using the same grammatical form for elements that are logically parallel — is one of the most powerful tools of clear and emphatic legal writing. A list of three reasons should be a list of three grammatically identical phrases. A comparison of two positions should use syntactically parallel constructions for each. When parallel content is expressed in non-parallel grammatical forms, the reader senses a mismatch between form and content even if they cannot identify its source, and the writing feels slightly off — less authoritative, less well-organised, less trustworthy.</p>
+          <p>The most common failure is the list whose members are grammatically inconsistent: "The plaintiff must show three things: (1) that injury occurred, (2) causation by the defendant, and (3) the damages must be quantifiable." The first element uses a noun clause, the second a noun phrase, the third another noun clause in different form. Parallel form — "(1) that injury occurred, (2) that the defendant caused it, and (3) that the damages are quantifiable" — makes the list immediately easier to process and signals that the three elements have the same logical status.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORDS -->
+    <div id="words" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 73–84</div>
+        <div class="p-title">Word Choice & Style — The Specific Errors That Weaken Legal Prose</div>
+        <div class="p-desc">The catalogue of specific word choices, constructions, and habits that consistently weaken legal writing — and the direct, concrete alternatives that replace them. This section is Garner at his most specific and most immediately useful.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 73–75</div>
+        <div class="tip-name">Prefer Plain English to Legalese — Every Time</div>
+        <div class="tip-body">
+          <p>Garner's campaign against legalese is the most sustained theme in his entire body of work, and this book states it with characteristic directness. Legalese — the Latin phrases, the archaic doublets, the bureaucratic constructions that have accumulated in legal writing over centuries — does not make legal writing more precise. It makes it less readable without adding any precision that plain English cannot achieve. Most legal jargon is a barrier to communication, not an instrument of it, and its persistence is explained entirely by habit and the social signalling of professional membership — not by any genuine communicative necessity.</p>
+          <ul class="checklist">
+            <li>Use "use" not "utilise" — they mean the same thing and one has three fewer syllables.</li>
+            <li>Use "before" not "prior to" — it is shorter, clearer, and equally precise.</li>
+            <li>Use "because" not "due to the fact that" — six words become one.</li>
+            <li>Use "although" not "notwithstanding the fact that" — four words become one.</li>
+            <li>Use "if" not "in the event that" — four words become one.</li>
+            <li>Use "about" not "with respect to" or "regarding" — where the shorter word works.</li>
+            <li>Cut "heretofore," "hereinafter," "aforementioned," "said" (as an adjective), and "same" (as a pronoun) — replace with the noun they refer to.</li>
+            <li>Cut "pursuant to" — use "under," "by," or "according to" as appropriate.</li>
+            <li>Replace Latin phrases with English equivalents wherever possible.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 76–78</div>
+        <div class="tip-name">Avoid Nominalisation — Use the Verb, Not the Noun Made From It</div>
+        <div class="tip-body">
+          <p>Nominalisation — converting a strong verb into a weaker noun — is one of the most pervasive and most damaging habits in legal writing. "Make a determination" for "determine." "Conduct an investigation" for "investigate." "Provide an explanation" for "explain." "Offer a recommendation" for "recommend." In each case, the nominalized form is two to four words longer, requires a weaker verb to carry the nominalization, and drains the energy from the sentence by converting a dynamic action into a static thing.</p>
+          <p>The test for nominalisation is simple: find every instance of "make," "conduct," "provide," "give," "have," "perform," "offer," and "take" in your draft, and ask whether the noun that follows is a nominalised version of a stronger verb. In the great majority of cases, the answer is yes, and the cure is to replace the weak verb plus noun with the strong verb alone. The sentence becomes shorter, cleaner, and more direct every time.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Verb Form</strong>"The court determined... The plaintiff investigated... Counsel argued... The agency recommended... The statute requires..." — Direct, active, economical. The action is in the verb.</div>
+            <div class="dont-box"><strong>✗ Nominalisation</strong>"The court made a determination... The plaintiff conducted an investigation... Counsel offered an argument... The agency provided a recommendation... The statute makes a requirement that..." — Bloated, passive-feeling, energy-draining.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 79–81</div>
+        <div class="tip-name">Eliminate Throat-Clearing and Unnecessary Hedging</div>
+        <div class="tip-body">
+          <p>Throat-clearing — introductory phrases that delay the substance of a sentence without adding anything to it — is endemic in legal writing. "It is important to note that..." "It should be observed that..." "It is well established that..." "As a general matter..." "For the purposes of this brief..." All of these phrases can be deleted without losing any content. The sentence that follows them is the argument; the throat-clearing is noise that separates the reader from the argument by the width of a clause.</p>
+          <p>Hedging — qualifying propositions with "arguably," "it would appear that," "it seems that," "one might contend that," "it is possible that" — is equally damaging when applied to propositions that should be stated confidently. Hedges are appropriate where genuine uncertainty exists about the state of the law. They are disastrous when applied to propositions the lawyer believes are correct — they signal uncertainty that the brief should not be generating, and they invite the judge to share the hedged uncertainty rather than to accept the confident assertion.</p>
+          <p>Garner identifies a specific and particularly damaging hedge common in legal writing: stating your argument as what "the plaintiff contends" or "appellant argues" rather than as a direct assertion of what the law is. "The plaintiff contends that the statute requires X" is weaker than "The statute requires X." The first invites the judge to evaluate it as one party's position; the second invites them to evaluate it as a statement of law. Where you believe the law is on your side, state what the law is — do not state what you contend it is.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 82–84</div>
+        <div class="tip-name">Use Concrete, Specific Language — Abstractions Evaporate</div>
+        <div class="tip-body">
+          <p>Abstractions do not persuade — they allow the reader to fill in their own content, which may not be the content you intended. Concrete, specific, sensory language creates the precise mental picture you need the judge to have. "The property was damaged" allows the judge to imagine anything from a chipped tile to a collapsed building. "The fire destroyed all four stories of the building, leaving nothing but the exterior walls" creates a specific, indelible image that cannot be minimised by the other side's characterisation.</p>
+          <p>Garner counsels the use of specific numbers, specific names, specific dates, and specific descriptions throughout the brief — not just in the statement of facts but in the argument as well. When the argument refers to events in the record, those events should be described with the specific detail that makes them real rather than the abstract characterisation that allows them to fade into the background of general legal analysis.</p>
+          <p>The related point applies to legal propositions: concrete, specific rules ("The statute prohibits any person from knowingly disclosing a taxpayer's return information to any third party") are more persuasive than abstract characterisations of legal requirements ("The statute imposes confidentiality obligations") because they leave less room for the other side to argue that the obligation is less demanding than you claim. Wherever possible, quote the specific statutory or regulatory text rather than characterising it, and apply the specific text to the specific facts rather than applying abstract legal categories to abstract factual characterisations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITING -->
+    <div id="editing" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 85–92</div>
+        <div class="p-title">Editing & Revision — The Work That Makes the Brief</div>
+        <div class="p-desc">The first draft is not the brief. Revision is not a final pass for typos — it is the most important phase of brief-writing. Garner's specific editing techniques are among the most practically useful guidance in the book.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 85–86</div>
+        <div class="tip-name">Revise in Passes — Address One Dimension at a Time</div>
+        <div class="tip-body">
+          <p>Effective revision requires multiple passes through the document, each focused on a single dimension of quality. Attempting to address structure, logic, clarity, economy, and style simultaneously produces a draft that is marginally improved on all dimensions and decisively improved on none. The systematic approach Garner recommends addresses each dimension in sequence: first, the large-scale structure (does the argument flow? are the major points in the right order? does every section earn its place?); then the internal logic of each section (does the analysis actually prove the heading? are the connections between paragraphs explicit and sound?); then clarity (is every sentence immediately comprehensible?); then economy (what can be cut?); and finally style (is the prose reading well, with appropriate rhythm and variety?).</p>
+          <p>The most important pass — and the one most commonly omitted — is the large-scale structural revision. Many lawyers revise at the sentence level (correcting grammar, improving word choice) without ever asking whether the brief's overall architecture is sound. A beautifully written brief with a flawed structure is still a flawed brief; a structurally sound brief with imperfect prose is still a fundamentally persuasive one. Address the largest problems first.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 87–88</div>
+        <div class="tip-name">Read the Brief Aloud — The Ear Catches What the Eye Misses</div>
+        <div class="tip-body">
+          <p>Reading a draft aloud is Garner's single most insistently recommended revision technique, and it is the one most consistently neglected by practising lawyers. The reason it is so valuable is that oral reading activates different cognitive processes than silent reading — processes that are specifically sensitive to rhythmic awkwardness, syntactic complexity, and length that creates comprehension difficulty. A sentence that you cannot read aloud smoothly, without stumbling or running out of breath, is a sentence that a tired judge cannot follow silently.</p>
+          <p>The reading-aloud test reveals, in order of frequency: sentences that are too long and must be divided; passive constructions that feel unnatural spoken; throat-clearing phrases that slow the delivery without adding substance; transitions that do not work — where the reading reveals a logical gap; and passages where the emphasis falls in the wrong place because the sentence structure is inverted. None of these problems is reliably caught by silent reading. All of them are immediately apparent when read aloud. Every brief should be read aloud at least once before filing, by the lawyer who wrote it if possible, by a colleague if not.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 89–90</div>
+        <div class="tip-name">Cut 10–25% from Every First Draft — Verbosity Is the Enemy</div>
+        <div class="tip-body">
+          <p>Garner's experience reviewing legal briefs has produced a consistent finding: first drafts of legal briefs are routinely 10 to 25 percent longer than they need to be. This surplus does not represent additional analysis or additional persuasiveness — it represents redundancy, throat-clearing, nominalisation, passive constructions, unnecessary qualifications, and the other accumulated verbal habits that pad legal prose without adding substance.</p>
+          <p>The specific targets for the economy pass: every sentence that merely restates what the previous sentence said; every paragraph that introduces its topic, develops it, and then summarises it internally (the internal summary is almost always cuttable); every argument that is made in one place and then repeated in summary form at the end of the section; every qualification that addresses a concern the court will not have; and every sentence that begins with "It is important to note that" or any equivalent throat-clearing formula. These cuts make every word that remains do more work — because it is surrounded by fewer words competing for the reader's attention.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 91–92</div>
+        <div class="tip-name">Get a Reader — Fresh Eyes Catch What the Author Cannot</div>
+        <div class="tip-body">
+          <p>The author of a brief cannot read it the way a judge reads it, because the author knows what the brief is trying to say and fills in gaps, smoothes over ambiguities, and parses unclear sentences with the benefit of that prior knowledge. A reader encountering the brief for the first time experiences only what is actually on the page — which is often significantly less clear than what the author intended. Garner recommends, wherever possible, having someone who has not worked on the case read the brief before it is filed and report exactly where they lost the thread, where they were confused, and where they felt the argument lapse.</p>
+          <p>The ideal reader for this purpose is not the most sophisticated lawyer in the office but someone intelligent and literate who can follow complex argument but who will notice when the argument stops being followable — when a transition is missing, when a case is cited without being explained, when a factual assumption is made that the reader does not share. The author who receives this feedback and acts on it will produce a brief that is measurably clearer and more persuasive than one that has never been tested against an unfamiliar reader's experience.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMAT -->
+    <div id="format" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Tips 93–100</div>
+        <div class="p-title">Format & Presentation — The Visual Experience of the Brief</div>
+        <div class="p-desc">Typography, white space, footnotes, citations, and the physical presentation of the brief. These elements are not decorative — they either aid or impede the judge's ability to read the document, and that difference is part of advocacy.</div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 93–95</div>
+        <div class="tip-name">Typography Matters — Choose Readability Over Convention</div>
+        <div class="tip-body">
+          <p>Garner addresses typeface and typography with the same specificity he brings to word choice — because the physical readability of a brief is a genuine component of its persuasiveness. A brief that is physically difficult to read — dense text, small margins, inadequate line spacing, a poorly chosen typeface — imposes a tax on the judge's attention that works against the advocate regardless of the quality of the argument.</p>
+          <p>Garner's specific guidance: proportionally spaced serif typefaces (Century, Garamond, Georgia, Times New Roman) are more readable for extended prose than monospaced typefaces (Courier) or sans-serif typefaces (Helvetica, Arial). Proportional spacing allows letter forms to occupy their natural width, producing a more readable visual rhythm. Adequate margins — at least one inch on all sides — give the eye room to navigate. Line spacing that exceeds the court's minimum improves readability. And a typeface size of 12 or 13 points (rather than the minimum 12 many courts allow) makes extended reading significantly easier without violating any rule.</p>
+          <p>The most important formatting principle: use white space generously. Paragraphs that are well-spaced, sections that are clearly divided by white space and headings, and pages that are not crammed to every margin communicate organisation and respect for the reader's effort. Dense, undifferentiated blocks of text communicate the opposite — they say, in effect, that the writer has not thought about what it is like to read this document.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 96–97</div>
+        <div class="tip-name">Footnotes — Use Sparingly and Never for Substantive Argument</div>
+        <div class="tip-body">
+          <p>The footnote is one of the most misused tools in legal brief-writing. Its proper function is to provide citation information — the specific location in the record, the pinpoint citation for a case — that would interrupt the text if included inline. Its common misuse is as a repository for substantive argument that the writer could not find a way to include in the main text: the counter-argument that needs to be addressed but is too weak to occupy a main-text paragraph; the qualification that undermines the confidence of the preceding assertion; the additional case that adds something but not enough to warrant full treatment.</p>
+          <p>Garner is unequivocal: substantive argument belongs in the text or not in the brief at all. Argument buried in footnotes is argument the writer does not fully believe in — and judges, who read briefs with trained scepticism, interpret footnotes accordingly. A footnote that contradicts or significantly qualifies the main-text assertion above it tells the judge that the assertion is less confident than it appeared. A footnote that makes a substantive argument the main text does not make raises the question of why the argument was not made in the main text — and the usual answer, correctly inferred, is that it was not strong enough to survive scrutiny there.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tips 98–99</div>
+        <div class="tip-name">Citations — Accurate, Complete, and Properly Formatted</div>
+        <div class="tip-body">
+          <p>Citation errors — incorrect volume numbers, wrong page numbers, misattributed holdings — are among the most damaging small errors a brief can contain, because they are verifiable. The judge whose clerk checks a citation and finds it incorrect will apply a sceptical discount to every other citation in the brief: if this one is wrong, which others are? Citation accuracy is therefore not a minor technical matter — it is a component of credibility, and credibility errors compound.</p>
+          <p>Garner recommends that every citation be verified against the original source before the brief is filed — not against a secondary citation, not against a legal research database's summary, but against the original opinion, statute, or regulation. This is time-consuming and occasionally inconvenient. It is never optional. The lawyer who files a brief with a materially incorrect citation has created a credibility problem that no quality of argument can fully repair.</p>
+          <p>On citation format: follow the applicable rules (Bluebook, ALWD, or the court's own style rules) precisely and consistently. Inconsistent citation formatting — some citations in one style, others in another — signals carelessness that will be noticed. And within the constraints of the applicable rules, choose citation formats that minimise interruption to the reading flow: inline citations that are short and clearly formatted are less disruptive than elaborate string citations that force the reader to stop and process the citation before continuing.</p>
+        </div>
+      </div>
+
+      <div class="tip-block">
+        <div class="tip-num">Tip 100</div>
+        <div class="tip-name">The Final Test — Would You Be Proud to Have a Judge Read This?</div>
+        <div class="tip-body">
+          <p>Garner's final tip is both the simplest and the most demanding. Before filing any brief, ask yourself a single question: if the most respected judge you know — the one whose opinion of your professional competence matters most to you — read this document cold, with no context or explanation, would you be proud of what they read? Not satisfied that it is technically adequate. Not relieved that it covers the necessary ground. Proud — of the quality of the analysis, the clarity of the writing, the honesty of the treatment of adverse authority, and the genuine respect for the judge's time and intelligence that every page demonstrates.</p>
+          <p>This standard — pride rather than adequacy — is the organising ambition of the entire book. The brief that meets it is not just technically compliant; it is genuinely good. It is a document that makes the judge's job easier, that treats the judicial process with the seriousness it deserves, and that gives the court the clearest possible basis for ruling in the advocate's client's favour. That brief — and only that brief — is the winning brief.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#501030; margin-top:0;">The Master on His Craft</div>
+        <div class="section-title">Key Passages from The Winning Brief</div>
+
+        <div class="quote-item"><div class="quote-text">"Write for the judge. Not for yourself. Not for the client. Not for opposing counsel. For the judge — the only person whose opinion of your brief determines the outcome."</div><div class="quote-ref">Tip 1 · The Primary Principle</div></div>
+        <div class="quote-item"><div class="quote-text">"The brief that makes three arguments well is almost always more persuasive than the brief that makes seven arguments adequately. Fewer, stronger, fully developed."</div><div class="quote-ref">Tip 6 · Selection of Arguments</div></div>
+        <div class="quote-item"><div class="quote-text">"The question presented is the first thing the judge reads and the frame through which everything else is understood. It is the most important sentence in the brief. Write it last, after you know exactly what the brief argues."</div><div class="quote-ref">Tip 12 · The Question Presented</div></div>
+        <div class="quote-item"><div class="quote-text">"The statement of facts is not a neutral background. It is the first and often the most powerful argument in the brief, and the lawyer who treats it as a neutral recitation has voluntarily disarmed themselves."</div><div class="quote-ref">Tip 19 · Statement of Facts</div></div>
+        <div class="quote-item"><div class="quote-text">"Tell the story. Facts arranged as a narrative are understood and remembered. Facts arranged by category or procedural order are processed and forgotten."</div><div class="quote-ref">Tip 21 · Narrative Structure</div></div>
+        <div class="quote-item"><div class="quote-text">"A point heading is not a label for a topic. It is the argument for that section, stated in complete sentence form. The table of contents of a well-constructed brief is a complete summary of the entire argument."</div><div class="quote-ref">Tip 28 · Point Headings</div></div>
+        <div class="quote-item"><div class="quote-text">"Open each argument section with your best punch — not with the governing legal standard. The judge knows the standard. What they do not know is why this case, on these facts, requires the result you are seeking."</div><div class="quote-ref">Tip 39 · Opening Each Section</div></div>
+        <div class="quote-item"><div class="quote-text">"If you cannot write a natural transition between two consecutive paragraphs, you have a logical gap in your argument — one the judge will feel even if they cannot name it."</div><div class="quote-ref">Tip 45 · Transitions</div></div>
+        <div class="quote-item"><div class="quote-text">"Block quotes are almost never read. Quote only the sentence or phrase that is essential. Paraphrase the rest with accurate citation. Analysis, not quotation, is the advocacy."</div><div class="quote-ref">Tip 49 · Use of Quotation</div></div>
+        <div class="quote-item"><div class="quote-text">"Cite only the cases you could discuss in detail if a judge asked you about them. Two defensible, on-point citations are more persuasive than eight marginal ones."</div><div class="quote-ref">Tip 55 · String Citations</div></div>
+        <div class="quote-item"><div class="quote-text">"Every significant adverse case must be addressed in the body of the brief — not in a footnote, not buried in a dependent clause, but directly and specifically. Honesty about adverse authority is strategy, not concession."</div><div class="quote-ref">Tip 56 · Adverse Authority</div></div>
+        <div class="quote-item"><div class="quote-text">"Twenty to twenty-five words per sentence on average. Vary the length. Short sentences for key propositions — they land hardest when they stand alone. Reserve length for complexity, and keep the syntax clear when you do."</div><div class="quote-ref">Tip 59 · Sentence Length</div></div>
+        <div class="quote-item"><div class="quote-text">"The passive voice does not merely weaken the sentence — in legal writing it specifically obscures the attribution of responsibility, which is the entire point of most legal argument."</div><div class="quote-ref">Tip 62 · Active Voice</div></div>
+        <div class="quote-item"><div class="quote-text">"End sentences with your most important word. The last position is the position of maximum emphasis in English. Do not waste it on qualifications."</div><div class="quote-ref">Tip 65 · Sentence Emphasis</div></div>
+        <div class="quote-item"><div class="quote-text">"Nominalisation drains the energy from prose. 'Make a determination' is not a more formal way of saying 'determine' — it is a weaker, wordier, and less direct way of saying the same thing."</div><div class="quote-ref">Tip 76 · Nominalisation</div></div>
+        <div class="quote-item"><div class="quote-text">"Cut 'It is important to note that.' Cut 'It should be observed.' Cut every phrase that delays the substance of the sentence without adding to it. The substance is the argument — deliver it immediately."</div><div class="quote-ref">Tip 79 · Throat-Clearing</div></div>
+        <div class="quote-item"><div class="quote-text">"State what the law is — not what you contend it is, not what plaintiff argues, not what one might argue. Where the law is on your side, speak with the authority of that position."</div><div class="quote-ref">Tip 81 · Hedging</div></div>
+        <div class="quote-item"><div class="quote-text">"First drafts are routinely twenty-five percent longer than they need to be. That surplus is not analysis — it is redundancy, verbosity, and the accumulated habits of legal writing culture. Cut it."</div><div class="quote-ref">Tip 90 · Economy</div></div>
+        <div class="quote-item"><div class="quote-text">"Read the brief aloud. Every sentence that makes you stumble is a sentence that will make the judge work harder than they should. That work is a cost they charge to your brief."</div><div class="quote-ref">Tip 87 · Reading Aloud</div></div>
+        <div class="quote-item"><div class="quote-text">"Substantive argument belongs in the text or not in the brief at all. The footnote that contains argument the main text could not accommodate is argument the writer did not fully believe in."</div><div class="quote-ref">Tip 96 · Footnotes</div></div>
+        <div class="quote-item"><div class="quote-text">"Citation errors are credibility errors. The judge whose clerk finds one incorrect citation will apply a sceptical discount to every citation that follows. Verify every citation against the original source."</div><div class="quote-ref">Tip 98 · Citation Accuracy</div></div>
+        <div class="quote-item"><div class="quote-text">"Before filing, ask one question: would you be proud — not relieved, not satisfied — if the judge you most respect read this document cold? That standard, consistently applied, produces winning briefs."</div><div class="quote-ref">Tip 100 · The Final Test</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"The Winning Brief is not a book about legal writing — it is a book about thinking clearly enough, honestly enough, and reader-consciously enough that the clarity of the thinking becomes the persuasiveness of the document. Garner's one hundred tips are not rules to memorise. They are the disciplines of a mind that has decided to serve the reader rather than itself."</p>
+  </div>
+
+</div>
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const POINT_MADE_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --dark: #101820;
+    --dark2: #182030;
+    --forest: #1e4030;
+    --forest-light: #2a5a42;
+    --forest-bright: #48906a;
+    --gold: #b89030;
+    --gold-light: #d4aa40;
+    --cream: #f2eed8;
+    --cream-dark: #e2d8c0;
+    --border-c: #70a090;
+    --red: #6a1818;
+    --blue: #1a2860;
+    --blue-light: #3050a0;
+    --muted: #182830;
+    --text: #0e1820;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body,.wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--text); }
+  .wrap { max-width:880px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero { background:var(--dark); color:var(--cream); padding:3.5rem 3rem 3rem; text-align:center; border-bottom:4px double var(--forest-light); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(30,64,48,0.08) 29px); pointer-events:none; }
+  .hero-ornament { font-size:20px; color:var(--forest-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.75; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:44px; line-height:1.1; color:var(--forest-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.7); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:#6090a0; margin-top:0.5rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#406050; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#305040; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2rem; background:var(--dark); padding:1.2rem 2rem; border-bottom:1px solid var(--forest); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:32px; color:var(--forest-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#406050; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#080e14; border-bottom:2px solid var(--forest); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.65rem 0.8rem; font-family:'IM Fell English',serif; font-size:11.5px; color:#406050; cursor:pointer; border-right:1px solid #182030; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--forest-bright); background:#182030; }
+  .tab.active { color:var(--forest-bright); background:#1a2a28; border-bottom:2px solid var(--forest-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--cream); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.85; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--forest); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:22px; color:var(--dark); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .tech-block { margin-bottom:1.8rem; padding:1rem 1.3rem; border-left:4px solid var(--forest-light); background:rgba(30,64,48,0.05); }
+  .tech-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--forest); margin-bottom:0.1rem; }
+  .tech-name { font-weight:600; font-size:17px; color:var(--red); margin-bottom:0.12rem; }
+  .tech-advocate { font-family:'IM Fell English',serif; font-style:italic; font-size:13px; color:var(--gold); margin-bottom:0.45rem; }
+  .tech-body { font-size:15.5px; line-height:1.78; color:#0e1c18; }
+  .tech-body p { margin-bottom:0.7rem; }
+  .tech-body p:last-child { margin-bottom:0; }
+
+  .part-banner { background:var(--dark); color:var(--cream); padding:1rem 1.5rem; margin:2rem -2rem 1.8rem; border-top:2px solid var(--forest); border-bottom:2px solid var(--forest); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--forest-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:19px; color:var(--cream); }
+  .part-banner .p-desc { font-size:13px; color:#6090a0; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--dark); border:1px solid var(--forest); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--forest-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#6090a0; line-height:1.45; }
+
+  .advocate-card { display:grid; grid-template-columns:auto 1fr; gap:1rem; margin-bottom:1.4rem; padding:1rem 1.2rem; background:rgba(30,64,48,0.05); border:1px solid var(--border-c); }
+  .adv-initial { width:48px; height:48px; background:var(--forest); color:var(--cream); display:flex; align-items:center; justify-content:center; font-family:'IM Fell English',serif; font-size:22px; flex-shrink:0; border-radius:2px; }
+  .adv-name { font-weight:600; font-size:16px; color:var(--red); margin-bottom:0.1rem; }
+  .adv-role { font-family:'IM Fell English',serif; font-style:italic; font-size:12px; color:var(--gold); margin-bottom:0.35rem; }
+  .adv-body { font-size:14.5px; line-height:1.65; color:#0e1c18; }
+
+  .do-dont { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:0.8rem 0 1.2rem; }
+  .do-box, .dont-box { padding:0.85rem 1rem; font-size:14px; line-height:1.6; }
+  .do-box { background:rgba(26,106,60,0.07); border-left:4px solid #2a8a4a; color:#0e2818; }
+  .dont-box { background:rgba(106,24,24,0.07); border-left:4px solid var(--red); color:#280e0e; }
+  .do-box strong, .dont-box strong { display:block; font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.35rem; }
+  .do-box strong { color:#2a8a4a; }
+  .dont-box strong { color:var(--red); }
+
+  .example-box { background:rgba(26,40,96,0.06); border:1px solid #9090c0; padding:0.85rem 1.1rem; margin:0.8rem 0 1.1rem; border-radius:2px; }
+  .example-box .ex-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--blue-light); margin-bottom:0.3rem; }
+  .example-box p { font-size:14.5px; line-height:1.65; color:var(--muted); font-style:italic; }
+
+  .move-list { list-style:none; margin:0.5rem 0 1.2rem; }
+  .move-list li { font-size:15px; line-height:1.65; color:var(--muted); padding:0.35rem 0 0.35rem 1.6rem; position:relative; border-bottom:1px dotted #b0c0b0; }
+  .move-list li:last-child { border-bottom:none; }
+  .move-list li::before { content:'◆'; position:absolute; left:0; color:var(--forest-bright); font-size:9px; top:0.55rem; }
+
+  .quotes-section { background:var(--dark); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--forest); }
+  .quotes-section .section-title { color:var(--forest-bright); border-bottom-color:#1a2a20; margin-top:0; }
+  .quote-item { border-left:3px solid var(--forest); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(30,64,48,0.09); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--cream); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#406050; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--forest); color:var(--cream); padding:2rem; text-align:center; border-top:3px double var(--forest-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+
+  .divider { text-align:center; color:var(--forest); font-size:18px; letter-spacing:10px; margin:1.4rem 0; opacity:0.4; }
+
+  .tag { display:inline-block; background:var(--forest); color:var(--cream); font-size:10px; letter-spacing:2px; padding:0.15rem 0.5rem; text-transform:uppercase; margin-right:0.4rem; margin-bottom:0.3rem; border-radius:2px; font-family:'IM Fell English',serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">✦ ADVOCACY ✦</div>
+    <div class="hero-title">Point Made</div>
+    <div class="hero-subtitle">How to Write Like the Nation's Top Advocates</div>
+    <div class="hero-author">Ross Guberman</div>
+    <div class="hero-year">Second Edition · Oxford University Press · All Techniques Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">50+</div><div class="lbl">Techniques</div></div>
+    <div class="stat"><div class="num">12+</div><div class="lbl">Elite Advocates</div></div>
+    <div class="stat"><div class="num">6</div><div class="lbl">Major Parts</div></div>
+    <div class="stat"><div class="num">2</div><div class="lbl">Editions</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('advocates',this)">The Advocates</div>
+    <div class="tab" onclick="show('opening',this)">Openings</div>
+    <div class="tab" onclick="show('facts',this)">Facts</div>
+    <div class="tab" onclick="show('issues',this)">Issues & Headings</div>
+    <div class="tab" onclick="show('argument',this)">Argument</div>
+    <div class="tab" onclick="show('sentences',this)">Sentences</div>
+    <div class="tab" onclick="show('words',this)">Words & Tone</div>
+    <div class="tab" onclick="show('moves',this)">Master Moves</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>What separates a brief that wins from one that merely informs? Guberman answers by going directly to the source — the actual briefs of the lawyers who have argued the most consequential cases before the nation's highest courts. He dissects their techniques move by move, showing exactly what the best writers do and precisely how any lawyer can learn to do it too.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What Makes This Book Different</div>
+      <div class="tech-body">
+        <p>Most legal writing books describe principles in the abstract. Ross Guberman does something fundamentally different: he goes to the actual briefs filed by the nation's most celebrated advocates — lawyers who argued landmark cases before the Supreme Court of the United States, federal courts of appeals, and state supreme courts — and shows, with real examples pulled from real briefs, exactly what makes their writing exceptional. Not rules derived from theory, but techniques demonstrated from practice, drawn from the people who have actually moved the most important courts in America.</p>
+        <p>The second edition updates the examples and broadens the range of advocates studied. The book covers advocates across the ideological spectrum — conservative and liberal, plaintiff and defence, government and private firm — because the techniques of great legal writing transcend ideology. What unites John Roberts and Elena Kagan, Ted Olson and Seth Waxman, Paul Clement and Walter Dellinger, is not their views on the law but the quality of their craft. And that craft, Guberman demonstrates, is both identifiable and learnable.</p>
+        <p>The book is organised by technique rather than by section of the brief. Each chapter focuses on a specific move — a specific way of opening a brief, framing an issue, constructing a sentence, choosing a word — and illustrates it with multiple examples from multiple advocates, so that the reader sees not just one instance of the technique but its range of application. This organisation means the reader can approach the book either sequentially (reading cover to cover) or as a reference (jumping to the technique most relevant to the brief currently being written).</p>
+        <p>Guberman's underlying conviction — stated explicitly in the book's introduction — is that the difference between good and great legal writing is not talent or experience. It is the conscious mastery of a specific set of learnable techniques that most lawyers have never been taught. The techniques are identifiable in the briefs of the best advocates. Once identified, they can be practised and adopted by any writer who takes the craft seriously enough to study them.</p>
+      </div>
+
+      <div class="section-label">Philosophy</div>
+      <div class="section-title">The Eight Principles Behind All the Techniques</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">Study the Best</div><div class="t-desc">The fastest path to better legal writing is to study what the best writers actually do — not what textbooks say they should do.</div></div>
+        <div class="theme-card"><div class="t-name">Technique Is Learnable</div><div class="t-desc">Great legal writing is not innate talent. It is a specific set of identifiable, practisable techniques that any committed writer can master.</div></div>
+        <div class="theme-card"><div class="t-name">Show, Don't Tell</div><div class="t-desc">Demonstrating a technique with a real example is worth a hundred abstract descriptions of it. The brief teaches; the principle summarises.</div></div>
+        <div class="theme-card"><div class="t-name">Framing Is Everything</div><div class="t-desc">How you frame the issue, the facts, and the argument — before the legal analysis begins — often determines the outcome before a word of law is read.</div></div>
+        <div class="theme-card"><div class="t-name">Voice Matters</div><div class="t-desc">The best advocates have a distinctive, confident voice. Recognisable, authoritative, and — crucially — readable. Voice is not affectation; it is conviction made prose.</div></div>
+        <div class="theme-card"><div class="t-name">Facts Drive Law</div><div class="t-desc">The best advocates understand that sympathy for the facts creates receptivity to the legal argument. They invest heavily in narrative before turning to doctrine.</div></div>
+        <div class="theme-card"><div class="t-name">Openings Are Decisive</div><div class="t-desc">The first paragraph of a brief creates an impression that nothing in the following pages fully reverses. The opening must establish the frame, the tone, and the theory instantly.</div></div>
+        <div class="theme-card"><div class="t-name">Precision + Clarity</div><div class="t-desc">The two qualities that never conflict in great legal writing: exact use of language and complete readability. The best writers achieve both simultaneously.</div></div>
+      </div>
+
+      <div class="section-label">Structure</div>
+      <div class="section-title">How the Book Is Organised</div>
+      <div class="tech-body">
+        <p>The book moves through six broad areas of brief-writing technique: <strong>Openings</strong> (how the best advocates seize the reader's attention and establish the frame in the first paragraph); <strong>Facts</strong> (how they tell compelling, accurate, and strategically constructed stories about what happened); <strong>Issues and Headings</strong> (how they frame the legal question and organise the argument in a way that predisposes the reader to the desired answer); <strong>Argument</strong> (how they structure and develop the legal analysis for maximum persuasive impact); <strong>Sentences</strong> (the specific syntactic and rhythmic techniques that make their prose exceptional); and <strong>Words and Tone</strong> (the specific vocabulary choices and tonal registers that distinguish their writing from the average).</p>
+        <p>Within each section, Guberman identifies specific named techniques — given memorable labels like "The Zelda," "The Perry Mason," "The Anaphora," "The Bookend" — and illustrates each with multiple examples. The labels make the techniques easy to remember and easy to refer to in revision: "Does this opening have a Zelda?" "Can I add a Bookend to this argument?" This naming convention is one of the book's most useful pedagogical innovations — it converts abstract advice into specific, identifiable moves that can be deliberately practised.</p>
+      </div>
+    </div>
+
+    <!-- ADVOCATES -->
+    <div id="advocates" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Source Material</div>
+        <div class="p-title">The Nation's Top Advocates — Who They Are and What Distinguishes Them</div>
+        <div class="p-desc">Guberman draws on the actual briefs of lawyers who have shaped American law at the highest levels. Understanding who these advocates are — and what each is known for — illuminates why Guberman draws the techniques he does from their work.</div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">JR</div>
+        <div>
+          <div class="adv-name">John G. Roberts Jr.</div>
+          <div class="adv-role">Now Chief Justice of the United States · Former Partner, Hogan & Hartson</div>
+          <div class="adv-body">Before his elevation to the federal bench and eventually the Chief Justiceship, Roberts was widely regarded as one of the two or three finest appellate brief-writers of his generation. His briefs are characterised by extraordinary clarity and what Guberman describes as an almost conversational confidence — a quality of writing that makes complex legal arguments seem simple and obvious rather than technical and contested. Roberts never strains for effect; the elegance of his prose arises from the complete subordination of form to function. Every sentence serves the argument; nothing is ornamental. His issue statements and opening paragraphs are particularly studied: they frame the case with such crisp precision that the reader feels the conclusion is established before the argument has formally begun.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">EK</div>
+        <div>
+          <div class="adv-name">Elena Kagan</div>
+          <div class="adv-role">Now Associate Justice of the United States · Former Dean, Harvard Law School · Former U.S. Solicitor General</div>
+          <div class="adv-body">Kagan's briefs — particularly those filed during her tenure as Solicitor General — are distinguished by a quality Guberman identifies as intellectual authority: the sense that the writer has thought about the problem more thoroughly than anyone else in the room and is sharing the conclusions of that thinking with complete confidence. Her sentences are typically longer and more complex than Roberts's, but they are managed with such syntactic skill that the complexity never impedes comprehension. Her fact sections are especially admired: she has a gift for selecting the specific detail that crystallises the human stakes of a case without sentimentality or excess.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">PC</div>
+        <div>
+          <div class="adv-name">Paul Clement</div>
+          <div class="adv-role">Former U.S. Solicitor General · Partner, Kirkland & Ellis and Bancroft PLLC</div>
+          <div class="adv-body">Clement is perhaps the single most prolific and versatile Supreme Court advocate of his generation, having argued well over a hundred cases before the Court on both sides of the political spectrum. His briefs are notable for their structural clarity — the argument is always organised in a way that makes the logical progression immediately visible — and for a quality of intellectual honesty that Guberman identifies as crucial to his credibility with the bench. Clement acknowledges the strongest counter-arguments and addresses them directly, which makes his refutations more persuasive than those of advocates who pretend the counter-arguments do not exist. His prose is precise and authoritative without ever being cold or technical.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">SW</div>
+        <div>
+          <div class="adv-name">Seth Waxman</div>
+          <div class="adv-role">Former U.S. Solicitor General · Partner, WilmerHale</div>
+          <div class="adv-body">Waxman's briefs are distinguished by what Guberman describes as narrative mastery — a quality of storytelling in the facts section that makes the human and factual context of a case vividly real before the legal argument begins. He understands, more explicitly than perhaps any other advocate studied in the book, that a judge's sympathy for the facts creates a frame within which the legal argument is received and evaluated. His openings are particularly strong: they typically establish both the human stakes and the legal theory in a way that makes the rest of the brief feel like the elaboration of a conclusion the reader has already half-reached.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">TO</div>
+        <div>
+          <div class="adv-name">Ted Olson</div>
+          <div class="adv-role">Former U.S. Solicitor General · Partner, Gibson, Dunn &amp; Crutcher</div>
+          <div class="adv-body">Olson is notable among the advocates studied for the emotional force of his best writing — a quality of genuine conviction that communicates itself through specific word choices, sentence rhythms, and the selection of facts and arguments. He argued, and won, Bush v. Gore for George W. Bush, and subsequently argued, and won, the landmark marriage equality case Perry v. Schwarzenegger — demonstrating that his advocacy is driven by legal and rhetorical craft rather than ideology. His briefs often feature what Guberman calls the "cinematic opening" — an opening paragraph that places the reader in a specific scene or moment rather than beginning with abstract legal framing.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">WD</div>
+        <div>
+          <div class="adv-name">Walter Dellinger</div>
+          <div class="adv-role">Former U.S. Solicitor General · Partner, O'Melveny &amp; Myers</div>
+          <div class="adv-body">Dellinger's briefs are distinguished by a quality of scholarly depth and genuine intellectual engagement with the hardest questions in the case. Where some advocates manage difficulty by minimising it, Dellinger confronts it directly — which paradoxically makes his handling of it more persuasive. His prose is accessible despite the complexity of the analysis, and he has a particular gift for analogies that make abstract legal principles concrete without simplifying them. His argument sections frequently demonstrate what Guberman identifies as the "zipper" technique — weaving together facts and law in a way that makes each illuminate the other rather than presenting them as separate bodies of material.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">KS</div>
+        <div>
+          <div class="adv-name">Kathleen Sullivan</div>
+          <div class="adv-role">Former Dean, Stanford Law School · Partner, Quinn Emanuel</div>
+          <div class="adv-body">Sullivan's briefs are notable for what Guberman calls their "architectural" quality — the sense that every element of the brief has been designed from the ground up to serve a specific strategic purpose, with nothing accidental and nothing merely conventional. Her issue statements are particularly admired: she frames legal questions in ways that incorporate the key facts so precisely that the correct answer feels logically inevitable. Her sentences demonstrate a quality of syntactic control that allows her to convey complex ideas with striking economy — she rarely uses two words where one will do, and the word she chooses is invariably the precise one.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">ME</div>
+        <div>
+          <div class="adv-name">Miguel Estrada</div>
+          <div class="adv-role">Partner, Gibson, Dunn &amp; Crutcher</div>
+          <div class="adv-body">Estrada is regarded by many of his peers as the finest brief-writer of the current generation — a reputation built on briefs of extraordinary precision, economy, and intellectual force. His writing has a quality that Guberman identifies as "ruthless clarity" — every ambiguity resolved, every unnecessary word eliminated, every sentence doing exactly the work it needs to do and nothing more. His openings are consistently among the most effective studied in the book: they establish the theory of the case in the clearest possible terms before the first paragraph is complete. His prose is so clean that reading it feels effortless, which is precisely the effect of enormous craft.</div>
+        </div>
+      </div>
+
+      <div class="advocate-card">
+        <div class="adv-initial">CP</div>
+        <div>
+          <div class="adv-name">Carter Phillips</div>
+          <div class="adv-role">Managing Partner, Sidley Austin</div>
+          <div class="adv-body">Phillips is one of the most experienced Supreme Court advocates practicing today, having argued more cases before the Court than almost any private practitioner of his era. His briefs are notable for their strategic intelligence — the sense of a writer who has thought very carefully about what the Court needs to be persuaded of and has structured every element of the brief to serve that specific persuasive purpose. He has a particular gift for the transition between sections — for moving the reader from facts to argument, or between arguments, in a way that makes the logical progression feel natural and inevitable.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPENINGS -->
+    <div id="opening" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part I — The Opening</div>
+        <div class="p-title">How the Best Advocates Begin — The Techniques of Devastating First Paragraphs</div>
+        <div class="p-desc">The first paragraph of a brief creates an impression that the remaining pages never fully reverse. The top advocates know this and invest accordingly. Guberman identifies seven distinct opening techniques they use.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 1</div>
+        <div class="tech-name">The Syllogism — Start with the Logical Conclusion</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Paul Clement</div>
+        <div class="tech-body">
+          <p>The most direct of all opening moves: state the governing legal principle, state the relevant facts, and show that the conclusion follows necessarily. Done well, this move establishes the entire theory of the case in three to five sentences and makes everything that follows feel like elaboration rather than argument — the reader has already accepted the framework before the detailed analysis begins. Roberts in particular uses this technique with devastating economy: the syllogism is complete before the first paragraph ends, and the rest of the brief is the demonstration of its premises.</p>
+          <p>The key to executing this technique effectively is the precision of the major premise — the statement of the governing legal rule. If the rule is stated too broadly, the syllogism does not compel the conclusion; the other side can contest the major premise itself. If stated too narrowly, it may be correct but may also seem like special pleading. The best syllogism-openers state the legal rule at exactly the right level of specificity — broad enough to seem like established doctrine, specific enough to make the conclusion flow naturally from it.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ The Syllogism Done Well</strong>Opens with the governing principle at exactly the right level of abstraction. States the key operative facts in one sentence. Shows the conclusion follows necessarily. Is complete in three to five sentences. The reader feels the argument is already over.</div>
+            <div class="dont-box"><strong>✗ The Failed Syllogism</strong>States the rule so broadly it applies to everything and proves nothing. Or states it so narrowly it appears to be specially constructed for this case. The reader sees the argument before it is made and resists it.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 2</div>
+        <div class="tech-name">The Anecdote — Open with a Scene, Not a Principle</div>
+        <div class="tech-advocate">Exemplified by: Ted Olson, Seth Waxman</div>
+        <div class="tech-body">
+          <p>Rather than opening with a legal principle or a procedural statement, the anecdote technique opens with a specific, concrete scene or event — a moment that captures the human reality of the case in a way that is immediately engaging. The scene is drawn from the facts of the case; it is not illustrative fiction. But the choice of which moment to open with, and how to describe it, is a deliberate act of narrative craft that sets the emotional register for everything that follows.</p>
+          <p>Guberman notes that this technique is most effective when the opening scene is one that a reader would want to know more about — that raises a question, creates a tension, or establishes a human reality so specific and immediate that abstract legal analysis seems, in retrospect, like the natural way to resolve what the opening made vivid. The scene should be short — two to four sentences at most — and should transition naturally to the legal framing without a jarring gear-shift between narrative and doctrine.</p>
+          <p>The risk of this technique is that it can feel manipulative if the scene is too calculated or if the transition to legal analysis is too abrupt. The best practitioners make the transition seamlessly — the scene and the legal principle it introduces feel continuous rather than juxtaposed.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 3</div>
+        <div class="tech-name">The Tension Opener — Establish the Stakes Before the Law</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>This technique opens by establishing what is at stake — the broader consequence of the court's decision — before introducing either the specific facts or the governing legal doctrine. It answers the question "Why does this case matter?" before the reader has had time to ask it, and by answering it at the outset, it ensures that the reader approaches the legal analysis with a sense of its significance. Cases that involve abstract or technical legal issues benefit particularly from this technique, which gives even dry doctrinal questions an urgency they might not otherwise convey.</p>
+          <p>Kagan's briefs as Solicitor General frequently employ this move with particular sophistication: she establishes the constitutional or statutory importance of the question before addressing the specific dispute, framing the Court's decision as a contribution to an ongoing body of doctrine with consequences extending far beyond the immediate parties. This framing is both accurate (Supreme Court decisions do have this kind of significance) and strategically useful (it encourages the Court to approach the question with the gravity it deserves).</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 4</div>
+        <div class="tech-name">The Zelda — Name the Core Unfairness Immediately</div>
+        <div class="tech-advocate">Exemplified by: Seth Waxman, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>Guberman's most memorably named technique: the opening that states, in the very first sentence, the fundamental injustice or unfairness at the heart of the case — the reason why a reasonable person would immediately feel, without any legal analysis, that your client's position is the right one. Named for the type of fact pattern where a sympathetic individual has been wronged, the Zelda works by engaging the reader's moral intuitions before their legal analysis has begun, so that the legal analysis that follows is received as the mechanism for vindicating an intuition already formed rather than as the basis for forming a new one.</p>
+          <p>This is not sentimentality — the top advocates who use it do so with precision and restraint. The core unfairness is stated directly, without embellishment, in terms that a reasonable person of any legal sophistication can immediately understand and respond to. The statement typically occupies one sentence; the remainder of the opening paragraph provides the context that makes the statement intelligible. Everything after that is the legal argument for why the court should act on the intuition the opening has established.</p>
+          <div class="example-box">
+            <div class="ex-label">The Zelda in Practice</div>
+            <p>The technique works by placing the most sympathetic, morally urgent fact at the very beginning — before any legal framing, before any procedural history, before any identification of parties. The reader's moral response is engaged before their legal analysis has a chance to construct a neutral framework. Once that response is established, the legal argument feels like justice rather than advocacy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 5</div>
+        <div class="tech-name">The Perry Mason — Reveal the Other Side's Fatal Flaw</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Miguel Estrada</div>
+        <div class="tech-body">
+          <p>Named for the television lawyer famous for his dramatic courtroom revelations, this technique opens the brief by identifying — immediately and specifically — the single most fatal weakness in the opposing party's position. Rather than building to the refutation of the other side's argument, this technique leads with it: here is the fundamental error in what they argue, stated so clearly that the reader can see the conclusion before they have encountered the opposing argument.</p>
+          <p>Roberts and Estrada use this technique with particular effectiveness because their prose is precise enough that the identification of the flaw is itself completely persuasive — it does not merely assert that the other side is wrong but demonstrates, in a sentence or two, exactly where and why the argument fails. This is a high-risk, high-reward technique: done well, it frames the entire case on your terms and puts the other side immediately on the defensive; done clumsily, it reads as overreach and alerts the reader to a possible weakness in your own position.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 6</div>
+        <div class="tech-name">The Quotation — Let an Authority Speak First</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, Carter Phillips</div>
+        <div class="tech-body">
+          <p>Opening with a precisely chosen quotation — from a prior judicial opinion, a constitutional provision, a statute, or occasionally a historical source — can immediately establish the authority for the legal principle that governs the case, frame the question in terms chosen by an authority the court respects, and signal the advocate's command of the doctrinal tradition. Done well, it is particularly effective in cases where the controlling legal text itself states the governing principle more clearly than any paraphrase could.</p>
+          <p>Guberman is careful to distinguish the effective quotation opener from the decorative one. The quotation must be genuinely on point — not merely thematically related to the case but specifically stating the principle that controls the outcome. It should be short enough to be read without effort. And it should be immediately followed by the connection to the case at bar, so that the reader understands why this specific quotation was chosen for this specific opening. A quotation that requires explanation before it can be connected to the argument is a quotation in the wrong place.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Opening Technique 7</div>
+        <div class="tech-name">The Bookend — Frame the Opening to Echo in the Closing</div>
+        <div class="tech-advocate">Exemplified by: Seth Waxman, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>The bookend technique establishes a specific image, phrase, or idea in the opening paragraph that is deliberately echoed in the conclusion of the brief. The brief begins and ends with the same framing device, creating a sense of structural completeness and reinforcing the core theme through the power of return — the satisfaction the reader feels when a motif established early is resolved late. In oral music and literature this structure is ubiquitous; in legal writing it is rare, which makes its use immediately distinctive.</p>
+          <p>The bookend requires planning from the outset — knowing what the brief will conclude with before writing what it opens with. This discipline of foresight is itself valuable: the advocate who knows where the brief is going is better positioned to write every section in a way that leads there. And the resulting structural coherence — the sense that the brief is a unified argument with a beginning and an end rather than a collection of sections — is noticeable to readers even when they cannot identify the specific technique producing it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FACTS -->
+    <div id="facts" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part II — The Facts</div>
+        <div class="p-title">How the Best Advocates Tell Stories — The Craft of the Fact Section</div>
+        <div class="p-desc">The fact section is where sympathy is created or lost before the legal argument begins. The top advocates treat it as the most important advocacy opportunity in the brief. Guberman shows exactly how they do it.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Facts Technique 1</div>
+        <div class="tech-name">The Narrative Arc — Give the Facts a Story Structure</div>
+        <div class="tech-advocate">Exemplified by: Seth Waxman, Ted Olson</div>
+        <div class="tech-body">
+          <p>The top advocates do not recite facts — they tell stories. The distinction is structural: a recitation presents facts in sequence without organising them around a narrative logic; a story presents facts organised around a character (the client), a conflict (the dispute), and a resolution that the law must provide. The best fact sections have a beginning that establishes context and sympathy, a middle that develops the conflict with specific, concrete detail, and a conclusion that leaves the reader feeling that something genuine and important needs to be resolved.</p>
+          <p>Waxman in particular is noted for his mastery of what Guberman calls the "escalating stakes" structure: the fact section begins with the client in a relatively stable situation, then introduces a development that changes everything, then shows the consequences of that change in increasingly specific and human terms, so that by the end of the facts section the reader understands not just what happened but what it means to the person it happened to. This structure makes the legal question feel urgent rather than abstract.</p>
+          <p>Guberman notes that narrative structure does not require sentimentality or embellishment. The facts must be accurate; they must be supported by the record; they must not omit material facts that would give a misleading impression. Within those constraints, the choice of how to organise, emphasise, and describe accurate facts is entirely the advocate's, and the best advocates exercise that choice with the deliberateness of accomplished writers.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Facts Technique 2</div>
+        <div class="tech-name">The Vivid Detail — Choose the Specific Over the General</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>Abstract characterisations of facts — "the plaintiff suffered serious harm," "the defendant engaged in misleading conduct" — pass through the reader's mind without leaving an impression. Specific, concrete, sensory details create the precise mental image the advocate needs the judge to carry through the legal analysis. Guberman identifies the use of vivid, specific detail as one of the most consistent distinguishing features of the best advocates' fact sections.</p>
+          <p>The vivid detail does not need to be dramatic — it needs to be specific. Not "a large sum of money" but the precise amount. Not "for a long period" but the exact duration. Not "significant physical harm" but the specific injury described in specific terms. The specificity itself carries persuasive weight: it signals that the advocate has engaged carefully with the record, it makes the facts concrete enough to be imagined rather than merely registered, and it creates an impression of honest, thorough engagement with the evidence that enhances credibility throughout the brief.</p>
+          <p>The technique requires selection as well as specificity: not every fact warrants specific development. The skill is in identifying which details are most legally material, most humanly compelling, or most effective at creating the impression the brief needs to create — and then developing those details with the precision and vividness they deserve, while handling less important facts more briefly.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Facts Technique 3</div>
+        <div class="tech-name">The Strategic Omission — What You Leave Out Is Also Advocacy</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, John Roberts</div>
+        <div class="tech-body">
+          <p>Every advocate knows that including favourable facts is advocacy. Fewer recognise that the strategic omission of unfavourable facts — or their careful placement in positions of lesser prominence, in contexts that minimise their impact — is equally important. Guberman addresses this with the candour that distinguishes his book: the fact section must not mislead, but within the constraint of accuracy and completeness, every decision about where to place facts, how much space to give them, and what language to use in describing them is a legitimate advocacy decision.</p>
+          <p>The best advocates handle adverse facts in specific ways: they place them where the reader's attention is least focused (the middle of long paragraphs, after the most compelling favourable facts have been established); they characterise them accurately but in terms that minimise their legal significance; they immediately follow them with context that explains why they do not affect the outcome; and they never give them more space than they actually need. The judge who encounters an adverse fact that has been handled with this discipline has still encountered it — the obligation of accuracy is met — but encounters it in a way that minimises its impact on the overall impression the facts section creates.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Facts Technique 4</div>
+        <div class="tech-name">The Zipper — Weave Facts and Law Together</div>
+        <div class="tech-advocate">Exemplified by: Walter Dellinger, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>The traditional brief structure separates facts from law — the statement of facts presents the facts, the argument section applies the law to those facts. This structure is conventional and often appropriate. But the best advocates sometimes use what Guberman calls the "zipper" technique: interweaving factual narrative with legal analysis throughout, so that the facts illuminate the law and the law illuminates the facts simultaneously, rather than presenting them as separate bodies of material to be connected later.</p>
+          <p>This technique is particularly powerful in cases where the legal standard is fact-intensive — where the legal question cannot be understood without the specific facts, and the specific facts cannot be evaluated without the legal framework. In these cases, the zipper eliminates the artificial separation that forces the reader to hold the facts in memory while reading the law (and vice versa) and allows both to be presented in the context that makes each most comprehensible. It requires careful planning — the interweaving must be genuinely illuminating rather than merely blending two kinds of content — but when executed well, it produces a brief that reads as a single unified argument rather than two separate sections bolted together.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Facts Technique 5</div>
+        <div class="tech-name">The Human Voice — Let the Record Speak in Its Own Words</div>
+        <div class="tech-advocate">Exemplified by: Seth Waxman, Ted Olson</div>
+        <div class="tech-body">
+          <p>When the record contains testimony, documents, or communications that state the relevant facts in compelling human terms — a witness's own description of what they saw, a document that reveals the defendant's state of mind in their own words, a communication that makes the plaintiff's experience vivid in the voice of the person who lived it — the best advocates quote directly from those sources rather than paraphrasing them. The human voice in the record, quoted with precision and placed strategically, is often more persuasive than any description the advocate could construct.</p>
+          <p>Guberman is specific about when this technique works and when it does not. It works when the quoted material is genuinely compelling on its own terms — when the words carry emotional or evidentiary weight that would be lost in paraphrase. It does not work when the quote requires extensive context to be understood, when it is so long that it slows the narrative momentum, or when it conveys less than a well-crafted paraphrase would. The selection of which moments in the record to quote directly and which to paraphrase is itself a form of legal writing craft.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ISSUES & HEADINGS -->
+    <div id="issues" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part III — Issues &amp; Headings</div>
+        <div class="p-title">Framing the Question — Issue Statements and Point Headings That Predispose</div>
+        <div class="p-desc">The issue statement is read first and frames everything that follows. The point headings constitute the brief's argumentative skeleton. The top advocates treat both as primary advocacy opportunities — not formalities.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Issue Technique 1</div>
+        <div class="tech-name">The Embedded-Facts Issue — Make the Answer Obvious Before the Argument</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>The single most powerful technique for drafting issue statements: embed the key operative facts directly into the statement of the legal question, in a way that makes the correct answer — your answer — apparent to any reasonable reader before they have encountered a single argument. Roberts's issue statements are among the most studied in American appellate practice for exactly this reason: they achieve the appearance of neutrality (stating a legal question rather than an assertion) while creating an impression of inevitability (the facts, as stated, make only one answer seem reasonable).</p>
+          <p>The technique requires extraordinary precision in selecting which facts to embed. Including too many facts produces an issue statement that is incomprehensibly long; including too few produces one that is too abstract to perform the predisposing function. The ideal embedded-facts issue includes exactly the facts that, when read by a fair-minded person, make the desired answer feel obvious — and no other facts. This selection is itself a complete legal analysis: it requires the advocate to understand which facts are legally material and which are merely background, and to communicate the former with the precision that makes the outcome feel determined.</p>
+          <div class="example-box">
+            <div class="ex-label">The Art of the Issue Statement</div>
+            <p>The best issue statements pass what Guberman calls the "cocktail party test": if you read the issue statement aloud to an intelligent non-lawyer at a social gathering, would they immediately know which answer is correct? If yes, the issue statement is doing its job. If they would need to hear the argument first, the issue statement has not yet been written at the required level of craft.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Issue Technique 2</div>
+        <div class="tech-name">The Rule-Based Issue — State the Governing Standard and Apply It</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, Carter Phillips</div>
+        <div class="tech-body">
+          <p>An alternative approach to the embedded-facts issue: state the governing legal rule in the issue statement, then show how the facts of the case apply to that rule in a way that produces the desired result. This technique is most effective when the governing rule is clearly established and the advocate's strength lies in demonstrating that the facts unambiguously satisfy or fail to satisfy it. It is less effective when the governing rule itself is contested — in those cases, the rule-based issue statement may seem to beg the question.</p>
+          <p>Clement uses this technique particularly effectively in constitutional cases where the governing standard is well-established: he states the standard with precision, states the relevant facts with equal precision, and then shows — in the issue statement itself — that applying the one to the other produces only one possible result. The argument that follows is elaboration; the issue statement has already made the case.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Heading Technique 1</div>
+        <div class="tech-name">The Argumentative Heading — Every Heading Must Assert, Not Describe</div>
+        <div class="tech-advocate">Exemplified by: All top advocates</div>
+        <div class="tech-body">
+          <p>Guberman emphasises — consistent with Garner — that every point heading must be a complete argumentative proposition: a sentence that asserts a legal conclusion, states a rule that has been violated, or demonstrates a result that follows from the applicable law. Topic labels ("The Standard of Review," "Plaintiff's Constitutional Claim") are not arguments and contribute nothing to the persuasive function of the brief. The top advocates never use them.</p>
+          <p>What distinguishes the best point headings from merely adequate ones is the specificity of the legal and factual content they pack into a single sentence. The heading that asserts "The district court abused its discretion" is better than a topic label but still fails to tell the reader why the abuse occurred or what the consequence should be. "The district court abused its discretion by applying an objective rather than subjective standard to evaluate the defendant's intent, in direct conflict with the unambiguous text of the statute and this Court's controlling precedent" tells the reader the rule, the error, the standard, and the authority in one sentence. The difference in persuasive impact is substantial.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Heading Technique 2</div>
+        <div class="tech-name">The Rhythmic Heading — Balance Length with Impact</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, John Roberts</div>
+        <div class="tech-body">
+          <p>Beyond their propositional content, the best point headings have a quality of rhythmic integrity — they scan as complete, well-formed sentences rather than as rambling compound constructions that grow until they collapse under their own weight. Guberman notes that Kagan and Roberts both tend to write point headings of remarkable concision: they pack maximum argumentative content into minimum space, achieving the specificity that effectiveness requires while maintaining the readability that excessive length destroys.</p>
+          <p>The rhythm test for a point heading: read it aloud. Does it scan as a complete sentence? Does it land on a word of genuine weight and significance — a verb that captures the key action, a noun that identifies the key concept? Or does it trail off into a qualification that diminishes the impact of what preceded it? The heading that ends on a strong word — "error," "reversal required," "violated the Constitution" — is more persuasive than one that ends on a weak word or a trailing qualification, because the final position of any sentence is the position of maximum emphasis.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARGUMENT -->
+    <div id="argument" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part IV — The Argument</div>
+        <div class="p-title">How the Best Advocates Develop Legal Analysis — Structure, Logic &amp; Momentum</div>
+        <div class="p-desc">The argument section is where law meets facts and a conclusion is compelled. The top advocates structure it with the same deliberateness they bring to every other section — and they do things most lawyers have never considered.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 1</div>
+        <div class="tech-name">The Roadmap — Give the Judge a Preview That Functions as a Promise</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, Seth Waxman</div>
+        <div class="tech-body">
+          <p>The top advocates frequently open their argument sections with a brief roadmap — a two-to-four sentence overview of the structure of the argument that follows. This serves multiple functions: it orients the reader so that the logical progression of the argument is visible from the outset; it creates an implicit promise that the argument will deliver what the roadmap describes; and it allows the reader to evaluate each section in light of its contribution to the whole rather than encountering each section without context.</p>
+          <p>The effective roadmap differs from the typical brief's pro forma introductory paragraph in its specificity and its argumentative character. It does not merely identify the topics that will be covered — it identifies them as components of a unified argument whose conclusion is stated at the outset. "Three principles establish that the district court's order must be reversed. First... Second... Third..." is more than an outline — it is an argument in miniature, and the three principles it promises to establish are the three pillars of the brief's theory of the case.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 2</div>
+        <div class="tech-name">The Textual Anchor — Start with the Text, Always</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Paul Clement, Elena Kagan</div>
+        <div class="tech-body">
+          <p>In cases involving statutory or constitutional interpretation, the best advocates consistently begin with the text itself — quoted precisely, in full, and placed at the beginning of the argument before any other interpretive material is introduced. This technique serves both an analytical and a strategic function: analytically, it is correct — textual meaning is the starting point of interpretation, and any other starting point is suspect; strategically, it forces the analysis to begin on the strongest possible ground, because the text of a statute or constitutional provision is the most authoritative material available and the hardest to argue against.</p>
+          <p>After quoting the text, the best advocates apply what Guberman calls "plain-meaning unpacking": they show, sentence by sentence, what the ordinary meaning of each key term requires, how the grammatical structure of the provision operates, and what the relationship between this provision and its surrounding provisions implies. This unpacking is not pedantic — in the hands of a skilled advocate it reads as a compelling demonstration that the text, properly understood, can mean only one thing. The legal arguments that follow (structure, precedent, legislative history, policy) are reinforcements of a conclusion the textual analysis has already established.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 3</div>
+        <div class="tech-name">The Concession-Rebuttal — Acknowledge Difficulty and Then Destroy It</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>One of the most counterintuitive techniques in the book: the best advocates often acknowledge the strongest counter-argument in their own brief — stating it fairly, even generously — before demonstrating why it fails. This technique works for the same reason that honest candour always enhances credibility: the reader who sees an advocate willingly identify the hardest problem with their own case, and then resolve it, trusts the advocate's treatment of all the other problems more than they would if those problems had been left unacknowledged.</p>
+          <p>Clement is particularly noted for this technique. His briefs frequently include a section that begins by identifying the argument most likely to give the Court pause, presenting it as clearly as the other side would, and then demonstrating its failure with a specificity and completeness that would be impossible if the problem had not first been fully acknowledged. The resulting argument is more persuasive than one that never mentions the difficulty — not because the problem has been concealed, but because the reader has seen it confronted and overcome.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 4</div>
+        <div class="tech-name">The Analogy — Make the Abstract Concrete Through Comparison</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>Analogy — showing that the present case is structurally identical to a precedent case, or that the opposing argument leads to a result that is obviously unacceptable when stated in familiar terms — is one of the oldest and most powerful tools of legal argumentation. The best advocates use it with deliberate craft: they choose analogies that are genuinely structurally parallel (not merely thematically similar), state them with precision, and use them to illuminate rather than distract.</p>
+          <p>Roberts is particularly noted for his use of what Guberman calls the "reductio analogy" — showing that the other side's argument, if accepted, would lead to a result that is obviously absurd or unjust when stated in a familiar context. This technique is devastating when executed well because it does not require the reader to evaluate a complex legal argument — it merely requires them to apply common sense to a familiar situation and recognise the result as unacceptable. The legal conclusion follows automatically: if the rule leads to that result in the familiar situation, it cannot be the correct rule.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 5</div>
+        <div class="tech-name">The Rule-Consequence Bridge — Show What Your Rule Means in Practice</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>After establishing the correct legal rule and demonstrating that it applies to the facts, the top advocates frequently add a "rule-consequence bridge": a brief demonstration of the practical consequences of the rule they are advocating — the outcomes it produces in the present case and in the future cases it will govern. This bridge serves to confirm that the rule is not merely technically correct but practically sound — that it produces workable, just results across its range of application.</p>
+          <p>The bridge also serves a defensive function: it pre-empts the counter-argument that the rule leads to absurd or unworkable consequences. Kagan's briefs as Solicitor General often include a paragraph that runs through several hypothetical applications of the rule, showing in each case that the result is reasonable and consistent with the purposes of the relevant statute or constitutional provision. This kind of demonstration — applied before the objection is raised — is more persuasive than the same demonstration offered as a rebuttal.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Argument Technique 6</div>
+        <div class="tech-name">The Slayer — Find the One Argument That Ends the Case</div>
+        <div class="tech-advocate">Exemplified by: Miguel Estrada, John Roberts</div>
+        <div class="tech-body">
+          <p>Guberman identifies a technique he calls the Slayer — the single argument that, if accepted, ends the case entirely without requiring the court to decide any of the other issues. Finding the Slayer requires a thorough analysis of all available arguments and the discipline to recognise when one of them is dispositive — when its acceptance makes all the others unnecessary. The advocate who has found the Slayer and leads with it provides the court with the easiest possible path to the desired outcome: one clear, decisive ground for decision that can be stated cleanly and justified concisely.</p>
+          <p>Estrada's briefs often demonstrate this quality: a case that might have generated a sprawling ten-argument brief is reduced to its essential dispositive question, argued with total completeness and authority, with additional arguments included only as reinforcement. The court that accepts the Slayer argument has a clean, defensible opinion; the court that needs additional arguments has them. But the primary energy of the brief goes to the one argument that, standing alone, wins.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SENTENCES -->
+    <div id="sentences" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part V — Sentences</div>
+        <div class="p-title">The Craft of the Sentence — Rhythm, Emphasis, and the Architecture of Persuasive Prose</div>
+        <div class="p-desc">The sentence is the unit of persuasion. The top advocates write sentences with the same deliberateness a composer gives to a phrase — varying length, controlling emphasis, building rhythm, and landing always on the word that matters most.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Sentence Technique 1</div>
+        <div class="tech-name">The Short-Long-Short Rhythm — Control Emphasis Through Variation</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Miguel Estrada</div>
+        <div class="tech-body">
+          <p>The most consistent rhythmic pattern in the prose of the best advocates is what Guberman calls the "short-long-short": a short sentence states the key proposition; a longer sentence develops or supports it; another short sentence drives home the conclusion. This pattern controls emphasis with precision — the short sentences carry the greatest weight, and the longer sentence between them does the supporting analytical work. The result is prose that advances, builds, and closes with the decisiveness of someone who knows exactly where they are going.</p>
+          <p>This pattern is visible throughout Roberts's briefs and is among the most learnable of the techniques Guberman identifies. It does not require exceptional talent — it requires only the discipline to place the most important propositions in short sentences and to resist the impulse to pad those sentences with qualifications that diminish their impact. The short sentence that lands alone, surrounded by white space and set off from its neighbors by its brevity, commands attention in a way that the same proposition embedded in a longer construction never achieves.</p>
+          <div class="example-box">
+            <div class="ex-label">The Pattern Demonstrated</div>
+            <p>Consider the difference between "The statute is clear" standing alone — short, declarative, emphatic — followed by a longer sentence explaining the textual basis for that clarity, followed by "No other reading is plausible." The key assertions — clarity and inevitability — are in the short sentences; they land with maximum force precisely because they stand alone. This architecture is deliberate in the best briefs; it should be deliberate in yours.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Sentence Technique 2</div>
+        <div class="tech-name">The Anaphora — Repetition as Emphasis and Rhythm</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, Ted Olson</div>
+        <div class="tech-body">
+          <p>Anaphora — the repetition of the same word or phrase at the beginning of consecutive sentences or clauses — is one of the oldest devices in the rhetoric of persuasion, and the best legal advocates use it deliberately. "The statute does not say X. The statute does not contemplate X. The statute's purpose, history, and structure all point away from X." The three sentences, opened with the same phrase, build a cumulative weight greater than any of them could carry alone — and the repetition creates a rhythm that makes the passage easier to remember and harder to dismiss.</p>
+          <p>Kagan's briefs as Solicitor General frequently employ anaphora in argument sections where she is making a series of related points: each sentence opens with the same structural phrase, so that the accumulation of the series creates a sense of inevitability — that the legal conclusion being argued is supported from multiple directions simultaneously. The technique must be used sparingly to preserve its impact, but when deployed at a moment of genuine argumentative force, it significantly amplifies that force.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Sentence Technique 3</div>
+        <div class="tech-name">The Tricolon — Three Parallel Elements for Emphasis and Completeness</div>
+        <div class="tech-advocate">Exemplified by: All top advocates</div>
+        <div class="tech-body">
+          <p>The tricolon — a series of three parallel elements — appears throughout the best legal writing as consistently as in classical rhetoric, and for the same reasons: three feels complete (more than two, less exhausting than four); three parallel elements reinforce each other through structural similarity; and three is the natural rhythm of emphasis in English. "Text, structure, and history." "Arbitrary, capricious, and unreasonable." "First... Second... Third." The three-part structure appears in the briefs of every advocate Guberman studies, at every level from the argument structure to the individual sentence.</p>
+          <p>The key to effective tricolon is parallel structure: all three elements must have the same grammatical form. Mixing noun phrases, verb phrases, and clauses in a single three-part series destroys the rhythmic effect and creates a sense of disorder. When all three are grammatically parallel, the three-part series creates a sense of completeness and authority that the advocate can exploit at the most important moments of the argument.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Sentence Technique 4</div>
+        <div class="tech-name">The Periodic Sentence — Build to the Key Point at the End</div>
+        <div class="tech-advocate">Exemplified by: Kathleen Sullivan, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>The periodic sentence — in which the main clause and its most important content come at the end of the sentence, after a series of dependent clauses, qualifications, or contextual elements — exploits the end-position emphasis of English to deliver the key proposition with maximum force. The reader's attention accumulates through the subordinate elements and is released on the main clause, which lands with the weight of everything that preceded it.</p>
+          <p>This technique is most effective for major conclusions — the proposition that the entire preceding argument has been building toward. Sullivan in particular uses periodic sentences at the conclusions of major argument sections: the sentence accumulates the key elements of the argument in its subordinate clauses and delivers the conclusion in the main clause, so that the conclusion arrives carrying the full weight of the analysis that supports it. Done well, the periodic sentence makes the conclusion feel earned and inevitable; done clumsily, it makes the sentence seem artificially elaborate.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Sentence Technique 5</div>
+        <div class="tech-name">The Strong Verb — The Verb Is the Engine of the Sentence</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Miguel Estrada</div>
+        <div class="tech-body">
+          <p>Guberman devotes considerable attention to the selection of verbs — identifying it as one of the most reliable distinguishing features between the prose of the top advocates and the prose of average legal writers. The best advocates choose verbs that are specific, active, and carry genuine semantic weight. Where an average brief writes "the court held," Roberts writes "the court squarely rejected." Where an average brief writes "the policy applies," Estrada writes "the policy compels" or "the policy dictates." The stronger verb does not merely describe the action — it characterises it, colours the reader's evaluation of it, and often does the work of an adverb or an entire additional clause.</p>
+          <p>The practical discipline this implies: in revision, examine every verb in every sentence. Ask whether a more specific, more active, more characterising verb is available that would convey the same content with greater precision and force. The sentence "the district court determined that the contract was ambiguous" becomes "the district court concluded, incorrectly, that an unambiguous provision was open to interpretation" — not through the addition of content but through the elevation of the verb and its surrounding language to a level of precision that the original lacked.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORDS -->
+    <div id="words" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part VI — Words &amp; Tone</div>
+        <div class="p-title">The Vocabulary of the Best Advocates — Precision, Register, and Voice</div>
+        <div class="p-desc">Word choice is not the smallest issue in brief-writing — it is the most granular expression of the same qualities that determine everything else: precision, honesty, confidence, and genuine engagement with the reader. The top advocates make these choices deliberately.</div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Word Technique 1</div>
+        <div class="tech-name">Precision Over Sophistication — The Right Word, Not the Impressive One</div>
+        <div class="tech-advocate">Exemplified by: John Roberts, Miguel Estrada</div>
+        <div class="tech-body">
+          <p>The most consistent feature of the vocabulary of the best advocates is precision — the quality of using words that mean exactly what the sentence requires them to mean, with no remainder of unintended connotation. This precision is often achieved through simple words rather than sophisticated ones: "begin" rather than "commence," "show" rather than "demonstrate," "use" rather than "utilise." The simpler word is not chosen because the advocate cannot think of the more elaborate one — it is chosen because it is more precise, more direct, and more readable.</p>
+          <p>Guberman identifies a specific and common failure mode: the use of impressive-sounding words to perform sophistication rather than to convey meaning. Words like "aforementioned," "hereinafter," "subsequently," "thereafter," and "pursuant to" appear in legal briefs not because they are more precise than their plain-English equivalents but because they sound more legal. They are not more precise — they are merely more elaborate. The advocate who replaces them with "the," "then," "later," and "under" has not simplified; they have clarified.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Word Technique 2</div>
+        <div class="tech-name">Confident Assertion — Write as if the Law Is on Your Side</div>
+        <div class="tech-advocate">Exemplified by: Paul Clement, Kathleen Sullivan</div>
+        <div class="tech-body">
+          <p>The tone of the best advocates' briefs is one of confident authority — the sense that the writer is not hoping the court will agree but explaining what the law requires. This tone is achieved primarily through word choice: asserting propositions of law directly rather than hedging them with "arguably," "one might contend," "it could be said," or "plaintiff respectfully submits." These hedges signal uncertainty; the best advocates state legal propositions with the confidence of someone who has examined the question thoroughly and arrived at a firm conclusion.</p>
+          <p>Guberman is careful to distinguish confident assertion from overreach: the top advocates are confident about propositions they have established, not about propositions they have merely asserted. The confidence comes from the quality of the analysis that precedes the assertion, not from the assertion itself. And where a proposition is genuinely uncertain — where the law is unsettled or the application of settled law to these specific facts is contestable — the best advocates acknowledge the uncertainty and argue for their preferred resolution, rather than stating an uncertain proposition with false confidence that the court will immediately identify as such.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Word Technique 3</div>
+        <div class="tech-name">The Characterising Word — Choose Words That Evaluate, Not Just Describe</div>
+        <div class="tech-advocate">Exemplified by: Seth Waxman, Ted Olson</div>
+        <div class="tech-body">
+          <p>One of the most practically important techniques Guberman identifies: the choice between descriptive words (which merely record a fact) and characterising words (which record the fact while also evaluating it). "The district court's ruling" is descriptive. "The district court's unsupportable ruling" or "the district court's mechanical application of an inapplicable standard" is characterising — it records what happened while simultaneously directing the reader's evaluation of it.</p>
+          <p>The best advocates use characterising words throughout their briefs — not in an excessive or inflammatory way that damages credibility, but consistently and deliberately, so that the reader who absorbs the brief's language also absorbs the advocate's evaluation of the events described. This technique works at the level of the individual word ("the defendant's evasion" rather than "the defendant's response"), the phrase ("the tribunal's arbitrary exclusion" rather than "the tribunal's ruling"), and the sentence (constructed so that its framing communicates the advocate's evaluation even if no single word does). It is among the most pervasive techniques in the briefs of the top advocates and among the most easily learnable.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Word Technique 4</div>
+        <div class="tech-name">Register Control — Match Tone to Moment</div>
+        <div class="tech-advocate">Exemplified by: Elena Kagan, Walter Dellinger</div>
+        <div class="tech-body">
+          <p>The best advocates modulate their prose register — the level of formality, emotional temperature, and rhetorical elevation — according to the demands of the moment. Technical legal analysis is written in a precise, authoritative register; the human stakes of the case are described in a warmer, more immediate register; the refutation of the other side's argument employs a more direct, sometimes more pointed register. This modulation is subtle — the overall tone of the brief remains consistent — but it prevents the monotony that single-register prose inevitably produces and ensures that the moments of greatest emotional or argumentative force receive the register that maximises their impact.</p>
+          <p>Kagan's briefs are particularly noted for this quality. Her legal analysis sections are models of precise, authoritative prose; her fact sections are vivid and immediate; her responses to the other side's arguments have a quality of measured directness that communicates confidence without condescension. The register shifts are seamless — the reader does not notice them as shifts but simply experiences the prose as more or less warm, more or less formal, according to what the content requires.</p>
+        </div>
+      </div>
+
+      <div class="tech-block">
+        <div class="tech-num">Word Technique 5</div>
+        <div class="tech-name">The Earned Adjective — Use Modifiers That Work, Cut Those That Merely Emphasise</div>
+        <div class="tech-advocate">Exemplified by: Miguel Estrada, John Roberts</div>
+        <div class="tech-body">
+          <p>Adjectives and adverbs in legal briefs fall into two categories: those that add genuine meaning (modifying the noun or verb in a way that makes the proposition more precise or more accurate) and those that merely emphasise (adding a quality of importance or severity to a noun or verb that could convey it without help). The first category belongs in a well-crafted brief; the second does not. "Arbitrary" adds genuine meaning to "ruling" — it characterises the ruling in a legally and factually specific way. "Clearly arbitrary" adds nothing that "arbitrary" alone does not convey — the "clearly" is emphasis without precision.</p>
+          <p>Guberman identifies the word "clearly" as the most overused intensifier in legal briefs — and the most damaging, because it signals that the proposition it modifies is not, in fact, clear. A proposition that is actually clear does not need the word "clearly" to establish its clarity; the analysis that demonstrates it does that work. The word "clearly" appears when the advocate is hoping to substitute assertion for demonstration — and courts, who evaluate assertions with professional scepticism, read it accordingly. The same applies to "obviously," "plainly," "manifestly," and their synonyms.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASTER MOVES -->
+    <div id="moves" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Master Techniques</div>
+        <div class="p-title">The Named Moves — Guberman's Catalogue of Specific Identifiable Techniques</div>
+        <div class="p-desc">One of the book's most valuable innovations: Guberman gives memorable names to specific recurring techniques, making them easy to remember, identify in others' writing, and deploy deliberately in your own. Here is the complete catalogue.</div>
+      </div>
+
+      <div class="section-label">Opening Moves</div>
+      <div class="section-title">Named Techniques for the First Paragraph</div>
+      <ul class="move-list">
+        <li><strong>The Syllogism</strong> — State rule, state facts, show conclusion follows. The most direct of all opening moves. Leaves no room for the court to reach a different result.</li>
+        <li><strong>The Anecdote</strong> — Open with a specific, vivid scene from the record. Engage before you argue. Create a human reality that the legal analysis then resolves.</li>
+        <li><strong>The Zelda</strong> — Name the core unfairness immediately. Lead with the moral intuition you want the judge to carry through the entire brief.</li>
+        <li><strong>The Perry Mason</strong> — Reveal the other side's fatal flaw in the opening paragraph. Frame the entire case around the opponent's critical error before they can establish their own frame.</li>
+        <li><strong>The Tension Opener</strong> — Establish what is at stake before introducing any facts or law. Make the judge feel the significance of the decision before they know the details.</li>
+        <li><strong>The Quotation Opener</strong> — Let an authoritative source state your governing principle in the opening sentence. Particularly effective when the controlling text itself is the most powerful statement of the rule.</li>
+        <li><strong>The Bookend</strong> — Open with an image or phrase that will be deliberately echoed in the conclusion. Creates structural unity and the satisfaction of return.</li>
+      </ul>
+
+      <div class="section-label">Argument Moves</div>
+      <div class="section-title">Named Techniques for the Body of the Argument</div>
+      <ul class="move-list">
+        <li><strong>The Roadmap</strong> — A brief, argumentative preview of the argument structure. Not a topic outline — an argument in miniature that orients and predisposes simultaneously.</li>
+        <li><strong>The Zipper</strong> — Interweave facts and law throughout rather than separating them. Allows each to illuminate the other in cases where the legal standard is fact-intensive.</li>
+        <li><strong>The Textual Anchor</strong> — Quote the governing text first, before any other interpretive material. Begin where authority begins: the words actually enacted or ratified.</li>
+        <li><strong>The Slayer</strong> — Identify and lead with the single dispositive argument. Give the court the cleanest possible path to the correct result.</li>
+        <li><strong>The Concession-Rebuttal</strong> — Acknowledge the strongest counter-argument explicitly, then destroy it. The candour enhances credibility; the refutation is more persuasive for being preceded by honest acknowledgment.</li>
+        <li><strong>The Reductio Analogy</strong> — Show that the other side's rule, applied to a familiar situation, produces an obviously unacceptable result. Let common sense do the work of legal analysis.</li>
+        <li><strong>The Rule-Consequence Bridge</strong> — After establishing the correct rule, show the practical consequences of applying it. Pre-empt the counter-argument that the rule leads to unworkable results.</li>
+      </ul>
+
+      <div class="section-label">Sentence Moves</div>
+      <div class="section-title">Named Techniques for the Individual Sentence</div>
+      <ul class="move-list">
+        <li><strong>The Short-Long-Short</strong> — Key proposition in a short sentence. Development in a longer one. Conclusion in another short sentence. The rhythm of emphasis and authority.</li>
+        <li><strong>The Anaphora</strong> — Repetition of the same opening word or phrase across consecutive sentences. Builds cumulative persuasive weight and creates a rhythm that is easy to remember and hard to dismiss.</li>
+        <li><strong>The Tricolon</strong> — Three parallel elements for emphasis and completeness. Three feels definitive. Three parallel structures reinforce each other. Three is the natural rhythm of English persuasion.</li>
+        <li><strong>The Periodic Sentence</strong> — Main clause and key content at the end, after supporting elements. The conclusion arrives carrying the weight of everything that preceded it.</li>
+        <li><strong>The Contrast Move</strong> — Set up the other side's position in one clause, then demolish it in the next. "The defendant claims X. The record shows Y." The juxtaposition is itself the argument.</li>
+        <li><strong>The Rhetorical Question</strong> — Pose the question the judge is already asking; then answer it. Creates the impression of a dialogue with the bench rather than a one-directional argument. Used sparingly by the best advocates for maximum impact.</li>
+        <li><strong>The Em-Dash Move</strong> — Use the em-dash to add a characterising phrase that makes an abstract noun suddenly vivid or to add emphasis that a comma cannot provide. The em-dash punches; the comma merely separates.</li>
+      </ul>
+
+      <div class="section-label">Word Moves</div>
+      <div class="section-title">Named Techniques for Individual Word Choices</div>
+      <ul class="move-list">
+        <li><strong>The Strong Verb</strong> — Replace weak, general verbs with specific, characterising ones. Not "held" but "squarely rejected." Not "found" but "concluded despite contrary evidence." The verb does the work of the sentence.</li>
+        <li><strong>The Characterising Modifier</strong> — Choose adjectives and adverbs that evaluate, not merely emphasise. Not "clearly erroneous" but "demonstrably erroneous." Not "very important" but "dispositive." The earned modifier adds precision; the intensifier merely adds noise.</li>
+        <li><strong>The Concrete Noun</strong> — Replace abstract nouns with concrete ones wherever possible. Not "the conduct" but "the concealment." Not "the transaction" but "the fraudulent transfer." The specific noun creates a mental image; the abstract one does not.</li>
+        <li><strong>The Plain-English Substitution</strong> — Replace every piece of legalese with its plain-English equivalent. Not "pursuant to" but "under." Not "prior to" but "before." Not "subsequent to" but "after." Simpler is always cleaner and almost always clearer.</li>
+      </ul>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#204030; margin-top:0;">From the Briefs and the Book</div>
+        <div class="section-title">Key Passages from Point Made</div>
+
+        <div class="quote-item"><div class="quote-text">"The best brief-writers don't just know the law. They know how to make judges want to rule in their favour — and that is a separate skill, learnable by anyone willing to study those who have mastered it."</div><div class="quote-ref">Introduction</div></div>
+        <div class="quote-item"><div class="quote-text">"The opening paragraph of a brief is not a formality. It is the most important paragraph in the document. The impression it creates persists through everything that follows."</div><div class="quote-ref">Part I · Openings</div></div>
+        <div class="quote-item"><div class="quote-text">"John Roberts's issue statements are works of advocacy disguised as neutrality. They state the legal question so precisely, with so much relevant factual content, that the answer seems obvious before the argument begins."</div><div class="quote-ref">Part III · Issues</div></div>
+        <div class="quote-item"><div class="quote-text">"The Zelda works because it engages the judge's moral intuition before their legal analysis has had time to construct a neutral framework. Once that intuition is in place, the legal argument feels like justice."</div><div class="quote-ref">Part I · The Zelda</div></div>
+        <div class="quote-item"><div class="quote-text">"Seth Waxman understands that a judge's sympathy for the facts creates a frame within which the legal argument is received. He invests in narrative the way other lawyers invest in doctrine — because he knows which investment pays off."</div><div class="quote-ref">Part II · Facts</div></div>
+        <div class="quote-item"><div class="quote-text">"Paul Clement's willingness to acknowledge the strongest counter-argument in his own brief is not a concession — it is a credential. The court that has seen him confront the hardest problem trusts his resolution of all the easier ones."</div><div class="quote-ref">Part IV · Argument</div></div>
+        <div class="quote-item"><div class="quote-text">"Elena Kagan's briefs as Solicitor General have a quality of intellectual authority — the sense that the writer has thought about the problem more thoroughly than anyone else in the room and is sharing conclusions, not arguments."</div><div class="quote-ref">Advocate Profile · Kagan</div></div>
+        <div class="quote-item"><div class="quote-text">"Miguel Estrada's prose has a quality I call ruthless clarity. Every ambiguity resolved, every unnecessary word removed, every sentence doing exactly the work it needs to do. Reading it feels effortless, which is the surest sign of enormous craft."</div><div class="quote-ref">Advocate Profile · Estrada</div></div>
+        <div class="quote-item"><div class="quote-text">"The short sentence is the most powerful sentence. Not always — sometimes complexity requires length. But for the most important proposition in any argument, isolation in a short sentence gives it a weight it cannot have when buried in a longer construction."</div><div class="quote-ref">Part V · Sentences</div></div>
+        <div class="quote-item"><div class="quote-text">"The word 'clearly' is the most common signal that what follows is not, in fact, clear. A proposition that is clear does not need to announce its clarity — the analysis that demonstrates it does that work."</div><div class="quote-ref">Part VI · Words</div></div>
+        <div class="quote-item"><div class="quote-text">"The verb is the engine of the sentence. The best legal writers choose verbs that characterise rather than merely describe — 'squarely rejected' rather than 'held,' 'compels' rather than 'supports,' 'dictates' rather than 'suggests.'"</div><div class="quote-ref">Part V · The Strong Verb</div></div>
+        <div class="quote-item"><div class="quote-text">"The fact section is not neutral territory. It is the first and best opportunity to create the sympathy that makes the legal argument persuasive rather than merely correct."</div><div class="quote-ref">Part II · Facts</div></div>
+        <div class="quote-item"><div class="quote-text">"Kathleen Sullivan's briefs have an architectural quality — the sense that every element has been designed from the ground up to serve a specific strategic purpose. Nothing is accidental. Nothing is merely conventional."</div><div class="quote-ref">Advocate Profile · Sullivan</div></div>
+        <div class="quote-item"><div class="quote-text">"The Bookend creates something that most briefs entirely lack: a sense that the document is a unified argument with a beginning and an end, rather than a collection of sections that happen to appear in sequence."</div><div class="quote-ref">Part I · The Bookend</div></div>
+        <div class="quote-item"><div class="quote-text">"The Slayer requires finding the one argument that ends the case and having the discipline to lead with it, develop it completely, and treat everything else as reinforcement. Most lawyers cannot resist making all their arguments equally. The best know which argument matters."</div><div class="quote-ref">Part IV · The Slayer</div></div>
+        <div class="quote-item"><div class="quote-text">"What unites the advocates in this book — Roberts and Kagan, Olson and Waxman, Clement and Dellinger — is not their politics or their clients or their practice areas. It is the quality of their craft. And craft, unlike talent, is learnable."</div><div class="quote-ref">Conclusion</div></div>
+        <div class="quote-item"><div class="quote-text">"The anaphora builds cumulative weight that no single sentence can carry alone. Three sentences beginning with the same phrase do not merely add — they multiply. The repetition itself is the argument."</div><div class="quote-ref">Part V · The Anaphora</div></div>
+        <div class="quote-item"><div class="quote-text">"Ted Olson understands that emotion in a brief is not a weakness — it is a source of conviction that communicates itself through specific word choices, sentence rhythms, and the selection of facts. The brief that makes you feel something stays with you."</div><div class="quote-ref">Advocate Profile · Olson</div></div>
+        <div class="quote-item"><div class="quote-text">"The Perry Mason is the most aggressive of all opening techniques — and the most effective when the other side has a fatal flaw. Reveal it immediately. Name it precisely. Frame the entire case around it before the other side can establish their own frame."</div><div class="quote-ref">Part I · The Perry Mason</div></div>
+        <div class="quote-item"><div class="quote-text">"The point heading that merely describes a topic is advocacy abandoned. Every point heading must assert a complete legal proposition — one that, if accepted, advances the case. The table of contents of a well-made brief is a brief."</div><div class="quote-ref">Part III · Point Headings</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"Point Made is the closest thing legal education has produced to a masterclass taught by the masters themselves. Guberman does not describe what great legal writing looks like — he shows you, in the actual words of the people who do it best, exactly how it is made. Study it, practise the techniques, and your briefs will be transformed."</p>
+  </div>
+
+</div>
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const PRINCE_HTML = `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+
+  :root {
+    --ink: #1a1208;
+    --gold: #b8922a;
+    --gold-light: #d4a843;
+    --parchment: #f5edd8;
+    --parchment-dark: #e8dbc0;
+    --border-c: #c9a96e;
+    --red-accent: #8b2020;
+    --muted: #5a4a32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, .wrap {
+    font-family: 'Cormorant Garamond', serif;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 0 3rem;
+  }
+
+  .hero {
+    background: #1a1208;
+    color: var(--parchment);
+    padding: 3.5rem 3rem 3rem;
+    text-align: center;
+    border-bottom: 4px double var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(184,146,42,0.04) 29px);
+    pointer-events: none;
+  }
+
+  .hero-ornament {
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 12px;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  .hero-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 52px;
+    line-height: 1.1;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .hero-subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: #c9a96e;
+    margin-top: 0.6rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-author {
+    margin-top: 1.2rem;
+    font-size: 15px;
+    color: #9a8060;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero-year {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 13px;
+    color: #7a6040;
+    letter-spacing: 2px;
+  }
+
+  .divider {
+    text-align: center;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 8px;
+    margin: 1.8rem 0;
+    opacity: 0.6;
+  }
+
+  .content-area {
+    padding: 0 2rem;
+    background: var(--parchment);
+    border: 1px solid var(--border-c);
+    border-top: none;
+  }
+
+  .intro-block {
+    padding: 2.5rem 0 1.5rem;
+    border-bottom: 1px solid var(--border-c);
+    margin-bottom: 2rem;
+  }
+
+  .intro-block p {
+    font-size: 17.5px;
+    line-height: 1.8;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .section-label {
+    font-family: 'IM Fell English', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 26px;
+    color: #1a1208;
+    border-bottom: 1px solid var(--border-c);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chapter-block {
+    margin-bottom: 2rem;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--border-c);
+  }
+
+  .chapter-num {
+    font-family: 'IM Fell English', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+  }
+
+  .chapter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--red-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #3d2e18;
+  }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .theme-card {
+    background: #1a1208;
+    color: var(--parchment);
+    border-radius: 2px;
+    padding: 1.2rem 1.1rem;
+    border: 1px solid var(--gold);
+  }
+
+  .theme-card .t-icon {
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+    color: var(--gold-light);
+  }
+
+  .theme-card .t-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 15px;
+    color: var(--gold-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .theme-card .t-desc {
+    font-size: 13.5px;
+    color: #b0956a;
+    line-height: 1.5;
+  }
+
+  .quotes-section {
+    background: #1a1208;
+    margin: 0 -2rem;
+    padding: 2.5rem 2rem;
+    border-top: 3px double var(--gold);
+  }
+
+  .quotes-section .section-title {
+    color: var(--gold-light);
+    border-bottom-color: #3a2c10;
+  }
+
+  .quote-item {
+    border-left: 3px solid var(--gold);
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.2rem;
+    background: rgba(184,146,42,0.06);
+  }
+
+  .quote-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--parchment);
+    line-height: 1.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .quote-ref {
+    font-size: 12px;
+    color: #7a6040;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .verdict-block {
+    background: var(--red-accent);
+    color: var(--parchment);
+    padding: 2rem;
+    margin-bottom: 0;
+    text-align: center;
+    border-top: 3px double #d4a843;
+  }
+
+  .verdict-block p {
+    font-family: 'IM Fell English', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">✦ ✦ ✦</div>
+    <div class="hero-title">The Prince</div>
+    <div class="hero-subtitle">Il Principe</div>
+    <div class="hero-author">Niccolò Machiavelli</div>
+    <div class="hero-year">Written 1513 · Published 1532</div>
+  </div>
+
+  <div class="content-area">
+
+    <div class="intro-block">
+      <p>A ruthlessly pragmatic treatise on political power — how to seize it, hold it, and survive it. Written in exile, dedicated to a Medici, and condemned by popes. Five centuries later, it remains the most feared book in politics.</p>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Historical Context</div>
+    <div class="section-title">The Man Behind the Book</div>
+    <p class="chapter-body" style="margin-bottom:2rem;">
+      Niccolò Machiavelli was a Florentine diplomat, historian, and civil servant who served the Florentine Republic for fourteen years. When the Medici family returned to power in 1512 and dissolved the republic, Machiavelli was accused of conspiracy, imprisoned, tortured, and ultimately exiled to his farm outside Florence. It was there — stripped of power, bored, desperate — that he wrote <em>The Prince</em> in 1513, intending it as a gift to Lorenzo de' Medici in hopes of regaining political favor. He never succeeded. The book was circulated in manuscript form during his lifetime but not published until 1532, five years after his death. Its frank treatment of power, deception, and political violence scandalized Europe and gave rise to the word "Machiavellian."
+    </p>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — Chapter by Chapter</div>
+    <div class="section-title">Part I — On Principalities</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters I–III</div>
+      <div class="chapter-title">Types of Principalities & Mixed States</div>
+      <div class="chapter-body">Machiavelli opens by classifying all states as either republics or principalities. Principalities are either hereditary (ruled by an established dynasty), new (recently conquered), or mixed (a blend of old and new territory). Hereditary principalities are easiest to hold: people are accustomed to the ruler's family, and the prince need only avoid outraging old customs. The real difficulty lies in new or mixed states. When a prince annexes new territory, the conquered population resents him if he changes their laws but may still revolt if he does not. Machiavelli's advice: destroy the old ruling family entirely, or go and live there in person. He cites France's repeated failures in Italy as proof that ruling from a distance, through intermediaries, is fatal. Colonies planted among the new subjects are cheaper and more effective than garrisons.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters IV–V</div>
+      <div class="chapter-title">How Kingdoms Differ — and Why Some Are Unshakeable</div>
+      <div class="chapter-body">Using Alexander the Great's conquest of Persia as a case study, Machiavelli distinguishes between two kinds of monarchy. In one (like Persia), a single absolute king rules through ministers who owe everything to him — hard to conquer but easy to hold once defeated. In the other (like France), a king rules alongside powerful nobles who have their own loyalties — easier to enter by allying with discontented barons, but nearly impossible to hold because those same barons will always scheme. He then addresses free cities: the only safe method is to destroy them outright. A city that has lived under its own laws will never forget freedom, and its citizens will forever look for a chance to revolt.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters VI–VIII</div>
+      <div class="chapter-title">New Princes — By Virtue, Fortune, or Crime</div>
+      <div class="chapter-body">Here the book reaches its moral core. New princes rise by one of three routes. The greatest are those who rise by their own <em>virtù</em> — not moral virtue but raw ability, will, and military genius. Machiavelli lists Moses, Romulus, Cyrus, and Theseus. Their greatness stemmed not from luck but from capacity. Such princes who win power by their own arms hold it firmly; those who depend on others' arms are fragile. The second route is Fortune — pure luck and the patronage of others. Cesare Borgia is the supreme example. He rose entirely through his father Pope Alexander VI's power, used every available means — alliances, treacheries, strategic massacres — to build an independent base, but when his father died, his foundations collapsed. Borgia was not at fault; Fortune was simply against him. The third route is crime: pure violence and wickedness. Agathocles of Sicily slaughtered the entire Sicilian senate in a single morning and held power for decades. Machiavelli does not praise him morally, but notes that cruelties well-applied — administered all at once, necessary, and not repeated — can consolidate power. Cruelties poorly applied — extended, escalated — breed hatred.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters IX–XI</div>
+      <div class="chapter-title">Civil Principalities & Ecclesiastical States</div>
+      <div class="chapter-body">A prince who rises not through crime but through the favor of either the nobles or the people occupies a "civil principality." The people only want not to be oppressed; the nobles want to oppress. It is far safer to have the people on your side: there are more of them, and a prince who earns popular hatred will be destroyed the moment Fortune turns. Ecclesiastical principalities — the Papal States, for instance — are in a class of their own. They are acquired by ability or luck but held by divine order, requiring no real governing skill. The Church's temporal power in Italy, Machiavelli notes, is the very reason Italy cannot unify under a single ruler.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — Chapter by Chapter</div>
+    <div class="section-title">Part II — On Arms & War</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters XII–XIV</div>
+      <div class="chapter-title">Mercenaries, Auxiliaries, and the Prince's Own Arms</div>
+      <div class="chapter-body">This section contains one of Machiavelli's most passionate and practical arguments. Mercenary armies — hired soldiers with no real stake in the outcome — are useless and dangerous. They fight weakly in peace, desert in war, and are held together only by payment. Italy's military humiliation at the hands of France and Spain was the direct result of her reliance on mercenaries. "Mercenaries and auxiliaries are useless and dangerous." Auxiliary armies — troops borrowed from a powerful ally — are even worse, for if they win, you are at their mercy; if they lose, you are ruined. A prince must have his own arms. He must be a student of war above all else, training his body by hunting and studying terrain, and training his mind through history and the study of great commanders. A prince who does not understand war will never be respected by his soldiers and cannot be a great ruler.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — Chapter by Chapter</div>
+    <div class="section-title">Part III — The Character of the Prince</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters XV–XVI</div>
+      <div class="chapter-title">On Qualities Praised and Blamed — and On Generosity</div>
+      <div class="chapter-body">Here Machiavelli makes his sharpest break with the classical tradition. All previous political philosophy — from Plato to Cicero — had argued that a good ruler must be a good man. Machiavelli demolishes this. A prince who always acts virtuously will be ruined by those who do not. Therefore he must know <em>how not to be good</em>, and use that knowledge when necessary. On generosity specifically: a prince who is lavishly generous will soon exhaust his treasury and be forced to tax his people heavily, which breeds hatred. Far better to have a reputation for miserliness, suffer the mild criticism that comes with it, and keep resources available for real necessity. True generosity — spending what is not yours, the spoils of war — is fine. Spending your own subjects' wealth is fatal.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XVII</div>
+      <div class="chapter-title">Cruelty and Mercy — Is It Better to Be Loved or Feared?</div>
+      <div class="chapter-body">This is the book's most famous passage. Every prince wishes to be both loved and feared, but when the two are incompatible, it is far safer to be feared than loved. Men will break ties of love when self-interest demands it; fear of punishment is more reliable. However — and Machiavelli is precise here — a prince must avoid being hated. Fear and hatred are different things. He can generate fear through strict justice without generating hatred, provided he keeps his hands off his subjects' property and women. Above all, he must not touch the property of others: men forget the death of a father sooner than they forget the loss of their inheritance. Cesare Borgia's famous controlled cruelty — executing his brutal lieutenant Remirro de Orco and displaying his body in the town square to distance himself from Remirro's excesses — is held up as a masterstroke.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XVIII</div>
+      <div class="chapter-title">How Princes Should Keep Faith</div>
+      <div class="chapter-body">A prince who keeps his word in all circumstances will be destroyed by those who do not. A prince must therefore be both a man and a beast — specifically, he must be both a fox (to recognize snares) and a lion (to frighten wolves). He should keep his word when it does not harm him; when circumstances change and honoring a promise would damage him, he must break it and justify the breach. Men are so simple and so governed by immediate necessity that a skillful deceiver will always find willing victims. A prince must be a great pretender and dissembler, appearing merciful, faithful, humane, religious — these appearances are advantageous — but he must be prepared to act against these virtues when necessity demands. The appearances matter; the substance can be arranged according to need.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters XIX–XXI</div>
+      <div class="chapter-title">Avoiding Contempt and Hatred — Reputation and Greatness</div>
+      <div class="chapter-body">A prince must above all else avoid being despised or hated. He generates contempt by appearing changeable, frivolous, effeminate, or cowardly. He generates hatred by seizing property and women. He who avoids both is secure even against conspiracies — for conspirators only act when they believe the people will welcome the deed. Machiavelli then surveys Roman emperors to test his thesis: emperors who were good but also feared by their armies were still destroyed; those who cultivated the army at the expense of the people were also destroyed. His conclusion: in Machiavelli's own time, the prince's first obligation is to the people, not the military. He also addresses fortresses — generally useless, since the best fortress is not being hated by the people — and the vital question of reputation. Nothing brings a prince more prestige than great enterprises and setting a personal example. Ferdinand of Aragon is praised as a model: his expulsion of the Moors, his wars in Africa, his invasion of France — each great deed renewed his reputation and left his enemies no time to conspire.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapters XXII–XXIII</div>
+      <div class="chapter-title">Ministers and Flatterers</div>
+      <div class="chapter-body">The quality of a prince's advisors is an index of his own intelligence. A shrewd prince surrounds himself with people who are honest enough to tell him unpleasant truths — but only when asked. He must protect such advisors from envy and give them enough reward that they do not seek to improve their position. The great danger is flatterers. Courts are full of them because men are so pleased by their own opinions that it is hard to defend oneself against flattery without also insulating oneself from truth. A wise prince should choose a small number of prudent counselors, permit them to speak honestly on any matter, listen carefully, then decide for himself — and be known for his own decisiveness, not dependence on others.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — Chapter by Chapter</div>
+    <div class="section-title">Part IV — Fortune, Virtue & Italy</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XXV</div>
+      <div class="chapter-title">The Power of Fortune and How to Resist Her</div>
+      <div class="chapter-body">This is the book's philosophical climax. Machiavelli compares Fortune to a raging river: when it floods, there is no resisting it, but in quiet times men can build dikes and embankments. Fortune governs roughly half of human affairs; the other half is left to our own will and energy. The great mistake is inflexibility. A man who succeeds through caution will be ruined when times call for impetuosity; a man who succeeds through boldness will fail when caution is needed. Fortune changes; men do not change their nature. Since Fortune is a woman, Machiavelli argues, she is better won by the bold and impetuous than by those who proceed coldly. Young men are more successful with her because they are bold; old men, being cautious, are left behind.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XXVI</div>
+      <div class="chapter-title">Exhortation to Liberate Italy</div>
+      <div class="chapter-body">The book ends with a passionate call to action directed at Lorenzo de' Medici. Italy, Machiavelli writes, has been ravaged by foreign powers — France, Spain, and Switzerland have all marched through it — because Italy lacked a single strong prince capable of unifying and defending her. The moment is ripe: the people are willing; the land is ready. All that is needed is someone with the ability and the will. Invoking Moses, Cyrus, and Theseus, he argues that Italy's condition is worse than theirs were — and therefore the glory of its liberator would be greater. The final lines cry out in borrowed poetry for an Italian leader to take up arms against the barbarian invaders.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Core Ideas</div>
+    <div class="section-title">Central Themes</div>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <div class="t-name">Virtù vs Fortune</div>
+        <div class="t-desc">Raw ability and will versus the role of chance. Great princes maximize the former to tame the latter.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">The Lion & the Fox</div>
+        <div class="t-desc">Force and cunning together. Neither alone is sufficient for lasting power.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Fear Over Love</div>
+        <div class="t-desc">Love is fragile; fear is reliable. But hatred must be avoided at all costs.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Realism vs Idealism</div>
+        <div class="t-desc">Men must be judged as they are, not as they ought to be. Idealism in power leads to ruin.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Necessary Cruelty</div>
+        <div class="t-desc">Cruelty used once, decisively, and with clear purpose is better than slow mercy that breeds chaos.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Appearances Matter</div>
+        <div class="t-desc">It is not enough to be good; one must appear good. Reputation is a form of power.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="quotes-section">
+    <div class="section-label" style="color:#7a6040;">Notable Passages</div>
+    <div class="section-title">Quotes from The Prince</div>
+
+    <div class="quote-item">
+      <div class="quote-text">"It is better to be feared than loved, if you cannot be both."</div>
+      <div class="quote-ref">Chapter XVII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Since love and fear can hardly exist together, if we must choose between them, it is far safer to be feared than loved."</div>
+      <div class="quote-ref">Chapter XVII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"A prince never lacks legitimate reasons to break his promise."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Men are so simple and so much inclined to obey immediate needs that a deceiver will never lack victims for his deceptions."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Everyone sees what you appear to be, few experience what you really are."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The first method for estimating the intelligence of a ruler is to look at the men he has around him."</div>
+      <div class="quote-ref">Chapter XXII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"There is no avoiding war; it can only be postponed to the advantage of others."</div>
+      <div class="quote-ref">Chapter III</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Whoever believes that new benefits will cause great personages to forget old injuries is deceived."</div>
+      <div class="quote-ref">Chapter VII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Mercenaries and auxiliaries are useless and dangerous; and if one holds his state based on these arms, he will stand neither firm nor safe."</div>
+      <div class="quote-ref">Chapter XII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"A prince ought to have no other aim or thought, nor select anything else for his study, than war and its rules and discipline."</div>
+      <div class="quote-ref">Chapter XIV</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"It is necessary for a prince wishing to hold his own to know how to do wrong, and to make use of it or not according to necessity."</div>
+      <div class="quote-ref">Chapter XV</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Men are driven by two principal impulses, either by love or by fear."</div>
+      <div class="quote-ref">Chapter XVII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Men sooner forget the death of their father than the loss of their patrimony."</div>
+      <div class="quote-ref">Chapter XVII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"A prince must imitate the fox and the lion, for the lion cannot protect himself from traps, and the fox cannot defend himself from wolves."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Whosoever desires constant success must change his conduct with the times."</div>
+      <div class="quote-ref">Chapter XXV</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Fortune is a woman, and if you wish to keep her under it is necessary to beat and ill-use her."</div>
+      <div class="quote-ref">Chapter XXV</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Fortune is the arbiter of one-half of our actions, but she still leaves us to direct the other half, or perhaps a little less."</div>
+      <div class="quote-ref">Chapter XXV</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Men in general judge more by the sense of sight than by the sense of touch, because everyone can see but few can test by feeling."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"A wise man ought always to follow the paths beaten by great men, and to imitate those who have been supreme."</div>
+      <div class="quote-ref">Chapter VI</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"He who is the cause of another becoming powerful is ruined; because that predominancy has been brought about either by astuteness or else by force, and both are distrusted by him who has been raised to power."</div>
+      <div class="quote-ref">Chapter III</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Injuries ought to be done all at one time, so that, being tasted less, they offend less."</div>
+      <div class="quote-ref">Chapter VIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Benefits ought to be conferred a little at a time, so that the flavour of them may last longer."</div>
+      <div class="quote-ref">Chapter VIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"There is nothing more difficult to take in hand, more perilous to conduct, or more uncertain in its success, than to take the lead in the introduction of a new order of things."</div>
+      <div class="quote-ref">Chapter VI</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The promise given was a necessity of the past: the word broken is a necessity of the present."</div>
+      <div class="quote-ref">Chapter XVIII</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"God will not do everything, and thus take away our free will and that share of glory which belongs to us."</div>
+      <div class="quote-ref">Chapter XXVI</div>
+    </div>
+  </div>
+
+  <div class="verdict-block">
+    <p>"The Prince is not a book about how politics ought to work. It is a manual for how it actually does — written by a man who had seen the machinery up close and lost everything for it."</p>
+  </div>
+
+</div>
+`;
+
+const ART_OF_WAR_HTML = `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+
+  :root {
+    --ink: #0d1a12;
+    --jade: #2a6b4a;
+    --jade-light: #3d9068;
+    --jade-bright: #50b882;
+    --silk: #f2ede0;
+    --silk-dark: #e3dbc8;
+    --border-c: #7aac8e;
+    --red-accent: #7b2020;
+    --gold: #b89030;
+    --gold-light: #d4a843;
+    --muted: #2e4a38;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, .wrap {
+    font-family: 'Cormorant Garamond', serif;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 0 3rem; }
+
+  .hero {
+    background: #0d1a12;
+    color: var(--silk);
+    padding: 3.5rem 3rem 3rem;
+    text-align: center;
+    border-bottom: 4px double var(--jade);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(42,107,74,0.06) 29px);
+    pointer-events: none;
+  }
+
+  .hero-ornament { font-size: 26px; color: var(--jade-bright); letter-spacing: 14px; margin-bottom: 1rem; opacity: 0.7; }
+
+  .hero-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 52px;
+    line-height: 1.1;
+    color: var(--jade-bright);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  }
+
+  .hero-subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: #7aac8e;
+    margin-top: 0.5rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-author { margin-top: 1.2rem; font-size: 15px; color: #5a8a6a; letter-spacing: 3px; text-transform: uppercase; }
+  .hero-year { display: inline-block; margin-top: 0.4rem; font-size: 13px; color: #4a7a5a; letter-spacing: 2px; }
+
+  .divider { text-align: center; color: var(--jade); font-size: 20px; letter-spacing: 10px; margin: 1.8rem 0; opacity: 0.5; }
+
+  .content-area {
+    padding: 0 2rem;
+    background: var(--silk);
+    border: 1px solid var(--border-c);
+    border-top: none;
+  }
+
+  .intro-block {
+    padding: 2.5rem 0 1.5rem;
+    border-bottom: 1px solid var(--border-c);
+    margin-bottom: 2rem;
+  }
+
+  .intro-block p {
+    font-size: 17.5px;
+    line-height: 1.8;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .section-label {
+    font-family: 'IM Fell English', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--jade);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 26px;
+    color: #0d1a12;
+    border-bottom: 1px solid var(--border-c);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chapter-block {
+    margin-bottom: 2rem;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--border-c);
+  }
+
+  .chapter-num {
+    font-family: 'IM Fell English', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--jade);
+    margin-bottom: 0.2rem;
+  }
+
+  .chapter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--red-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-body { font-size: 16px; line-height: 1.75; color: #1e3028; }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .theme-card {
+    background: #0d1a12;
+    color: var(--silk);
+    border-radius: 2px;
+    padding: 1.2rem 1.1rem;
+    border: 1px solid var(--jade);
+  }
+
+  .theme-card .t-name { font-family: 'IM Fell English', serif; font-size: 15px; color: var(--jade-bright); margin-bottom: 0.3rem; }
+  .theme-card .t-desc { font-size: 13.5px; color: #7aac8e; line-height: 1.5; }
+
+  .quotes-section {
+    background: #0d1a12;
+    margin: 0 -2rem;
+    padding: 2.5rem 2rem;
+    border-top: 3px double var(--jade);
+  }
+
+  .quotes-section .section-title { color: var(--jade-bright); border-bottom-color: #1a3a28; }
+
+  .quote-item {
+    border-left: 3px solid var(--jade);
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.2rem;
+    background: rgba(42,107,74,0.07);
+  }
+
+  .quote-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--silk);
+    line-height: 1.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .quote-ref { font-size: 12px; color: #4a7a5a; letter-spacing: 2px; text-transform: uppercase; }
+
+  .verdict-block {
+    background: var(--jade);
+    color: var(--silk);
+    padding: 2rem;
+    text-align: center;
+    border-top: 3px double var(--jade-bright);
+  }
+
+  .verdict-block p { font-family: 'IM Fell English', serif; font-size: 18px; line-height: 1.7; font-style: italic; }
+
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .principle-pill {
+    background: #0d1a12;
+    color: var(--jade-bright);
+    padding: 0.7rem 1rem;
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+    font-size: 14px;
+    border: 1px solid var(--jade);
+    border-radius: 2px;
+    line-height: 1.4;
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">— 孫 子 兵 法 —</div>
+    <div class="hero-title">The Art of War</div>
+    <div class="hero-subtitle">孫子兵法 · Sūnzǐ Bīngfǎ</div>
+    <div class="hero-author">Sun Tzu</div>
+    <div class="hero-year">Written c. 500 BC · China · 13 Chapters</div>
+  </div>
+
+  <div class="content-area">
+
+    <div class="intro-block">
+      <p>The oldest and most enduring military treatise ever written. Composed on bamboo strips in ancient China, applied in every war since — and in every boardroom, chess match, and negotiation that followed. Thirteen short chapters. Infinite depth.</p>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Historical Context</div>
+    <div class="section-title">The Man and the Manuscript</div>
+    <p class="chapter-body" style="margin-bottom:2rem;">
+      Sun Tzu — rendered in older transliteration as Sun Tzu or Sunzi — is believed to have been a Chinese military general and strategist living during the Spring and Autumn period of Chinese history, roughly 544–496 BC. His identity remains partly shrouded in legend; some scholars have questioned whether he was a single historical figure or a composite of several military thinkers. What is not in doubt is the text he left behind. <em>The Art of War</em> consists of thirteen short chapters, each focused on a distinct aspect of warfare and strategy. Written with extreme compression — each line is dense with meaning — it was used as a military manual by Chinese generals for over two millennia, was translated into French in 1772 (the first European translation), and has since been translated into virtually every language on earth. Napoleon studied it. Mao Zedong quoted it. It is required reading at West Point, and has been applied with equal fervor to business competition, sports strategy, legal battles, and diplomatic negotiations. Its central insight — that the highest form of strategy is to win without fighting at all — has never been surpassed.
+    </p>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — All 13 Chapters</div>
+    <div class="section-title">Part I — Planning, Calculation & Deception</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter I</div>
+      <div class="chapter-title">Laying Plans — The Five Constants</div>
+      <div class="chapter-body">Sun Tzu opens by declaring war the most serious matter a state can face — a question of life or death, existence or ruin, not to be entered into carelessly. Before any campaign, a commander must assess five fundamental factors: <em>The Moral Law</em> (whether the people are aligned with their ruler's purpose); <em>Heaven</em> (weather, season, climate); <em>Earth</em> (terrain, distances, danger); <em>The Commander</em> (his wisdom, courage, strictness, and humanity); and <em>Method and Discipline</em> (the organization of the army, the chain of command, logistics). The side that has calculated these factors most accurately before the battle begins will win. The side that has calculated poorly will lose. All warfare, he declares in this chapter's most famous line, is based on deception. Appear where you are not, attack where you are unexpected, feign weakness when strong, feign strength when weak. War is won before the first arrow flies.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter II</div>
+      <div class="chapter-title">Waging War — The Cost of Prolonged Conflict</div>
+      <div class="chapter-body">Sun Tzu calculates with cold precision the economic cost of maintaining an army in the field: thousands of chariots, hundreds of thousands of men, grain shipments across great distances. A prolonged campaign drains the treasury, exhausts the troops, blunts weapons, and invites neighboring states to exploit the weakness. Therefore, speed is the essence of war. There has never been a country that benefited from prolonged warfare. A skillful general makes his army live off the enemy — captured grain, captured equipment, captured men integrated into his own ranks. The goal is not just victory but efficient, swift, economical victory. A general who wins quickly and minimizes his country's drain is worth ten who win slowly.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter III</div>
+      <div class="chapter-title">Attack by Stratagem — The Supreme Ideal</div>
+      <div class="chapter-body">This is the book's philosophical heart. Supreme excellence in war is not winning a hundred battles — it is subduing the enemy's army without fighting at all. The highest strategy is to attack the enemy's plans; the next best is to disrupt his alliances; below that, attack his army in the field; and the worst of all — the last resort of the incompetent — is to besiege walled cities, which wastes men and months. Sun Tzu then articulates what has become perhaps his most famous formulation: know the enemy and know yourself, and you will not be imperiled in a hundred battles. Know yourself but not the enemy, and you will win one and lose one. Know neither, and you are certain to be in peril every time. Knowing — intelligence, assessment, self-awareness — is the whole game.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — All 13 Chapters</div>
+    <div class="section-title">Part II — Positioning, Energy & Timing</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter IV</div>
+      <div class="chapter-title">Tactical Dispositions — Invincibility and Vulnerability</div>
+      <div class="chapter-body">Invincibility lies in one's own hands; vulnerability lies in the enemy's. A skilled general first makes himself impossible to defeat, then waits for the enemy to present an opportunity. He does not create victory — he recognizes and seizes it when it appears. Sun Tzu introduces the concept of positioning: just as water takes the shape of the ground it flows over, an army must adapt its formation to the enemy's dispositions. The great general's victory looks easy because he has so arranged things that the victory was already certain before the battle. What the multitude see is the victory; they do not see the thousand preparations that made it inevitable. Visible genius is not genius — true mastery leaves no trace.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter V</div>
+      <div class="chapter-title">Energy — Direct and Indirect Force</div>
+      <div class="chapter-body">Sun Tzu introduces the distinction between <em>cheng</em> (direct, orthodox force) and <em>qi</em> (indirect, unorthodox force) — one of his most fertile concepts. In battle, use the direct force to engage the enemy; use the indirect force to win. The combination of these two principles is inexhaustible — like a river of infinite flow, like the sun and moon rising and setting without end. A skilled commander manages his army's energy the way a skilled archer manages tension in a bowstring: drawn fully, released at exactly the right moment. The army's momentum — its collective psychological and physical energy — is the commander's most powerful weapon. He engineers situations where his troops fight with the ferocity of desperate men, and the enemy's energy is dissipated.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter VI</div>
+      <div class="chapter-title">Weak Points and Strong — Shape and Shapelessness</div>
+      <div class="chapter-body">Whoever is first to the battlefield and awaits the enemy is fresh; whoever arrives second and rushes into battle is exhausted. The skilled general forces the enemy to come to him, never going to where the enemy wants. He attacks where the enemy is not prepared, appears where he is not expected. He concentrates against divided forces, striking ten against one. He keeps his own dispositions secret and forces the enemy to reveal theirs. The pinnacle of this art is to have no fixed form — to be, like water, shapeless. If the enemy cannot discern your form, they cannot plan against you. Military tactics are like water: water flows away from high ground and seeks low ground; the army avoids strength and strikes weakness. There are no fixed tactics, just as there is no fixed form to water.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter VII</div>
+      <div class="chapter-title">Maneuvering — The Difficulty of Turning Advantage from Danger</div>
+      <div class="chapter-body">Maneuvering an army — converting a disadvantageous situation into an advantageous one — is the hardest thing in war. An army that tries to move too fast without supplies will be captured; one that crawls wins nothing. Sun Tzu addresses the management of large forces through signal fires, drums, gongs, and flags — how to coordinate ten thousand men as if they were one. He discusses the psychology of morale over time: morning energy is highest, afternoon energy flags, evening energy is spent. Strike the enemy when his spirit is sluggish and his men are hungry and tired; meet him with fresh, ordered troops. Never pursue a feigned flight. Never attack uphill. These are tactical laws — reliable because they are grounded in the physical and psychological realities of human soldiers.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Full Summary — All 13 Chapters</div>
+    <div class="section-title">Part III — Terrain, Situations & Intelligence</div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter VIII</div>
+      <div class="chapter-title">The Nine Variations — Flexibility of Mind</div>
+      <div class="chapter-body">A general must be flexible. There are roads not to be traveled, armies not to be attacked, cities not to be assaulted, grounds not to be contested, orders from the sovereign not to be obeyed — if the situation demands otherwise. A general who understands only how to apply rules, not when to break them, is dangerous. Sun Tzu also warns against five dangerous faults in a commander: recklessness (leads to death), cowardice (leads to capture), quick temper (baitable by insults), excessive honor (baitable by shame), excessive concern for his men (vulnerable to harassment). These are not mere vices — they are exploitable weaknesses that an intelligent enemy will deliberately provoke.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter IX</div>
+      <div class="chapter-title">The Army on the March — Reading the Signs</div>
+      <div class="chapter-body">A general must read the landscape and the enemy's behavior like a physician reads symptoms. Sun Tzu enumerates dozens of specific signs: dust rising in high columns means chariots advancing; low and spreading dust means infantry. Soldiers leaning on their spears are hungry. Birds flying up in a flock signal an ambush beneath. Emissaries speaking in humble language while preparations are being increased signal that an attack is coming. Troops arriving and forming into companies signal a critical moment. A good general sees through these signs; a poor one is deceived by them. The chapter ends with a statement on discipline: punishment must be consistent and certain; rewards must come freely. Authority built only on affection collapses when discipline is needed.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter X</div>
+      <div class="chapter-title">Terrain — Six Varieties of Ground</div>
+      <div class="chapter-body">Sun Tzu classifies terrain into six types: accessible ground (both sides can move freely — occupy high, sunny positions and secure supply lines); entangling ground (easy to advance but hard to return — advance only if the enemy is unprepared); temporizing ground (equally disadvantageous to both — neither side should initiate); narrow passes (if you occupy them first, hold them; if the enemy holds them, do not attack unless he leaves a gap); precipitous heights (occupy the sunny side; if the enemy is there first, lure him away); distant ground (do not engage unless nearly equal). He also names six calamities that come not from the terrain but from the general: flight (attacking with too few men), insubordination (officers too strong relative to the troops), collapse (officers too weak), ruin (the general in a rage, before the situation is assessed), disorganization (the general too lenient), and rout (poor estimation of the enemy).</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XI</div>
+      <div class="chapter-title">The Nine Situations — From Dispersive to Desperate Ground</div>
+      <div class="chapter-body">The longest and most complex chapter, addressing nine distinct strategic situations determined by the army's position relative to its home, its enemy, and the terrain. <em>Dispersive ground</em> (fighting in one's own territory — soldiers think of home and flee): do not fight. <em>Facile ground</em> (just entered enemy territory): do not halt. <em>Contentious ground</em> (advantageous to both sides if occupied): hasten to it. <em>Open ground</em> (free movement for both): do not block the enemy's movements. <em>Ground of intersecting highways</em> (key junctions): consolidate alliances. <em>Serious ground</em> (deep in enemy territory): plunder for supplies. <em>Difficult ground</em> (forests, marshes, mountains): keep moving. <em>Hemmed-in ground</em> (narrow defiles, retreats blocked): use stratagem. <em>Desperate ground</em> (survival only through fighting): fight with everything. The underlying principle is that terrain determines psychology, and psychology determines outcome — the general's greatest task is to engineer the right psychological state in his own troops.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XII</div>
+      <div class="chapter-title">The Attack by Fire — Five Targets, Five Times</div>
+      <div class="chapter-body">Fire as a weapon must be used with intelligence. Sun Tzu identifies five things that can be attacked by fire: soldiers in their camp, stores, baggage trains, arsenals and magazines, and supply routes. Each requires specific conditions — dry weather, specific winds, the right season — to be effective. He then makes a broader moral argument rarely noted by those who read the book only for tactical tips: a sovereign should not start a war in anger; a general should not fight a battle in rage. Anger can be recovered from; a destroyed nation or a dead man cannot be brought back. The ruler who wages war in passion will regret it. This is one of the few passages in the book where Sun Tzu appeals explicitly to restraint and wisdom over pure tactical calculation.</div>
+    </div>
+
+    <div class="chapter-block">
+      <div class="chapter-num">Chapter XIII</div>
+      <div class="chapter-title">The Use of Spies — The Foundation of All Victory</div>
+      <div class="chapter-body">The final chapter, and in many ways the most radical. Sun Tzu argues that no commander can know the enemy's dispositions through supernatural means, through analogy, or through calculation alone — only through intelligence gathered by human sources. He classifies five types of spy: <em>local spies</em> (inhabitants of the enemy's territory); <em>inward spies</em> (officials of the enemy won over); <em>converted spies</em> (enemy agents turned double); <em>doomed spies</em> (fed false information and sent back to mislead the enemy, knowing they will be caught and killed); and <em>surviving spies</em> (those who return with actual information). The converted spy is most important of all — the one who lets you run the entire network. Spies must be treated generously, trusted completely, kept secret absolutely. The sovereign who cannot manage intelligence cannot manage war. Foreknowledge is the beginning of everything.</div>
+    </div>
+
+    <div class="divider">— ✦ —</div>
+
+    <div class="section-label">Core Ideas</div>
+    <div class="section-title">The Seven Pillars of Sun Tzu's Thought</div>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <div class="t-name">Win Without Fighting</div>
+        <div class="t-desc">The supreme ideal — subdue the enemy by strategy before a single battle is fought.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Deception as Doctrine</div>
+        <div class="t-desc">All warfare is deception. Appear where you are not. Strike where unexpected.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Know Yourself & Enemy</div>
+        <div class="t-desc">Intelligence — about yourself as much as the foe — is the root of all strategy.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Speed & Economy</div>
+        <div class="t-desc">Prolonged war destroys even the victor. Swift, efficient victory preserves everything.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Shapelessness</div>
+        <div class="t-desc">The general without fixed form cannot be countered. Adapt as water adapts to ground.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Terrain as Fate</div>
+        <div class="t-desc">Ground shapes psychology; psychology shapes armies. Knowing terrain is knowing outcomes.</div>
+      </div>
+      <div class="theme-card">
+        <div class="t-name">Moral Law First</div>
+        <div class="t-desc">The people must believe in their cause. An army without spirit cannot be commanded.</div>
+      </div>
+    </div>
+
+    <div class="section-label">At a Glance</div>
+    <div class="section-title">The Five Constant Factors</div>
+    <div class="principles-grid">
+      <div class="principle-pill">I. Moral Law<br><span style="font-size:12px;color:#4a7a5a;">Unity of Purpose</span></div>
+      <div class="principle-pill">II. Heaven<br><span style="font-size:12px;color:#4a7a5a;">Weather & Season</span></div>
+      <div class="principle-pill">III. Earth<br><span style="font-size:12px;color:#4a7a5a;">Terrain & Distance</span></div>
+      <div class="principle-pill">IV. Commander<br><span style="font-size:12px;color:#4a7a5a;">Wisdom & Courage</span></div>
+      <div class="principle-pill">V. Discipline<br><span style="font-size:12px;color:#4a7a5a;">Organisation & Law</span></div>
+    </div>
+
+  </div>
+
+  <div class="quotes-section">
+    <div class="section-label" style="color:#4a7a5a;">Notable Passages</div>
+    <div class="section-title">Quotes from The Art of War</div>
+
+    <div class="quote-item">
+      <div class="quote-text">"All warfare is based on deception."</div>
+      <div class="quote-ref">Chapter I — Laying Plans</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Supreme excellence consists in breaking the enemy's resistance without fighting."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"If you know the enemy and know yourself, you need not fear the result of a hundred battles."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"If you know yourself but not the enemy, for every victory gained you will also suffer a defeat."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"If you know neither the enemy nor yourself, you will succumb in every battle."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Victorious warriors win first and then go to war, while defeated warriors go to war first and then seek to win."</div>
+      <div class="quote-ref">Chapter IV — Tactical Dispositions</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"In war, let your great object be victory, not lengthy campaigns."</div>
+      <div class="quote-ref">Chapter II — Waging War</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"There is no instance of a country having benefited from prolonged warfare."</div>
+      <div class="quote-ref">Chapter II — Waging War</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Appear weak when you are strong, and strong when you are weak."</div>
+      <div class="quote-ref">Chapter I — Laying Plans</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt."</div>
+      <div class="quote-ref">Chapter VII — Maneuvering</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The general who wins the battle makes many calculations in his temple before the battle is fought."</div>
+      <div class="quote-ref">Chapter I — Laying Plans</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Opportunities multiply as they are seized."</div>
+      <div class="quote-ref">Chapter VI — Weak Points and Strong</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Speed is the essence of war. Take advantage of the enemy's unpreparedness; travel by unexpected routes."</div>
+      <div class="quote-ref">Chapter XI — The Nine Situations</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Move swift as the Wind, silently as the Forest, raid like Fire, unshakeable as the Mountain."</div>
+      <div class="quote-ref">Chapter VII — Maneuvering</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"He will win who knows when to fight and when not to fight."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"He will win who has military capacity and is not interfered with by the sovereign."</div>
+      <div class="quote-ref">Chapter III — Attack by Stratagem</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The art of war is of vital importance to the State. It is a matter of life and death, a road either to safety or to ruin."</div>
+      <div class="quote-ref">Chapter I — Laying Plans</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Ponder and deliberate before you make a move. He will conquer who has learnt the artifice of deviation."</div>
+      <div class="quote-ref">Chapter VII — Maneuvering</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The quality of decision is like the well-timed swoop of a falcon which enables it to strike and destroy its victim."</div>
+      <div class="quote-ref">Chapter V — Energy</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Invincibility lies in the defence; the possibility of victory in the attack."</div>
+      <div class="quote-ref">Chapter IV — Tactical Dispositions</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"A sovereign of high character and intelligence must be able to know the right man, should place him and give him free rein."</div>
+      <div class="quote-ref">Chapter XIII — The Use of Spies</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Do not repeat the tactics which have gained you one victory, but let your methods be regulated by the infinite variety of circumstances."</div>
+      <div class="quote-ref">Chapter VI — Weak Points and Strong</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Whoever is first in the field and awaits the coming of the enemy will be fresh for the fight; whoever is second in the field and has to hasten to battle will arrive exhausted."</div>
+      <div class="quote-ref">Chapter VI — Weak Points and Strong</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"If fighting is sure to result in victory, then you must fight, even though the ruler forbid it."</div>
+      <div class="quote-ref">Chapter X — Terrain</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"The consummate leader cultivates the moral law, and strictly adheres to method and discipline; thus it is in his power to control success."</div>
+      <div class="quote-ref">Chapter IV — Tactical Dispositions</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Hence the saying: If you know the enemy and know yourself, your victory will not stand in doubt."</div>
+      <div class="quote-ref">Chapter X — Terrain</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">"Anger may in time change to gladness; vexation may be succeeded by content. But a kingdom that has once been destroyed can never come again into being."</div>
+      <div class="quote-ref">Chapter XII — The Attack by Fire</div>
+    </div>
+  </div>
+
+  <div class="verdict-block">
+    <p>"The Art of War is not a book about destruction. It is a book about the supreme intelligence that makes destruction unnecessary — the mind that wins before the battle begins."</p>
+  </div>
+
+</div>
+`;
+
+const WORLDLY_WISDOM_HTML = `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+
+  :root {
+    --ink: #150a0a;
+    --crim: #7a1e2e;
+    --crim-light: #a02840;
+    --crim-bright: #c44060;
+    --velvet: #f5ece8;
+    --velvet-dark: #e8d8d0;
+    --border-c: #c49080;
+    --gold: #b89030;
+    --gold-light: #d4a843;
+    --muted: #4a2028;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, .wrap { font-family: 'Cormorant Garamond', serif; background: transparent; color: var(--ink); }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 0 3rem; }
+
+  .hero {
+    background: #150a0a; color: var(--velvet);
+    padding: 3.5rem 3rem 3rem; text-align: center;
+    border-bottom: 4px double var(--crim); position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(122,30,46,0.06) 29px);
+    pointer-events: none;
+  }
+  .hero-ornament { font-size: 22px; color: var(--crim-bright); letter-spacing: 14px; margin-bottom: 1rem; opacity: 0.75; }
+  .hero-title { font-family: 'IM Fell English', serif; font-size: 44px; line-height: 1.15; color: var(--crim-bright); letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+  .hero-subtitle { font-family: 'IM Fell English', serif; font-style: italic; font-size: 18px; color: #c49080; margin-top: 0.6rem; }
+  .hero-author { margin-top: 1.2rem; font-size: 15px; color: #8a5060; letter-spacing: 3px; text-transform: uppercase; }
+  .hero-year { display: inline-block; margin-top: 0.4rem; font-size: 13px; color: #6a4050; letter-spacing: 2px; }
+
+  .tab-bar {
+    display: flex; flex-wrap: wrap; background: #1e0e10;
+    border-bottom: 2px solid var(--crim); gap: 0; position: sticky; top: 0; z-index: 100;
+  }
+  .tab {
+    padding: 0.75rem 1.1rem; font-family: 'IM Fell English', serif;
+    font-size: 13px; color: #8a5060; cursor: pointer; letter-spacing: 0.5px;
+    border-right: 1px solid #3a1018; transition: all 0.2s; white-space: nowrap;
+  }
+  .tab:hover { color: var(--crim-bright); background: #2a1018; }
+  .tab.active { color: var(--crim-bright); background: #2e1018; border-bottom: 2px solid var(--crim-bright); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .content-area { padding: 0 2rem 2rem; background: var(--velvet); border: 1px solid var(--border-c); border-top: none; }
+
+  .intro-block { padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border-c); margin-bottom: 2rem; }
+  .intro-block p { font-size: 17px; line-height: 1.8; color: var(--muted); font-style: italic; text-align: center; }
+
+  .section-label { font-family: 'IM Fell English', serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--crim); margin-bottom: 0.4rem; margin-top: 2rem; }
+  .section-title { font-family: 'IM Fell English', serif; font-size: 24px; color: #150a0a; border-bottom: 1px solid var(--border-c); padding-bottom: 0.4rem; margin-bottom: 1.2rem; }
+
+  .maxim-block { margin-bottom: 1.6rem; padding-left: 1.2rem; border-left: 3px solid var(--border-c); }
+  .maxim-tag { font-family: 'IM Fell English', serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--crim); margin-bottom: 0.15rem; }
+  .maxim-title { font-weight: 600; font-size: 17px; color: #7a1e2e; margin-bottom: 0.4rem; }
+  .maxim-body { font-size: 15.5px; line-height: 1.72; color: #2e1018; }
+
+  .divider { text-align: center; color: var(--crim); font-size: 18px; letter-spacing: 10px; margin: 1.5rem 0; opacity: 0.4; }
+
+  .quotes-section { background: #150a0a; margin: 0 -2rem; padding: 2.5rem 2rem; border-top: 3px double var(--crim); }
+  .quotes-section .section-title { color: var(--crim-bright); border-bottom-color: #3a1018; }
+
+  .quote-item { border-left: 3px solid var(--crim); padding: 0.75rem 1.1rem; margin-bottom: 1.1rem; background: rgba(122,30,46,0.07); }
+  .quote-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 16.5px; color: var(--velvet); line-height: 1.7; margin-bottom: 0.35rem; }
+  .quote-ref { font-size: 11px; color: #8a5060; letter-spacing: 2px; text-transform: uppercase; }
+
+  .verdict-block { background: var(--crim); color: var(--velvet); padding: 2rem; text-align: center; border-top: 3px double var(--crim-bright); }
+  .verdict-block p { font-family: 'IM Fell English', serif; font-size: 17px; line-height: 1.7; font-style: italic; }
+
+  .stat-strip { display: flex; justify-content: center; gap: 2.5rem; background: #150a0a; padding: 1.3rem 2rem; border-bottom: 1px solid var(--crim); flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat .num { font-family: 'IM Fell English', serif; font-size: 34px; color: var(--crim-bright); line-height: 1; }
+  .stat .lbl { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #8a5060; margin-top: 0.2rem; }
+
+  .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
+  .theme-card { background: #150a0a; border: 1px solid var(--crim); padding: 1rem; border-radius: 2px; }
+  .theme-card .t-name { font-family: 'IM Fell English', serif; font-size: 14px; color: var(--crim-bright); margin-bottom: 0.25rem; }
+  .theme-card .t-desc { font-size: 12.5px; color: #c49080; line-height: 1.45; }
+</style>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-ornament">— ✦ ORÁCULO MANUAL ✦ —</div>
+    <div class="hero-title">The Art of Worldly Wisdom</div>
+    <div class="hero-subtitle">Oráculo Manual y Arte de Prudencia — Complete Thematic Guide</div>
+    <div class="hero-author">Baltasar Gracián · 1601–1658</div>
+    <div class="hero-year">Published 1647 · Spain · All 300 Maxims Covered</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">300</div><div class="lbl">Maxims</div></div>
+    <div class="stat"><div class="num">10</div><div class="lbl">Thematic Groups</div></div>
+    <div class="stat"><div class="num">1647</div><div class="lbl">Published</div></div>
+    <div class="stat"><div class="num">30+</div><div class="lbl">Quotes</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('context')">Context</div>
+    <div class="tab" onclick="show('self')">The Self</div>
+    <div class="tab" onclick="show('world')">The World</div>
+    <div class="tab" onclick="show('speech')">Speech & Wit</div>
+    <div class="tab" onclick="show('time')">Time & Fortune</div>
+    <div class="tab" onclick="show('virtue')">Virtue & Vice</div>
+    <div class="tab" onclick="show('excellence')">Excellence</div>
+    <div class="tab" onclick="show('adversity')">Adversity</div>
+    <div class="tab" onclick="show('wisdom')">Deep Wisdom</div>
+    <div class="tab" onclick="show('quotes')">All Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- CONTEXT -->
+    <div id="context" class="panel active">
+      <div class="intro-block">
+        <p>Three hundred maxims on navigating a world of ambition, envy, and hidden motives — written by a Jesuit priest who was punished for writing it, translated by Schopenhauer, absorbed by Nietzsche, and read in secret by every serious mind since.</p>
+      </div>
+
+      <div class="section-label">The Man</div>
+      <div class="section-title">Baltasar Gracián — The Jesuit Who Mapped Human Nature</div>
+      <div class="maxim-body" style="margin-bottom:1.5rem;">Baltasar Gracián was born in Belmonte, Aragon, in 1601 and entered the Society of Jesus at seventeen. He spent his life teaching rhetoric and theology at Jesuit colleges, developing a reputation as one of the sharpest minds and most acerbic observers in Spain. He was also ungovernable. He published repeatedly without permission from his superiors — a serious breach of Jesuit discipline — and each publication brought him closer to formal censure. The <em>Oráculo Manual</em> of 1647 was published under the pseudonym of a friend. When the order discovered his authorship, he was publicly reprimanded, stripped of his teaching privileges, and confined. He died a decade later, in 1658, formally disgraced within the institution he had served his entire life.</div>
+
+      <div class="maxim-body" style="margin-bottom:1.5rem;">The book consists of 300 aphorisms — dense, compressed, often paradoxical observations on how an intelligent person should conduct themselves in society. Unlike classical advice literature, Gracián makes no appeal to idealism. He describes the world as it actually operates: competitive, envious, full of self-interest poorly disguised as virtue, and navigable only by those who combine genuine excellence with practical intelligence. The Spanish Baroque context matters: this was a world of elaborate court ceremony, where appearance and reality had been definitively separated, where patronage determined careers, and where a single misstep in a room full of rivals could end a life's work.</div>
+
+      <div class="maxim-body" style="margin-bottom:1.5rem;">Arthur Schopenhauer translated the <em>Oráculo</em> into German in 1832 and called it one of the most profitable books ever written. Friedrich Nietzsche absorbed it deeply. It has been used as a manual by diplomats, courtiers, merchants, generals, and politicians for nearly four centuries. Its continuing relevance is a testament to Gracián's core insight: human nature does not change. The specific courts change; the machinery of ambition, envy, and social performance does not.</div>
+
+      <div class="section-label">Structure</div>
+      <div class="section-title">How to Read the 300 Maxims</div>
+      <div class="maxim-body" style="margin-bottom:1rem;">The <em>Oráculo</em> is not a linear argument — it has no chapters, no narrative arc, no progression from premise to conclusion. It is a collection of 300 standalone observations, each given a title and a brief elaboration. They can be read in any order. Many contradict each other on the surface, because Gracián is not building a system — he is mapping a terrain that contains genuine contradictions. Some maxims advise boldness; others advise patience. Some praise openness with friends; others warn that even friends cannot be fully trusted. The apparent inconsistency is the point: wisdom is contextual, not algorithmic. What follows is a complete thematic organization of all 300 maxims into ten groups.</div>
+    </div>
+
+    <!-- THE SELF -->
+    <div id="self" class="panel">
+      <div class="intro-block"><p>The foundation of all Gracián's advice is the disciplined, self-aware individual. Before navigating the world, one must know and master oneself completely.</p></div>
+
+      <div class="section-label">Cluster 1 of 10</div>
+      <div class="section-title">The Self — Knowledge, Mastery & Concealment</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 1, 4, 6, 7, 34, 69, 89</div>
+        <div class="maxim-title">Know Yourself — Your Strengths, Limits, and Ruling Passion</div>
+        <div class="maxim-body">Self-knowledge is Gracián's bedrock. Every person has a dominant quality — an area of genuine superiority — and every person has a ruling passion, a weakness so deep it can be used against them. The wise person identifies both with total honesty. Know your best quality and cultivate it deliberately — it is the engine of your reputation. Know your ruling passion and guard it ferociously, because anyone who identifies it holds a key to manipulating you. Gracián also insists on knowing your natural temperament: whether you tend toward recklessness or timidity, toward excess or withholding. These tendencies cannot be eliminated, but they can be managed — which is the whole project of self-mastery.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 3, 98, 130, 179, 232</div>
+        <div class="maxim-title">Conceal Yourself — Never Be Fully Legible</div>
+        <div class="maxim-body">Knowing yourself is private work. Displaying that self-knowledge — revealing your plans, your passions, your weaknesses, your ambitions — is a catastrophic error. The person who is completely legible gives rivals a map for defeating them. Gracián advises concealing intentions until the last possible moment, never announcing plans before they are complete, and maintaining a degree of opacity even with allies. This is not dishonesty in the moral sense — it is discretion, which he considers a form of intelligence. What others cannot read, they cannot counteract.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 50, 116, 177, 216</div>
+        <div class="maxim-title">Never Act From Passion — Reason Must Govern</div>
+        <div class="maxim-body">A person who acts from anger, jealousy, enthusiasm, or wounded pride has handed the keys of their behavior to whoever provoked those feelings. Gracián is severe on this point: passion drives out reason, and without reason, you cannot act for yourself. An enemy who can make you angry has already won half the battle — they have substituted their agenda for your own. The great practical discipline is to feel what you feel privately and act from reason publicly. This applies equally to enthusiasm: visible eagerness weakens your negotiating position and makes you predictable.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 2, 28, 52, 166, 237</div>
+        <div class="maxim-title">Master Your Defects — Everyone Has Them</div>
+        <div class="maxim-body">No person is without weakness. The question is not whether defects exist but whether they have been identified and their public visibility managed. A man who knows he is impatient can prepare himself before situations that will test his patience. A person who knows they are prone to vanity can catch themselves before that vanity becomes visible to rivals. Gracián makes a further point: do not actively conceal defects, because the effort of concealment often reveals them more clearly. Instead, develop compensating strengths that direct attention elsewhere. And never point out the defects of others publicly — it creates enemies without creating any benefit, and marks you as someone who cannot be trusted with private knowledge.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 57, 76, 119, 201</div>
+        <div class="maxim-title">Do Not Belong So Wholly to Others That You Do Not Belong to Yourself</div>
+        <div class="maxim-body">Independence of mind and will is among Gracián's most insistent themes. A person who has surrendered their own judgment to a patron, a faction, a party, or a friend's expectations has lost the very thing that makes them valuable. Gracián advises preserving a core of self-direction — opinions formed privately, decisions made on their own merits, a zone of autonomous thought that no external relationship penetrates. This is not isolation; it is the preservation of the thing that makes genuine counsel and genuine action possible. Those who agree with everyone end up meaning nothing to anyone.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 8, 87, 159, 204</div>
+        <div class="maxim-title">Know Your Dominant Quality and Deploy It</div>
+        <div class="maxim-body">Every person of genuine excellence has one quality that exceeds all others — a particular intelligence, a social grace, a creative power, a capacity for endurance. Gracián advises identifying this quality with precision and building your reputation on it deliberately. Generalists impress no one deeply; the person who is extraordinarily good at one identifiable thing commands a specific and durable form of admiration. This does not mean neglecting other qualities — it means understanding which one is your engine and ensuring that the world knows you through it.</div>
+      </div>
+    </div>
+
+    <!-- THE WORLD -->
+    <div id="world" class="panel">
+      <div class="intro-block"><p>Gracián maps the social world with the precision of a naturalist studying a hostile ecosystem — courts, rivals, allies, fools, flatterers, and the ever-present machinery of envy.</p></div>
+
+      <div class="section-label">Cluster 2 of 10</div>
+      <div class="section-title">The World — Courts, People & the Machinery of Envy</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 5, 15, 94, 148, 168</div>
+        <div class="maxim-title">Reputation Is Your Most Precious Asset — Protect It Above All</div>
+        <div class="maxim-body">Reputation is not vanity — it is capital. A formidable reputation works constantly on your behalf even when you are absent: rivals hesitate, patrons extend trust, opportunities arrive unrequested. But reputation is catastrophically fragile. A single petty act, a single visible panic, a single indiscretion witnessed by the wrong person can undo decades of careful construction. Gracián's rule: never act in a way that damages your reputation for any temporary gain. Never argue in public with people whose opinion does not matter. Never explain yourself to those who have already decided against you — justification reads as weakness. Let your reputation speak first in every room you enter.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 10, 26, 102, 131, 200</div>
+        <div class="maxim-title">Read People Accurately and Quickly — Most Show You Who They Are</div>
+        <div class="maxim-body">A significant portion of the <em>Oráculo</em> is devoted to the skill of reading people. Gracián distrusts first impressions — not because they are always wrong, but because experienced deceivers have learned to manipulate them deliberately. Instead, he recommends watching behavior across time and different circumstances: how someone acts when they believe they are unobserved; how they treat subordinates; how they respond to unexpected success or unexpected failure. He notes that words are the least reliable signal — watch what people do when there is no audience for their virtue. He also warns against the equal error of dismissing anyone as negligible: the person you have publicly disregarded will remember the slight far longer than you remember making it.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 7, 43, 110, 194</div>
+        <div class="maxim-title">Avoid Fools — They Are More Dangerous Than Enemies</div>
+        <div class="maxim-body">The fool is not simply ignorant — ignorance can be corrected. The fool is someone whose judgment is so fundamentally compromised that no evidence, argument, or experience improves it. What makes fools dangerous is their unpredictability: they do not follow the logic of self-interest that allows you to anticipate clever rivals. Associating with them damages your reputation by proximity — people assume you share their level. Arguing with them in public is a perfect trap: you cannot win, because defeating a fool publicly makes you seem unkind, while losing is catastrophic. The only safe strategy is early identification and elegant avoidance.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 13, 25, 92, 142, 192</div>
+        <div class="maxim-title">Choose Your Associates with Extreme Care — They Define You</div>
+        <div class="maxim-body">The company you keep is the most visible statement you make about yourself. Associate with people of excellence — in character, intellect, or achievement — and that excellence reflects on you. Associate with those who are admired, and some of that admiration attaches to you. The converse is equally true and more dangerous: the flaws and failures of your associates stain you whether or not you share them. Gracián advises treating the selection of friends and colleagues as the most consequential decision in a worldly life — more consequential than individual actions, because associations are permanent where single acts are forgotten.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 20, 37, 73, 119, 221</div>
+        <div class="maxim-title">Manage Envy — Excellence Always Provokes It</div>
+        <div class="maxim-body">Envy is not an occasional emotion but the permanent background of any society populated by ambitious people. Every success you have is noted and resented by someone near you. The naive response is to display success openly, which only intensifies resentment. The wise response is to moderate visibility: share credit generously whether or not it is deserved, avoid ostentatious displays of good fortune, give rivals enough psychological space to feel undiminished. This is not false modesty — it is strategic intelligence. You do not need your rivals to know exactly how well things are going; you need them not to feel threatened enough to unite against you. Let your enemies underestimate you until underestimating you becomes impossible.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 17, 45, 82, 133, 197</div>
+        <div class="maxim-title">Flatterers — The Most Dangerous People in Any Court</div>
+        <div class="maxim-body">Flatterers are more dangerous than enemies because enemies you can see and prepare for, while flatterers work their damage through apparent kindness. The person who tells you only what you want to hear is quietly disconnecting you from reality — ensuring that your decisions are based on an inflated and false picture of your own competence and position. Gracián advises cultivating the rare person who tells you the truth even when it is uncomfortable, and treating such frankness as the most valuable gift one person can give another. The flatterer, by contrast, is investing in your goodwill at the cost of your judgment. Never trust anyone who has never disagreed with you.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 58, 74, 100, 160, 199</div>
+        <div class="maxim-title">Cultivate the Right Patrons — But Never Be Fully Dependent on One</div>
+        <div class="maxim-body">Gracián writes from a world of patronage where careers are made or destroyed by the favor of powerful individuals. A patron is necessary — access to power, resources, and opportunity rarely comes any other way. But complete dependency on a single patron is fatal. When the patron falls, everyone attached to them falls too. The wise person cultivates multiple sources of support, maintains useful relationships across rival factions, and is never so completely identified with a single powerful figure that their own fortune rises and falls entirely with his. Be useful enough to be retained; be distinguished enough to bring credit; but never outshine your patron so visibly that you become a threat rather than an asset.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 27, 56, 88, 189</div>
+        <div class="maxim-title">Never Be the Bearer of Bad News</div>
+        <div class="maxim-body">Gracián makes a sharp practical observation: the messenger is blamed for the message. The person who delivers unwelcome news — however loyal, however honest, however necessary the delivery — absorbs a portion of the anger and distress the news itself provokes. This is not rational, but it is consistent across all societies and periods. The worldly person therefore avoids being the habitual bearer of difficulties, finds intermediaries where possible, and when bad news must be delivered personally, frames it with such care for the recipient's dignity that the act of delivery itself becomes a demonstration of loyalty rather than a source of resentment.</div>
+      </div>
+    </div>
+
+    <!-- SPEECH & WIT -->
+    <div id="speech" class="panel">
+      <div class="intro-block"><p>For Gracián, speech is not communication — it is performance, strategy, and reputation management happening simultaneously. Every word either builds or erodes your standing.</p></div>
+
+      <div class="section-label">Cluster 3 of 10</div>
+      <div class="section-title">Speech & Wit — The Art of Saying Exactly the Right Thing</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 4, 30, 148, 160, 203</div>
+        <div class="maxim-title">Speak Little — Say Only What Needs Saying</div>
+        <div class="maxim-body">Gracián regards excessive talking as one of the most common and costly of errors. The person who speaks too much reveals too much — their opinions, their uncertainties, their irritations, their ambitions — giving rivals a continuous supply of material to use against them. Silence, by contrast, commands a form of involuntary respect: people attribute to the quiet person depths they may or may not possess, and the quality of what they do say is elevated by its rarity. Brevity is not rudeness — it is the signal of someone whose time and thoughts are valuable. The most effective speakers are those who leave every conversation with listeners wishing they had said more.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 22, 65, 99, 167, 208</div>
+        <div class="maxim-title">Wit Builds Reputation — But Pointed Wit Destroys It</div>
+        <div class="maxim-body">A reputation for genuine wit — the ability to illuminate a situation with a perfectly placed word or observation — is among the most powerful social assets a person can possess. Gracián admires wit deeply. But he distinguishes sharply between wit that includes and elevates and wit that wounds. The person who is known for cutting remarks, for publicly humiliating others with clever language, accumulates a long list of injured parties who will look for their opportunity. One exposed person, publicly humiliated, is an enemy for life. True wit, for Gracián, is not cruelty with good timing — it is intelligence that makes everyone in the room feel more alive.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 14, 79, 170, 215</div>
+        <div class="maxim-title">Manner Carries More Than Content — How You Say It Is What They Remember</div>
+        <div class="maxim-body">A refusal delivered with grace leaves no wound. A piece of unwelcome news framed with care for the recipient's dignity is received entirely differently than the same information delivered bluntly. Gracián insists that manner — tone, timing, the warmth or coldness of delivery — carries more communicative weight than the literal content of words. A denial wrapped in good manner becomes a kindness. A truth delivered harshly becomes an attack. Those who master manner have mastered the most powerful instrument of social navigation: they can say difficult things without making enemies, and can make allies without making promises.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 35, 97, 175, 222</div>
+        <div class="maxim-title">Know How to Ask — There Is No More Difficult Art</div>
+        <div class="maxim-body">Making a request is a delicate operation that most people execute poorly. Ask too directly and you create the discomfort of an unavoidable yes or no. Ask too obliquely and the request is not understood. Ask at the wrong moment — when the person is preoccupied, when they have just suffered a reversal, when they are surrounded by rivals — and the content of the request is almost irrelevant. Gracián advises studying the person you need something from before approaching them: understand their mood, their current pressures, their particular vanities, and frame the request in terms that serve their self-image. The most skillful requesters make the person they are asking feel that granting the favor is an expression of their own generosity rather than a concession to someone else's need.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 68, 122, 193, 244</div>
+        <div class="maxim-title">Know How to Refuse — The Graceful No Is an Art Form</div>
+        <div class="maxim-body">The inability to refuse — to say no to requests that should be refused — is one of the most costly weaknesses Gracián identifies. The person who cannot refuse becomes a resource others draw on without limit, and their inability to protect their own time and energy eventually makes them useless to everyone including themselves. But the manner of refusal matters as much as the refusal itself. A flat, unexplained no creates an enemy. A refusal that preserves the dignity of the person being refused — that finds a reason rooted in circumstance rather than unwillingness, that leaves the door open to the relationship if not to the specific request — is an act of social intelligence. The art of the graceful no is one of the most undervalued skills in worldly life.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 18, 47, 158, 236</div>
+        <div class="maxim-title">Never Complain — It Signals Weakness and Earns Nothing</div>
+        <div class="maxim-body">Gracián is absolute on this point. Complaining — about misfortune, about the behavior of others, about the unfairness of circumstances — accomplishes nothing except to signal to everyone present that you are a victim of events rather than a master of them. It inspires not sympathy but a quiet contempt, even from those who express verbal solidarity. The worldly person absorbs difficulties privately, adjusts, and moves forward without public announcement of the difficulty. This is not repression — it is the recognition that displaying suffering invites others to treat you as though you are defined by it. Those who endure with visible composure command a respect that those who endure with complaint never receive.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 86, 126, 156, 214</div>
+        <div class="maxim-title">Think With the Few — Speak With the Many</div>
+        <div class="maxim-body">One of Gracián's subtlest pieces of advice on speech: reserve your actual opinions — the ones formed by genuine reflection, the ones that may be unconventional or that contradict fashionable positions — for private counsel with people you trust. In public, speak in ways that do not needlessly affront the majority. This is not cowardice — it is efficiency. Spending your energy defending unpopular truths in rooms full of people who cannot hear them wastes resources that could be used where they matter. The diplomat speaks to the room; the thinker speaks to the few who are capable of understanding. Knowing which mode is required in which situation is itself a form of wisdom.</div>
+      </div>
+    </div>
+
+    <!-- TIME & FORTUNE -->
+    <div id="time" class="panel">
+      <div class="intro-block"><p>Timing is the invisible factor that determines whether the same act succeeds or fails. Fortune is the force beyond calculation — but it can be prepared for, endured, and sometimes directed.</p></div>
+
+      <div class="section-label">Cluster 4 of 10</div>
+      <div class="section-title">Time & Fortune — The Art of the Right Moment</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 55, 60, 96, 163, 247</div>
+        <div class="maxim-title">Timing Is Everything — The Same Act at the Wrong Moment Fails Utterly</div>
+        <div class="maxim-body">Gracián returns to timing more insistently than to almost any other subject. A request made at the right moment succeeds; the identical request made an hour earlier or an hour later fails — and fails in ways that are permanent, because bad timing creates impressions that outlast the specific request. He advises developing a sensitivity to the emotional and situational weather of the people you need things from: learning to read readiness, to identify the moment of receptivity, and to hold back until that moment arrives even when impatience is screaming to act. Much of what passes for luck in worldly affairs is simply the intelligence to wait for the moment when action becomes possible.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 24, 55, 137, 182, 251</div>
+        <div class="maxim-title">Know How to Wait — Patience Is a Form of Power</div>
+        <div class="maxim-body">Patience for Gracián is not passivity. It is the active, disciplined refusal to act before conditions are favorable — the strategic withholding of energy until it can be deployed with maximum effect. He draws on military analogies: the general who waits while his enemy overextends is winning, not waiting. The courtier who holds his request until the patron is in precisely the right mood is working, not idle. Time spent waiting for the right moment is not time wasted — it is the most important part of the operation, because action taken prematurely destroys not only that specific attempt but often the possibility of future attempts as well.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 38, 80, 153, 176</div>
+        <div class="maxim-title">Leave Something to Be Desired — Never Give Everything at Once</div>
+        <div class="maxim-body">One of Gracián's most counterintuitive maxims: never satisfy anyone completely. The person who reveals everything they know in one conversation, grants every favor at once, or delivers their full performance at the first opportunity has nothing left to offer. Desire — the wanting of more — is the engine of continued interest and continued value. The advisor who always holds one insight in reserve, the friend who always has more warmth to give, the performer who always leaves the audience wanting another act — these people maintain a gravitational pull that those who give everything immediately cannot sustain. Gracián applies this to intellect, charm, generosity, and counsel alike.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 41, 105, 155, 220, 260</div>
+        <div class="maxim-title">Know When to Stop — Endings Matter More Than Beginnings</div>
+        <div class="maxim-body">Gracián observes that most people are more skilled at beginnings than at endings. They start well — with energy, with preparation, with the benefit of novelty — but they do not know when they have reached the peak of an interaction, a negotiation, or a performance, and they continue past it into diminishment. The brilliant speech that goes on five minutes too long is remembered for those five minutes. The negotiation pressed past the point of optimal settlement collapses. The social visit that extends past its natural conclusion ends on a note of mild tedium. Knowing when to stop — when you are at the high point of an encounter and can exit on that note — is among the rarest of worldly skills.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 29, 72, 111, 234</div>
+        <div class="maxim-title">Adapt to the Times — Stubbornness Is Not Integrity</div>
+        <div class="maxim-body">Gracián draws a firm line between genuine principle and mere stubbornness. The person who refuses to adapt to changing circumstances because they confuse inflexibility with integrity is not noble — they are simply ineffective. Times change; what worked in one context fails in another; what was dangerous yesterday is required today. The wise person holds their actual values constant while holding their methods in constant revision. Refusing to update your approach is not virtue — it is the inability to learn. Gracián admires the person who can move between different social registers, different kinds of company, and different demands with fluid ease, without losing their essential character.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 51, 115, 145, 188</div>
+        <div class="maxim-title">Fortune Favors the Prepared — But Cannot Be Commanded</div>
+        <div class="maxim-body">Gracián does not believe in pure luck. Fortune — the unpredictable element in human affairs — operates, but it operates on material that human preparation has already shaped. The person who has built genuine competence, maintained useful relationships, preserved their reputation, and developed the intelligence to recognize opportunity will find that Fortune seems to favor them — not because they are lucky, but because they are ready when luck arrives. The person who has done none of these things experiences the same external events as disasters. Preparation does not eliminate Fortune's role; it determines whether Fortune's interventions help or destroy.</div>
+      </div>
+    </div>
+
+    <!-- VIRTUE & VICE -->
+    <div id="virtue" class="panel">
+      <div class="intro-block"><p>Gracián is not a cynic. He insists on genuine virtue — but he insists equally that virtue without intelligence is helpless in a world that is not itself virtuous.</p></div>
+
+      <div class="section-label">Cluster 5 of 10</div>
+      <div class="section-title">Virtue, Vice & the Moral Architecture of the Wise Person</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 1, 39, 146, 200, 289</div>
+        <div class="maxim-title">Virtue Is the Foundation — Without It, Everything Collapses</div>
+        <div class="maxim-body">Gracián is frequently misread as a handbook for cynicism or manipulation. He is not. Genuine goodness — integrity, justice, reliability, real care for those in your charge — is for him the bedrock without which all the strategic intelligence in the world collapses eventually. A person without genuine character who masters the social arts of the <em>Oráculo</em> is a fraud, and frauds are exposed. The collapse of a reputation built on nothing but appearances is more total than any other kind of failure, because the contrast between the constructed persona and the discovered reality is experienced as deliberate deception. Gracián's ideal is a person of real virtue who has additionally learned the arts of worldly navigation — not a tactician who has learned to simulate virtue.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 60, 97, 146, 201, 266</div>
+        <div class="maxim-title">Virtue Without Prudence Is Helpless — Goodness Must Learn to Protect Itself</div>
+        <div class="maxim-body">The most morally demanding of Gracián's ideas: goodness that cannot defend itself is not an admirable quality — it is a vulnerability. The person who is honest in a world of deceivers, loyal in a world of calculated alliances, and openly kind in a world that treats kindness as weakness will be exploited and eventually destroyed. This is not an argument for abandoning virtue — it is an argument for arming it. The saint in the wrong court is simply a victim. The good person who is also strategically intelligent, who knows when and how to reveal their goodness and when to protect it, is something far rarer and more valuable: a genuinely good person who survives.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 9, 23, 78, 128, 244</div>
+        <div class="maxim-title">Avoid Affectation — Trying Too Hard Is Instantly Visible</div>
+        <div class="maxim-body">Affectation — the performance of qualities you do not possess, the studied display of virtues or accomplishments — is for Gracián one of the most self-defeating of errors, and one of the most common. People who try too hard to appear something they are not generate an instinctive unease in observers who cannot always articulate why the person seems false. The affected person is always a step behind the impression they are trying to create: the imitation is always slightly off. True excellence appears effortless because it is genuine. The remedy for affectation is not performance in a different direction — it is the cultivation of actual qualities, which eventually produce the natural ease that no amount of studied mimicry can generate.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 40, 107, 161, 219</div>
+        <div class="maxim-title">Beware Your Ruling Passion — It Is the Key Others Use to Control You</div>
+        <div class="maxim-body">Every person has a dominant desire — for recognition, for money, for love, for security, for a particular kind of respect. Gracián calls this the ruling passion, and he warns that the person who is in the grip of a ruling passion they have not identified and disciplined is permanently vulnerable to anyone who has. A man obsessed with honor can be baited into any foolish act by a well-timed insult to his dignity. A person desperate for approval will agree to things they should refuse in exchange for praise. A lover who has allowed their attachment to become visible has handed their peace of mind to another person. Identifying your ruling passion and refusing to let it drive your behavior in public is a fundamental discipline of self-mastery.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 11, 31, 64, 104, 253</div>
+        <div class="maxim-title">Good Taste Is Intelligence — Refinement Is Not Luxury</div>
+        <div class="maxim-body">Gracián considers refined aesthetic judgment — the ability to distinguish the excellent from the merely adequate, in art, in language, in company, in ideas — a mark of genuine intelligence, not a social affectation. The person with taste is the person who can evaluate quality across all domains, who is not deceived by superficial polish or put off by surface roughness, and who brings that precision of judgment to their choices of associates, occupations, and pleasures. Cultivating taste is not self-indulgence — it is the sharpening of a faculty of discrimination that serves every area of life. The coarse person mistakes novelty for originality, loudness for strength, and excess for abundance. The person of taste sees through all three.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 59, 116, 177, 256</div>
+        <div class="maxim-title">Avoid Extremes — The Middle Path Is Rarely Wrong</div>
+        <div class="maxim-body">Gracián is consistently suspicious of extremity in any direction. The person who holds opinions with violent force, who expresses enthusiasm or disapproval with theatrical excess, who commits themselves absolutely to any position before circumstances have fully revealed themselves — this person is rigid in a world that demands flexibility. The middle path is not mediocrity: it is the position from which movement in any direction is still possible. The extremist has traded maneuverability for intensity, and in a world where circumstances change constantly, maneuverability is the more valuable asset.</div>
+      </div>
+    </div>
+
+    <!-- EXCELLENCE -->
+    <div id="excellence" class="panel">
+      <div class="intro-block"><p>Gracián's entire strategic architecture assumes genuine excellence at its center. The arts of the world are tools for protecting and projecting real quality — never substitutes for it.</p></div>
+
+      <div class="section-label">Cluster 6 of 10</div>
+      <div class="section-title">Excellence — Being Genuinely Great and Appearing Naturally So</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 6, 75, 140, 199, 264</div>
+        <div class="maxim-title">Conceal Your Effort — Excellence Should Appear Effortless</div>
+        <div class="maxim-body">The visible strain of effort diminishes the impression of excellence. The person who is seen to work very hard is admired for their industry — a lesser form of admiration than that reserved for the person who produces remarkable results with apparent ease. Gracián calls this the concealment of art: the discipline behind a performance should be invisible, so that the performance seems to arise naturally from the performer's nature rather than from painful labor. This requires that the preparation happen entirely in private, that no hint of difficulty be allowed into the public delivery, and that the finished product appear as though it could not have been otherwise.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 3, 28, 101, 183</div>
+        <div class="maxim-title">Maintain Mystery — The Unknown Is Always Larger Than the Known</div>
+        <div class="maxim-body">Never fully reveal yourself. This applies to your capabilities, your plans, your opinions, and your feelings. The person who is completely transparent — whose every reaction is predictable, whose views on every subject are known, whose enthusiasms and aversions are entirely on display — gives others a complete map of how to control and predict them. Mystery commands an involuntary respect: people attribute to the unknown depths that may or may not exist, and they approach the mysterious person with the caution that genuine depth deserves. Gracián is not recommending deception — he is recommending incompleteness. Let others fill in what they do not know with what they imagine. Their imagination will usually serve you better than the full truth.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 43, 90, 151, 210, 276</div>
+        <div class="maxim-title">Do Not Explain Yourself Too Much — Mystery Commands Reverence</div>
+        <div class="maxim-body">Over-explanation is a form of anxiety — the need to justify yourself to everyone reveals an insecurity about whether your actions and judgments are actually sound. Gracián notes that most people think little of what they understand clearly, and attribute great importance to what they do not fully comprehend. The person who explains everything leaves nothing to the imagination; the person who acts with visible confidence and minimal explanation invites the assumption of depth. This is not obscurantism — it is the intelligent management of one's public face. Reserve full explanation for the rare people who deserve and can use it; for everyone else, let your actions speak with the authority of apparent certainty.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 16, 55, 118, 172, 290</div>
+        <div class="maxim-title">Surround Yourself with Those Better Than You in Some Way</div>
+        <div class="maxim-body">Association with excellence is not merely social strategy — it is the primary mechanism of self-improvement. The person who is always the most accomplished person in the room never improves, because there is nothing above them to pull them higher. Seek out those who exceed you in ways you want to develop — in intellect, in social grace, in professional mastery — and learn from the proximity. This requires a form of ego management that many people fail: the willingness to be less than the best in a room for the sake of what can be learned from those who are better. Gracián considers this form of deliberate self-subordination not humility but wisdom.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 19, 67, 139, 249</div>
+        <div class="maxim-title">Renew Your Excellence — Do Not Live on Past Reputation Alone</div>
+        <div class="maxim-body">Reputation built on past achievement is a wasting asset. The world has a short memory for what you did and a sharp eye for what you are doing now. The person who rests on established reputation without producing anything new will find that reputation quietly eroding — not through any single disaster, but through the gradual accumulation of the impression that their best days are behind them. Gracián advises constant renewal: continuing to produce, continuing to develop, continuing to surprise. The greatest reputations are those that remain active — that keep generating reasons for the admiration they have accumulated rather than drawing it down like a bank account.</div>
+      </div>
+    </div>
+
+    <!-- ADVERSITY -->
+    <div id="adversity" class="panel">
+      <div class="intro-block"><p>How you carry difficulty is as important as what you accomplish in ease. Gracián regards adversity not as misfortune but as the ultimate test of character — and a source of reputation when endured with visible grace.</p></div>
+
+      <div class="section-label">Cluster 7 of 10</div>
+      <div class="section-title">Adversity — Endurance, Composure & the Wisdom of Difficulty</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 21, 63, 145, 218, 300</div>
+        <div class="maxim-title">Endure Adversity with Visible Grace — It Builds Reputation</div>
+        <div class="maxim-body">Difficulty endured with visible composure produces a form of admiration that success alone cannot generate. Anyone can be agreeable when things go well. The person who maintains their dignity, their humor, and their generosity of spirit under genuine pressure reveals something that success never can — the actual quality of their character. Gracián observes that people watch very carefully how others handle reversal, because reversal reveals truth. The person who endures with grace commands a respect that follows them long after the specific difficulty has been forgotten, and accumulates a kind of moral credit that no amount of achievement can substitute for.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 33, 77, 143, 238</div>
+        <div class="maxim-title">Never Let Your Enemies See You Suffer</div>
+        <div class="maxim-body">To display pain in front of those who wish you ill is to give them a reward they have not yet earned. Suffering made visible to an enemy confirms that their actions have had the desired effect and invites escalation. The disciplined response to provocation or injury — composure, continued functioning, the refusal to acknowledge damage — denies the aggressor the satisfaction of impact and often bewilders them more than any counter-attack could. This is not the suppression of genuine feeling; it is the intelligent management of which feelings are permitted public expression and in whose presence.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 152, 196, 227, 254</div>
+        <div class="maxim-title">Learn From Difficulty — Setbacks Are the World's Most Reliable Teachers</div>
+        <div class="maxim-body">Gracián regards adversity as instructive in ways that success rarely is. Success tends to confirm existing strategies and existing self-assessments; failure forces a re-examination of both. The person who can extract a precise lesson from each setback — not a vague resolution to do better, but a specific understanding of exactly what failed and why — converts their difficulties into a form of capital. The pattern of failures, carefully read, is an accurate map of one's own limitations. And limitations known are limitations that can be compensated for or worked around.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 36, 113, 173, 243</div>
+        <div class="maxim-title">Keep Friends for Difficult Times — Prosperity Needs No Allies</div>
+        <div class="maxim-body">One of Gracián's most practically important observations: the function of genuine friendship is not the enhancement of good times but the provision of support in bad ones. When things go well, allies are pleasant company. When things go wrong, they become essential. The person who has invested in relationships only during prosperity — who has been generous with their social energy when they had nothing to ask for — will find that investment returned when adversity arrives. The person who has treated relationships as useful only when they needed something will find themselves alone at exactly the moment when solitude is most dangerous.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 48, 106, 185, 271</div>
+        <div class="maxim-title">Do Not Dwell on Past Misfortune — Forward Motion Is Its Own Remedy</div>
+        <div class="maxim-body">Gracián is impatient with prolonged mourning for what cannot be changed. The past is a fact; the present is an opportunity; dwelling on one at the expense of the other is simply the waste of a resource — time and attention — that cannot be recovered. This does not mean suppressing appropriate grief or refusing to understand what went wrong. It means completing the process of assessment — understanding the failure, extracting the lesson — and then redirecting all available energy forward. The person who continues to reference old wounds in every new situation has made those wounds the center of their identity, and that choice impoverishes both them and everyone around them.</div>
+      </div>
+    </div>
+
+    <!-- DEEP WISDOM -->
+    <div id="wisdom" class="panel">
+      <div class="intro-block"><p>The final and deepest layer of the Oráculo — the maxims on independence of mind, the nature of wisdom itself, truth, freedom, and the ultimate goal of a life well lived.</p></div>
+
+      <div class="section-label">Cluster 8–10 of 10</div>
+      <div class="section-title">Deep Wisdom — Truth, Freedom, Friendship & the Examined Life</div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 181, 210, 247, 262</div>
+        <div class="maxim-title">The Truth Is Generally Seen, Rarely Heard</div>
+        <div class="maxim-body">Gracián makes a distinction between truth as experienced — observed directly in events, behavior, and results — and truth as communicated through speech. Spoken truth arrives filtered through the speaker's interests, fears, and blind spots. Observed truth is more reliable. The wise person therefore prioritizes direct observation over reported accounts, develops the habit of going to primary sources, and regards all secondhand information — however well-intentioned — as provisional. This applies to self-knowledge as much as to knowledge of others: what you tell yourself about yourself is a story; what your actual behavior reveals about your character is the truth.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 117, 157, 246, 285</div>
+        <div class="maxim-title">Keep Your Independence of Judgment — Opinions Are Not Democracy</div>
+        <div class="maxim-body">The majority opinion on any subject at any given time is the opinion that is socially safest to hold, not the opinion that is most likely to be correct. Gracián makes this point with characteristic acidity: he who agrees with everyone has the judgment of no one. The person who forms their views through genuine reflection — reading, observation, careful thought — will often arrive at positions that diverge from fashionable consensus, and they must have the courage to maintain those positions privately even while expressing them publicly with tact. Intellectual independence is not contrarianism; it is the refusal to outsource your thinking to the crowd.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 25, 88, 164, 230, 270</div>
+        <div class="maxim-title">The Art of Living Well — Quality Over Quantity in All Things</div>
+        <div class="maxim-body">Gracián's vision of the good life is not one of acquisition — of more wealth, more recognition, more pleasures — but one of quality at every level. Fewer friendships, but genuine ones. Fewer opinions, but carefully formed ones. Fewer words, but well-chosen ones. Fewer actions, but decisive and well-timed ones. The person who pursues quantity in human affairs — more acquaintances, more projects, more visible activity — ends up with a life of exhausting superficiality. The person who pursues quality at every level — who tolerates less and expects more of themselves and their chosen associates — builds a life that has genuine depth and genuine satisfaction.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 93, 149, 225, 280</div>
+        <div class="maxim-title">A True Friend Is Among the Rarest Things in the World — Treat Them Accordingly</div>
+        <div class="maxim-body">Gracián is suspicious of easy friendship and lavish social warmth — he regards both as instruments rather than genuine connections. But he is equally clear that genuine friendship — the rare relationship in which another person knows you fully, tells you the truth, serves your actual interests rather than their image of you, and remains reliable under pressure — is among the most precious things a life can contain. Such friends are not found easily or quickly, and they are not created by pleasant company alone. They are formed through shared difficulty, through the experience of being honest with each other when honesty was uncomfortable, and through the accumulated evidence of mutual reliability over time.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 71, 195, 259, 291</div>
+        <div class="maxim-title">Do Not Make Yourself Unnecessarily Available — Scarcity Creates Value</div>
+        <div class="maxim-body">The person who is always available, always immediately responsive, always ready to give their time and attention without hesitation or selectivity signals that their time and attention have no great value. Gracián advises controlled availability: being present and engaged when you choose to be, but cultivating a sense — in those around you — that access to you is not unlimited. This is not rudeness or artificial aloofness. It is the management of a real resource: your attention, your energy, your counsel. These things are finite, and their value increases in proportion to their selective deployment. Those who receive your full attention should feel the distinction of having received it.</div>
+      </div>
+
+      <div class="maxim-block">
+        <div class="maxim-tag">Maxims 12, 85, 191, 300</div>
+        <div class="maxim-title">Greatness of Spirit Is Shown in What One Endures — Not Only in What One Achieves</div>
+        <div class="maxim-body">The <em>Oráculo</em> ends where wisdom always ends: at the question of character under pressure. Achievement is wonderful, and Gracián celebrates it. But the deepest measure of a person — the one that reveals what is actually there — is how they carry difficulty, disappointment, injustice, and loss. These experiences cannot be managed by strategy alone. They require something deeper: genuine equanimity, rooted in a stable sense of one's own worth that does not depend on external validation. The person who has built their identity on genuine values rather than on reputation or on others' approval will not be destroyed when reputation fails or approval is withheld. This — the inner life that sustains the outer one — is the final and deepest subject of all 300 maxims.</div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin: 0 -2rem; padding: 2rem 2rem;">
+        <div class="section-label" style="color:#6a3040;">The Oracle Speaks</div>
+        <div class="section-title">Thirty Quotes from The Art of Worldly Wisdom</div>
+
+        <div class="quote-item"><div class="quote-text">"The wise man does at once what the fool does finally."</div><div class="quote-ref">Maxim 150</div></div>
+        <div class="quote-item"><div class="quote-text">"Never contend with a man who has nothing to lose."</div><div class="quote-ref">Maxim 172</div></div>
+        <div class="quote-item"><div class="quote-text">"Without courage, wisdom bears no fruit."</div><div class="quote-ref">Maxim 60</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not belong so wholly to others that you do not belong to yourself."</div><div class="quote-ref">Maxim 179</div></div>
+        <div class="quote-item"><div class="quote-text">"Never act from passion; if you do, all is lost. You cannot act for yourself if you are not yourself."</div><div class="quote-ref">Maxim 8</div></div>
+        <div class="quote-item"><div class="quote-text">"Never lose your self-respect, nor be too familiar with yourself when alone. Let your integrity be greater than any witness."</div><div class="quote-ref">Maxim 50</div></div>
+        <div class="quote-item"><div class="quote-text">"A bad manner spoils everything, even reason and justice; a good manner supplies everything — it gilds a denial and sweetens truth itself."</div><div class="quote-ref">Maxim 14</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not express your views in too extreme a manner. Every fool is fully persuaded, and everyone fully persuaded is a fool."</div><div class="quote-ref">Maxim 177</div></div>
+        <div class="quote-item"><div class="quote-text">"Never open your door to the least of evils, for many others follow in its train."</div><div class="quote-ref">Maxim 237</div></div>
+        <div class="quote-item"><div class="quote-text">"It is better to sleep on what you plan to do than to stay awake over what you have done."</div><div class="quote-ref">Maxim 203</div></div>
+        <div class="quote-item"><div class="quote-text">"Think with the few and speak with the many."</div><div class="quote-ref">Maxim 43</div></div>
+        <div class="quote-item"><div class="quote-text">"The truth is generally seen, rarely heard."</div><div class="quote-ref">Maxim 181</div></div>
+        <div class="quote-item"><div class="quote-text">"Know how to ask. There is nothing more difficult for some, nor for others, easier."</div><div class="quote-ref">Maxim 175</div></div>
+        <div class="quote-item"><div class="quote-text">"Repute is acquired by excellence, maintained by tact, and lost by a single indiscretion."</div><div class="quote-ref">Maxim 97</div></div>
+        <div class="quote-item"><div class="quote-text">"Greatness of spirit is shown not in what one undertakes, but in what one endures."</div><div class="quote-ref">Maxim 300</div></div>
+        <div class="quote-item"><div class="quote-text">"Associate with those you can learn from. Let friendly relations be a school of knowledge."</div><div class="quote-ref">Maxim 11</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not make yourself the slave of place, person, or position."</div><div class="quote-ref">Maxim 124</div></div>
+        <div class="quote-item"><div class="quote-text">"Friendship multiplied is friendship divided. He who is a friend to everyone has no real friend at all."</div><div class="quote-ref">Maxim 92</div></div>
+        <div class="quote-item"><div class="quote-text">"The man who has satisfied everyone has done nothing substantial; real excellence will always offend some."</div><div class="quote-ref">Maxim 43</div></div>
+        <div class="quote-item"><div class="quote-text">"Have a variety of plans. Where one breaks down, another holds."</div><div class="quote-ref">Maxim 196</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not explain yourself too much. Most people think little of what they understand, and venerate what they do not."</div><div class="quote-ref">Maxim 17</div></div>
+        <div class="quote-item"><div class="quote-text">"Never be put out if you are not understood. The clearest water seems impure to those too clouded to see it."</div><div class="quote-ref">Maxim 156</div></div>
+        <div class="quote-item"><div class="quote-text">"Keep a store of wit and wisdom ready for use; they lend substance and can transform an ordinary encounter."</div><div class="quote-ref">Maxim 98</div></div>
+        <div class="quote-item"><div class="quote-text">"Self-knowledge is the beginning of all wisdom and the end of all conceit."</div><div class="quote-ref">Maxim 89</div></div>
+        <div class="quote-item"><div class="quote-text">"A wise man gets more use from his enemies than a fool from his friends."</div><div class="quote-ref">Maxim 84</div></div>
+        <div class="quote-item"><div class="quote-text">"The secret of getting things done is to act. Deliberate before you decide, decide before you act, and do not act again until you have deliberated."</div><div class="quote-ref">Maxim 151</div></div>
+        <div class="quote-item"><div class="quote-text">"Cultivate those who can teach you. Let every visit be a school and every companion a teacher."</div><div class="quote-ref">Maxim 144</div></div>
+        <div class="quote-item"><div class="quote-text">"Never compete with someone who has nothing to lose. Your reputation is always at risk; theirs is already spent."</div><div class="quote-ref">Maxim 172</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not show your wounded finger, for everything will knock up against it."</div><div class="quote-ref">Maxim 182</div></div>
+        <div class="quote-item"><div class="quote-text">"Fortune has a short memory. She soon forgets those she has loaded with her gifts."</div><div class="quote-ref">Maxim 30</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"The Art of Worldly Wisdom is not a guide to cynicism. It is the most honest book ever written about what it costs to be genuinely good in a world that is not — and what it takes to survive that world without becoming it."</p>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    document.querySelector('.content-area').scrollTop = 0;
+  }
+</script>
+`;
+
+const HUMAN_NATURE_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --deep: #0e0e1a;
+    --deep2: #161628;
+    --indigo: #3a3a7a;
+    --indigo-light: #5555aa;
+    --indigo-bright: #8080cc;
+    --gold: #c8a040;
+    --gold-light: #e0bc60;
+    --parchment: #f2ede0;
+    --parchment-dark: #e4dcc8;
+    --border-c: #9090c0;
+    --red: #882020;
+    --muted: #22223a;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body,.wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--deep); }
+  .wrap { max-width:860px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero { background:var(--deep); color:var(--parchment); padding:3.5rem 3rem 3rem; text-align:center; border-bottom:4px double var(--indigo-light); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(58,58,122,0.07) 29px); pointer-events:none; }
+  .hero-ornament { font-size:22px; color:var(--indigo-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.7; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:44px; line-height:1.1; color:var(--indigo-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.7); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:17px; color:#8080b0; margin-top:0.6rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#5050a0; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#404080; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2.5rem; background:var(--deep); padding:1.2rem 2rem; border-bottom:1px solid var(--indigo); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:34px; color:var(--indigo-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#505090; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#0a0a16; border-bottom:2px solid var(--indigo); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.65rem 0.85rem; font-family:'IM Fell English',serif; font-size:12px; color:#505090; cursor:pointer; border-right:1px solid #161628; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--indigo-bright); background:#161630; }
+  .tab.active { color:var(--indigo-bright); background:#1a1a38; border-bottom:2px solid var(--indigo-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--parchment); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.85; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--indigo); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:23px; color:var(--deep); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .law-block { margin-bottom:2.2rem; padding:1.2rem 1.4rem; border-left:4px solid var(--indigo); background:rgba(58,58,122,0.04); }
+  .law-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--indigo); margin-bottom:0.15rem; }
+  .law-name { font-weight:600; font-size:18px; color:var(--red); margin-bottom:0.1rem; }
+  .law-key { font-family:'IM Fell English',serif; font-style:italic; font-size:13.5px; color:var(--gold); margin-bottom:0.5rem; }
+  .law-body { font-size:15.5px; line-height:1.78; color:#1a1a30; }
+  .law-body p { margin-bottom:0.8rem; }
+  .law-body p:last-child { margin-bottom:0; }
+
+  .part-banner { background:var(--deep); color:var(--parchment); padding:1rem 1.5rem; margin:2rem -2rem 1.8rem; border-top:2px solid var(--indigo); border-bottom:2px solid var(--indigo); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--indigo-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:20px; color:var(--parchment); }
+  .part-banner .p-desc { font-size:13px; color:#8080b0; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--deep); border:1px solid var(--indigo); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--indigo-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#8080b0; line-height:1.45; }
+
+  .divider { text-align:center; color:var(--indigo); font-size:18px; letter-spacing:10px; margin:1.5rem 0; opacity:0.4; }
+
+  .quotes-section { background:var(--deep); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--indigo); }
+  .quotes-section .section-title { color:var(--indigo-bright); border-bottom-color:#1a1a38; margin-top:0; }
+  .quote-item { border-left:3px solid var(--indigo); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(58,58,122,0.08); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--parchment); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#505090; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--indigo); color:var(--parchment); padding:2rem; text-align:center; border-top:3px double var(--indigo-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+
+  .highlight-box { background:rgba(58,58,122,0.08); border:1px solid var(--border-c); padding:1rem 1.2rem; margin:1rem 0 1.4rem; }
+  .highlight-box p { font-size:15px; line-height:1.7; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">✦ ψ ✦</div>
+    <div class="hero-title">The Laws of Human Nature</div>
+    <div class="hero-subtitle">A Complete Guide to Understanding Yourself and Others</div>
+    <div class="hero-author">Robert Greene</div>
+    <div class="hero-year">Published 2018 · 18 Laws · All Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">18</div><div class="lbl">Laws</div></div>
+    <div class="stat"><div class="num">600+</div><div class="lbl">Pages</div></div>
+    <div class="stat"><div class="num">2018</div><div class="lbl">Published</div></div>
+    <div class="stat"><div class="num">∞</div><div class="lbl">Years of Human Nature</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('laws1',this)">Laws 1–3</div>
+    <div class="tab" onclick="show('laws2',this)">Laws 4–6</div>
+    <div class="tab" onclick="show('laws3',this)">Laws 7–9</div>
+    <div class="tab" onclick="show('laws4',this)">Laws 10–12</div>
+    <div class="tab" onclick="show('laws5',this)">Laws 13–15</div>
+    <div class="tab" onclick="show('laws6',this)">Laws 16–18</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>We believe we act from reason. We do not. We are driven by emotions, unconscious biases, childhood wounds, social pressures, envy, grandiosity, and fear of death — forces we cannot see because we are too close to them. Greene's most ambitious book maps all of it: eighteen fundamental laws of the human psyche, drawn from psychology, philosophy, history, and literature, with one purpose — to make the unconscious visible so you can master it.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is and Why Greene Wrote It</div>
+      <div class="law-body">
+        <p>Robert Greene's fifth major work, published in 2018, is his most psychologically ambitious. Where <em>The 48 Laws of Power</em> focused on external strategy and <em>The 33 Strategies of War</em> on conflict, <em>The Laws of Human Nature</em> turns inward — to the hidden machinery of human motivation, the unconscious forces that shape every decision, relationship, and ambition we have.</p>
+        <p>Greene draws on an extraordinarily wide range of intellectual traditions: Freudian and Jungian psychology, evolutionary biology, Stoic philosophy, social psychology, neuroscience, and centuries of biography and literature. Each of the eighteen laws is built around a central historical figure — Pericles, Queen Elizabeth I, Anton Chekhov, Howard Hughes, Mary Shelley, Martin Luther King Jr., and others — whose life illustrates the law in action, usually through a catastrophic failure or a brilliant triumph that turned on their understanding of human nature.</p>
+        <p>The book's central argument is that most human suffering — in relationships, careers, families, and societies — comes from a fundamental lack of self-knowledge. We do not understand why we feel what we feel, want what we want, or act as we act. We mistake emotional reactions for rational conclusions. We project our own psychology onto others and are perpetually surprised when people behave according to their nature rather than our expectations. The antidote Greene proposes is not a system of rules but a deepened perception — the ability to see through surfaces, to read the signals that other people constantly emit but rarely intend, and most importantly, to see yourself with the same clear-eyed honesty you aim at others.</p>
+      </div>
+
+      <div class="section-label">Core Philosophy</div>
+      <div class="section-title">The Eight Pillars of Greene's Vision</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">Rationality Is Rare</div><div class="t-desc">We are primarily emotional creatures who rationalise after the fact. True rationality is a discipline, not a default.</div></div>
+        <div class="theme-card"><div class="t-name">The Unconscious Rules</div><div class="t-desc">Most of what drives us is invisible to us. Making it visible is the beginning of genuine freedom.</div></div>
+        <div class="theme-card"><div class="t-name">Everyone Has a Shadow</div><div class="t-desc">The parts of ourselves we deny don't disappear — they operate underground, shaping our behaviour in ways we cannot see.</div></div>
+        <div class="theme-card"><div class="t-name">Empathy Is Power</div><div class="t-desc">The ability to genuinely understand another person's inner world — not project onto it — is the rarest and most powerful social skill.</div></div>
+        <div class="theme-card"><div class="t-name">Character Is Destiny</div><div class="t-desc">Compulsive patterns — formed in childhood and reinforced across decades — play out with almost mechanical regularity unless consciously interrupted.</div></div>
+        <div class="theme-card"><div class="t-name">Death Gives Life Meaning</div><div class="t-desc">Our denial of mortality is the source of most of our dysfunction. Confronting it is the beginning of genuine seriousness about living.</div></div>
+        <div class="theme-card"><div class="t-name">Groups Regress</div><div class="t-desc">Collective behaviour consistently falls below the level of individual rationality. Understanding this protects you from the worst of it.</div></div>
+        <div class="theme-card"><div class="t-name">Know Yourself First</div><div class="t-desc">All strategy, all empathy, all wisdom begins with accurate self-perception — the most difficult and most rewarding form of knowledge.</div></div>
+      </div>
+
+      <div class="section-label">Historical Figures</div>
+      <div class="section-title">Key Portraits in the Book</div>
+      <div class="law-body">
+        <p>Each law is anchored by a primary historical figure whose life Greene analyses at length. Among the most important: <strong>Pericles</strong> — the Athenian statesman whose extraordinary emotional self-mastery and genuine empathy for human nature made him the greatest democratic leader of the ancient world, illustrating the law of irrationality. <strong>Anton Chekhov</strong> — whose transformation from peasant medical student to the world's greatest short-story writer, achieved through a radical discipline of self-observation, illustrates the law of self-sabotage. <strong>Mary Shelley</strong> — whose creation of <em>Frankenstein</em> from the raw material of her own dark psychology illustrates the law of repression and the creative power of the shadow. <strong>Queen Elizabeth I</strong> — whose mastery of gender fluidity and calculated ambiguity in a patriarchal world illustrates the law of gender rigidity. <strong>Howard Hughes</strong> — whose grandiosity spiralled into total psychological collapse, illustrating the law of grandiosity. <strong>Martin Luther King Jr.</strong> — whose understanding of resentment and the psychology of his opponents made him the most strategically brilliant of civil rights leaders. These portraits are not decorative — they are the primary vehicle through which Greene teaches, making abstract psychological principles vivid and unforgettable through lived human drama.</p>
+      </div>
+    </div>
+
+    <!-- LAWS 1–3 -->
+    <div id="laws1" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 1–3</div>
+        <div class="p-title">The Foundations — Emotion, Narcissism & the Mask</div>
+        <div class="p-desc">The three most fundamental forces shaping human behaviour: the dominance of emotion over reason, the universal pull of self-love, and the gap between the face people show and the person underneath.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 1</div>
+        <div class="law-name">The Law of Irrationality</div>
+        <div class="law-key">Master Your Emotional Self</div>
+        <div class="law-body">
+          <p>Greene opens with the most fundamental of all his laws: we are not the rational creatures we believe ourselves to be. Emotions evolved millions of years before rational thought, are faster, more powerful, and more persistent — and they typically win. We feel first and rationalise afterward, constructing post-hoc narratives of reason to justify what emotion has already decided. The danger is not feeling emotion — that is inevitable and often valuable — but being unaware that emotion is governing decisions we believe to be rational.</p>
+          <p>Greene uses Pericles as his primary portrait: the Athenian leader whose extraordinary achievement was not the absence of emotion but a disciplined practice of separating emotional reaction from deliberate response. When insulted, when provoked, when his entire strategy was being questioned by an angry citizenry, Pericles would withdraw, reflect, and return with a response shaped by reason rather than the reactive urgency of the moment. This was not coldness — it was the highest form of emotional intelligence: feeling what was there to be felt while refusing to let it dictate action.</p>
+          <p>Greene identifies the specific emotional biases most likely to corrupt thinking: confirmation bias (seeing only what confirms existing beliefs), the inflaming effect of loss (losses feel approximately twice as powerful as equivalent gains, distorting risk assessment), tribal thinking (automatic alignment with group opinion regardless of evidence), and the attribution error (explaining your own behaviour through circumstances, others' behaviour through character). Recognising these biases in real time — catching yourself in the grip of one — is the beginning of genuine rationality, which Greene positions not as the absence of emotion but as its deliberate direction.</p>
+          <p>The practical discipline Greene recommends is Stoic in character: when a strong emotion arises, observe it with curiosity rather than acting from it immediately. Ask what purpose the emotion is serving, what it is telling you that may be useful, and what it is distorting that would be dangerous to act on. This practice — the gap between stimulus and response — is where rationality lives. Without it, we are simply very articulate animals reacting to stimuli with the certainty that we are reasoning.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 2</div>
+        <div class="law-name">The Law of Narcissism</div>
+        <div class="law-key">Transform Self-Love into Empathy</div>
+        <div class="law-body">
+          <p>Greene argues that narcissism — the preoccupation with one's own feelings, needs, and self-image — exists on a spectrum, and every human being occupies some position on it. At the extreme end are the deep narcissists: people whose sense of self is so fragile and so dependent on external validation that they cannot genuinely perceive others at all. Everything and everyone is experienced through the lens of how they affect the narcissist's self-image. At the healthier end are people who have developed what Greene calls a solid, resilient sense of self — secure enough that they can genuinely attend to other people, feel curiosity about their inner lives, and experience real empathy rather than the performance of it.</p>
+          <p>The key distinction is between empathy and its counterfeits. Most people practise what Greene calls "false empathy" — projecting their own feelings and assumptions onto others and calling the result understanding. Real empathy requires a temporary suspension of self — the ability to move out of your own emotional world and genuinely enter another person's. This is rare, difficult, and profoundly powerful. Those who can do it have a social advantage that no amount of charm, intelligence, or status can replicate, because people can feel when they are genuinely being seen, and it creates a depth of connection and loyalty that nothing else produces.</p>
+          <p>Greene provides tools for developing genuine empathy: practising visceral empathy (imagining from the inside, not the outside, what another person's situation feels like); learning to read the nonverbal signals — micro-expressions, posture, tone, the gaps between words — that reveal inner states more accurately than speech; and developing what he calls "analytic empathy," the systematic study of another person's history, values, and psychology to understand why they behave as they do rather than simply reacting to what they do. The payoff is not just social — it is strategic: the person who understands others accurately can predict, influence, and work with them in ways the self-absorbed can never manage.</p>
+          <p>Greene also addresses the deeply narcissistic people who inevitably appear in every life, offering specific strategies for managing them: give them enough validation to avoid triggering their fragility, never directly challenge their grandiose self-image, and protect yourself from the expectation of genuine reciprocity — which they are structurally incapable of providing.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 3</div>
+        <div class="law-name">The Law of Role-Playing</div>
+        <div class="law-key">See Through People's Masks</div>
+        <div class="law-body">
+          <p>All social interaction involves performance. From early childhood we learn to present a version of ourselves adapted to what others expect and reward — and this social persona gradually becomes so habitual that we confuse it with our actual self. Meanwhile, everyone around us is doing the same: presenting a constructed face shaped by social pressure, professional expectation, family role, and the perpetual management of how they are perceived. The gap between mask and person is universal; the skill is in reading it.</p>
+          <p>Greene teaches that the mask is always partly visible to the attentive observer, because maintaining it requires constant effort, and that effort occasionally slips. The moments of greatest revelation are those of stress, surprise, frustration, and unexpected challenge — when the social performance cannot be maintained at full intensity and something of the genuine person shows through. A person's response to being contradicted, to waiting, to very minor inconvenience, to praise they did not expect — these micro-moments reveal character more accurately than any deliberate self-presentation.</p>
+          <p>He identifies specific categories of mask: the "Saintly Facade" (those who perform extraordinary virtue and goodness, often to compensate for darker impulses they cannot acknowledge); the "Rescuer" (those who help others in ways that subtly create dependency, as a means of maintaining control or managing their own sense of inadequacy); the "Passive Aggressor" (those who express hostility through a performance of helpfulness, compliance, and gentle victimhood); and the "Demonic" (those who have so completely severed their public performance from their actual behaviour in private that they operate as almost two separate people). Each pattern has specific tells — characteristic slippages where the mask becomes visible.</p>
+          <p>The self-directed application of this law is equally important: understanding your own mask, the specific performance you have constructed for social consumption, and the relationship between that performance and your actual psychology. Most people's masks are not lies — they are one-sided truths, emphasising genuine qualities while suppressing others. The practice Greene recommends is to periodically observe yourself as if from the outside: watching what triggers your defensiveness, what makes you perform rather than simply be, and where the gap between your private experience and your public presentation is largest.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAWS 4–6 -->
+    <div id="laws2" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 4–6</div>
+        <div class="p-title">Character, Desire & Time</div>
+        <div class="p-desc">The compulsive patterns that shape everything we do, the covetousness that governs what we want, and the chronic shortsightedness that makes us sacrifice the future for the present.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 4</div>
+        <div class="law-name">The Law of Compulsive Behaviour</div>
+        <div class="law-key">Determine the Strength of People's Character</div>
+        <div class="law-body">
+          <p>Character — the deep, recurring patterns of behaviour through which a person responds to the world — is formed early and is remarkably stable. The wounds, adaptations, and strategies developed in childhood to navigate a specific family environment become the templates through which adult life is processed. A child who learned that vulnerability leads to punishment develops an adult who armours against intimacy. A child whose emotional needs were systematically dismissed develops an adult who either performs emotional neediness to get what was denied, or aggressively suppresses all needs in themselves and others. These patterns are not choices — they are compulsions, playing out with almost mechanical regularity across completely different contexts.</p>
+          <p>Greene identifies several fundamental character types, each defined by its central compulsion: the Rigid Character (order and control as a defence against anxiety; deeply threatened by the unexpected); the Overly Conscientious Character (rule-following as identity, resentment as secret fuel); the Self-Dramatising Character (emotional performance as the primary currency of all relationships); the Dependent Character (attachment at any cost, the suppression of genuine self to maintain connection); and the Narcissistic Character (described in Law 2). He notes that most people are combinations of these types, with one or two predominating.</p>
+          <p>The practical power of this law is predictive: once you have identified someone's character type and the compulsive pattern it produces, you can predict with considerable accuracy how they will behave in novel situations, particularly under stress — because stress always calls up the deepest-established patterns. The person who is controlling in one context will be controlling in all contexts when pressure rises. The self-dramatiser will escalate emotionally rather than solving problems. The dependent character will prioritise maintaining the relationship over any other consideration, including their own stated values.</p>
+          <p>For yourself, the law offers the most uncomfortable of all mirrors: to identify your own compulsive patterns, trace them to their origins, and ask honestly how much of your current life is actually the free choice of an adult and how much is the automatic replay of a child's adaptation to a specific environment that no longer exists. Greene argues that genuine freedom — the ability to respond to life as it actually is rather than as your history has primed you to see it — requires this level of honest self-examination, and that most people will do almost anything to avoid it.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 5</div>
+        <div class="law-name">The Law of Covetousness</div>
+        <div class="law-key">Become an Elusive Object of Desire</div>
+        <div class="law-body">
+          <p>We do not simply want things — we want what others have, or what seems just beyond reach. Desire is fundamentally triangular: we desire what another person desires, or what another person possesses, because their desire signals value that we would otherwise overlook. This is not a character flaw — it is a deep feature of human psychology, rooted in the social nature of value perception. What is universally ignored seems worthless; what is coveted by others seems precious. The implication is that the presence of desire from others is itself a form of power — and that this can be deliberately cultivated.</p>
+          <p>Greene analyses what makes people, ideas, and objects elusive objects of desire: they seem partly unavailable, hinting at depths not yet revealed; they carry the social proof of others' interest; they are associated with exclusivity or inaccessibility; they stimulate imagination rather than satisfying it completely. The figure who is completely available, completely transparent, and completely predictable generates no desire — because desire requires a gap between what is known and what is imagined. Mystery, incompleteness, and the sense that there is always more to discover are the engines of sustained attraction.</p>
+          <p>The corollary is equally important: people are most strongly drawn to what they cannot easily have, and most likely to take for granted what is unconditionally available. This applies to relationships, professional reputation, creative work, and social standing alike. Those who are permanently and completely accessible — who respond instantly, who are always present, who have no apparent alternative claims on their attention — signal low value regardless of their actual worth. Those who appear to have other interests, other possibilities, other things demanding their attention, paradoxically attract more of the attention they seem to need less.</p>
+          <p>Greene also addresses the danger of covetousness turned inward: the consuming desire for what others possess that makes its victim perpetually dissatisfied with their own life. Understanding the mechanism — that desire is partly socially constructed rather than intrinsically felt — is the first step toward freedom from it, because you can ask, with genuine curiosity: do I actually want this thing, or do I want it because others seem to want it?</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 6</div>
+        <div class="law-name">The Law of Shortsightedness</div>
+        <div class="law-key">Elevate Your Perspective</div>
+        <div class="law-body">
+          <p>The human mind is magnificently adapted for immediate threats and immediate opportunities. It is extraordinarily poorly adapted for long-term thinking. The psychological distance between present and future makes future consequences feel abstract and light while present concerns feel urgent and heavy, systematically biasing our decisions toward the immediate at the cost of the important. We know, abstractly, that the choice we are making now will have consequences in five years that will feel just as real and immediate as today's decision does now — and we make the short-sighted choice anyway, because the future is not real in the same way the present is.</p>
+          <p>Greene maps the specific manifestations of this law: the tendency to react to the most recent dramatic event as if it were a permanent trend; the inability to maintain strategic patience when short-term costs are visible and long-term benefits are not; the social pressure of appearing decisive and active in the present, which systematically punishes the kind of deliberate patience that genuine strategy requires; and the crisis bias — the tendency of urgent but unimportant matters to crowd out non-urgent but crucial ones, so that strategy is permanently deferred by the drama of the day.</p>
+          <p>The antidote Greene describes is the development of what he calls "telescopic thinking" — the deliberate practice of imagining oneself at various future points (five years, ten years, the end of a career) and evaluating present decisions from those vantage points. What will this choice look like from ten years' distance? What will I wish I had done? What will the person I am becoming need from the choices I make today? These questions, practised regularly, gradually counterbalance the brain's natural present-bias with a genuinely long-term perspective that changes the quality of every decision made in the present.</p>
+          <p>His historical anchor is Queen Elizabeth I's extraordinary strategic patience during the period before her accession — years of apparent quiescence during which she was in genuine danger, resisting every temptation to act prematurely because she understood that the strategic situation would develop in her favour if she waited. The ability to see further than the immediate — and to act, or deliberately not act, from that longer view — is one of the rarest and most valuable of all cognitive skills.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAWS 7–9 -->
+    <div id="laws3" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 7–9</div>
+        <div class="p-title">Resistance, Self-Sabotage & the Shadow</div>
+        <div class="p-desc">Why people resist help, how we undermine ourselves, and the dark side of our personality that operates underground — shaping our lives in ways we cannot see until we look directly at it.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 7</div>
+        <div class="law-name">The Law of Defensiveness</div>
+        <div class="law-key">Soften People's Resistance</div>
+        <div class="law-body">
+          <p>Every person moves through the world with a deeply established sense of self — their identity, their values, their self-image, their sense of their own competence and worth. This sense of self is not merely psychological comfort; it feels like survival, because in a deep evolutionary sense, the integrity of identity is connected to the integrity of the organism. Any challenge to the self — criticism, contradiction, unsolicited advice, a suggestion that one's approach is wrong — is therefore experienced not just as intellectual disagreement but as a form of threat, triggering defensive reactions that are disproportionate to the actual provocation.</p>
+          <p>Understanding this is the key to influence. The direct approach — telling people clearly what they are doing wrong, arguing for the correct position, attempting to change someone's behaviour through rational persuasion — consistently fails, not because the argument is unsound but because the argument itself triggers the defence mechanism it is trying to overcome. The more forceful the argument, the stronger the resistance it produces. This is not irrationality in the simple sense — it is the operation of a deep psychological protection system doing exactly what it was designed to do.</p>
+          <p>Greene's strategy for working with this law is to make people feel that they are choosing rather than being directed, discovering rather than being told, acting from their own values rather than being corrected. This requires the temporary subordination of your own need to be right — the willingness to lead people toward a conclusion without announcing the destination. Techniques include: framing your perspective as a question rather than an assertion; aligning explicitly with the other person's stated values and showing how the change you want serves those values; giving credit for their existing good judgment and framing the new direction as a natural extension of it; and above all, giving them genuine psychological space — making them feel seen and understood rather than targeted and corrected.</p>
+          <p>The counterintuitive core of this law: the most effective influencers are those who spend most of their energy softening the ground — building trust, demonstrating genuine understanding, and creating conditions in which the other person feels safe enough to consider change — before they make any attempt to direct behaviour. The less the influence is felt as influence, the more completely it works.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 8</div>
+        <div class="law-name">The Law of Self-Sabotage</div>
+        <div class="law-key">Change Your Circumstances by Changing Your Attitude</div>
+        <div class="law-body">
+          <p>We do not simply experience the world — we actively construct it, moment by moment, through the attitudes and interpretations we bring to events. The person who fundamentally expects hostility will find it everywhere, because they are primed to notice and remember the confirming evidence and to dismiss the disconfirming. The person who approaches the world with genuine openness and curiosity will encounter the same raw material of events and experience it as rich with opportunity. This is not wishful thinking — it is a psychologically precise account of how attitude determines which aspects of reality are visible and which are invisible to us.</p>
+          <p>Greene uses Anton Chekhov as his central portrait: a man who began life with every circumstance that could produce bitterness and limitation — poverty, an abusive father, the burden of an entire family's financial dependency — and who chose, through an extraordinary act of conscious will, to observe himself and his circumstances with the same compassionate curiosity he turned on his fictional characters. This radical self-observation — refusing the comfort of self-pity, refusing to be defined by his circumstances, insisting on seeing himself as he actually was rather than as he wished to be seen — made him not only the world's greatest short-story writer but a genuinely rare and free human being.</p>
+          <p>Self-sabotage takes many forms: the unconscious creation of situations that confirm a deeply held negative belief about oneself; the engineering of failure just as success approaches, because success requires becoming a different person than the one formed in childhood; the preference for familiar misery over unfamiliar possibility; and the subtle ways in which people recreate the emotional dynamics of their family of origin in every new relationship and context, mistaking familiarity for correctness. Greene argues that all of these patterns share a common root: the inability or unwillingness to examine one's own attitude toward life honestly and to take responsibility for the role that attitude plays in constructing experienced reality.</p>
+          <p>The path forward is not positive thinking — Greene is explicitly dismissive of superficial optimism — but the kind of honest, compassionate, unflinching self-observation that Chekhov practised: seeing your own patterns clearly enough that you can choose, gradually and with enormous effort, to respond to the world differently.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 9</div>
+        <div class="law-name">The Law of Repression</div>
+        <div class="law-key">Confront Your Dark Side</div>
+        <div class="law-body">
+          <p>Every human being has a shadow — the parts of the self that do not fit the persona, the qualities that were too threatening, too shameful, or too dangerous to acknowledge, and so were driven underground. Aggression, envy, sexual complexity, the desire for power, cruelty, selfishness, cowardice — these are not absent in the people who appear most free of them. They are present but repressed, operating unconsciously, and therefore far more dangerous than if they were acknowledged and managed consciously.</p>
+          <p>Greene draws on Carl Jung's concept of the shadow extensively here. The repressed material does not disappear — it accumulates pressure and finds indirect expression in ways the person cannot control and often cannot see. The aggressively kind person who harbours enormous rage. The publicly moral crusader whose secret life embodies everything they publicly condemn. The mild, inoffensive character who periodically erupts with a violence that surprises everyone including themselves. These are not anomalies — they are the predictable expression of the gap between the acknowledged self and the shadow.</p>
+          <p>The most dangerous expression of the unexamined shadow is projection: attributing to others — to specific individuals, to entire groups — the qualities we cannot acknowledge in ourselves. The person who cannot see their own envy becomes convinced that everyone envies them. The person who represses their aggression becomes hypersensitive to aggression in others. The person who cannot acknowledge their own capacity for dishonesty becomes obsessed with the dishonesty of those around them. Projection is not simply wrong — it is actively destructive, because it ensures that the one quality we most need to examine in ourselves becomes the quality we most intensely pursue in others.</p>
+          <p>Greene's prescription is specifically Jungian: integration rather than elimination. The shadow cannot be destroyed, and attempting to do so only drives it deeper. It can be acknowledged, examined, and gradually brought into a conscious relationship with the rest of the personality — so that its energy, which is real, becomes available for creative and purposeful use rather than erupting destructively. Mary Shelley's creation of <em>Frankenstein</em> — drawing directly on the raw material of her own grief, rage, and forbidden desires — is his primary portrait of a person who used their shadow creatively rather than being destroyed by it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAWS 10–12 -->
+    <div id="laws4" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 10–12</div>
+        <div class="p-title">Envy, Grandiosity & Gender</div>
+        <div class="p-desc">The most socially destructive of all emotions, the inflation of the self that destroys those who cannot contain it, and the rigid gender roles that cut us off from half our own nature.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 10</div>
+        <div class="law-name">The Law of Envy</div>
+        <div class="law-key">Beware the Fragile Ego</div>
+        <div class="law-body">
+          <p>Envy is the most thoroughly hidden of all the destructive emotions — more hidden than anger, more hidden than fear, more hidden even than grief — because it is the only negative emotion that is entirely without social legitimacy. We are permitted to be angry; we are permitted to be afraid; we are permitted to grieve. But we are not permitted to be envious, and so envy never speaks its name. It dresses in the language of fairness, of justice, of principled objection — and this disguise is what makes it so dangerous. The person in the grip of envy cannot acknowledge it to themselves, let alone to others, and so it operates with total immunity from conscious examination.</p>
+          <p>Greene describes the tell-tale signs: excessive praise that contains a subtle sting; criticism of your work that focuses specifically on what you are most proud of; the friend who always undermines your confidence just before an important opportunity; the colleague whose help always seems to create more problems than it solves. These patterns are the expression of envy that cannot be acknowledged — what Greene calls "envy-masked-as-help," in which the envious person simultaneously desires your success and cannot bear it, and resolves the tension by technically helping while actually hindering.</p>
+          <p>The most dangerous envy is that directed at those who are close — peers, colleagues, siblings, close friends — because proximity makes comparison unavoidable and similarity makes difference intolerable. We can admire those far above us without envy, because they belong to a different category. But the person who is almost exactly like us and has just slightly more — of success, of recognition, of love, of talent — is genuinely intolerable to the envious mind, which experiences their advantage not as their good fortune but as a direct comment on our own inadequacy.</p>
+          <p>Greene offers strategies for both sides: how to recognise envy in others (watch for the excessive interest in your affairs that is not quite admiration, the compliments that leave you feeling slightly diminished, the subtle discouragements offered as friendly concern); how to manage it in yourself (the honest acknowledgment that the feeling is there, the redirection of the energy it contains toward your own work rather than toward measuring yourself against others); and how to avoid provoking it unnecessarily in those around you (modulating the display of success, sharing credit generously, maintaining genuine humility about the role of luck in your own position).</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 11</div>
+        <div class="law-name">The Law of Grandiosity</div>
+        <div class="law-key">Know Your Limits</div>
+        <div class="law-body">
+          <p>Grandiosity is the inflation of the self beyond its actual proportions — the conviction, often unconscious, that one is exceptional in ways that suspend the ordinary rules of cause, effect, consequence, and limitation. It is closely related to narcissism but distinct: where narcissism is about the need for validation, grandiosity is about the experience of one's own specialness, often in the absence of any external confirmation. Every human being has some capacity for grandiosity — the pleasurable feeling of being exceptional, of being destined for something beyond the ordinary — and this capacity, in controlled doses, is a source of ambition and creative energy. Unleashed, it is catastrophic.</p>
+          <p>Greene traces Howard Hughes's trajectory as the definitive portrait of grandiosity consuming a life: a genuine genius, a man of extraordinary vision and real accomplishment, who gradually lost all contact with the feedback mechanisms — financial reality, physical limitation, the opinions of others — that constrain ordinary people, and whose grandiosity expanded to fill the space that external constraint vacated, until he was living in a blacked-out hotel room, refusing to cut his nails, surrounded by increasingly bizarre protective rituals — the logical endpoint of a self that has stopped being corrected by reality.</p>
+          <p>The specific mechanism Greene identifies is the "grandiosity trigger" — the moment of genuine success or recognition that, instead of satisfying the hunger for specialness, intensifies it. Success confirms the grandiose self-narrative, which grows to demand more confirmation, which requires more spectacular success, which is harder to achieve and therefore requires riskier strategies, which eventually fail in ways proportional to their ambition. The person who cannot tolerate the ordinariness of gradual, incremental progress — who needs every achievement to be extraordinary — is on this spiral, because ordinary progress is where most of real life and real achievement actually happens.</p>
+          <p>The antidote is what Greene calls "practical grandiosity" — the channelling of the energy of ambition into sustained, grounded work that accepts limitation as the necessary condition of real achievement rather than an insult to be transcended. The greatest artists, scientists, and builders were driven by a vision of what they could achieve that vastly exceeded their present state — genuine grandiosity as fuel — while simultaneously submitting that vision to the discipline of reality-testing, craft, and the patient accumulation of genuine competence. The vision without the discipline produces delusion; the discipline without the vision produces mediocrity.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 12</div>
+        <div class="law-name">The Law of Gender Rigidity</div>
+        <div class="law-key">Reconnect to the Masculine or Feminine Within You</div>
+        <div class="law-body">
+          <p>Every human being contains both masculine and feminine psychological qualities — not in the crude biological sense, but in the sense that qualities such as assertiveness, analytical detachment, and directness (traditionally coded masculine) and empathy, receptivity, intuition, and relational intelligence (traditionally coded feminine) exist in every person regardless of biological sex. Cultural conditioning powerfully suppresses whichever set of qualities does not match the gender role assigned at birth, creating a systematic impoverishment of the full human range. The result is a partial person — strong in the culturally approved dimensions of their identity, underdeveloped in the suppressed ones — and the suppressed qualities, predictably, do not disappear but operate as shadow material.</p>
+          <p>Queen Elizabeth I is Greene's primary portrait: a woman ruling in a world that defined ruling as masculine, who succeeded not by simply performing masculinity (which would have been both exhausting and incredible) but by developing a fluid relationship with both registers — using strategic ambiguity, keeping suitors and advisors perpetually uncertain of her intentions, combining the decisiveness expected of a king with the relational intelligence of a queen in a way that no purely masculine ruler could have managed. Her psychological flexibility — her ability to draw on whatever the moment required regardless of gender coding — was her greatest strategic asset.</p>
+          <p>Greene extends this well beyond gender politics to a broader argument about psychological wholeness: the suppression of any genuine dimension of human experience — whether gendered or not — creates a shadow that demands expression. The man who has entirely repressed his relational intelligence will find it erupting in emotional dependencies he cannot manage. The woman who has entirely suppressed her assertiveness will find it emerging as passive aggression or periodic explosions of rage that surprise both herself and others. The path to genuine effectiveness is the integration of the full range — not the performance of androgyny, but the honest development of whatever qualities have been most suppressed by circumstance and culture.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAWS 13–15 -->
+    <div id="laws5" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 13–15</div>
+        <div class="p-title">Resentment, Conformity & Leadership</div>
+        <div class="p-desc">The corrosive force of accumulated grievance, the psychological gravity of the group that pulls individuals downward, and the rare art of leadership that genuinely inspires rather than merely commands.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 13</div>
+        <div class="law-name">The Law of Resentment</div>
+        <div class="law-key">Advance with a Sense of Purpose</div>
+        <div class="law-body">
+          <p>Resentment is what happens to anger that cannot be expressed directly. Where anger is immediate, focused, and energetically discharged, resentment is chronic, diffuse, and consuming — a sustained low-grade hostility toward a person, a group, or a system that is experienced as the source of one's deprivation, failure, or humiliation. It is one of the most psychologically destructive of all states because it is self-reinforcing: every new experience is interpreted through the resentment framework, which confirms and deepens it; and because it converts the energy that should go into building something into the energy of tearing something down.</p>
+          <p>Greene uses Martin Luther King Jr. as his primary portrait — not because King was free of resentment (he had ample reason for it) but because of the extraordinary strategic and psychological discipline with which he refused to be governed by it. King understood that resentment, however justified, was a trap: it made opponents of potential allies, confirmed the hostile narrative of those who wished to dismiss the movement, and consumed energy that was desperately needed for the patient, sustained work of actual change. His discipline of channelling the legitimate anger of injustice into purposeful, strategic action — maintaining genuine warmth toward opponents even while opposing them — was not naivety. It was the most sophisticated political psychology in American history.</p>
+          <p>Greene distinguishes between healthy anger (which acknowledges wrong, motivates action, and then moves on) and resentment (which accumulates, grows, and becomes the organising principle of an entire psychology). The person whose primary relationship to their circumstances is one of resentment is permanently trapped in a passive position — perpetually the victim of forces outside their control — because resentment is structurally a posture of powerlessness. The alternative Greene advocates is the conversion of even genuine grievance into purposeful forward motion: what am I building, what am I creating, what kind of person am I becoming — questions that direct energy outward and forward rather than inward and backward.</p>
+          <p>He also analyses the social and political dimensions of resentment — the way in which leaders and movements that build primarily on collective grievance tend to produce, when successful, not liberation but a new version of the oppressive structure they replaced, because the organising psychology of resentment reproduces domination rather than transcending it. The movements that genuinely change the world are those driven by a vision of what could be created, rather than solely by fury at what has been destroyed.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 14</div>
+        <div class="law-name">The Law of Conformity</div>
+        <div class="law-key">Resist the Downward Pull of the Group</div>
+        <div class="law-body">
+          <p>When human beings join a group — any group, regardless of its stated purpose or the intelligence of its individual members — a predictable psychological regression occurs. Individuality recedes. The threshold of emotional contagion drops. The desire for belonging overrides the desire for accuracy. The tolerance for violence, cruelty, and irrationality rises. And the collective intelligence of the group consistently falls below the individual intelligence of its members, because the group rewards conformity and punishes the kind of independent thinking that might challenge the group's self-narrative.</p>
+          <p>Greene traces this through sociology, social psychology, and historical case studies. The experiments are damning: ordinary, decent people, placed in group contexts with mild social pressure toward conformity, will deny the evidence of their own senses rather than be the one who disagrees; will participate in actions they would personally find abhorrent if assessed alone; and will rapidly adopt the tribal psychology of in-group and out-group even when the division is arbitrary. This is not a character flaw in the weak-willed — it is a deeply embedded feature of human social psychology, and it operates on almost everyone to some degree.</p>
+          <p>The specific mechanisms Greene identifies include: the fear of social exclusion (which is processed by the brain with the same urgency as physical threat); the contagion of emotion in groups (where the most extreme and dramatic emotional state in the room tends to set the emotional register for everyone); the loss of individual moral responsibility in collective action (diffusion of responsibility); and the gradual replacement of individual judgment by group consensus as the primary source of reality-testing.</p>
+          <p>The antidote is not misanthropy or isolation — it is the cultivation of a stable internal compass that remains functional under social pressure. This requires knowing your own values with enough precision that you can identify when they are being compromised; developing the ability to observe group dynamics from a slight internal distance even while fully participating; and maintaining at least some relationships outside any particular group in which you are embedded, to preserve the corrective influence of genuinely different perspectives. The person with a secure and examined sense of their own values is far more resistant to the downward pull of conformity than the person whose identity is primarily constituted by group membership.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 15</div>
+        <div class="law-name">The Law of Fickleness</div>
+        <div class="law-key">Make Them Want to Follow You</div>
+        <div class="law-body">
+          <p>Leadership that depends on authority — on the power to compel compliance — is permanently fragile, because authority can be withdrawn and compulsion breeds resentment. Genuine leadership — the kind that produces genuine commitment rather than minimal compliance — rests on an entirely different foundation: the management of the perceptions, needs, and psychology of those you lead, so that following you is something they genuinely want to do rather than something they are required to do.</p>
+          <p>Greene identifies the specific psychological needs that effective leaders satisfy in those they lead: the need to feel part of something larger than themselves; the need to believe that their leader understands their reality and cares about their concerns (which is entirely different from the leader actually caring, though genuine caring is preferable); the need for a clear narrative that makes sense of the group's challenges and points toward a compelling future; and the need to feel that their leader's confidence and authority are real — that there is genuine substance behind the performance of leadership rather than anxiety poorly disguised as command.</p>
+          <p>He also maps the predictable fickleness of followers — the way in which the very qualities that make a leader attractive in one context (boldness, decisiveness, the willingness to break norms) become threatening in another; the way in which a leader's first success is attributed to their genius and their first failure attributed to the same qualities; and the specific psychological dynamics of the leader-follower relationship that make leaders vulnerable to exactly the kind of flattery and isolation that produced the groupthink of Law 5. Successful leadership over time requires a constant, sophisticated management of the gap between followers' projections and the leader's actual capacities.</p>
+          <p>Greene's practical prescriptions draw on figures from Pericles to Abraham Lincoln to Eleanor Roosevelt: demonstrate genuine mastery in at least one visible domain; take responsibility for failures without theatrical self-flagellation; embody the values you claim to represent (because the contradiction between stated values and visible behaviour is detected instantly and destroys credibility permanently); and cultivate the emotional intelligence to read the room — to know when your followers need inspiration, when they need honest confrontation, and when they simply need to be heard.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAWS 16–18 -->
+    <div id="laws6" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Laws 16–18</div>
+        <div class="p-title">Aggression, Generations & Death</div>
+        <div class="p-desc">The hidden aggression running beneath the surface of civilised interaction, the generational forces that shape and constrain us, and the mortality we deny — whose denial costs us everything.</div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 16</div>
+        <div class="law-name">The Law of Aggression</div>
+        <div class="law-key">Seize the Offensive</div>
+        <div class="law-body">
+          <p>Aggression — the drive to impose one's will on the environment, to expand, to dominate, to overcome resistance — is not a dysfunction. It is a fundamental feature of human psychology, present in everyone, and deeply necessary: without it, nothing of significance is ever created or defended. The problem is not aggression itself but the cultural taboo against acknowledging it, which drives it underground where it operates without the correction of conscious direction. The person who cannot acknowledge their own aggressive impulses is not less aggressive than the person who can — they are simply less able to manage and direct the aggression that is there.</p>
+          <p>Greene distinguishes between overt and covert aggression. Overt aggression is visible, direct, and relatively easy to respond to. Covert aggression — which he argues is far more common and far more dangerous — is aggression pursued through the appearance of reasonableness, cooperation, victimhood, and good intention. The passive aggressor who chronically "forgets" commitments, delivers work slightly wrong, or creates problems through apparent helplessness; the person who expresses hostility through sarcasm, irony, and the carefully deniable jab — these are not harmless eccentricities but forms of aggression that are harder to defend against than the overt variety because they deny you a clear target.</p>
+          <p>Learning to recognise covert aggression — in others and, crucially, in yourself — is among the most practically important skills Greene teaches. The signals include: a pattern of outcomes that consistently disadvantages you despite the other person's stated good intentions; the use of humour to deliver otherwise unacceptable messages; the social positioning of oneself as victim in ways that generate obligation and guilt in others; and the systematic creation of dependency that converts others into instruments of the covert aggressor's will while appearing to be the dependent party.</p>
+          <p>For yourself, the law of aggression counsels the honest acknowledgment of your own competitive and expansive drives — followed by their conscious direction toward genuinely productive ends. The person who cannot acknowledge wanting power, recognition, dominance, or triumph is not more virtuous than the person who can; they are simply less in control of where that desire leads them. The seizing of the offensive — Greene's prescription — means converting the energy of aggression into purposeful action before the passivity that results from its suppression accumulates into an explosion that cannot be directed.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 17</div>
+        <div class="law-name">The Law of Generational Myopia</div>
+        <div class="law-key">Seize the Historical Moment</div>
+        <div class="law-body">
+          <p>We are all shaped by the historical moment into which we were born with a thoroughness we cannot fully see, because the values, assumptions, and anxieties of our formative years feel like universal truths rather than historical accidents. The generation that came of age during economic catastrophe develops a relationship to security and scarcity that the generation that came of age during prosperity cannot share — and each finds the other's relationship to money irrational, because each mistakes their historically specific experience for human nature. Every generation does this, and every generation is partly wrong about the ones that follow.</p>
+          <p>Greene maps the recurring generational patterns: the first generation that builds something from nothing, driven by deprivation and necessity; the second generation that inherits the structure built by the first and refines it; the third generation that inherits the refinement without the memory of necessity and often dismantles what took two generations to build. These patterns are not inevitable — they can be interrupted by historical consciousness — but they operate with considerable regularity because the emotional memory of formative experience is not transmissible through instruction, only through direct experience.</p>
+          <p>The practical wisdom of this law is in both directions. Looking backward: understanding that your own values, assumptions, and automatic reactions are shaped by your generation's specific historical experience allows you to hold them with appropriate tentativeness — to ask whether a belief that feels absolutely certain is genuinely universal or specifically historical. Looking forward: understanding the formative experiences of the generation following yours, rather than dismissing them as lazy, entitled, or incomprehensible, allows you to work with them rather than against them, and to anticipate the specific ways in which they will push back against what the previous generation has built.</p>
+          <p>Greene's most important point here is about historical positioning: the ability to understand the larger historical moment you inhabit — the forces at work, the opportunities specific to this particular period, the limitations that will be characteristic of it — allows you to act with a kind of strategic intelligence that those embedded in their moment without awareness of it cannot achieve. The person who can read their historical moment as if from outside it — seeing it as one era among many rather than as simply how things are — has a significant advantage over those who cannot.</p>
+        </div>
+      </div>
+
+      <div class="law-block">
+        <div class="law-num">Law 18</div>
+        <div class="law-name">The Law of Death Denial</div>
+        <div class="law-key">Meditate on Our Common Mortality</div>
+        <div class="law-body">
+          <p>This is the final and in many ways the most important of the eighteen laws. The awareness of our own mortality — the certain knowledge that we will die — is uniquely human, and it creates a problem that no other animal faces: how to live with full awareness of our own finitude. The solution that most humans adopt, most of the time, is denial: we behave as though death is something that happens to others, that our own death is somehow abstract or distant, and that the urgency it should lend to every decision and relationship is best kept out of mind. This denial is understandable — full, constant awareness of mortality would be psychologically paralysing — but it is also extraordinarily costly.</p>
+          <p>Greene draws on the Terror Management Theory of psychology — the idea that much of human behaviour can be understood as a response to the anxiety generated by mortality awareness — and on the existential tradition in philosophy. The denial of death, he argues, is the hidden driver of an enormous proportion of human dysfunction: the frantic accumulation of status and wealth as a form of immortality project; the rigid defensiveness about identity and belief systems (because if I am wrong about how to live, my limited time has been wasted); the preference for immediate comfort over long-term meaning; and the chronic inability to prioritise what actually matters over what merely feels urgent.</p>
+          <p>The alternative Greene proposes is not morbidity but a Stoic and Epicurean practice of meditating regularly on mortality — not to be paralysed by it but to be clarified by it. When you genuinely absorb the fact of your own finitude, the trivial becomes visibly trivial; the significant becomes visibly significant; the people and work and experiences that actually matter stand out in sharp relief against the background of everything that merely distracts. The person who has genuinely accepted their mortality makes different decisions than the person who has not — more courageous, more honest, more genuinely present, more willing to pursue what matters even when it is difficult.</p>
+          <p>Greene's final prescription is to develop what he calls a "living death" practice — the deliberate, regular contemplation of one's own death as a clarifying and prioritising force. This does not mean despair or withdrawal from life; it means engaging with life with the seriousness and presence that its genuine finitude deserves. The person who lives as though they have infinite time is, paradoxically, the person who wastes the most of it — because they defer the important for the comfortable, the meaningful for the convenient, and the genuine for the performed. The full awareness of mortality is, in Greene's reading, the beginning of the only kind of wisdom that genuinely changes how one lives.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#303070; margin-top:0;">The Oracle of Human Nature</div>
+        <div class="section-title">Key Passages from The Laws of Human Nature</div>
+
+        <div class="quote-item"><div class="quote-text">"The first step toward becoming rational is to understand how irrational you already are."</div><div class="quote-ref">Law 1 · The Law of Irrationality</div></div>
+        <div class="quote-item"><div class="quote-text">"Emotions are not the enemy of rationality. They are the medium through which you experience the world. The problem is when they govern you without your knowledge."</div><div class="quote-ref">Law 1 · The Law of Irrationality</div></div>
+        <div class="quote-item"><div class="quote-text">"The height of human intelligence is to direct our emotions, not to be directed by them."</div><div class="quote-ref">Law 1 · The Law of Irrationality</div></div>
+        <div class="quote-item"><div class="quote-text">"The ability to observe yourself — to notice when emotion is doing the thinking — is the rarest of all human skills, and the most powerful."</div><div class="quote-ref">Law 1 · The Law of Irrationality</div></div>
+        <div class="quote-item"><div class="quote-text">"We are all narcissists to some degree. The question is whether our narcissism has made us blind to other people's humanity."</div><div class="quote-ref">Law 2 · The Law of Narcissism</div></div>
+        <div class="quote-item"><div class="quote-text">"Genuine empathy is not the projection of your feelings onto another person. It is the temporary suspension of your own feelings so that theirs can be genuinely received."</div><div class="quote-ref">Law 2 · The Law of Narcissism</div></div>
+        <div class="quote-item"><div class="quote-text">"People are wearing masks — presenting a self that is adapted, managed, and performed. The gap between the mask and the person behind it is where all the interesting information lives."</div><div class="quote-ref">Law 3 · The Law of Role-Playing</div></div>
+        <div class="quote-item"><div class="quote-text">"Character is revealed not in what people say but in the moments when they cannot control what they say — when stress, surprise, or frustration strips the performance away."</div><div class="quote-ref">Law 3 · The Law of Role-Playing</div></div>
+        <div class="quote-item"><div class="quote-text">"We are all the products of a specific early environment. The question is whether we will spend our lives unconsciously re-enacting it, or consciously choosing something different."</div><div class="quote-ref">Law 4 · The Law of Compulsive Behaviour</div></div>
+        <div class="quote-item"><div class="quote-text">"We desire what others desire. Value is not intrinsic — it is conferred by the attention and longing of others, which is why the rare and coveted always outshine the available and obvious."</div><div class="quote-ref">Law 5 · The Law of Covetousness</div></div>
+        <div class="quote-item"><div class="quote-text">"The long view is not a natural human capacity. It is a discipline — acquired, practised, and always in danger of being abandoned for the comfort of the immediate."</div><div class="quote-ref">Law 6 · The Law of Shortsightedness</div></div>
+        <div class="quote-item"><div class="quote-text">"The more directly you try to change someone's behaviour, the more resistance you create. The art of influence is to make people feel they are changing themselves."</div><div class="quote-ref">Law 7 · The Law of Defensiveness</div></div>
+        <div class="quote-item"><div class="quote-text">"Your attitude toward life is not a description of external reality — it is a filter that determines which aspects of reality you can even perceive."</div><div class="quote-ref">Law 8 · The Law of Self-Sabotage</div></div>
+        <div class="quote-item"><div class="quote-text">"The shadow is not your enemy. It is your unexplored self — the source of enormous energy when acknowledged, and of enormous destruction when denied."</div><div class="quote-ref">Law 9 · The Law of Repression</div></div>
+        <div class="quote-item"><div class="quote-text">"What we most loudly condemn in others is frequently what we most intensely repress in ourselves. Our projections are our autobiography."</div><div class="quote-ref">Law 9 · The Law of Repression</div></div>
+        <div class="quote-item"><div class="quote-text">"Envy never speaks its real name. It arrives wearing the costume of fairness, of principled criticism, of friendly concern. This is precisely what makes it so dangerous."</div><div class="quote-ref">Law 10 · The Law of Envy</div></div>
+        <div class="quote-item"><div class="quote-text">"The most painful envy is directed not at those far above us but at those who are almost exactly like us — because their advantage feels like a direct comment on our inadequacy."</div><div class="quote-ref">Law 10 · The Law of Envy</div></div>
+        <div class="quote-item"><div class="quote-text">"Success does not cure grandiosity — it feeds it. The first victory confirms the exceptional self-narrative; the second demands a larger stage; by the third, reality itself has been recruited to serve the delusion."</div><div class="quote-ref">Law 11 · The Law of Grandiosity</div></div>
+        <div class="quote-item"><div class="quote-text">"Every person contains the full range of human qualities. What culture calls masculine and feminine are not opposites — they are complementary dimensions of a complete psychology."</div><div class="quote-ref">Law 12 · The Law of Gender Rigidity</div></div>
+        <div class="quote-item"><div class="quote-text">"Resentment is the most self-defeating of emotions. It keeps you permanently focused on what has been done to you, which is precisely the posture that prevents you from doing anything about it."</div><div class="quote-ref">Law 13 · The Law of Resentment</div></div>
+        <div class="quote-item"><div class="quote-text">"A movement built on resentment produces not liberation but a mirror image of the oppression it replaced, because the organising psychology has not changed — only the roles."</div><div class="quote-ref">Law 13 · The Law of Resentment</div></div>
+        <div class="quote-item"><div class="quote-text">"When you join a group, your intelligence does not combine with the others — it partially dissolves into it. The group consistently underperforms the sum of its individual members."</div><div class="quote-ref">Law 14 · The Law of Conformity</div></div>
+        <div class="quote-item"><div class="quote-text">"The pull toward conformity is not weakness — it is evolution. But evolution did not design us for the world we actually inhabit, and its designs must sometimes be deliberately overridden."</div><div class="quote-ref">Law 14 · The Law of Conformity</div></div>
+        <div class="quote-item"><div class="quote-text">"Leadership that commands compliance is always temporary. Leadership that makes people want to follow is the only kind that endures."</div><div class="quote-ref">Law 15 · The Law of Fickleness</div></div>
+        <div class="quote-item"><div class="quote-text">"Covert aggression is far more dangerous than overt aggression, because it denies you a target while systematically advancing against your interests."</div><div class="quote-ref">Law 16 · The Law of Aggression</div></div>
+        <div class="quote-item"><div class="quote-text">"Acknowledging your aggressive drives is not the same as acting on them. It is the necessary precondition for directing them — and those who cannot acknowledge theirs are at the mercy of them."</div><div class="quote-ref">Law 16 · The Law of Aggression</div></div>
+        <div class="quote-item"><div class="quote-text">"Your generation's formative experience feels like human nature to you. To the generation that follows, it looks like historical accident. Both are right."</div><div class="quote-ref">Law 17 · The Law of Generational Myopia</div></div>
+        <div class="quote-item"><div class="quote-text">"The awareness of death is not something to be managed or suppressed. It is the most clarifying force available to human consciousness — the only thing that reliably reveals what actually matters."</div><div class="quote-ref">Law 18 · The Law of Death Denial</div></div>
+        <div class="quote-item"><div class="quote-text">"The person who lives as though they have infinite time is the one who wastes the most of it. Finitude is not a tragedy — it is the condition that makes meaning possible."</div><div class="quote-ref">Law 18 · The Law of Death Denial</div></div>
+        <div class="quote-item"><div class="quote-text">"We are not as self-aware as we think, not as rational as we believe, and not as original as we feel. Understanding this is not defeat — it is the beginning of genuine freedom."</div><div class="quote-ref">Introduction</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"The Laws of Human Nature is not a book about other people. It is a book about you — the hidden forces shaping every decision you make, every relationship you form, and every ambition you pursue. The purpose is not to make you cynical about human nature but to make you genuinely free of it."</p>
+  </div>
+
+</div>
+
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const STRATEGIES_OF_WAR_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --steel: #1a2030;
+    --steel2: #222d40;
+    --olive: #4a5c2a;
+    --olive-light: #6a8038;
+    --olive-bright: #8aaa48;
+    --bronze: #b87830;
+    --bronze-light: #d4a050;
+    --sand: #f0e8d0;
+    --sand-dark: #e0d4b8;
+    --border-c: #8a9870;
+    --red: #8a2020;
+    --muted: #2a3820;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body, .wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--steel); }
+  .wrap { max-width:840px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero {
+    background:var(--steel); color:var(--sand);
+    padding:3.5rem 3rem 3rem; text-align:center;
+    border-bottom:4px double var(--olive-light); position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(74,92,42,0.07) 29px);
+    pointer-events:none;
+  }
+  .hero-ornament { font-size:20px; color:var(--olive-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.7; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:46px; line-height:1.1; color:var(--olive-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.6); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:17px; color:#8a9870; margin-top:0.6rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#5a6a50; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#4a5a40; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2.5rem; background:var(--steel); padding:1.2rem 2rem; border-bottom:1px solid var(--olive); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:34px; color:var(--olive-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#5a6a50; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#131b28; border-bottom:2px solid var(--olive); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.7rem 0.9rem; font-family:'IM Fell English',serif; font-size:12.5px; color:#5a6a50; cursor:pointer; border-right:1px solid #222d40; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--olive-bright); background:#1a2838; }
+  .tab.active { color:var(--olive-bright); background:#1e2c3a; border-bottom:2px solid var(--olive-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--sand); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.8; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--olive); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:23px; color:var(--steel); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .strategy-block { margin-bottom:1.8rem; padding-left:1.2rem; border-left:3px solid var(--border-c); }
+  .strategy-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--olive); margin-bottom:0.1rem; }
+  .strategy-name { font-weight:600; font-size:17px; color:var(--red); margin-bottom:0.15rem; }
+  .strategy-sub { font-family:'IM Fell English',serif; font-style:italic; font-size:13.5px; color:var(--bronze); margin-bottom:0.4rem; }
+  .strategy-body { font-size:15.5px; line-height:1.72; color:#1a2820; }
+
+  .divider { text-align:center; color:var(--olive); font-size:18px; letter-spacing:10px; margin:1.5rem 0; opacity:0.4; }
+
+  .part-banner { background:var(--steel); color:var(--sand); padding:1rem 1.5rem; margin:2rem -2rem 1.5rem; border-top:2px solid var(--olive); border-bottom:2px solid var(--olive); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--olive-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:20px; color:var(--sand); }
+  .part-banner .p-desc { font-size:13px; color:#8a9870; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--steel); border:1px solid var(--olive); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--olive-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#8a9870; line-height:1.45; }
+
+  .quotes-section { background:var(--steel); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--olive); }
+  .quotes-section .section-title { color:var(--olive-bright); border-bottom-color:#2a3820; margin-top:0; }
+  .quote-item { border-left:3px solid var(--olive); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(74,92,42,0.08); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--sand); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#5a6a50; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--olive); color:var(--sand); padding:2rem; text-align:center; border-top:3px double var(--olive-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">⚔ ⚔ ⚔</div>
+    <div class="hero-title">The 33 Strategies of War</div>
+    <div class="hero-subtitle">A Complete Guide to the Laws of Power and Strategy</div>
+    <div class="hero-author">Robert Greene</div>
+    <div class="hero-year">Published 2006 · Five Parts · 33 Strategies · All Covered</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">33</div><div class="lbl">Strategies</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">Parts</div></div>
+    <div class="stat"><div class="num">2006</div><div class="lbl">Published</div></div>
+    <div class="stat"><div class="num">2500+</div><div class="lbl">Years of War Studied</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('part1',this)">Part I · Self</div>
+    <div class="tab" onclick="show('part2',this)">Part II · Teams</div>
+    <div class="tab" onclick="show('part3',this)">Part III · Defence</div>
+    <div class="tab" onclick="show('part4',this)">Part IV · Offence</div>
+    <div class="tab" onclick="show('part5',this)">Part V · Unconventional</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>Every human conflict — in war, business, politics, and personal life — follows the same underlying patterns. Greene distills 2,500 years of military history into 33 timeless strategies, drawn from Napoleon, Sun Tzu, Caesar, Hannibal, Machiavelli, and dozens more. This is not a book about combat. It is a book about power, psychology, and the art of winning.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is — and Why It Was Written</div>
+      <div class="strategy-body" style="margin-bottom:1.5rem;">Robert Greene published <em>The 33 Strategies of War</em> in 2006, following the success of <em>The 48 Laws of Power</em> (1998) and <em>The Art of Seduction</em> (2001). Where those books drew primarily on historical intrigue and courtly power, this one goes directly to the source of all strategic thinking: warfare. Greene's central argument is that we are all engaged in ongoing conflicts — with rivals, with institutions, with our own psychological limitations — whether we acknowledge it or not. Most people lose these conflicts not because they are outgunned but because they refuse to think strategically. They react emotionally, repeat failed approaches, and mistake busyness for purposeful action.</div>
+      <div class="strategy-body" style="margin-bottom:1.5rem;">The book draws on an extraordinary range of historical case studies: Alexander the Great, Hannibal Barca, Napoleon Bonaparte, the Duke of Wellington, T.E. Lawrence, Chairman Mao, Ulysses S. Grant, Erwin Rommel, and many others. Each chapter opens with a historical battle or campaign, extracts the core strategic principle, and then shows how that principle applies to modern competitive contexts — business negotiations, political campaigns, creative rivalries, personal conflicts.</div>
+      <div class="strategy-body" style="margin-bottom:1.5rem;">Greene explicitly positions the book as a modern update of the tradition running from Sun Tzu through Machiavelli through Clausewitz. His innovation is accessibility: he strips the principles from their historical context just enough to make them immediately applicable, without losing the depth that makes historical examples instructive. The result is a book that reads as both a compendium of military history and a ruthlessly practical manual for navigating competitive life.</div>
+
+      <div class="section-label">Architecture</div>
+      <div class="section-title">The Five Parts — A Map of the Book</div>
+      <div class="theme-grid">
+        <div class="theme-card">
+          <div class="t-name">Part I · Self-Directed War</div>
+          <div class="t-desc">Strategies 1–5. The internal battlefield — mastering your own mind before facing any external enemy.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Part II · Organisational War</div>
+          <div class="t-desc">Strategies 6–11. Building, commanding, and motivating the forces around you into a unified weapon.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Part III · Defensive War</div>
+          <div class="t-desc">Strategies 12–16. How to absorb attacks, buy time, protect what you have, and strike back at the right moment.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Part IV · Offensive War</div>
+          <div class="t-desc">Strategies 17–22. How to take the initiative, divide and conquer, outmanoeuvre, and force decisive confrontation.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Part V · Unconventional War</div>
+          <div class="t-desc">Strategies 23–33. The dirty, oblique, psychological, and deceptive arts that win when conventional methods fail.</div>
+        </div>
+      </div>
+
+      <div class="section-label">Core Philosophy</div>
+      <div class="section-title">The Seven Pillars of Greene's Strategic Vision</div>
+      <div class="theme-grid">
+        <div class="theme-card">
+          <div class="t-name">War Is Everywhere</div>
+          <div class="t-desc">Conflict is the permanent condition of competitive life. Refusing to acknowledge it just means you are losing it unconsciously.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Emotion Is the Enemy</div>
+          <div class="t-desc">Anger, fear, pride, and nostalgia are the primary weapons opponents use against you. Mastering them is the foundation of all strategy.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Think in Campaigns, Not Battles</div>
+          <div class="t-desc">Grand strategy — the long view, the larger objective — must govern every tactical decision. Winning a battle while losing a campaign is failure.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Initiative Is Everything</div>
+          <div class="t-desc">The side that sets the terms of engagement almost always wins. Force the enemy to react to you, never the reverse.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Know Your Enemy Completely</div>
+          <div class="t-desc">Not just their strengths — their psychology, their habits, their fears, their blind spots. These are your real weapons.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">Concentration Defeats Numbers</div>
+          <div class="t-desc">Focus overwhelming force at the decisive point rather than spreading effort evenly. Concentrated action always defeats dispersed reaction.</div>
+        </div>
+        <div class="theme-card">
+          <div class="t-name">The Moral Dimension</div>
+          <div class="t-desc">Morale — the will to fight and the belief in a cause — is ultimately more powerful than numbers, weapons, or terrain.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART I -->
+    <div id="part1" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part I · Strategies 1–5</div>
+        <div class="p-title">Self-Directed Warfare</div>
+        <div class="p-desc">The war with the most dangerous enemy you will ever face — yourself. Before any external campaign can be won, the internal battlefield must be mastered.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 1</div>
+        <div class="strategy-name">Declare War on Your Enemies</div>
+        <div class="strategy-sub">The Polarity Strategy</div>
+        <div class="strategy-body">Most people drift through life in a state of diffuse, unacknowledged conflict — resenting rivals without naming them, suffering from vague hostilities they cannot address because they refuse to identify them. Greene's first strategy is almost shockingly direct: know your enemies. Name them. Define the conflict clearly. This is not aggression — it is clarity. A clearly identified enemy gives you focus, motivation, and a specific target. Conversely, a life lived in a fog of unidentified resentments and unnamed rivals is a life of dissipated energy. The psychological power of declaring a clear opponent — even if only internally — is that it converts vague anxiety into directed purpose. Historical anchor: Napoleon's identification of England as his primary and existential enemy — never wavering, never confused — gave his campaigns a coherence that his rivals, who could not decide what they were fighting for, consistently lacked.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 2</div>
+        <div class="strategy-name">Do Not Fight the Last War</div>
+        <div class="strategy-sub">The Guerrilla-War-of-the-Mind Strategy</div>
+        <div class="strategy-body">The most dangerous form of mental conservatism is the unconscious repetition of past strategies. Generals who won great victories are especially susceptible: they fought brilliantly in the last war and assume the same approach will work in the next one. The conditions have changed; the methods have not. Greene traces this error through French military thinking in 1940 — the Maginot Line, the perfect fortification for the last war, was strategically useless against the German blitzkrieg of the new one. The guerrilla-war-of-the-mind strategy demands that you fight the war in front of you, not the war you remember. This requires actively breaking habitual mental patterns: suspending the templates laid down by previous success, seeing the present situation with fresh eyes, and being willing to invent entirely new approaches when circumstances demand them. Past success is the enemy of present adaptation.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 3</div>
+        <div class="strategy-name">Amidst the Turmoil of Events, Do Not Lose Your Presence of Mind</div>
+        <div class="strategy-sub">The Counterbalance Strategy</div>
+        <div class="strategy-body">Battle produces a specific kind of psychological chaos — information overload, extreme time pressure, physical exhaustion, and the constant temptation to react to every new development rather than maintaining strategic coherence. The commander who loses their presence of mind in these conditions is not just ineffective — they become actively dangerous to their own forces, making impulsive decisions that compound each crisis rather than resolving it. Greene draws heavily on Napoleon's extraordinary calmness under pressure — the ability to process chaos while remaining a still center of deliberate thought. The counterbalance strategy is the internal discipline of maintaining equanimity when events are most turbulent. It requires preparation: the calm that holds under fire is not discovered in the moment of crisis; it is built through the habits of reflection, detachment, and perspective that are practiced before crisis arrives.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 4</div>
+        <div class="strategy-name">Create a Sense of Urgency and Desperation</div>
+        <div class="strategy-sub">The Death-Ground Strategy</div>
+        <div class="strategy-body">Human beings — and the armies they form — perform most brilliantly when they have no alternative to brilliant performance. The famous historical example is the Chinese general who, having crossed a river to engage the enemy, burned his own boats. His troops could not retreat; they had to win. This was not recklessness — it was strategic psychology. The presence of an escape route is the primary source of half-hearted commitment. When escape is impossible, a depth of focus, creativity, and energy emerges that comfortable circumstances never produce. Greene translates this directly to modern competitive contexts: the entrepreneur who has bet everything on a single venture, the artist who has burned their safety net of conventional employment, performs differently — often dramatically better — than one who retains the comfort of alternatives. Death-ground is not about eliminating prudence; it is about eliminating the psychological dilution that alternative plans always produce.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 5</div>
+        <div class="strategy-name">Avoid the Snares of Groupthink</div>
+        <div class="strategy-sub">The Command-and-Control Strategy</div>
+        <div class="strategy-body">Every organisation eventually develops a social immune system that rejects uncomfortable truths. The desire for consensus, the pressure not to be the one who brings bad news, the social cost of disagreeing with the dominant interpretation — all of these forces gradually produce an organisation that is more comfortable than it is accurate. Greene traces the disaster of groupthink through military and corporate history: the advisors who told their leaders what they wanted to hear, the executives who suppressed contrary data to maintain morale, the commanders whose staffs protected them from the reality of their situation. The command-and-control strategy demands that a leader actively resist this: creating formal mechanisms for the delivery of unwelcome intelligence, rewarding honesty over agreeableness, and deliberately seeking out the person in the room who sees things differently. An organisation that can face the truth about itself is always more powerful than one that cannot.</div>
+      </div>
+    </div>
+
+    <!-- PART II -->
+    <div id="part2" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part II · Strategies 6–11</div>
+        <div class="p-title">Organisational (Team) Warfare</div>
+        <div class="p-desc">No individual wins wars alone. These strategies govern how forces are built, structured, inspired, and commanded — converting a group of individuals into a unified, lethal instrument.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 6</div>
+        <div class="strategy-name">Segment Your Forces</div>
+        <div class="strategy-sub">The Controlled-Chaos Strategy</div>
+        <div class="strategy-body">The traditional military formation — a single, unified mass moving under central command — is powerful but brittle. It can be flanked, confused, or paralysed by the unexpected. Greene draws on the innovations of commanders like Frederick the Great and Napoleon, who pioneered the division of armies into smaller, semi-autonomous units capable of independent action while remaining responsive to central direction. The key insight is that controlled decentralisation — giving subordinate units genuine authority to respond to local conditions — produces an adaptive speed and resilience that monolithic organisation cannot match. Applied to modern organisations: the leader who micromanages every decision creates a structure as slow and fragile as a single column on a narrow road. The leader who establishes clear objectives, trains capable subordinates, and then gives them genuine freedom of action creates an organisation that adapts faster than any opponent's ability to counter it.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 7</div>
+        <div class="strategy-name">Transform Your War into a Crusade</div>
+        <div class="strategy-sub">Morale Strategies</div>
+        <div class="strategy-body">Material factors — numbers, weapons, supply lines — determine the outer limits of what a force can accomplish. Morale determines how much of that potential is actually realised. An army that believes in its cause fights with an intensity and persistence that a well-equipped but uninspired force cannot match. Greene traces this through the armies of revolutionary France — disorganised, poorly equipped, but burning with the conviction that they were carrying the future of humanity against the corrupt old order — which repeatedly defeated the better-organised armies of the ancien régime. The modern application: a leader who can articulate a genuine mission — one that connects the day-to-day work of the organisation to a larger purpose — unlocks a quality of commitment that incentive structures alone never produce. People fight harder for meaning than for money.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 8</div>
+        <div class="strategy-name">Keep Others on the Defensive and in the Dark</div>
+        <div class="strategy-sub">The Mystery and Terror Strategy</div>
+        <div class="strategy-body">The most psychologically effective military commanders are those who combine two qualities that seem contradictory: total opacity about their own intentions, and the constant projection of a threatening, unpredictable presence. An enemy who cannot read you cannot prepare for you. An enemy who fears you spends energy on defence that they cannot spend on offence. Greene draws on figures like Stonewall Jackson — whose campaigns were so rapid, so unexpected, and so geometrically surprising that Union commanders spent as much energy trying to understand him as trying to defeat him. Mystery creates a psychological multiplier: the enemy's imagination fills in what they cannot see, and imagination is always more frightening than reality. The strategy applied to competitive life: those who cannot be read and who project formidable capability command a disproportionate respect relative to their actual power.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 9</div>
+        <div class="strategy-name">Turn the Tables — The Counterattack Strategy</div>
+        <div class="strategy-sub">Strike When They Are Extended</div>
+        <div class="strategy-body">A reactive posture — waiting to be attacked and then responding — is strategically inferior to one that converts the enemy's aggression into the material of their own defeat. The counterattack strategy identifies the moment when an attacker is most extended, most committed, and most vulnerable — the instant after the lunge, when they are off-balance — and delivers a decisive blow at exactly that point. This requires a specific form of discipline: the patience to absorb initial pressure without breaking, combined with the explosiveness to strike decisively when the window opens. Greene traces this through the great defensive-offensive commanders — Wellington at Waterloo, the Israelis in the 1973 war — who understood that the attacker's energy, properly absorbed and redirected, could be turned into the weapon of their own destruction.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 10</div>
+        <div class="strategy-name">Create a Threatening Presence</div>
+        <div class="strategy-sub">Deterrence Strategies</div>
+        <div class="strategy-body">The ideal strategic outcome is a victory that never requires a battle — where the mere credibility of your power deters opposition before it forms. This requires the deliberate construction of a reputation for both capability and willingness to use it. A power that is strong but perceived as reluctant to act is almost as deterrence-weak as one that is actually weak. Greene analyses the failures of deterrence — moments when adversaries correctly calculated that threats would not be carried through — and the successes, where a demonstrated willingness to absorb costs in defence of interests kept opponents from ever testing the threshold. The personal application: those who are known to respond to every incursion on their interests, however minor, create a deterrent field around themselves. Those who let small violations pass invite larger ones.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 11</div>
+        <div class="strategy-name">Trade Space for Time</div>
+        <div class="strategy-sub">The Non-Engagement Strategy</div>
+        <div class="strategy-body">Not every attack demands immediate response. Not every challenge must be met at the moment and on the terms the challenger prefers. One of the most powerful strategic options — and one of the most psychologically difficult — is the deliberate refusal to engage when engagement would favour the opponent. Russia's strategy against Napoleon is the canonical example: rather than meeting the Grande Armée in the decisive battle Napoleon needed, Russian commanders simply withdrew, drawing the French deeper into territory where supply lines stretched, winter approached, and the entire strategic logic of Napoleon's campaign collapsed without a decisive engagement ever being forced. The modern application is equally powerful: sometimes the strategically dominant response to aggression is to make the aggressor extend themselves while you conserve your own strength and wait for conditions that favour you.</div>
+      </div>
+    </div>
+
+    <!-- PART III -->
+    <div id="part3" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part III · Strategies 12–16</div>
+        <div class="p-title">Defensive Warfare</div>
+        <div class="p-desc">Defence is not passivity — it is the art of absorbing pressure, preserving strength, knowing your enemy completely, and choosing the moment and method of your response.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 12</div>
+        <div class="strategy-name">Lose Battles but Win the War</div>
+        <div class="strategy-sub">Grand Strategy</div>
+        <div class="strategy-body">The distinction between tactics and grand strategy is one of the book's most important. Tactics govern individual engagements; grand strategy governs the entire campaign — the long-term objective that gives every tactical decision its meaning. A commander with a clear grand strategy can afford to lose individual battles without losing sight of the war, because every engagement is evaluated not by its immediate outcome but by its contribution to the ultimate goal. The danger is the reverse: tactical success that serves no coherent grand strategic purpose is worse than useless — it consumes resources and creates false confidence. Greene's central example is Abraham Lincoln's management of the Civil War: willing to sacrifice generals who won battles but could not pursue a strategy of final victory, and persisting through public pressure and catastrophic defeats because the grand strategic objective was unambiguous and non-negotiable.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 13</div>
+        <div class="strategy-name">Know Your Enemy</div>
+        <div class="strategy-sub">The Intelligence Strategy</div>
+        <div class="strategy-body">The enemy's psychology is more important than their material strength. Numbers and weapons can be estimated; the inner life of an opponent — their fears, their vanities, their preferred methods, their breaking points — is where the real advantage lies. Greene argues that the great commanders invested as much energy in understanding their opponents as in planning their own movements. Wellington knew Napoleon's methods so thoroughly that he could predict his attacks before they came. Sherman understood that the psychology of the Confederate civilian population was a military target as important as any army in the field. The intelligence strategy in modern competitive life means studying rivals with the same intensity a general studies terrain: not just what they are doing but why, not just their strengths but the specific anxieties and ego investments that shape their decisions.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 14</div>
+        <div class="strategy-name">Overwhelm Resistance with Speed and Suddenness</div>
+        <div class="strategy-sub">The Blitzkrieg Strategy</div>
+        <div class="strategy-body">Speed has a psychological dimension that multiplies its physical effect. An attack that arrives before the defender has time to respond does not merely inflict damage — it paralyses the defender's decision-making apparatus, creating a cascade of disorientation that prevents effective response even to subsequent moves. Germany's 1940 campaign in France was not won by superiority of numbers or weapons — the French had comparable material strength. It was won by the concentrated application of armoured force at an unexpected point, moving with a speed that the defender's command structure literally could not process fast enough to counter. The blitzkrieg principle in competitive contexts: when you move, move decisively, move fast, and move where you are least expected. The initiative advantage of speed compounds with every moment the opponent spends reacting rather than acting.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 15</div>
+        <div class="strategy-name">Control the Dynamic</div>
+        <div class="strategy-sub">Forcing Strategies</div>
+        <div class="strategy-body">Reactive strategy is always inferior to initiative strategy, because the reactive party is perpetually late — always responding to a situation the initiator has already moved beyond. Forcing strategies are those that compel the opponent to respond to you rather than allowing them to set the terms of engagement. This is achieved by creating situations the opponent cannot ignore — threats to something they must protect, opportunities they must contest, crises they cannot let stand — and positioning yourself to benefit from whatever response they make. The key is that the forcing move is chosen deliberately, on your terms, from a position of relative calm, while the opponent's response is made under pressure, in reaction, with less information and less time. The side that sets the agenda wins; the side that responds to the agenda loses.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 16</div>
+        <div class="strategy-name">Hit Them Where It Hurts</div>
+        <div class="strategy-sub">The Centre-of-Gravity Strategy</div>
+        <div class="strategy-body">Every opponent has a centre of gravity — a critical source of strength, cohesion, or supply whose disruption collapses the whole. The mistake of undiscriminating attack is that it dissipates force across many targets when concentration on the single critical point would be decisive. The strategist's task is to identify that point — which is rarely the most obvious or most defended — and to direct overwhelming force at it precisely. In warfare this might be a supply line, a command centre, or an alliance structure. In competitive life it might be a rival's key relationship, their reputation in a specific market, their primary source of funding, or the single individual whose support holds their coalition together. Attacking everywhere produces grinding wars of attrition; attacking the centre of gravity produces sudden, decisive collapse.</div>
+      </div>
+    </div>
+
+    <!-- PART IV -->
+    <div id="part4" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part IV · Strategies 17–22</div>
+        <div class="p-title">Offensive Warfare</div>
+        <div class="p-desc">Taking the initiative, dividing the enemy, outmanoeuvring rather than overpowering, forcing decisive confrontation — and knowing when and how to end what you have started.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 17</div>
+        <div class="strategy-name">Defeat Them in Detail</div>
+        <div class="strategy-sub">The Divide-and-Conquer Strategy</div>
+        <div class="strategy-body">The cardinal sin of a weaker force fighting a stronger one is allowing that stronger force to concentrate. The cardinal art of a weaker force is preventing that concentration — separating the enemy's components so that each can be defeated individually before they unite. Napoleon used this with surgical precision: his armies moved faster than coalition armies could communicate, allowing him to interpose his forces between enemy columns and destroy each in turn before the others could reinforce. Divide and conquer in modern competitive life operates on the same principle: alliances are more vulnerable than they appear, because the interests of allied parties are never perfectly aligned. Identify the tensions within the opposing coalition, exploit them, and the combined front fractures into individually manageable opponents.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 18</div>
+        <div class="strategy-name">Expose and Attack Your Opponent's Soft Flank</div>
+        <div class="strategy-sub">The Turning Strategy</div>
+        <div class="strategy-body">Every defensive position is strong at the front — that is where the defenders have concentrated their attention, their fortifications, and their confidence. The flank and the rear are where the strength has been borrowed from, and where the psychological shock of an unexpected attack is maximised. The turning movement — manoeuvring around the enemy's strength to strike from an unexpected direction — is one of the oldest and most reliable of all offensive strategies. It works not only because the flank is physically less defended but because an attack from an unexpected direction shatters the mental model the defender has been operating from, producing panic and disorientation disproportionate to the physical damage inflicted. In competitive life: when a rival is fully prepared for the direct confrontation, do not give it to them. Find the angle of approach they have not prepared for.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 19</div>
+        <div class="strategy-name">Envelop the Enemy</div>
+        <div class="strategy-sub">The Annihilation Strategy</div>
+        <div class="strategy-body">The turning strategy hits one flank; the annihilation strategy surrounds completely — cutting off retreat, supply, and reinforcement simultaneously. Hannibal's encirclement of the Roman army at Cannae (216 BC) remains the most studied example in military history: a smaller Carthaginian force enveloped a much larger Roman army and destroyed it almost in its entirety. The psychological dimension is critical: encirclement produces a specific form of panic that frontal pressure does not. An opponent who cannot retreat, cannot be reinforced, and cannot see any option other than surrender or annihilation, often collapses far faster than the material situation alone would predict. The strategic lesson: when you have the resources to surround an opponent completely — to cut off their options one by one — total encirclement is almost always more efficient than direct assault.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 20</div>
+        <div class="strategy-name">Manoeuvre Them into Weakness</div>
+        <div class="strategy-sub">The Ripening-for-the-Sickle Strategy</div>
+        <div class="strategy-body">The highest expression of offensive strategy is not the overwhelming attack but the patient manipulation of the opponent into a position of weakness before the attack is delivered. This requires the ability to think several moves ahead — to see how present actions will shape future conditions — and the discipline to prefer the methodical creation of advantage to the satisfying immediacy of direct confrontation. The strategy involves manoeuvring the opponent into commitments they cannot easily reverse, positions that expose their flanks, alliances that are actually liabilities, and extended supply lines that cannot sustain a long campaign. When they are finally ripe — overextended, isolated, committed to a failing approach — the strike is delivered with overwhelming force at the moment of maximum vulnerability. The preparation, invisible to the opponent, is the real victory; the final blow is merely the harvest.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 21</div>
+        <div class="strategy-name">Negotiate While Advancing</div>
+        <div class="strategy-sub">The Diplomatic-War Strategy</div>
+        <div class="strategy-body">Military operations and diplomatic negotiations are not opposites — they are instruments of the same strategy, to be deployed simultaneously rather than sequentially. The commander who stops advancing while negotiating hands the opponent exactly what they need: time to recover, regroup, and create new obstacles. The correct approach is to maintain military pressure while simultaneously offering diplomatic channels, so that any agreement reached is concluded from a position of strength, and any breakdown in negotiations finds you better positioned than when they began. Greene traces this through Bismarck's extraordinary diplomatic-military campaigns, in which he consistently used the threat of war, actual war, and the promise of peace as interchangeable instruments of a single strategic objective. The lesson: never let negotiation be a substitute for advance; let it be an accompaniment to it.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 22</div>
+        <div class="strategy-name">Know How to End Things</div>
+        <div class="strategy-sub">The Exit Strategy</div>
+        <div class="strategy-body">Victory that cannot be consolidated is not victory — it is the opening of a new and more dangerous phase of conflict. The most common strategic failure of commanders who win is the inability to translate military success into durable political outcomes: they win the battle and lose the peace because they have no coherent plan for what comes after. Greene traces the disasters of campaigns without exit strategies — from Napoleon's Peninsular War to any number of modern military adventures — where the absence of a clear concept of an achievable end-state meant that victory could never be definitively declared because there was nothing definitive to achieve. The strategic lesson applies universally: before committing to any serious campaign, define precisely what a successful conclusion looks like, and ensure that the means employed are actually capable of producing it.</div>
+      </div>
+    </div>
+
+    <!-- PART V -->
+    <div id="part5" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part V · Strategies 23–33</div>
+        <div class="p-title">Unconventional (Dirty) Warfare</div>
+        <div class="p-desc">When conventional methods are unavailable or insufficient — the psychological, deceptive, oblique, and subversive strategies that win when everything else has failed or been anticipated.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 23</div>
+        <div class="strategy-name">Weave a Seamless Blend of Fact and Fiction</div>
+        <div class="strategy-sub">Misperception Strategies</div>
+        <div class="strategy-body">The most effective deceptions are not pure fabrications — they are constructions in which genuine facts are embedded, so that the opponent's own verification efforts confirm the parts of the story that are true, which then lend credibility to the parts that are false. The Allied deception operation before D-Day is the supreme modern example: real military units, real signals traffic, real physical preparations at the wrong location, all designed to confirm the German belief that the main invasion would come at Pas-de-Calais. The misperception strategy in competitive life: never lie where truth is easily established. Instead, control which truths are visible, in what order, with what emphasis, alongside what carefully placed falsehoods — and allow the opponent's own intelligence efforts to do the work of confirming your narrative.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 24</div>
+        <div class="strategy-name">Take the Line of Least Expectation</div>
+        <div class="strategy-sub">The Ordinary-Extraordinary Strategy</div>
+        <div class="strategy-body">The opponent's defensive preparations are based on predictions — most likely courses of action, most probable objectives, most conventional approaches. The strategist who consistently does the unexpected denies the opponent the ability to prepare efficiently, because any sufficiently eccentric course of action lies outside the defensive model. This is not eccentricity for its own sake — it is the disciplined choice of the approach that maximises surprise, even when (especially when) that approach seems odd, indirect, or unnecessarily complex. Scipio Africanus, rather than fighting Carthage's armies in Italy where they were strong, took the war directly to Carthage in Africa, forcing Hannibal to abandon his successful Italian campaign and return home to defend the capital. The line of least expectation is always the line of least preparation.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 25</div>
+        <div class="strategy-name">Occupy the Moral High Ground</div>
+        <div class="strategy-sub">The Righteous Strategy</div>
+        <div class="strategy-body">Wars are not won only on the battlefield — they are won or lost in the minds of populations, allies, and history. The side that succeeds in framing a conflict as a moral struggle — as a fight for justice, freedom, or survival against an aggressor — gains access to resources of motivation, alliance, and popular support that the purely material view of conflict cannot explain. But the moral high ground is a double-edged instrument: claimed falsely, it invites devastating exposure; ceded to the opponent, it multiplies their strength. Greene traces how Lincoln framed the Civil War, how the Allies framed the Second World War, and how modern political conflicts are won as much by the narrative as by the facts. The strategy in competitive life: when you are in the right, make it visible; when you are not, avoid the framing contest entirely.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 26</div>
+        <div class="strategy-name">Deny Them Targets</div>
+        <div class="strategy-sub">The Strategy of the Void</div>
+        <div class="strategy-body">Against an opponent who is stronger in direct confrontation, the most effective defence is to have nothing for them to strike. The guerrilla fighter who melts into the civilian population, the business that operates from multiple jurisdictions and legal structures, the political operator who never makes a public statement that can be quoted against them — all are practising the strategy of the void. There is nothing for the superior force to grip. Every punch thrown lands on empty air. The opponent expends energy; you conserve it. T.E. Lawrence's Arabian campaigns against the Ottomans operated on this principle: rather than confronting Turkish strength directly, he denied them a target while destroying their supply lines, their morale, and their strategic coherence through a campaign of absolute elusiveness. The void strategy is psychologically as well as materially exhausting for the opponent.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 27</div>
+        <div class="strategy-name">Seem to Work for Others While Furthering Your Own Ends</div>
+        <div class="strategy-sub">Alliance Strategies</div>
+        <div class="strategy-body">Pure self-interest, pursued nakedly, attracts opposition and isolation. But self-interest pursued through the language and genuine partial delivery of shared benefit attracts allies, resources, and protective goodwill. Bismarck's diplomatic genius lay in his ability to make every major power believe, for most of his career, that Prussian interests and their own were substantially aligned — while systematically pursuing Prussian unification and dominance at the expense of each in turn. The alliance strategy requires real skill: the benefit offered to others must be genuine enough to maintain credibility, and the extraction of personal advantage must be subtle enough not to provoke the coalition of opposition that open self-aggrandisement always produces. The art is in making what is good for you appear to be what is good for everyone.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 28</div>
+        <div class="strategy-name">Give Your Rivals Enough Rope to Hang Themselves</div>
+        <div class="strategy-sub">The One-Upmanship Strategy</div>
+        <div class="strategy-body">Direct attacks on rivals frequently backfire — they create sympathy for the target, galvanise opposition, and make the attacker appear threatening or insecure. A far more elegant approach is to create conditions in which the rival destroys themselves through their own actions: flatter them into overconfidence, encourage the ambition that will lead them to overreach, leave the path to a trap invitingly clear. Louis XIV's treatment of the nobles of France is the historical model — by bringing them to Versailles, flattering their vanity with ceremony and proximity to power, and making them utterly dependent on royal favour, he neutralised the feudal independence that had made them dangerous without ever having to fight them. The rival who has been given enough rope will, given sufficient time, use it.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 29</div>
+        <div class="strategy-name">Take Small Bites</div>
+        <div class="strategy-sub">The Fait Accompli Strategy</div>
+        <div class="strategy-body">Large, sudden grabs for power or territory trigger large, sudden coalitions of opposition. Small, incremental encroachments — each individually too minor to justify a major response — accumulate into substantial advantages before the opponent recognises the pattern. By the time the aggregated effect becomes visible, reversing it would require an effort disproportionate to opposing any single step. The fait accompli strategy relies on the human tendency to respond to immediate provocation rather than cumulative change, and on the social and political costs of appearing to overreact to minor incidents. Applied to competitive life: acquire positions, capabilities, relationships, and influence gradually, below the threshold of attention, and by the time the pattern is visible, it is already a fact that others must accommodate rather than a proposal they can oppose.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 30</div>
+        <div class="strategy-name">Penetrate Their Minds</div>
+        <div class="strategy-sub">Communication Strategies</div>
+        <div class="strategy-body">The most direct route to victory is not through the opponent's defences but through their psychology. The commander who can make the enemy believe what he wants them to believe — about his intentions, his strength, his location, his next move — has a weapon more powerful than any physical force. This requires understanding how information reaches the opponent, what they already believe (and therefore what new information they will readily accept), and how to construct messages that exploit these channels and predispositions. Propaganda, misinformation, the strategic leak, the calculated rumour, the ostentatious preparation for an attack that will not come — all are instruments of the communication strategy. The target is not the opponent's body but their decision-making process, and victory there renders all physical resistance irrelevant.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 31</div>
+        <div class="strategy-name">Destroy From Within</div>
+        <div class="strategy-sub">The Inner-Front Strategy</div>
+        <div class="strategy-body">Every organisation, alliance, or army has internal tensions — conflicting interests, personal rivalries, ideological disagreements, resentments accumulated over time. These internal divisions are a second front that the opponent can exploit from the outside. The inner-front strategy identifies these pre-existing fractures and applies pressure to widen them — not creating dissension where none exists, which is detectable and counterproductive, but amplifying and directing tensions that are already there. The most effective version of this strategy requires deep intelligence about the opponent's internal dynamics: who resents whom, which faction feels undervalued, which leader has ambitions that are currently frustrated. The outer war becomes easier when the opponent is simultaneously fighting a civil war that they may not even recognise as strategically directed.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 32</div>
+        <div class="strategy-name">Dominate While Seeming to Submit</div>
+        <div class="strategy-sub">The Passive-Aggression Strategy</div>
+        <div class="strategy-body">Against an opponent who is more powerful in direct confrontation, overt resistance invites crushing response. The passive-aggression strategy involves apparent compliance that conceals a sustained, low-level campaign of obstruction, delay, misdirection, and selective non-cooperation. The subordinate who agrees enthusiastically with every directive and then executes it in ways that are technically compliant but practically ineffective; the diplomat who signs treaties while building the capacity to violate them; the occupied population that appears docile while maintaining an underground resistance — all are practising this strategy. It is psychologically demanding because it requires suppressing the impulse toward open defiance, and it is morally complex because it involves sustained bad faith. But against genuinely superior force, it is often the only available instrument of resistance.</div>
+      </div>
+
+      <div class="strategy-block">
+        <div class="strategy-num">Strategy 33</div>
+        <div class="strategy-name">Sow Uncertainty and Panic Through Acts of Terror</div>
+        <div class="strategy-sub">The Chain-Reaction Strategy</div>
+        <div class="strategy-body">The final and most morally fraught of the 33 strategies. Greene addresses this not as an endorsement but as an analytical description of a strategic reality: terror — the deliberate infliction of fear disproportionate to actual damage — is a multiplier of real force that has been used throughout military history. A single act of extreme, unexpected violence that cannot be immediately countered creates a psychological cascade — panic, paralysis, the collapse of confidence in existing defensive measures — that radiates far beyond its immediate physical effects. Greene draws on the historical uses of this strategy to expose its mechanics: it works by attacking the opponent's sense of security rather than their material strength, and by demonstrating that no place, no plan, and no person is safe. He frames this as the strategy of the desperate and the asymmetrically weak — the last resort when all conventional options are exhausted — and notes that its ultimate effect is always double-edged, frequently uniting the targeted population against the user.</div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#3a4a30; margin-top:0;">The General Speaks</div>
+        <div class="section-title">Key Passages from The 33 Strategies of War</div>
+
+        <div class="quote-item"><div class="quote-text">"The greatest danger you face is your own tendency to retreat inward when the world grows harsh."</div><div class="quote-ref">Strategy 1 · The Polarity Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not be tempted to fight the last war. The world moves on; yesterday's enemies had different weapons, different morale, different terrain."</div><div class="quote-ref">Strategy 2 · Guerrilla-War-of-the-Mind</div></div>
+        <div class="quote-item"><div class="quote-text">"Nothing in the world is more dangerous than a sincere, ignorant man."</div><div class="quote-ref">Strategy 5 · Command and Control</div></div>
+        <div class="quote-item"><div class="quote-text">"Create a burning desire, a crusade of sorts, and people will follow you with genuine enthusiasm — not for pay, but for meaning."</div><div class="quote-ref">Strategy 7 · Morale Strategies</div></div>
+        <div class="quote-item"><div class="quote-text">"Power is not what you have but what the enemy thinks you have."</div><div class="quote-ref">Strategy 8 · Mystery and Terror</div></div>
+        <div class="quote-item"><div class="quote-text">"The best defence is to keep your opponent so busy reacting to your moves that they have no time to mount an offence."</div><div class="quote-ref">Strategy 9 · Counterattack</div></div>
+        <div class="quote-item"><div class="quote-text">"Grand strategy is the art of looking beyond the battle and calculating ahead — keeping your overall goal in sight at all times."</div><div class="quote-ref">Strategy 12 · Grand Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"If you know your enemies and know yourself, you can win a hundred battles without a single loss."</div><div class="quote-ref">Strategy 13 · Intelligence Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Speed is everything. The less time your enemy has to think and prepare, the more devastating your strike."</div><div class="quote-ref">Strategy 14 · Blitzkrieg Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Never be on the defensive. Make your opponents react to you, never the other way around."</div><div class="quote-ref">Strategy 15 · Forcing Strategies</div></div>
+        <div class="quote-item"><div class="quote-text">"The way to hit someone hardest is to hit them where they least expect it and where they are most vulnerable."</div><div class="quote-ref">Strategy 16 · Centre of Gravity</div></div>
+        <div class="quote-item"><div class="quote-text">"Divide your enemy and you will conquer even the mightiest opponent — unity is the source of all strength."</div><div class="quote-ref">Strategy 17 · Divide and Conquer</div></div>
+        <div class="quote-item"><div class="quote-text">"Every army has a soft flank — the side they are not watching, the angle they have not prepared for. Find it and you need not attack their strength at all."</div><div class="quote-ref">Strategy 18 · Turning Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Negotiations while advancing are far more powerful than negotiations from a position of stillness — movement is leverage."</div><div class="quote-ref">Strategy 21 · Diplomatic-War Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Victory is only meaningful if you know how to end it. The failure to consolidate is a form of defeat."</div><div class="quote-ref">Strategy 22 · Exit Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"The best deceptions weave together fact and fiction so skillfully that the enemy's own verification confirms the lie."</div><div class="quote-ref">Strategy 23 · Misperception Strategies</div></div>
+        <div class="quote-item"><div class="quote-text">"Take the path your enemy least expects, and his preparations count for nothing — his entire defensive architecture is aimed in the wrong direction."</div><div class="quote-ref">Strategy 24 · Ordinary-Extraordinary</div></div>
+        <div class="quote-item"><div class="quote-text">"The cause must appear just. People fight hard for their interests but will fight with total commitment only for their beliefs."</div><div class="quote-ref">Strategy 25 · Righteous Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Give them nothing to grab hold of. An enemy who cannot find you cannot fight you."</div><div class="quote-ref">Strategy 26 · Strategy of the Void</div></div>
+        <div class="quote-item"><div class="quote-text">"When you make others feel that your rise benefits them, they become your advocates instead of your opponents."</div><div class="quote-ref">Strategy 27 · Alliance Strategies</div></div>
+        <div class="quote-item"><div class="quote-text">"The rope you give others is the rope they use to hang themselves — be patient and let their ambition do your work."</div><div class="quote-ref">Strategy 28 · One-Upmanship Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"Small bites accumulate into a feast. Each advance, too small to justify resistance, builds into a position too large to reverse."</div><div class="quote-ref">Strategy 29 · Fait Accompli Strategy</div></div>
+        <div class="quote-item"><div class="quote-text">"The real war is fought in the mind. Win there, and the physical battle is already decided."</div><div class="quote-ref">Strategy 30 · Communication Strategies</div></div>
+        <div class="quote-item"><div class="quote-text">"Every fortress has a crack from within — find the internal tension, apply pressure, and the walls come down without a siege."</div><div class="quote-ref">Strategy 31 · Inner-Front Strategy</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"The 33 Strategies of War is not about violence — it is about seeing the conflicts already surrounding you with perfect clarity, and responding to them with the calculated intelligence of a commander rather than the blind instincts of a soldier."</p>
+  </div>
+
+</div>
+
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const CROSS_EXAMINATION_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --dark:#0e0c18; --dark2:#161428;
+    --purple:#3a2060; --purple-light:#5a3898; --purple-bright:#9060d0;
+    --gold:#c0900a; --gold-light:#daa820;
+    --cream:#f3eee0; --cream-dark:#e3d8c8;
+    --border-c:#8870b0; --red:#780a0a; --blue:#183060;
+    --muted:#1a1630; --text:#0e0c18;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body,.wrap{font-family:'Cormorant Garamond',serif;background:transparent;color:var(--text);}
+  .wrap{max-width:900px;margin:0 auto;padding:0 0 3rem;}
+
+  .hero{background:var(--dark);color:var(--cream);padding:3.5rem 3rem 3rem;text-align:center;border-bottom:4px double var(--purple-light);position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(58,32,96,0.08) 29px);pointer-events:none;}
+  .hero-ornament{font-size:20px;color:var(--purple-bright);letter-spacing:14px;margin-bottom:1rem;opacity:0.75;}
+  .hero-title{font-family:'IM Fell English',serif;font-size:40px;line-height:1.1;color:var(--purple-bright);letter-spacing:1px;text-shadow:0 2px 10px rgba(0,0,0,0.7);}
+  .hero-subtitle{font-family:'IM Fell English',serif;font-style:italic;font-size:16px;color:#7060a0;margin-top:0.5rem;}
+  .hero-author{margin-top:1rem;font-size:14px;color:#504070;letter-spacing:3px;text-transform:uppercase;}
+  .hero-year{display:inline-block;margin-top:0.3rem;font-size:12px;color:#403060;letter-spacing:2px;}
+
+  .stat-strip{display:flex;justify-content:center;gap:2rem;background:var(--dark);padding:1.2rem 2rem;border-bottom:1px solid var(--purple);flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat .num{font-family:'IM Fell English',serif;font-size:32px;color:var(--purple-bright);line-height:1;}
+  .stat .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#504070;margin-top:0.2rem;}
+
+  .tab-bar{display:flex;flex-wrap:wrap;background:#080610;border-bottom:2px solid var(--purple);position:sticky;top:0;z-index:100;}
+  .tab{padding:0.65rem 0.78rem;font-family:'IM Fell English',serif;font-size:11.5px;color:#504070;cursor:pointer;border-right:1px solid #161428;transition:all 0.2s;white-space:nowrap;}
+  .tab:hover{color:var(--purple-bright);background:#161428;}
+  .tab.active{color:var(--purple-bright);background:#1a1230;border-bottom:2px solid var(--purple-bright);}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .content-area{padding:0 2rem 2rem;background:var(--cream);border:1px solid var(--border-c);border-top:none;}
+
+  .intro-block{padding:2rem 0 1.5rem;border-bottom:1px solid var(--border-c);margin-bottom:1.8rem;}
+  .intro-block p{font-size:17px;line-height:1.85;color:var(--muted);font-style:italic;text-align:center;}
+
+  .section-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--purple);margin-bottom:0.3rem;margin-top:1.8rem;}
+  .section-title{font-family:'IM Fell English',serif;font-size:22px;color:var(--dark);border-bottom:1px solid var(--border-c);padding-bottom:0.4rem;margin-bottom:1.2rem;}
+
+  .concept-block{margin-bottom:1.8rem;padding:1rem 1.3rem;border-left:4px solid var(--purple-light);background:rgba(58,32,96,0.05);}
+  .concept-num{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:0.1rem;}
+  .concept-name{font-weight:600;font-size:17px;color:var(--red);margin-bottom:0.3rem;}
+  .concept-body{font-size:15.5px;line-height:1.78;color:#0e0c20;}
+  .concept-body p{margin-bottom:0.7rem;}
+  .concept-body p:last-child{margin-bottom:0;}
+
+  .rule-box{background:var(--dark);color:var(--cream);padding:1.2rem 1.5rem;margin:1rem 0 1.3rem;border-left:5px solid var(--gold);}
+  .rule-box .r-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.4rem;}
+  .rule-box p{font-size:15.5px;line-height:1.7;color:var(--cream);}
+
+  .part-banner{background:var(--dark);color:var(--cream);padding:1rem 1.5rem;margin:2rem -2rem 1.8rem;border-top:2px solid var(--purple);border-bottom:2px solid var(--purple);}
+  .part-banner .p-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--purple-bright);margin-bottom:0.2rem;}
+  .part-banner .p-title{font-family:'IM Fell English',serif;font-size:19px;color:var(--cream);}
+  .part-banner .p-desc{font-size:13px;color:#7060a0;margin-top:0.3rem;font-style:italic;}
+
+  .theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:0.8rem;margin-bottom:1.5rem;}
+  .theme-card{background:var(--dark);border:1px solid var(--purple);padding:1rem;border-radius:2px;}
+  .theme-card .t-name{font-family:'IM Fell English',serif;font-size:14px;color:var(--purple-bright);margin-bottom:0.25rem;}
+  .theme-card .t-desc{font-size:12.5px;color:#7060a0;line-height:1.45;}
+
+  .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:0.8rem 0 1.2rem;}
+  .do-box,.dont-box{padding:0.85rem 1rem;font-size:14px;line-height:1.6;}
+  .do-box{background:rgba(26,106,50,0.07);border-left:4px solid #2a8a4a;color:#0e2818;}
+  .dont-box{background:rgba(120,10,10,0.07);border-left:4px solid var(--red);color:#280e0e;}
+  .do-box strong,.dont-box strong{display:block;font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.35rem;}
+  .do-box strong{color:#2a8a4a;}
+  .dont-box strong{color:var(--red);}
+
+  .example-box{background:rgba(26,40,96,0.06);border:1px solid #9090c0;padding:0.85rem 1.1rem;margin:0.8rem 0 1.1rem;border-radius:2px;}
+  .example-box .ex-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#4060a0;margin-bottom:0.3rem;}
+  .example-box p{font-size:14.5px;line-height:1.65;color:var(--muted);font-style:italic;}
+
+  .step-list{list-style:none;margin:0.5rem 0 1.2rem;}
+  .step-list li{font-size:15px;line-height:1.65;color:var(--muted);padding:0.35rem 0 0.35rem 1.6rem;position:relative;border-bottom:1px dotted #c0b0d0;}
+  .step-list li:last-child{border-bottom:none;}
+  .step-list li::before{content:'▸';position:absolute;left:0;color:var(--purple-bright);font-size:12px;top:0.45rem;}
+
+  .quotes-section{background:var(--dark);margin:0 -2rem;padding:2.5rem 2rem;border-top:3px double var(--purple);}
+  .quotes-section .section-title{color:var(--purple-bright);border-bottom-color:#1a1030;margin-top:0;}
+  .quote-item{border-left:3px solid var(--purple);padding:0.75rem 1.1rem;margin-bottom:1.1rem;background:rgba(58,32,96,0.09);}
+  .quote-text{font-family:'IM Fell English',serif;font-style:italic;font-size:16.5px;color:var(--cream);line-height:1.7;margin-bottom:0.35rem;}
+  .quote-ref{font-size:11px;color:#504070;letter-spacing:2px;text-transform:uppercase;}
+
+  .verdict-block{background:var(--purple);color:var(--cream);padding:2rem;text-align:center;border-top:3px double var(--purple-bright);}
+  .verdict-block p{font-family:'IM Fell English',serif;font-size:17px;line-height:1.7;font-style:italic;}
+
+  .divider{text-align:center;color:var(--purple);font-size:18px;letter-spacing:10px;margin:1.4rem 0;opacity:0.4;}
+
+  .three-rules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1rem 0 1.5rem;}
+  .rule-card{background:var(--dark);border:2px solid var(--gold);padding:1.2rem;text-align:center;border-radius:2px;}
+  .rule-card .r-num{font-family:'IM Fell English',serif;font-size:30px;color:var(--gold-light);line-height:1;margin-bottom:0.4rem;}
+  .rule-card .r-title{font-family:'IM Fell English',serif;font-size:15px;color:var(--purple-bright);margin-bottom:0.4rem;}
+  .rule-card .r-desc{font-size:12.5px;color:#8070a0;line-height:1.45;}
+
+  .dialogue-box{background:#f8f4e8;border:1px solid #c0b0d0;padding:1rem 1.2rem;margin:0.8rem 0 1.2rem;font-family:'Cormorant Garamond',serif;}
+  .dialogue-box .d-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:0.5rem;font-family:'IM Fell English',serif;}
+  .dialogue-box .q{font-size:15px;line-height:1.65;color:#1a0a30;margin-bottom:0.3rem;}
+  .dialogue-box .q strong{color:var(--red);}
+  .dialogue-box .a{font-size:15px;line-height:1.65;color:#1a3020;margin-bottom:0.3rem;padding-left:1rem;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">⚖ CROSS ⚖</div>
+    <div class="hero-title">Cross-Examination:<br>Science and Techniques</div>
+    <div class="hero-subtitle">The Definitive Manual on the Art and Science of Cross-Examination</div>
+    <div class="hero-author">Larry S. Pozner &amp; Roger J. Dodd</div>
+    <div class="hero-year">Third Edition · LexisNexis · All Concepts &amp; Techniques Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">3</div><div class="lbl">Cardinal Rules</div></div>
+    <div class="stat"><div class="num">∞</div><div class="lbl">Safe Questions</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Goal: Control</div></div>
+    <div class="stat"><div class="num">40+</div><div class="lbl">Core Techniques</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('rules',this)">3 Cardinal Rules</div>
+    <div class="tab" onclick="show('chapter',this)">Chapter Method</div>
+    <div class="tab" onclick="show('headlines',this)">Headlines</div>
+    <div class="tab" onclick="show('sequencing',this)">Sequencing</div>
+    <div class="tab" onclick="show('looping',this)">Looping</div>
+    <div class="tab" onclick="show('safe',this)">Safe Questions</div>
+    <div class="tab" onclick="show('control',this)">Witness Control</div>
+    <div class="tab" onclick="show('impeach',this)">Impeachment</div>
+    <div class="tab" onclick="show('psych',this)">Psychology</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>The most comprehensive, rigorous, and practical treatise on cross-examination ever written. Pozner and Dodd replace the myth of cross-examination as an art of instinct and inspiration with something far more powerful: a science — a set of learnable, repeatable, controllable techniques that any lawyer can master. Control is the goal. Science is the method. Every question either advances control or surrenders it.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is and Why It Transformed Trial Practice</div>
+      <div class="concept-body">
+        <p>Larry Pozner and Roger Dodd published the first edition of this work as a direct challenge to the conventional wisdom that great cross-examiners are born, not made — that the ability to devastate a witness is a gift of temperament, instinct, and improvisation that cannot be taught. They rejected this entirely. Cross-examination, they argued, is a science: it rests on identifiable principles, operates through specific and learnable techniques, and produces predictable results when those techniques are correctly applied. The lawyer who understands the science of cross-examination will consistently outperform the lawyer who relies on instinct, however gifted that instinct might be.</p>
+        <p>The book is now in its third edition and is regarded across the trial bar as the definitive manual on the subject. It is required reading at many law schools, widely cited by trial advocacy teachers, and kept on the desks of experienced trial lawyers who return to it before difficult cross-examinations. Its central contribution is the systematic organisation of cross-examination technique into a coherent framework — from the three cardinal rules that govern every question to the chapter method of organisation, the use of headlines, the science of sequencing, the technique of looping, and the full range of impeachment methods — each addressed with the same analytical rigour and illustrated with the same practical specificity.</p>
+        <p>The book does not assume that cross-examination will always succeed, or that the witness will always be destroyed. It assumes something more realistic and more useful: that a cross-examiner who applies the correct techniques will consistently achieve the maximum that the facts and the law permit — and that the maximum available from a good cross-examination, properly executed, is usually far more than the improvising lawyer ever realises is on offer.</p>
+      </div>
+
+      <div class="section-label">Central Argument</div>
+      <div class="section-title">The Philosophy Behind the Science</div>
+      <div class="concept-body">
+        <p>The book's organising insight — stated explicitly and returned to throughout — is that the goal of cross-examination is not to win arguments with witnesses. It is to control the testimony that reaches the jury. The cross-examiner who engages the witness in combat, who attempts to "break" them through confrontation, who allows open-ended questions or permits the witness to explain themselves, has misunderstood the task entirely. Witnesses who are engaged in argument are witnesses who are talking — and witnesses who are talking are producing testimony that the cross-examiner cannot control.</p>
+        <p>Control means something specific: the witness answers only the question asked, the question asked contains exactly one fact, and that fact is a fact the cross-examiner has chosen to establish. The cross-examination that achieves this control produces its results not through dramatic confrontation but through the quiet, methodical accumulation of concessions — each individually small, together devastating. The jury sees not the brilliant lawyer destroying the witness, but the witness's own words, organised by the cross-examiner, building a picture that serves the cross-examiner's case.</p>
+      </div>
+
+      <div class="section-label">Architecture</div>
+      <div class="section-title">The Eight Pillars of the Book's Framework</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">The Three Rules</div><div class="t-desc">Leading questions only. One fact per question. Never ask a question whose answer you don't control. These govern every exchange.</div></div>
+        <div class="theme-card"><div class="t-name">The Chapter Method</div><div class="t-desc">Organise the cross into discrete, self-contained chapters — each proving one point independently of the others.</div></div>
+        <div class="theme-card"><div class="t-name">Headlines</div><div class="t-desc">Label each chapter with a declarative statement of its conclusion. The headline tells the jury what to hear before the questions are asked.</div></div>
+        <div class="theme-card"><div class="t-name">Sequencing</div><div class="t-desc">The order in which chapters and facts are presented determines what the jury understands. Sequence is argument.</div></div>
+        <div class="theme-card"><div class="t-name">Looping</div><div class="t-desc">Use the witness's last answer as the next question's premise. Lock in each concession before advancing. Never leave facts floating.</div></div>
+        <div class="theme-card"><div class="t-name">Safe Questions</div><div class="t-desc">Every question should be one whose answer, whatever form it takes, advances the cross-examiner's position. No question should be capable of hurting you.</div></div>
+        <div class="theme-card"><div class="t-name">Witness Control</div><div class="t-desc">Specific techniques for handling witnesses who evade, explain, argue, or volunteer. Control never requires confrontation.</div></div>
+        <div class="theme-card"><div class="t-name">Impeachment Science</div><div class="t-desc">A complete system for impeachment by prior statement, prior conviction, bias, and contradiction — each with its own precise method.</div></div>
+      </div>
+    </div>
+
+    <!-- THREE CARDINAL RULES -->
+    <div id="rules" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Foundation</div>
+        <div class="p-title">The Three Cardinal Rules of Cross-Examination</div>
+        <div class="p-desc">Every technique in the book rests on these three rules. Violate any one of them and control is lost. Follow all three and every question advances the cross-examiner's position regardless of what the witness says.</div>
+      </div>
+
+      <div class="three-rules">
+        <div class="rule-card">
+          <div class="r-num">I</div>
+          <div class="r-title">Use Only Leading Questions</div>
+          <div class="r-desc">The cross-examiner testifies. The witness confirms or denies. Every open question surrenders this control.</div>
+        </div>
+        <div class="rule-card">
+          <div class="r-num">II</div>
+          <div class="r-title">One Fact Per Question</div>
+          <div class="r-desc">Each question establishes exactly one fact. No compound questions. No multi-part questions. One fact, one answer, locked in.</div>
+        </div>
+        <div class="rule-card">
+          <div class="r-num">III</div>
+          <div class="r-title">Never Ask Why</div>
+          <div class="r-desc">Asking "why" invites the witness to explain, justify, and elaborate — surrendering control and creating testimony you cannot predict.</div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Cardinal Rule I — In Full</div>
+        <div class="concept-name">Leading Questions Only — The Cross-Examiner Testifies</div>
+        <div class="concept-body">
+          <p>The foundational rule of cross-examination is that the cross-examiner must control the testimony by doing the testifying. A leading question — one that suggests its own answer — is not merely permitted on cross; it is required. Every question that is not leading is an open invitation for the witness to say whatever serves them. Non-leading questions on cross produce non-leading answers, and non-leading answers are answers the cross-examiner cannot control.</p>
+          <p>Pozner and Dodd distinguish between questions that are grammatically leading ("You were driving, weren't you?") and the substance of cross-examination, which is always that the cross-examiner asserts a fact and the witness responds to the assertion. The leading form is not a stylistic preference — it is the mechanism of control. When the cross-examiner says "You drove through the red light," the witness's options are limited: agree, disagree, or claim not to know. The cross-examiner has framed the fact; the witness merely responds to it. When the cross-examiner says "Where were you driving?" the witness determines what to say, in what order, with what emphasis — and the cross-examiner has surrendered the one advantage that cross-examination provides.</p>
+          <p>The practical corollary is demanding: every question must be crafted in advance as a leading question. The cross-examiner who has not thought through the precise form of each question before standing will inevitably revert to open questions at the moments of greatest pressure — precisely the moments when control is most critical. Preparation is the precondition of the leading question. Improvisation is its enemy.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Leading — Control Maintained</strong>"You were at the intersection at 3 p.m." / "The light was red when you entered the intersection." / "You did not stop." Each question asserts a fact. The witness responds to the cross-examiner's agenda.</div>
+            <div class="dont-box"><strong>✗ Open — Control Surrendered</strong>"Where were you at 3 p.m.?" / "What colour was the light?" / "What did you do?" Each question invites the witness to determine what to say. The witness testifies; the cross-examiner reacts.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Cardinal Rule II — In Full</div>
+        <div class="concept-name">One Fact Per Question — The Architecture of Control</div>
+        <div class="concept-body">
+          <p>The one-fact-per-question rule is the most misunderstood and most frequently violated of the three cardinal rules — and its violation is the most common cause of cross-examination failure. When a single question asserts two or more facts, the witness can agree with one, deny another, and produce an answer that is partially damaging to the cross-examiner's position without lying. Worse, the compound question allows the witness to ignore one part of the question while appearing to answer it. Worse still, it allows the witness to volunteer explanation and qualification that the simpler question would never have invited.</p>
+          <p>One fact per question means exactly one fact. Not "You drove through the red light at excessive speed" but first "You drove through the red light" and then, separately, "You were travelling above the speed limit." Each question, asked and answered, locks in one fact before the cross-examiner proceeds to the next. The accumulation of individually simple, individually accepted facts is the mechanism by which complex, damaging propositions are proven — not through a single dramatic accusation, but through the methodical assembly of components that the witness cannot coherently deny individually but which, combined, establish exactly the point the cross-examiner needs.</p>
+          <p>The one-fact rule has a deeper function beyond control: it creates the appearance of fairness and reasonableness that makes juries comfortable. A cross-examiner who asks simple, specific, one-fact questions appears precise and honest. A cross-examiner who asks compound, multi-part questions appears aggressive and manipulative. The jury's comfort with the cross-examiner's method is itself persuasive — it signals that the facts being established are so solid they do not require rhetorical reinforcement.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Cardinal Rule III — In Full</div>
+        <div class="concept-name">Never Ask Why — The Prohibition on Explanation</div>
+        <div class="concept-body">
+          <p>"Why" is the single most dangerous word in cross-examination. A question beginning with "why" is not merely open — it is an invitation to explanation, justification, and elaboration that is entirely outside the cross-examiner's control. The witness who is asked why they did something is free to explain — and the explanation will be the explanation that most damages the cross-examiner's case, because the witness has just been given the floor and a direction in which to walk.</p>
+          <p>The prohibition extends beyond the literal word "why" to any question whose effect is to ask for explanation or justification: "Explain that." "What was your reason for...?" "How did you come to that conclusion?" "Tell the jury what led you to..." All of these are functional "why" questions and all of them carry the same danger. They invite narrative, and narrative is what the cross-examiner must not permit.</p>
+          <p>Pozner and Dodd address the instinct that produces "why" questions: the sense that the cross-examiner has achieved a damaging admission and needs to understand it better, or to have it explained for the jury's benefit. This instinct is almost always wrong. The damaging admission is most powerful when it stands alone, unexplained. The explanation — if there is one — will diminish it. The cross-examiner who asks "why" after a strong concession has handed the witness the means to undo the damage. The correct response to a damaging admission is to move on, locking in the fact and proceeding to the next chapter. Let it stand. The jury heard it.</p>
+          <div class="rule-box">
+            <div class="r-label">The Iron Law</div>
+            <p>"Never ask a witness to explain. Every explanation is a narrative. Every narrative is out of your control. A fact that stands alone and unexplained does its work. A fact that has been explained has been diminished — by your own question."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER METHOD -->
+    <div id="chapter" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Architecture of Cross</div>
+        <div class="p-title">The Chapter Method — How to Organise Every Cross-Examination</div>
+        <div class="p-desc">Random cross-examination produces random impressions. The chapter method organises cross-examination into discrete, self-contained units — each proving one point, each independent of the others, together building a complete and devastating picture.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Foundation</div>
+        <div class="concept-name">What a Chapter Is and Why It Is the Unit of Cross</div>
+        <div class="concept-body">
+          <p>A chapter is a self-contained unit of cross-examination that establishes a single factual point through a series of one-fact leading questions. The chapter has a beginning (the headline that announces the point), a middle (the series of questions that establish the supporting facts), and an end (the final question that drives home the chapter's conclusion). When the chapter is complete, the point is made — regardless of what follows, regardless of what happens in the rest of the cross-examination.</p>
+          <p>The chapter method is the solution to one of the most persistent problems in cross-examination: the cross that achieves multiple small concessions but leaves the jury with no clear understanding of what they add up to. A cross-examination organised as chapters gives each concession a home — a context within which it has meaning, contributes to a specific conclusion, and is remembered alongside the other facts that support that conclusion. The jury does not need to remember every individual question; they remember the chapter's point, which the questions have established.</p>
+          <p>Chapters are also the solution to the problem of witness resistance. When a witness denies a fact within a chapter, the cross-examiner moves to another fact in the same chapter — or to another chapter entirely — and returns to the denied fact later, from a different direction, with additional support. Because each chapter is self-contained, a denial in one chapter does not contaminate the others. The cross-examiner who has prepared multiple independent chapters can absorb a denial in any one of them without damage to the overall cross-examination.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Structure</div>
+        <div class="concept-name">How to Build a Chapter — The Internal Architecture</div>
+        <div class="concept-body">
+          <p>Each chapter is built from the bottom up: the cross-examiner first identifies the point the chapter must establish — the single factual conclusion the jury needs to reach — and then works backward, identifying every individual fact that must be conceded before that conclusion is available. Each of those individual facts becomes a single question. The questions are arranged in the order that most efficiently and persuasively leads the witness and the jury from the chapter's opening to its conclusion.</p>
+          <p>The internal logic of the chapter is strictly linear: each question's answer is the premise of the next question. The cross-examiner never skips a step, never assumes a fact that has not been established by the preceding question, and never asks the concluding question until every supporting fact is in place. This methodical progression does two things simultaneously: it ensures that the conclusion is fully supported by the record (the witness has conceded every component), and it creates a logical momentum in the jury's mind that makes the conclusion feel inevitable before it is stated.</p>
+          <p>Pozner and Dodd identify the most common structural error in chapter construction: the cross-examiner who proceeds to the conclusion before the supporting facts are in place. The conclusion asked before its premises are established is not a conclusion — it is an assertion, and the witness can deny it without contradiction. The conclusion asked after its premises are fully established is virtually undeniable, because denying it requires the witness to contradict what they have already conceded.</p>
+          <div class="example-box">
+            <div class="ex-label">A Chapter in Action — Building to the Conclusion</div>
+            <p>Chapter goal: establish that the witness did not see the accident. Questions build: You were in the building at the time of the accident. Your office faces north. The accident occurred on the south side of the building. You cannot see the south side of the building from your office. You did not go to a window during the relevant time. Then and only then: You did not see the accident. Each preceding question makes the conclusion unchallengeable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Chapter Selection</div>
+        <div class="concept-name">Choosing Which Chapters to Write — and Which to Leave Out</div>
+        <div class="concept-body">
+          <p>The chapter method requires the cross-examiner to make explicit choices about what the cross-examination will prove. Not every available point deserves a chapter. Chapters that do not advance the theory of the defence, chapters whose conclusions the jury will not find significant, and chapters that require concessions unlikely to be obtained are chapters that should not be written. The cross-examination organised as chapters forces the cross-examiner to think about what they are actually trying to accomplish — which is itself an immense discipline.</p>
+          <p>Pozner and Dodd identify several categories of chapter that are almost always worth writing: chapters that establish the witness's limited opportunity to observe (they were not in a position to see, hear, or know what they claim); chapters that establish prior inconsistent positions; chapters that establish the witness's bias or interest in the outcome; chapters that establish undisputed facts that contradict the witness's inferences and conclusions; and chapters drawn from the witness's own prior statements, documents, and admissions. Each of these categories is a natural source of chapter material because each is grounded in facts the cross-examiner can control — documentary evidence, prior testimony, physics, geography — rather than the witness's contested perception or recollection.</p>
+          <p>Chapters that should generally be avoided: those whose conclusions depend on the witness agreeing with the cross-examiner's characterisation of their own credibility; those that require the witness to make admissions about their subjective state of mind; and those whose entire premise the witness can plausibly deny. A chapter that can be unravelled by a single denial is a chapter that should not have been written. Test every chapter before trial: what happens if the witness denies the key concession? If the answer is "the chapter falls apart," rewrite the chapter to make each component independently supported by the record.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Chapter Endings</div>
+        <div class="concept-name">How to Close a Chapter — and When to Stop</div>
+        <div class="concept-body">
+          <p>The final question of each chapter is its most important question — the one that states the conclusion the preceding questions have established. This question must be placed only after every supporting fact is conceded. It must be stated as a leading question. And it must be the last question in the chapter: after the conclusion is established, the cross-examiner moves to the next chapter immediately, without elaborating, without asking the witness to explain, and without giving the opposing counsel any hint that the point was significant enough to require further development.</p>
+          <p>The instinct to linger after a good concession is among the most damaging impulses in cross-examination. The cross-examiner who has just established a devastating point and then asks the witness to acknowledge its implications, explain themselves, or elaborate has handed the witness an opportunity to rehabilitate. The jury heard the concession. The court reporter recorded it. The next chapter should begin immediately. Let the damaging fact stand alone, clean and unanswered. Its power is precisely in its isolation.</p>
+          <p>Pozner and Dodd also address the question of chapter length: chapters should be as long as they need to be and no longer. A chapter that requires twelve questions to establish its point should have twelve questions. A chapter that needs three should have three. The cross-examiner who pads chapters with redundant questions, or who asks the chapter's concluding question and then asks it again in different words, is weakening the chapter's impact by diluting the moment of conclusion. One clean conclusion, placed at the chapter's end, after all supporting facts are in place, is the complete chapter.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADLINES -->
+    <div id="headlines" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Chapter Label</div>
+        <div class="p-title">Headlines — Telling the Jury What to Hear Before They Hear It</div>
+        <div class="p-desc">The headline is the declarative statement that opens each chapter of cross-examination. It tells the jury the point of the chapter before the questions begin. It is not a question — it is an assertion. And it is among the most powerful tools available in trial advocacy.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Headline</div>
+        <div class="concept-name">What a Headline Is and Why It Works</div>
+        <div class="concept-body">
+          <p>A headline is a declarative statement — not a question — that the cross-examiner delivers to the jury at the beginning of each chapter of cross-examination. It identifies the point the chapter will prove before a single question is asked. It functions exactly as a newspaper headline functions: it tells the reader what the story is about so that the specific facts of the story are received in an interpretive framework that makes them comprehensible and memorable.</p>
+          <p>The psychological basis for headlines is solid: people understand and remember information far more effectively when they have been given a framework for receiving it before they encounter it. A jury that hears a series of questions about a witness's location at a particular time without knowing why the cross-examiner is asking them will receive those questions as isolated data points that may or may not cohere into a conclusion. A jury that has first heard "This witness could not have seen the accident from where she was standing" will receive every subsequent question about the witness's location as a component of a point already understood — and will reach the chapter's conclusion with a sense of confirmation rather than surprise.</p>
+          <p>Headlines also serve a control function. The witness who hears the headline knows what the cross-examiner is trying to establish. Some witnesses will attempt to deny facts that support the headline's conclusion. But the headline, having been delivered to the jury, has already committed the cross-examiner to a conclusion — which means that the witness who denies the supporting facts has put themselves in the position of contradicting what the jury has been told is coming. If the cross-examiner has properly prepared the chapter with sufficient documentary or prior-testimony support, the witness's denial will appear evasive rather than accurate.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Construction</div>
+        <div class="concept-name">How to Write a Headline — Specificity, Confidence, Clarity</div>
+        <div class="concept-body">
+          <p>The ideal headline has three qualities: it is specific (it states the precise point the chapter will prove, not a vague thematic direction); it is confident (it is stated as a fact, not as a question or a possibility); and it is clear (it can be understood by a juror with no prior knowledge of the case in less than five seconds). Headlines that are too abstract ("This witness's credibility is questionable") or too long ("This witness had a personal financial interest in the outcome of this litigation as of the date she gave the testimony you just heard") fail to perform their function — the first because it tells the jury nothing specific, the second because it requires too much cognitive processing at the moment it is delivered.</p>
+          <p>Pozner and Dodd recommend testing every headline by asking: if this headline were the only thing the jury heard from this chapter, would they know what the chapter proved? If the answer is yes, the headline is well-written. If the answer is "not quite" or "sort of," the headline needs to be made more specific. The chapter's value is entirely captured in its headline — every question in the chapter serves the headline, and the headline is what the jury will remember when deliberating.</p>
+          <div class="example-box">
+            <div class="ex-label">Strong vs. Weak Headlines</div>
+            <p><strong>Weak:</strong> "Now I want to talk about what you saw." (Not a headline — it's a transition.) / "Your memory isn't perfect." (Too vague.) <strong>Strong:</strong> "You were inside the building when the accident happened." / "You told the police a completely different story." / "Your company paid your lawyer's fees in this case." Each strong headline states a single, specific, damaging conclusion that the chapter will prove.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Delivery</div>
+        <div class="concept-name">How to Deliver a Headline — The Pause, the Tone, the Commitment</div>
+        <div class="concept-body">
+          <p>The headline must be delivered with the same controlled confidence that governs every other aspect of the chapter method. It is stated — not asked — directly to the jury, with a pause that allows it to land before the first question begins. The cross-examiner does not look at the witness while delivering the headline; they speak to the jury. Only after the headline has been received by the jury does the cross-examiner turn to the witness and begin the chapter's questions.</p>
+          <p>The tone of the headline is neutral authority — not triumphant, not aggressive, not theatrical. The cross-examiner who delivers a headline with visible excitement signals to the jury that the cross-examiner is personally invested in the conclusion, which invites them to be sceptical rather than receptive. The cross-examiner who delivers the headline as a matter of obvious, unremarkable fact — with the calm confidence of someone stating the obvious — communicates to the jury that the chapter's conclusion is so well-established that excitement is not warranted. The jury is more persuaded by the cross-examiner who seems to expect the concession than by the one who seems to be trying to force it.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Headline Position</div>
+        <div class="concept-name">Primacy and Recency — Where to Place Your Best Chapters</div>
+        <div class="concept-body">
+          <p>The psychological research on memory — particularly the well-established findings on primacy (the tendency to remember what is presented first) and recency (the tendency to remember what is presented last) — has direct implications for the ordering of cross-examination chapters. Pozner and Dodd apply these findings with precision: the strongest, most damaging chapters should be placed first and last in the cross-examination. The weakest chapters — those that are necessary but not dramatic — belong in the middle, where the effects of primacy and recency are least pronounced.</p>
+          <p>This principle applies both to the ordering of chapters within a single cross-examination and to the ordering of facts within a single chapter. The first and last questions in a chapter are the questions the jury is most likely to remember. The headline — placed at the very beginning of the chapter — takes advantage of primacy. The chapter's concluding question — the statement of the chapter's conclusion — takes advantage of recency. Every chapter is a deliberate use of these two memory effects: announce the conclusion first (primacy), establish it through accumulating facts (middle), and restate it as the final, clean question (recency). The jury hears the conclusion twice, framing everything in between.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEQUENCING -->
+    <div id="sequencing" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Order of Battle</div>
+        <div class="p-title">Sequencing — The Strategic Order of Cross-Examination Chapters</div>
+        <div class="p-desc">The order in which chapters are presented determines the story the jury hears. Sequencing is not a technical matter — it is strategic argument. The cross-examiner who sequences deliberately controls not just what the jury hears but what meaning they assign to it.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Principle</div>
+        <div class="concept-name">Sequence Is Argument — Order Determines Meaning</div>
+        <div class="concept-body">
+          <p>The order in which facts are presented determines the interpretive framework within which subsequent facts are received. A cross-examination that begins by establishing the witness's bias before establishing what the witness said will cause the jury to hear the testimony through the lens of that bias. The same cross-examination, presenting the testimony first and the bias second, produces a weaker effect — the testimony has been received without a contaminating framework, and the bias appears as an afterthought rather than an explanation.</p>
+          <p>Pozner and Dodd develop the sequencing principle with considerable specificity. The cross-examination should be sequenced so that chapters which establish the general frame — the witness's bias, limited opportunity to observe, prior inconsistent positions — precede chapters that establish specific disputed facts. When the jury already knows the witness is biased or had limited opportunity to observe, each specific factual chapter is received through that frame and carries additional weight. When the specific facts are established first and the frame is introduced later, the jury must retroactively reinterpret what they have already heard — a cognitive process that is less reliable and less persuasive than the forward-moving reception of facts within an established frame.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Strong-Weak-Strong Rule</div>
+        <div class="concept-name">Deploy the Primacy-Recency Principle Across the Entire Cross</div>
+        <div class="concept-body">
+          <p>Applying the primacy-recency principle to the sequencing of chapters: the cross-examination should begin with a strong chapter, move through the necessary but less dramatic chapters in the middle, and end with the strongest available chapter. The first chapter the jury hears will be remembered best; the last chapter they hear will be freshest when deliberations begin. Middle chapters are necessary but should not consume the premium positions that primacy and recency provide.</p>
+          <p>This sequencing principle requires the cross-examiner to honestly assess which chapters are strongest — a discipline that itself improves cross-examination quality, because it forces the explicit evaluation of relative chapter strength before the trial begins. The cross-examiner who cannot identify which two or three chapters are most important is a cross-examiner who has not yet fully understood their own case. The chapter ranking exercise, done honestly, typically also produces the decision to drop the weakest chapters entirely — if a chapter is not strong enough for the beginning or end of the cross-examination and is not necessary to the middle, it probably should not be in the cross-examination at all.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Thematic Sequencing</div>
+        <div class="concept-name">Build a Narrative Arc Across the Chapters</div>
+        <div class="concept-body">
+          <p>The individual chapters of a cross-examination, each proving one point, can and should be sequenced to build a cumulative narrative argument — a story that the jury can follow from beginning to end. The cross-examiner who has thought about sequencing at the level of narrative will arrange chapters so that each contributes not just to its own isolated point but to the developing story that the entire cross-examination tells. The witness who had limited opportunity to observe (chapter one) is also biased in favour of the plaintiff (chapter two) and has given different versions of the same events in different contexts (chapter three) — and these three points, presented in sequence, create a cumulative impression of unreliability that exceeds the sum of its parts.</p>
+          <p>Pozner and Dodd also address the specific sequencing question of where to place impeachment chapters — those that use the witness's own prior statements to contradict their current testimony. The strongest practice is to establish the disputed fact through positive evidence first (through the chapter that builds from undisputed facts to the conclusion), and then to use the prior statement as reinforcement — the cross-examiner has already established the fact, and the prior statement confirms that the witness previously agreed. This sequencing makes the prior statement a confirmation of what the jury already knows, rather than the primary source of the fact, which is a stronger and more credible foundation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOOPING -->
+    <div id="looping" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Locking Technique</div>
+        <div class="p-title">Looping — Converting Every Answer Into the Next Question's Premise</div>
+        <div class="p-desc">Looping is the technique of incorporating the witness's last answer into the next question as an established premise. It locks in concessions, chains facts together, and makes denial of the developing conclusion increasingly difficult with each successive question.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Technique</div>
+        <div class="concept-name">What Looping Is and How It Works</div>
+        <div class="concept-body">
+          <p>Looping is the technique of taking the specific language of the witness's most recent answer and incorporating it verbatim into the next question as an established premise. If the witness has just agreed that they were standing twenty feet from the accident scene, the next question begins: "Standing twenty feet from the scene, the view of the intersection was blocked by the parked truck." The witness's concession — standing twenty feet away — is now a premise of the next question. To deny the follow-up, the witness would need to deny their own answer. To accept the follow-up, they have conceded another step toward the chapter's conclusion.</p>
+          <p>The power of looping is cumulative: as each answer is incorporated into the next question's premise, the chain of concessions grows. Each new question carries the weight of every preceding answer. By the time the cross-examiner reaches the chapter's conclusion, the witness has agreed, question by question, to every component of that conclusion. Denying the conclusion requires denying the entire chain — which requires denying answers the witness has already given, on the record, in front of the jury. Few witnesses will attempt this; fewer will succeed in making it credible.</p>
+          <div class="dialogue-box">
+            <div class="d-label">Looping Demonstrated — Building the Chain</div>
+            <div class="q"><strong>Q:</strong> "You were on the north side of the intersection."</div>
+            <div class="a">A: "Yes."</div>
+            <div class="q"><strong>Q:</strong> "On the north side, the parked delivery truck was directly to your left."</div>
+            <div class="a">A: "Yes."</div>
+            <div class="q"><strong>Q:</strong> "That delivery truck, directly to your left on the north side, blocked your view of the crosswalk."</div>
+            <div class="a">A: "I suppose, somewhat."</div>
+            <div class="q"><strong>Q:</strong> "Somewhat blocked by the delivery truck directly to your left, you could not see who entered the crosswalk."</div>
+            <div class="a">A: "I saw —"</div>
+            <div class="q"><strong>Q (firm, controlled):</strong> "You could not see who entered the crosswalk."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Verbal Loop</div>
+        <div class="concept-name">Using Exact Language — Why Verbatim Repetition Matters</div>
+        <div class="concept-body">
+          <p>The loop must use the witness's exact words, not a paraphrase. When the cross-examiner paraphrases the witness's answer, the witness can — correctly — object that the paraphrase is not what they said, and the chain of concessions is broken. When the cross-examiner uses the witness's own language, verbatim, the witness cannot dispute the premise without disputing their own prior answer. The verbatim loop is not merely a technical nicety — it is the legal and rhetorical mechanism by which the concession is locked in.</p>
+          <p>This requires that the cross-examiner listen with complete attention to each answer and record its exact language — in notes, in memory, or in the pre-written questions that have anticipated the witness's likely responses. The cross-examiner who has prepared the cross-examination thoroughly will have anticipated most answers and will have pre-written loops for each anticipated response. The cross-examiner who relies entirely on improvised looping is more likely to paraphrase — and to lose the concession as a result.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Looping Denials</div>
+        <div class="concept-name">What to Do When the Witness Denies — The Denial Loop</div>
+        <div class="concept-body">
+          <p>Looping is most powerful when the witness agrees. But Pozner and Dodd address what happens when the witness denies — and the answer is that the loop still works, because the denial itself is incorporated into the next question's premise. If the witness denies that the truck blocked their view, the next question loops the denial: "Even though you believe the truck did not block your view, you cannot describe what the driver was wearing." The denial has been acknowledged but not accepted — it has been placed in the record as the witness's disputed position — and the chapter continues from a different angle.</p>
+          <p>This technique — looping the denial — prevents the witness's resistance from derailing the chapter. The cross-examiner who acknowledges the denial and proceeds from a different direction signals to the jury that the denial has not changed anything — the cross-examiner expected it and is untroubled by it. This appearance of equanimity in the face of denial is itself persuasive: it signals that the cross-examiner has resources the witness cannot anticipate and that the denial has merely delayed, not prevented, the chapter's conclusion.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAFE QUESTIONS -->
+    <div id="safe" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Architecture of Safety</div>
+        <div class="p-title">Safe Questions — Every Question Must Be Impossible to Hurt You</div>
+        <div class="p-desc">A safe question is one whose answer — whatever it is — advances the cross-examiner's position or at worst leaves it unchanged. The cardinal principle: never ask a question that can hurt you. This is not timidity. It is the discipline of control.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Definition</div>
+        <div class="concept-name">What Makes a Question Safe — The Three-Answer Test</div>
+        <div class="concept-body">
+          <p>A safe question is one that passes the three-answer test: what happens if the witness says yes? What happens if the witness says no? What happens if the witness says "I don't know" or "I don't remember"? If any of those three answers damages the cross-examiner's position, the question is not safe and should not be asked. If all three answers either advance the cross-examiner's position or leave it unchanged, the question is safe.</p>
+          <p>The safe-question discipline is the most counterintuitive aspect of the Pozner-Dodd system for lawyers who have been trained to pursue aggressive cross-examination. It feels timid to ask only questions whose answers cannot hurt you. In practice, the discipline of asking only safe questions produces cross-examinations that are both more effective and more impressive — because every question advances the cross-examiner's position, and no question gives the witness an opportunity to volunteer damaging testimony.</p>
+          <p>Pozner and Dodd demonstrate that the safe-question requirement does not limit the cross-examiner's ability to prove damaging points — it simply changes how those points are proven. Instead of asking a question that directly accuses the witness of lying (which invites an explanation), the cross-examiner asks a series of safe questions that establish every component of the lie, leaving the jury to draw the conclusion without the witness having been given a platform to explain. The conclusion is both more powerful and more credible when the jury reaches it themselves than when the cross-examiner states it directly.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Safe vs. Unsafe</div>
+        <div class="concept-name">Identifying Unsafe Questions — and Rewriting Them</div>
+        <div class="concept-body">
+          <p>The most common category of unsafe question is the one that asks the witness to characterise, evaluate, or explain. Any question that begins "Wasn't it true that you knew..." or "You must have understood that..." or "Isn't it obvious that..." is unsafe — it asks for the witness's state of mind, which the witness controls. The witness who is asked whether they knew something can say no; the witness who is asked what they observed, where they were standing, and what they could see from that position can only deny specific factual matters, each of which the cross-examiner can support from the record.</p>
+          <p>The rewriting exercise Pozner and Dodd recommend: take every question that is unsafe and ask "What specific, objective, observable fact do I need the witness to concede in order to support the conclusion I am trying to reach?" The answer to that question is always a safer formulation — because specific, observable, objective facts are supported by evidence that makes denial implausible, while conclusions, characterisations, and mental states are always in the witness's control.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Safe — Objective Fact</strong>"The meeting lasted two hours." / "The contract was signed on March 15." / "You received the email at 9 a.m." Each is an objective fact, supportable from documents or other evidence. Denial implicates the record, not just the cross-examiner's assertion.</div>
+            <div class="dont-box"><strong>✗ Unsafe — Conclusion or State of Mind</strong>"You knew the contract was defective." / "You understood the risks." / "You were trying to hide the truth." Each invites denial and explanation. The witness controls whether they "knew," "understood," or "tried."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Safe Negative</div>
+        <div class="concept-name">Questions That Cannot Be Answered Harmfully — The Ultimate Safe Question</div>
+        <div class="concept-body">
+          <p>A specific category of safe question deserves special attention: the question that asks the witness to confirm the absence of something — the absence of a document, a note, a record, a witness, a corroborating fact. These questions are safe because their only possible answer is either agreement (which proves the absence) or denial (which requires the witness to produce the non-existent document, note, record, or witness). If the document does not exist, denial of its absence is unsustainable and the witness knows it.</p>
+          <p>This technique is particularly powerful in cases involving record-keeping, documentation requirements, or standard operating procedures. The cross-examiner who can establish that no document, note, report, or communication exists to support a critical element of the opponent's case has made a powerful point without any risk — because either the document doesn't exist (which the jury will notice) or the witness will claim it does, in which case the cross-examiner will demand its production and the failure to produce it will be even more devastating.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WITNESS CONTROL -->
+    <div id="control" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Difficult Witness</div>
+        <div class="p-title">Witness Control — Specific Techniques for Every Form of Resistance</div>
+        <div class="p-desc">Every witness resists in a different way. Some evade. Some volunteer. Some argue. Some refuse. Pozner and Dodd provide specific, calibrated techniques for each form of resistance — none of which require confrontation, and all of which restore control.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Control Principle</div>
+        <div class="concept-name">Control Is Not Confrontation — The Fundamental Distinction</div>
+        <div class="concept-body">
+          <p>The most important conceptual distinction in the Pozner-Dodd system: control is achieved not through aggressive confrontation but through the relentless application of technique. The cross-examiner who raises their voice, who argues with the witness, who expresses visible frustration at evasion, has lost control — they have engaged the witness in a contest in which the witness has every advantage (they are the sympathetic person being attacked) and the cross-examiner has none. The jury roots for the underdog, and in a visible argument between a lawyer and a witness, the witness is always the underdog.</p>
+          <p>The controlling cross-examiner is calm, methodical, and unaffected by resistance. When a witness evades, the cross-examiner simply repeats the question in the same neutral tone. When a witness volunteers additional information, the cross-examiner ignores it and asks the next question. When a witness argues, the cross-examiner does not argue back — they return to the question that was not answered and ask it again. This equanimity is not weakness; it is the most powerful form of control available, because it signals to the jury that the cross-examiner is not threatened by resistance and does not need the witness's cooperation to prove the point.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Evasive Witness</div>
+        <div class="concept-name">Handling Non-Answers — The Repeat and Move Techniques</div>
+        <div class="concept-body">
+          <p>The evasive witness is one who responds to a specific, direct question with a response that is non-responsive — a qualification, a redirect to a different point, or a simple refusal to engage with the question as asked. The technique for handling evasion is the same in every case: return to the question, stated in the same simple, direct form, and ask it again. Not louder. Not more aggressively. Simply again. "I understand, but my question was [question restated]."</p>
+          <p>If the witness evades a second time, the cross-examiner repeats a third time, and then — if necessary — invites the court's assistance: "Your Honour, I'd ask the witness be directed to answer the question." This sequence — repeated question, repeated question, judicial direction — positions the cross-examiner as the reasonable party seeking a simple answer to a simple question, and the witness as the evasive party resisting reasonable inquiry. The jury draws its own conclusion about what the witness is trying to avoid saying.</p>
+          <p>The technique that must be avoided: rewording the question to make evasion easier. When a cross-examiner responds to evasion by asking a different, softer, or more open question, they reward the evasion — they signal that evasion works, and the witness will continue to use it. The discipline is to ask the identical question, patiently, as many times as necessary, until it is answered or the witness's refusal to answer becomes itself the point.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Volunteering Witness</div>
+        <div class="concept-name">Handling Unsolicited Information — The Ignore and Proceed Technique</div>
+        <div class="concept-body">
+          <p>Some witnesses respond to leading questions by volunteering additional information — by answering yes and then adding an explanation, qualification, or counter-narrative that the cross-examiner did not invite. The instinct of the inexperienced cross-examiner is to engage with the volunteered information — to address it, dispute it, or acknowledge it. Pozner and Dodd are emphatic: ignore it and proceed. Ask the next question as if the volunteered information was not delivered.</p>
+          <p>This technique works because the cross-examiner's reaction to volunteered information communicates its importance to the jury. If the cross-examiner ignores it, the jury registers that the cross-examiner is not threatened by it — which is often the most effective signal that the volunteered information is not damaging. If the cross-examiner stops to dispute it, the jury registers that it was important enough to require attention — which elevates its significance regardless of how well the dispute is resolved.</p>
+          <p>The exception: volunteered information that is directly and significantly damaging must be addressed — but through a separate chapter, not through an immediate rebuttal that interrupts the current chapter's momentum. Note the volunteered information, complete the current chapter, and return to address the damaging point in a chapter specifically designed for that purpose.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Argumentative Witness</div>
+        <div class="concept-name">Handling the Witness Who Argues — The Redirect to Question Technique</div>
+        <div class="concept-body">
+          <p>The argumentative witness is one who disputes the cross-examiner's framing, challenges the premise of questions, or attempts to engage in a back-and-forth argument about the facts. This witness is among the most dangerous for the unprepared cross-examiner, because the instinct is to argue back — and argument is terrain on which the witness has every advantage. The technique for the argumentative witness is the same as for the evasive one: return to the question. "I understand you see it differently. My question was [question restated]."</p>
+          <p>The argumentative witness who is consistently returned to the question, without the cross-examiner engaging the argument, will eventually appear unreasonable to the jury — they are refusing to answer a simple question, preferring instead to argue about it. The cross-examiner who remains calm and returns to the question each time appears reasonable; the jury will support their right to a direct answer to a direct question. This dynamic — patient cross-examiner, argumentative witness — is among the most persuasive available in trial advocacy, and it is produced not by the cross-examiner's brilliance but by the consistent application of the return-to-question technique.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Expert Witness</div>
+        <div class="concept-name">Special Techniques for the Expert — Controlling the Credential</div>
+        <div class="concept-body">
+          <p>Expert witnesses present a specific challenge because they have been qualified by the court as having special knowledge, and juries tend to defer to their conclusions. Pozner and Dodd address expert cross-examination as a distinct category requiring specific techniques. The first and most important: never challenge the expert's credentials directly, because doing so positions the cross-examiner as attacking someone the court has already validated. Instead, the cross-examination of an expert focuses on the inputs to the expert's opinion — the facts the expert was given, the facts the expert was not given, the assumptions the expert made, and the methodology the expert applied.</p>
+          <p>The chapter method works with particular effectiveness against experts because experts are typically meticulous about the inputs to their analysis and can be cross-examined chapter by chapter on each input: what facts were provided? What facts were not provided? What assumptions were made? What would the conclusion be if a different assumption were made? Each chapter establishes one limitation of the expert's opinion without challenging the expert's overall competence — which preserves the jury's comfort with the expert while steadily undermining the specific opinion being challenged.</p>
+          <p>The critical chapter against any expert is the chapter establishing what the expert was not told — the facts from the case that, if provided, would have changed or at least qualified the expert's opinion. An expert who was not given the full picture cannot give a fully reliable opinion, and this limitation can be established through safe questions about specific documents, facts, and communications that the expert was not provided. Each individual omission is a safe fact; the cumulative effect of multiple omissions is the destruction of the opinion's reliability.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPEACHMENT -->
+    <div id="impeach" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Attacking Credibility</div>
+        <div class="p-title">Impeachment — The Complete Science of Destroying Witness Credibility</div>
+        <div class="p-desc">Impeachment is not a single technique — it is a family of related methods, each with its own precise mechanics, each requiring specific preparation and execution. Pozner and Dodd provide a complete system for every form of impeachment.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Prior Inconsistent Statements</div>
+        <div class="concept-name">The Science of Impeachment by Prior Statement</div>
+        <div class="concept-body">
+          <p>Impeachment by prior inconsistent statement is the most powerful and most frequently used form of impeachment, and it is the one most commonly executed incorrectly. The most common error: confronting the witness with the prior statement before committing them to the current inconsistent testimony. This error allows the witness to explain the inconsistency before the inconsistency has been fully established in the jury's mind — and the explanation, however transparent, diminishes the impact of the contradiction.</p>
+          <p>The correct technique follows a precise three-step sequence. First, commit the witness to their current testimony — use leading questions within the chapter method to lock in precisely what the witness is claiming today, with maximum specificity, so that the inconsistency will be as stark as possible. Second, credit the prior statement — establish the circumstances of the prior statement in terms that make it more reliable than the current testimony: you were closer in time to the events, you were under oath, you had every reason to be accurate, you were asked directly. Third, confront the witness with the prior statement — quote it or read it precisely, and then ask directly: "And that is not what you told [person/authority] on [date]."</p>
+          <div class="rule-box">
+            <div class="r-label">The Three Steps of Prior Statement Impeachment</div>
+            <p>Step 1: Commit the witness to the current testimony (lock in exactly what they are saying now). Step 2: Credit the prior statement (establish why it was reliable). Step 3: Confront with the contradiction (show exactly what they said before). Never confront before you commit. Never commit before you credit. The sequence is the science.</p>
+          </div>
+          <p>The credit-before-confront sequence is the most counterintuitive element of this technique for most trial lawyers, who want to go straight to the confrontation. The crediting step appears to strengthen the prior statement at the expense of the current testimony — which is exactly its function. By the time the witness hears their prior statement read back, it has been established as reliable by their own concessions: they were there, they were under oath, they told the truth then. The inconsistency, when it arrives, arrives carrying the weight of that established reliability.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Bias Impeachment</div>
+        <div class="concept-name">Establishing Interest, Motive, and Relationship</div>
+        <div class="concept-body">
+          <p>Bias impeachment establishes that the witness has a personal, financial, professional, or emotional interest in the outcome of the case that gives them a reason to shade their testimony in favour of the party they are supporting. This is among the most effective forms of impeachment because it does not require the witness to have lied — it merely establishes that they have a reason to be less than fully objective, and allows the jury to draw its own conclusion about what that means for the reliability of their testimony.</p>
+          <p>The chapter method for bias impeachment follows a specific structure: first, establish the relationship or interest through objective, safe, undeniable facts (you have worked for this company for ten years; you are paid by the plaintiff's lawyers for your expert testimony; your business will benefit if the plaintiff wins this case); then establish the magnitude of the relationship or interest (the payment was $50,000; the business relationship is worth $2 million annually; you have testified for the plaintiff's firm in fourteen prior cases); and finally, name the bias — not as a characterisation the witness will deny, but as a logical conclusion from the facts already established: "So the company that is paying you to be here today is the company whose conduct is at the centre of this lawsuit."</p>
+          <p>Pozner and Dodd are careful to distinguish bias impeachment from character attacks: the goal is not to call the witness a liar but to establish, through objective facts, that the witness has a reason to tell a particular version of events — and to allow the jury to draw its own conclusion about whether that reason has affected what they have heard.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Impeachment by Omission</div>
+        <div class="concept-name">What the Witness Did Not Say — The Power of Absence</div>
+        <div class="concept-body">
+          <p>Impeachment by omission exploits the fact that a witness who is telling the truth tends to include certain facts in every telling of the story — because those facts are genuinely part of their experience and recollection. A witness whose story changes not by adding fabrications but by omitting key details from an earlier telling is a witness whose reliability can be challenged through those omissions. The technique: establish what the witness said on the prior occasion (deposition, police report, prior testimony) in exhaustive specificity, then establish what the witness did not say on that prior occasion — the detail they now claim was critical but which appeared nowhere in their earlier account.</p>
+          <p>This technique works particularly well against witnesses who have embellished their testimony between deposition and trial. The cross-examination chapter establishes the prior account in detail, confirms that the account was complete, then establishes that the new detail does not appear anywhere in the prior account. The jury does not need to be told what to conclude: the witness who reported everything they saw and heard, accurately and completely, and who somehow failed to mention the most important thing they claim to have witnessed, has a credibility problem that requires no editorial comment from the cross-examiner.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Prior Conviction Impeachment</div>
+        <div class="concept-name">Using Criminal History — When, How, and With What Precision</div>
+        <div class="concept-body">
+          <p>Impeachment by prior conviction is available under rules that vary by jurisdiction but typically permit use of prior felony convictions (and sometimes convictions for crimes involving dishonesty) to impeach a witness's credibility. Pozner and Dodd address the technique as a chapter of cross-examination: the prior conviction chapter establishes the specific conviction — the crime, the date, the result — in the most precise and specific terms available. Not "you have a criminal record" but "on March 15, 2018, you were convicted of fraud in the First District Court of this state."</p>
+          <p>The specificity of the prior conviction chapter serves two functions: it establishes the fact clearly for the jury, and it prevents the witness from minimising it through vague characterisation. The witness who says "I had a small legal problem a few years ago" has given a characterisation the cross-examiner can immediately correct with the specific facts. The witness who has been committed to the specific facts cannot later minimise them without contradicting themselves.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Contradiction Through Documents</div>
+        <div class="concept-name">When the Record Says Otherwise — Document-Based Contradiction</div>
+        <div class="concept-body">
+          <p>One of the most powerful and most controllable forms of impeachment is the contradiction of testimony by documentary evidence. Unlike prior-statement impeachment — which requires the jury to evaluate one person's word against another version of their own words — documentary contradiction places an objective, contemporaneous, often official record against the witness's current testimony. The jury does not need to decide who to believe; they decide whether to believe the witness or the document.</p>
+          <p>The chapter method for document-based contradiction follows the same commit-credit-confront structure: first, commit the witness to their current testimony in maximum specificity; then credit the document (establish its source, date, author, and circumstances of creation in ways that make it authoritative); then confront the witness with the specific passage that contradicts their testimony. The confrontation is not a dramatic flourish — it is the quiet placement of the document's language against the witness's language, allowing the contradiction to speak for itself.</p>
+          <p>Pozner and Dodd emphasise that the document should be shown to the witness in the exact form in which it was created — not in a summary, not in a lawyer's characterisation of it, but in the original language, read verbatim. The verbatim reading is the loop: the document's exact words are incorporated into the next question as an established premise, and the witness must either agree that the document says what the cross-examiner has just read or dispute the reading — and disputing a verbatim reading of a contemporaneous document is among the most damaging positions a witness can place themselves in.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSYCHOLOGY -->
+    <div id="psych" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Science Behind the Science</div>
+        <div class="p-title">Psychology — The Cognitive and Persuasive Foundations of Cross-Examination</div>
+        <div class="p-desc">Pozner and Dodd ground their techniques in cognitive psychology and persuasion science. Understanding why the techniques work — not just that they work — allows the cross-examiner to apply them with precision and adapt them when circumstances demand.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Memory Science</div>
+        <div class="concept-name">How Memory Works — and How Cross-Examination Exploits Its Limits</div>
+        <div class="concept-body">
+          <p>Human memory is not a recording — it is a reconstruction. Every time a person remembers an event, they are not playing back a stored file but reconstructing the event from fragments of experience, expectation, subsequent information, and present motivation. This reconstruction is subject to systematic distortion: subsequent information is incorporated into the original memory; expectation fills in gaps that perception left empty; desire to be consistent with prior statements shapes what is "remembered" in current testimony. These are not failures of dishonest witnesses — they are the normal mechanics of human memory, and they create specific cross-examination opportunities.</p>
+          <p>The cross-examiner who understands memory science will focus on the factors that create distortion: the passage of time since the event; the number of subsequent rectellings that have shaped the original memory; the witness's prior knowledge and expectation that primed their perception; and the specific conditions under which the original observation was made (lighting, distance, stress, divided attention). Each of these factors is a safe, objective, documentable question — and each establishes a ground for doubting the reliability of the witness's recollection without calling them a liar.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Jury's Psychology</div>
+        <div class="concept-name">What Jurors Hear, Remember, and Believe — Designing for the Real Audience</div>
+        <div class="concept-body">
+          <p>The cross-examination is not conducted for the witness's benefit. It is conducted for the jury. Every technique in the Pozner-Dodd system is designed to produce a specific effect in the jury's mind — and understanding the jury's cognitive and emotional dynamics is essential to using the techniques effectively. The jury pays selective attention, remembers selectively, and evaluates credibility through heuristics rather than rational analysis. The cross-examiner who designs for these realities will produce a more persuasive cross-examination than one who simply aims to establish facts without thinking about how those facts will be received.</p>
+          <p>Specific juror psychology principles the book addresses: jurors are more persuaded by specific, concrete facts than by abstract conclusions; jurors respond to narrative and story more than to logical argument; jurors are more likely to disbelieve a witness who appears evasive than one who gives a damaging concession willingly; and jurors give more weight to testimony that appears to be against the speaker's interest than to testimony that serves it. Each of these principles has direct implications for cross-examination technique: use specific facts rather than conclusions (safe questions); organise facts into chapters that tell a story (chapter method and sequencing); allow concessions to stand without elaboration (never ask why); and structure questions so that each concession appears to be the witness's own, voluntary admission rather than something wrested from them.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Primacy and Recency</div>
+        <div class="concept-name">The Memory Effects That Determine What Jurors Take Into Deliberations</div>
+        <div class="concept-body">
+          <p>The primacy effect — the tendency to remember the first item in a sequence better than middle items — and the recency effect — the tendency to remember the last item better than middle items — are among the most robust and well-replicated findings in cognitive psychology. Their application to cross-examination is direct and explicit throughout the Pozner-Dodd system: the most important facts, the most damaging concessions, and the most compelling chapters of the cross-examination must be placed at the beginning and end of the examination, where primacy and recency will ensure their superior retention in jury memory.</p>
+          <p>The practical implication is that the cross-examiner's investment of preparation time should be disproportionate: the opening and closing chapters deserve the most careful preparation, the most precise questioning, and the most deliberate delivery. The middle chapters — however necessary — are receiving less judicial attention and less jury memory. This is not a reason to neglect them, but it is a reason to ensure that the cross-examination begins and ends with the material whose retention matters most for the verdict.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Preparation Science</div>
+        <div class="concept-name">Why Every Question Must Be Written Out — The Science of Preparation</div>
+        <div class="concept-body">
+          <p>Pozner and Dodd are unequivocal: every question in every chapter of every cross-examination must be written out in advance, in full, in the exact form in which it will be asked. Not as notes. Not as topics. Not as outlines of what to cover. Every question, written as a complete sentence, in the leading form in which it will be delivered. The cross-examiner who improvises — however experienced, however talented — will violate the three cardinal rules, ask unsafe questions, miss loop opportunities, and lose control at exactly the moments when control is most critical.</p>
+          <p>The preparation requirement is not merely practical — it is itself a form of legal analysis. The act of writing out every question forces the cross-examiner to think through every step of the chapter's logical progression, to identify every fact that must be conceded before the conclusion is available, and to test every question against the three-answer test before the trial begins. The cross-examination that has been written out is a cross-examination that has been analysed; the cross-examination that has been improvised is a cross-examination that has been guessed at. The difference in quality is not subtle.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">When to Stop</div>
+        <div class="concept-name">The Discipline of Ending — Knowing When the Cross Is Complete</div>
+        <div class="concept-body">
+          <p>One of the most important and least discussed aspects of cross-examination technique: knowing when to stop. The cross-examiner who continues after the last chapter's conclusion has been established is a cross-examiner who is adding risk without adding value. Each additional question is an additional opportunity for the witness to recover, to volunteer damaging information, or to rehabilitate a concession that stood cleanly before the additional question invited elaboration.</p>
+          <p>The chapter method provides a natural stopping point: when the last chapter's final question has been asked and answered, the cross-examination is complete. The cross-examiner who has prepared a finite number of chapters with a finite number of questions can end the cross-examination with precision, on exactly the note they chose, without the drift that characterises cross-examinations that continue past their natural conclusion because the cross-examiner is uncomfortable sitting down.</p>
+          <p>Pozner and Dodd address the psychological pressure that produces over-long cross-examinations: the fear that stopping too soon will appear concessive, or that there is always one more damaging point to be made. This fear is the enemy of effective cross-examination. The cross-examination that ends at the right moment — after all prepared chapters have been completed, on a strong concluding note — is more persuasive than one that continues past it. The strongest final note of any cross-examination is the last prepared question of the last prepared chapter, asked and answered, followed by "No further questions."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#401060; margin-top:0;">The Science Speaks</div>
+        <div class="section-title">Key Passages from Cross-Examination: Science and Techniques</div>
+
+        <div class="quote-item"><div class="quote-text">"Cross-examination is not a fight with a witness. It is a conversation in which the cross-examiner speaks and the witness confirms. Control is the goal. The three rules are the method."</div><div class="quote-ref">Chapter 1 · The Philosophy of Cross</div></div>
+        <div class="quote-item"><div class="quote-text">"The cross-examiner who asks an open question has surrendered the only advantage cross-examination provides. The witness now testifies. You react. You have lost."</div><div class="quote-ref">Cardinal Rule I · Leading Questions</div></div>
+        <div class="quote-item"><div class="quote-text">"One fact per question. Not two. Not one and a half. One. The single fact, conceded, is locked into the record. The compound question gives the witness room to manoeuvre."</div><div class="quote-ref">Cardinal Rule II · One Fact</div></div>
+        <div class="quote-item"><div class="quote-text">"Never ask why. The witness who explains has taken over the examination. Every explanation is testimony you did not write. Every explanation is narrative you cannot control."</div><div class="quote-ref">Cardinal Rule III · Never Ask Why</div></div>
+        <div class="quote-item"><div class="quote-text">"The chapter method turns cross-examination from an improvised attack into a designed argument. Each chapter proves one point. Together they prove the case. None depends on the others."</div><div class="quote-ref">The Chapter Method</div></div>
+        <div class="quote-item"><div class="quote-text">"The headline is not a question. It is a declaration. It tells the jury what the chapter will prove before the first question is asked. By the time the final question is answered, the jury has heard the conclusion twice."</div><div class="quote-ref">Headlines</div></div>
+        <div class="quote-item"><div class="quote-text">"Primacy and recency are not rhetorical devices — they are cognitive facts. The jury will remember the first and last things they hear. Place your most important chapters in those positions. This is not optional."</div><div class="quote-ref">Sequencing · Primacy and Recency</div></div>
+        <div class="quote-item"><div class="quote-text">"Looping converts the witness's last answer into the next question's established premise. Each loop closes off one avenue of retreat. By the chapter's final question, there is nowhere left to go."</div><div class="quote-ref">Looping</div></div>
+        <div class="quote-item"><div class="quote-text">"A safe question is one that cannot hurt you regardless of the answer. If you cannot pass the three-answer test — yes helps you, no helps you, I don't know is neutral — do not ask the question."</div><div class="quote-ref">Safe Questions</div></div>
+        <div class="quote-item"><div class="quote-text">"Control is never achieved through volume or aggression. It is achieved through the relentless, patient application of technique. The calm cross-examiner controls. The angry one has already lost."</div><div class="quote-ref">Witness Control</div></div>
+        <div class="quote-item"><div class="quote-text">"When the witness evades, ask the question again. Not louder. Not differently. Again. The witness's refusal to answer a simple question is itself the answer — and the jury knows it."</div><div class="quote-ref">The Evasive Witness</div></div>
+        <div class="quote-item"><div class="quote-text">"Ignore volunteered information. Your reaction to what the witness volunteers tells the jury how important it is. The cross-examiner who ignores it signals it is not a threat. The cross-examiner who engages with it makes it one."</div><div class="quote-ref">The Volunteering Witness</div></div>
+        <div class="quote-item"><div class="quote-text">"Commit before you confront. The witness who has been locked into their current testimony cannot escape the prior inconsistency by claiming they were misunderstood. They said what they said. So did the prior statement."</div><div class="quote-ref">Prior Statement Impeachment</div></div>
+        <div class="quote-item"><div class="quote-text">"Credit the prior statement before you use it. Establish that the witness was there, was under oath, was asked directly, and had every reason to be accurate. The inconsistency, when it arrives, arrives carrying that credibility."</div><div class="quote-ref">The Credit-Before-Confront Sequence</div></div>
+        <div class="quote-item"><div class="quote-text">"Bias impeachment does not call anyone a liar. It establishes, through objective facts, that the witness has a reason to tell a particular story. The jury decides what that means. They almost always decide correctly."</div><div class="quote-ref">Bias Impeachment</div></div>
+        <div class="quote-item"><div class="quote-text">"The expert cannot be challenged on their credentials — the court has already accepted them. Challenge the inputs. What were you given? What were you not given? What would your conclusion be if the missing fact had been provided?"</div><div class="quote-ref">Expert Witness Cross</div></div>
+        <div class="quote-item"><div class="quote-text">"Write every question out. Every question. In the leading form. In the order you will ask it. The cross-examiner who improvises is the cross-examiner who violates all three rules at the moment they matter most."</div><div class="quote-ref">The Science of Preparation</div></div>
+        <div class="quote-item"><div class="quote-text">"When the last chapter's last question has been answered, sit down. The cross-examination is complete. Every additional question is an additional risk. The strongest ending is silence after the strongest question."</div><div class="quote-ref">The Discipline of Ending</div></div>
+        <div class="quote-item"><div class="quote-text">"Memory is not a recording — it is a reconstruction. Cross-examine the reconstruction. Challenge the conditions of observation, the passage of time, the prior accounts that have shaped what the witness now believes they remember."</div><div class="quote-ref">Memory Science</div></div>
+        <div class="quote-item"><div class="quote-text">"The jury is the audience. Every question is written for them, not for the witness. They do not follow legal arguments. They follow stories, specific facts, and the demeanour of people under pressure."</div><div class="quote-ref">The Jury's Psychology</div></div>
+        <div class="quote-item"><div class="quote-text">"Cross-examination is a science. It rests on principles that can be identified, techniques that can be learned, and results that can be predicted. It is not a gift. It is a discipline. Any lawyer who is willing to do the work can master it."</div><div class="quote-ref">Introduction</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"Cross-Examination: Science and Techniques does for the courtroom what no other book has done — it converts the most feared and most misunderstood art in trial advocacy into a teachable, learnable, repeatable science. The lawyer who masters these techniques does not need inspiration. They need preparation. And preparation, applied to this system, produces control. Control produces results."</p>
+  </div>
+
+</div>
+<script>
+  function show(id,el){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const MAKING_YOUR_CASE_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #111828;
+    --blue: #1e3a6a;
+    --blue-light: #2e5090;
+    --blue-bright: #5080c0;
+    --gold: #c8a030;
+    --gold-light: #e0bc50;
+    --cream: #f4f0e4;
+    --cream-dark: #e4dcc8;
+    --border-c: #7090b0;
+    --red: #7a1a1a;
+    --muted: #1a2840;
+    --text: #0a1428;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body,.wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--text); }
+  .wrap { max-width:860px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero { background:var(--navy); color:var(--cream); padding:3.5rem 3rem 3rem; text-align:center; border-bottom:4px double var(--blue-light); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(30,58,106,0.08) 29px); pointer-events:none; }
+  .hero-ornament { font-size:20px; color:var(--blue-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.7; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:38px; line-height:1.15; color:var(--blue-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.7); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:#6080a0; margin-top:0.5rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#405080; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#304060; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2rem; background:var(--navy); padding:1.2rem 2rem; border-bottom:1px solid var(--blue); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:32px; color:var(--blue-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#405080; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#080d18; border-bottom:2px solid var(--blue); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.65rem 0.85rem; font-family:'IM Fell English',serif; font-size:12px; color:#405080; cursor:pointer; border-right:1px solid #111828; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--blue-bright); background:#111828; }
+  .tab.active { color:var(--blue-bright); background:#141e30; border-bottom:2px solid var(--blue-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--cream); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.85; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--blue); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:23px; color:var(--navy); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .rule-block { margin-bottom:2rem; padding:1.1rem 1.3rem; border-left:4px solid var(--blue); background:rgba(30,58,106,0.04); }
+  .rule-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--blue); margin-bottom:0.12rem; }
+  .rule-name { font-weight:600; font-size:17.5px; color:var(--red); margin-bottom:0.35rem; }
+  .rule-body { font-size:15.5px; line-height:1.78; color:#0e1e30; }
+  .rule-body p { margin-bottom:0.75rem; }
+  .rule-body p:last-child { margin-bottom:0; }
+
+  .part-banner { background:var(--navy); color:var(--cream); padding:1rem 1.5rem; margin:2rem -2rem 1.8rem; border-top:2px solid var(--blue); border-bottom:2px solid var(--blue); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--blue-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:20px; color:var(--cream); }
+  .part-banner .p-desc { font-size:13px; color:#6080a0; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--navy); border:1px solid var(--blue); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--blue-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#6080a0; line-height:1.45; }
+
+  .tip-box { background:rgba(30,58,106,0.07); border:1px solid var(--border-c); padding:0.9rem 1.1rem; margin:0.8rem 0 1.2rem; border-radius:2px; }
+  .tip-box p { font-size:14.5px; line-height:1.65; color:var(--muted); }
+  .tip-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+
+  .quotes-section { background:var(--navy); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--blue); }
+  .quotes-section .section-title { color:var(--blue-bright); border-bottom-color:#1a2840; margin-top:0; }
+  .quote-item { border-left:3px solid var(--blue); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(30,58,106,0.09); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--cream); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#405080; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--blue); color:var(--cream); padding:2rem; text-align:center; border-top:3px double var(--blue-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+
+  .divider { text-align:center; color:var(--blue); font-size:18px; letter-spacing:10px; margin:1.4rem 0; opacity:0.4; }
+
+  .do-dont { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0 1.4rem; }
+  .do-box, .dont-box { padding:0.9rem 1rem; font-size:14px; line-height:1.6; }
+  .do-box { background:rgba(30,106,50,0.08); border-left:4px solid #2a7a3a; color:#0e2818; }
+  .dont-box { background:rgba(122,26,26,0.07); border-left:4px solid var(--red); color:#280e0e; }
+  .do-box strong, .dont-box strong { display:block; font-family:'IM Fell English',serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.4rem; }
+  .do-box strong { color:#2a7a3a; }
+  .dont-box strong { color:var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">⚖ ⚖ ⚖</div>
+    <div class="hero-title">Making Your Case:<br>The Art of Persuading Judges</div>
+    <div class="hero-subtitle">A Complete Manual of Legal Advocacy — Written and Oral</div>
+    <div class="hero-author">Antonin Scalia &amp; Bryan A. Garner</div>
+    <div class="hero-year">Published 2008 · Thomson/West · All Principles Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">115</div><div class="lbl">Principles</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Major Parts</div></div>
+    <div class="stat"><div class="num">2</div><div class="lbl">Master Authors</div></div>
+    <div class="stat"><div class="num">2008</div><div class="lbl">Published</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('mindset',this)">Mindset</div>
+    <div class="tab" onclick="show('brief1',this)">Brief — Structure</div>
+    <div class="tab" onclick="show('brief2',this)">Brief — Writing</div>
+    <div class="tab" onclick="show('brief3',this)">Brief — Argument</div>
+    <div class="tab" onclick="show('oral1',this)">Oral — Preparation</div>
+    <div class="tab" onclick="show('oral2',this)">Oral — Delivery</div>
+    <div class="tab" onclick="show('oral3',this)">Oral — Questions</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>Two of the most formidable legal minds in American history — a Supreme Court Justice and the foremost authority on legal writing — distil a lifetime of advocacy into one ruthlessly practical manual. Every principle applies immediately. Nothing is abstract. This is what great advocacy actually looks like, from the inside.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is and Who Wrote It</div>
+      <div class="rule-body">
+        <p>Antonin Scalia served as Associate Justice of the United States Supreme Court from 1986 until his death in 2016. He is widely regarded as one of the most intellectually formidable justices in the Court's history, known for the clarity and force of his opinions and the relentless rigour of his questioning during oral argument. Bryan A. Garner is the editor-in-chief of Black's Law Dictionary, the author of the definitive treatise on legal writing, and a leading authority on the craft of legal English. Together they produced several books on legal reasoning and writing, of which <em>Making Your Case</em> is the most practically focused.</p>
+        <p>The book is structured as 115 numbered principles, organised into three broad parts: general principles of argumentation, the written brief, and oral argument. Each principle is stated as a rule and then explained with concrete examples, frequent illustrations of what not to do, and occasional historical or literary references that illuminate the underlying logic. The tone throughout is direct, occasionally severe, and always authoritative — two masters of their craft telling you, without diplomatic cushioning, what works and what does not.</p>
+        <p>The book is addressed primarily to appellate advocates — lawyers arguing before reviewing courts — but Scalia and Garner are explicit that its principles apply to virtually all forms of legal argumentation, and many of them apply to persuasive writing and formal argument in any domain. The core concern throughout is a single question: what actually moves judges?</p>
+      </div>
+
+      <div class="section-label">Central Argument</div>
+      <div class="section-title">The Philosophy Behind All 115 Principles</div>
+      <div class="rule-body">
+        <p>The book's organising insight is that legal persuasion is a distinct and learnable craft — not merely an expression of natural talent, not simply the rehearsal of legal doctrine, and not the performance of rhetorical flourish. Judges are professionals with specific needs, specific habits, and specific modes of evaluation. They are not a general audience to be charmed or an academic audience to be impressed. They are decision-makers under time pressure who need to be given the best possible legal and factual basis for a ruling that they can defend — to their colleagues, to the reviewing court above them, and to the legal community at large.</p>
+        <p>This means that the advocate's primary task is not to express their own view of the case but to make the judge's job easier: to present the relevant law clearly, to frame the facts honestly and favourably, to anticipate every serious objection and address it before it is raised, and to do all of this in prose that is precise, readable, and free of every form of padding and obfuscation. The brief and the oral argument are not performances — they are instruments of judicial decision-making, and they succeed or fail in proportion to how well they serve that function.</p>
+      </div>
+
+      <div class="section-label">At a Glance</div>
+      <div class="section-title">The Eight Pillars of the Book's Approach</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">Know Your Audience</div><div class="t-desc">Judges are professionals with specific needs. Everything must be designed for them, not for you or for other lawyers.</div></div>
+        <div class="theme-card"><div class="t-name">Clarity Above All</div><div class="t-desc">The ability to make complex law and facts clearly understandable is the central skill of legal advocacy. Never sacrifice it for elegance.</div></div>
+        <div class="theme-card"><div class="t-name">Candour Is Strategy</div><div class="t-desc">Judges can detect evasion instantly. Confronting adverse authority and adverse facts honestly builds credibility that cannot be faked.</div></div>
+        <div class="theme-card"><div class="t-name">Brevity Is Power</div><div class="t-desc">Every unnecessary word weakens the necessary ones. The shortest effective argument is always the best argument.</div></div>
+        <div class="theme-card"><div class="t-name">Structure Persuades</div><div class="t-desc">How an argument is organised — what comes first, how points connect, how headings are framed — does as much persuasive work as the content itself.</div></div>
+        <div class="theme-card"><div class="t-name">Prepare Obsessively</div><div class="t-desc">There is no substitute for knowing the record, the law, and the weaknesses of your own case better than anyone in the room.</div></div>
+        <div class="theme-card"><div class="t-name">Answer the Question</div><div class="t-desc">Evasion in oral argument destroys credibility immediately and permanently. Answer every question directly, even the hard ones.</div></div>
+        <div class="theme-card"><div class="t-name">The Rule of Law</div><div class="t-desc">Frame arguments in terms of rules with general applicability. Judges must decide cases that will govern future conduct — they think in rules, not outcomes.</div></div>
+      </div>
+    </div>
+
+    <!-- MINDSET -->
+    <div id="mindset" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part I — General Principles</div>
+        <div class="p-title">The Advocate's Mindset</div>
+        <div class="p-desc">Before putting a word on paper or standing before a bench, the effective advocate must understand who judges are, how they think, what moves them, and what destroys credibility instantly.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Principle Group 1</div>
+        <div class="rule-name">Understand How Judges Think</div>
+        <div class="rule-body">
+          <p>Scalia and Garner begin with a fundamental orientation: judges are not your adversaries, but they are not your allies either. They are decision-makers who approach each case with a combination of legal training, personal values, institutional role-consciousness, and — critically — a workload that makes clarity and concision not merely desirable but essential to their ability to do their job. A judge who cannot quickly understand your argument cannot rule in your favour, however correct you are.</p>
+          <p>Appellate judges in particular are acutely aware of the precedential effect of their decisions. They are not simply deciding your case — they are making law that will govern future cases, and this awareness shapes how they evaluate arguments. The advocate who frames their position as a sound legal rule capable of general application — rather than as the correct outcome for this particular client — speaks directly to the judge's institutional function. Arguments that would require a rule the court could not apply to future cases without embarrassment are arguments that courts will find ways to reject.</p>
+          <p>The authors also address the reality of judicial temperament: judges vary enormously in their approach to oral argument, their tolerance for bold advocacy, and their preferred style of written submission. The effective advocate studies the bench they are appearing before — the individual judges, their prior opinions, their patterns of questioning — and calibrates their presentation accordingly. This is not flattery or manipulation; it is the basic professional intelligence of knowing your audience.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Principle Group 2</div>
+        <div class="rule-name">The Primacy of Credibility</div>
+        <div class="rule-body">
+          <p>Credibility is the advocate's most precious asset and the most easily destroyed. Scalia and Garner are blunt: a single overstatement, a single misrepresentation of a precedent, a single evasion of an adverse fact — any of these can permanently undermine a judge's trust in everything else you say. And once lost, credibility cannot be recovered within that argument. Judges who have caught an advocate in even a minor misrepresentation will apply a sceptical discount to every subsequent claim, however accurate.</p>
+          <p>This means that candour about the weaknesses of your case is not weakness — it is strategy. The advocate who acknowledges a difficult precedent, explains why it is distinguishable, and does so before the court raises it demonstrates a quality of honesty that immediately strengthens the credibility of everything else they argue. The advocate who hopes the court won't notice the adverse authority, or who buries it in a footnote with minimal treatment, signals to the bench that their case is weaker than presented — and judges, who have read the briefs on both sides, will notice.</p>
+          <p>The principle extends to oral argument with particular force. Scalia, who was famous for testing advocates with hypothetical questions designed to expose the outer limits of their position, observed that the advocate who attempts to evade a difficult hypothetical destroys not only their answer to that question but their entire credibility with the bench. The correct response to a hard question is always a direct, honest answer — followed, if necessary, by the qualification that makes the position defensible. The evader gets neither the qualified answer nor the credibility.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Principle Group 3</div>
+        <div class="rule-name">Think in Rules, Not Outcomes</div>
+        <div class="rule-body">
+          <p>One of the book's most important conceptual contributions is the insistence that effective legal advocacy must be framed in terms of rules rather than outcomes. The advocate who argues "my client deserves to win" is making an outcome argument. The advocate who argues "the correct rule of law, applied to these facts, requires this result" is making the kind of argument judges can act on — because they must write opinions that justify their decisions in terms of rules capable of general application.</p>
+          <p>This has a practical corollary: the advocate must think carefully about what rule their desired outcome implies. If my client wins, what rule has the court applied? Would that rule produce acceptable outcomes in all the cases to which it would apply? Could it be stated in a way that a reasonable judge would be comfortable stating in a published opinion? These questions — which are the questions the judges themselves will be asking — must be answered in the brief and anticipated in oral argument. The advocate who cannot articulate a clean, general rule supporting their position is in serious trouble, because the court that rules in their favour will have to articulate one.</p>
+          <p>Scalia and Garner also address the related question of policy arguments. While policy considerations play a legitimate role in legal argument, they must be used carefully. An argument that "my position produces better outcomes" carries less weight than an argument that "my position correctly applies the relevant legal authorities." Courts are generally reluctant to be seen as pure policy-makers, and the advocate who leads with policy rather than law signals a weakness in the legal case.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Principle Group 4</div>
+        <div class="rule-name">Know the Limits of Your Argument</div>
+        <div class="rule-body">
+          <p>Every legal argument has limits — points at which, if pushed far enough, it produces results that no reasonable court would accept. The effective advocate identifies these limits in advance, draws their position at the right line, and is prepared to acknowledge the line during oral argument rather than being forced across it by questioning. The advocate who has not thought through the limits of their own position is at the mercy of a well-prepared bench.</p>
+          <p>This requires what Scalia and Garner call "hypothesis testing": systematically imagining the hardest possible cases that your proposed rule would govern, and asking whether the results are ones you can defend. If they are not, the rule needs to be reformulated at a narrower level. If they are, you have identified the best articulation of your position and can defend it with confidence when the court tests it with hypotheticals. The advocate who has done this work can answer hard questions crisply, confidently, and completely — signals of preparation that the bench always notices and values.</p>
+          <p>The principle extends to the selection of arguments. Not every argument available in a case should be made. The weakest arguments do not merely fail — they actively undermine the stronger ones by suggesting that the advocate is throwing everything at the wall, which implies they do not know which arguments are genuinely good. The disciplined selection of the two or three best arguments, stated clearly and supported fully, is almost always more effective than the exhaustive cataloguing of every possible ground.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Principle Group 5</div>
+        <div class="rule-name">Distinguish Legal Argument from Rhetoric</div>
+        <div class="rule-body">
+          <p>Scalia and Garner draw a sharp and important line between genuine legal argument and rhetorical decoration. Emotional appeals, literary flourishes, thundering indignation, and elaborate metaphors may work in jury addresses; they are generally counter-productive before appellate judges. A judge who has been practising law for decades will not be moved by passion — they will be moved by a clear statement of the applicable law, a careful account of the relevant facts, and a logical demonstration that the law applied to the facts requires the result you are seeking.</p>
+          <p>This does not mean prose style is irrelevant. On the contrary, the authors devote considerable attention to the craft of legal writing precisely because clarity, precision, and readability are genuine components of persuasiveness before a sophisticated audience. The brief that is a pleasure to read — because it is clear, well-organised, and free of obfuscation — has a real advantage over one that requires the reader to work to understand it. But the pleasure should come from the quality of the thinking and the precision of its expression, not from ornamental language that substitutes effect for substance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRIEF STRUCTURE -->
+    <div id="brief1" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part II — The Written Brief</div>
+        <div class="p-title">Structure: How to Organise a Persuasive Brief</div>
+        <div class="p-desc">The architecture of a brief — its sections, their sequence, and the function each must perform — does as much persuasive work as its content. A well-structured brief teaches judges how to decide before they have finished reading.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Brief Structure · 1</div>
+        <div class="rule-name">The Question Presented: Frame the Issue to Win It</div>
+        <div class="rule-body">
+          <p>The question presented is the most important sentence in the brief — and the most consistently mistreated. Scalia and Garner observe that most lawyers write questions presented that are either too narrow (legalistically cramped, incomprehensible to someone not already familiar with the case) or too broad (abstract statements of legal principle that tell the reader nothing about the specific dispute). Neither approach takes advantage of the question presented's enormous persuasive potential.</p>
+          <p>The ideal question presented accomplishes three things simultaneously: it identifies the precise legal issue, it incorporates the key facts sympathetically (without being so one-sided as to lose credibility), and it is framed in a way that makes the answer your client needs seem like the natural and correct resolution. It should be answerable with a simple "yes" or "no," and the correct answer — from your client's perspective — should be apparent from the question itself. A well-crafted question presented can predispose a judge toward your position before they have read a single argument.</p>
+          <p>The authors recommend the "embedded-facts" style: not "Whether the evidence was sufficient to support the verdict," but a version that incorporates the specific facts that make the answer clear to any reasonable reader. Brevity matters here too — a question presented that runs to a full paragraph has lost the reader before the brief has begun.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Brief Structure · 2</div>
+        <div class="rule-name">The Statement of Facts: Tell a Compelling Story, Accurately</div>
+        <div class="rule-body">
+          <p>The statement of facts is the most underestimated section of any brief. Many lawyers treat it as a neutral recitation — a factual background against which the legal argument will be made. Scalia and Garner reject this entirely. The statement of facts is the advocate's first and best opportunity to establish the human and factual context of the case in a way that makes the desired legal outcome feel not merely technically correct but genuinely just.</p>
+          <p>This must be done with scrupulous accuracy. Every fact stated must be supported by the record; nothing can be misstated, omitted selectively in a way that is misleading, or characterised beyond what the evidence supports. But within those constraints, the advocate has enormous latitude: the choice of what to include and what to omit, the order in which facts are presented, the level of detail devoted to sympathetic versus unsympathetic elements, and the language used to characterise events — all of these are legitimate tools of advocacy.</p>
+          <p>The authors recommend a narrative approach: tell the story in a way that flows naturally and is easy to follow, rather than organising facts by category or by the order in which they were introduced at trial. A judge who finishes the statement of facts already sympathetic to your client's situation is a judge whose legal analysis will be coloured by that sympathy, even if they believe themselves to be deciding purely on the law. This is not manipulation — it is the recognition that legal decisions are made by human beings, and that human beings understand facts through narrative.</p>
+          <p>One of the most consistent mistakes they identify: the "see-saw" statement of facts that alternates between favourable and unfavourable facts, or that buries the most favourable facts among routine procedural history. Lead with your strongest and most sympathetic facts; give them the space and context they deserve; handle adverse facts concisely and in a context that minimises their weight.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Brief Structure · 3</div>
+        <div class="rule-name">Point Headings: Argue in the Table of Contents</div>
+        <div class="rule-body">
+          <p>Point headings — the section headers that divide the argument — are read by virtually every judge before they read the argument itself. A judge who reads the table of contents of a well-constructed brief has already been given the complete argument in condensed form. This means that point headings must be argumentative, not merely descriptive. "The Lower Court Erred" is a topic, not a point heading. "The Lower Court's Exclusion of the Expert Testimony Violated Rule 702 and Caused Prejudicial Error" is an argument.</p>
+          <p>Scalia and Garner recommend that each point heading state a complete legal proposition — not a question, not a topic, but an assertion — that, if accepted, advances the case. Sub-headings should support the main heading with specific reasons. The full set of headings, read in sequence, should constitute a complete and coherent summary of the entire argument. A judge who agrees with every heading has already decided to rule in your favour; the body of the argument merely provides the supporting detail.</p>
+          <p>Length and grammatical form matter. Point headings should be complete sentences, stated in the present tense, without passive voice where possible. They should be long enough to be specific and complete, but short enough to be absorbed in a single reading — rarely more than three or four lines. The worst point headings are those so general as to be contentless: they fail both as arguments and as navigational aids.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Brief Structure · 4</div>
+        <div class="rule-name">The Summary of Argument: Give Judges the Case in Three Minutes</div>
+        <div class="rule-body">
+          <p>Many lawyers write summaries of argument that are either perfunctory (a bare restatement of the point headings) or excessively long (a condensed version of the full argument that runs for pages). Neither serves the function the summary is designed to perform. The summary of argument should be a genuinely self-contained, persuasive overview of the entire case — long enough to convey the substance of every major argument, short enough to be read quickly by a judge who wants to understand the shape of the case before engaging with the detail.</p>
+          <p>The authors recommend treating the summary as a brief within the brief: a document that, if the judge read nothing else, would give them a complete and accurate understanding of your strongest position. This means it must be genuinely argumentative — stating conclusions and the key reasoning supporting them — not merely a list of topics. It also means it must be written with as much care as the argument itself: clear, precise, free of jargon, and structured so that the logical progression is immediately apparent.</p>
+          <p>The summary is also the advocate's last chance to frame the case at the highest level of generality before descending into the details of specific authorities and record citations. Use it to establish the organising principle of your case — the central reason why you should win — that will make all the subsequent detail cohere into a single, intelligible argument.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Brief Structure · 5</div>
+        <div class="rule-name">Order of Arguments: Lead with Your Best, End Strongly</div>
+        <div class="rule-body">
+          <p>The order in which arguments are presented is a genuine strategic decision. Scalia and Garner reject the common practice of leading with jurisdictional or procedural arguments (unless they are truly dispositive) and recommend leading with the strongest substantive argument. Judges read briefs with variable attention; the opening of the argument section is read most carefully, and the impression created there colours everything that follows.</p>
+          <p>Arguments should not be ordered by their logical priority in the abstract but by their persuasive strength in the specific case. The weakest argument should appear neither first nor last — it should be embedded between stronger arguments where it will do the least damage. The final argument should be strong: the last thing a judge reads is remembered. And the overall sequence should be structured so that each argument, even if not accepted, prepares the ground for the next — creating a cumulative impression that the weight of law and reason points consistently in one direction.</p>
+          <p>On the question of how many arguments to make: the authors are consistent and emphatic — fewer is almost always better. Three strong arguments, fully developed, are more persuasive than six arguments of varying strength. The additional arguments do not add — they dilute. Every weak argument in a brief signals to the court that the advocate cannot distinguish good arguments from bad ones, which undermines confidence in the good ones.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRIEF WRITING -->
+    <div id="brief2" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part II — The Written Brief</div>
+        <div class="p-title">Writing: The Craft of Persuasive Legal Prose</div>
+        <div class="p-desc">The sentence-level craft of legal writing — clarity, precision, economy, and the elimination of everything that makes judges work harder than they should to understand your argument.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 1</div>
+        <div class="rule-name">Write in Plain English — Jargon Obscures, It Does Not Impress</div>
+        <div class="rule-body">
+          <p>Scalia and Garner are among the most forceful critics of legal jargon in the literature, and their critique goes beyond aesthetics. Legal jargon — Latin phrases used where English would do, archaic legal terminology maintained by habit rather than necessity, bureaucratic constructions that add length while removing clarity — does not make a brief sound more authoritative. It makes it harder to read, slower to process, and more likely to irritate a judge who has forty more briefs to read before the end of the week.</p>
+          <p>The principle is direct: use the simplest word that accurately conveys the meaning. "Use" rather than "utilise." "Before" rather than "prior to." "Because" rather than "due to the fact that." "Now" rather than "at this point in time." These substitutions, multiplied across a brief, dramatically reduce reading friction without losing any precision — and precision, where it genuinely matters, should be stated in the clearest possible English rather than encoded in technical terminology that the reader must decode before they can evaluate.</p>
+          <p>The authors also address the specific failure mode of "legalese" in fact statements: the tendency to describe events in passive, bureaucratic constructions that strip them of human immediacy. "The plaintiff was caused to fall" is weaker, vaguer, and harder to read than "The plaintiff fell." Active voice, concrete subjects, and specific verbs are the tools of readable, persuasive writing in any context. Legal writing is no exception.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 2</div>
+        <div class="rule-name">Sentences: Short, Active, and Varied</div>
+        <div class="rule-body">
+          <p>The single most common writing failure in legal briefs — identified by Garner in multiple works and repeated here — is the sentence that has grown too long. Long sentences are not inherently wrong, but they require the reader to hold multiple grammatical threads simultaneously while also processing legal content. When the grammatical complexity of the sentence exceeds a certain threshold, the reader's ability to track the meaning collapses, and they must re-read. In a brief, re-reading is a signal of poor advocacy.</p>
+          <p>The recommended approach is to default to shorter sentences — particularly for propositions of central importance. The key claim, the critical factual finding, the essential legal rule — these should typically occupy their own sentence, stated simply and without qualification. Qualifications, exceptions, and supporting context belong in subsequent sentences. The main claim, given its own sentence, lands with proportionally greater force.</p>
+          <p>Variety of sentence length is equally important. A brief composed entirely of short sentences becomes choppy and exhausting; one composed entirely of long sentences becomes dense and impenetrable. The rhythm of good legal prose alternates: a complex analytical sentence followed by a short, punchy conclusion. A series of building qualifications resolved by a clear, crisp statement of the bottom line. This rhythm is not merely aesthetic — it is a tool for controlling emphasis and ensuring that the most important propositions receive the most prominent treatment.</p>
+          <div class="do-dont">
+            <div class="do-box"><strong>✓ Prefer</strong>Active voice. Subject acts. "The defendant refused." Short sentences for key propositions. Concrete, specific verbs. Plain English equivalents of legal terms wherever possible.</div>
+            <div class="dont-box"><strong>✗ Avoid</strong>Passive constructions. "It was determined by the court that..." Sentences exceeding 40 words without structural clarity. Nominalisation: "make a determination" for "determine." Legalese that obscures rather than specifies.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 3</div>
+        <div class="rule-name">Paragraphs: One Idea, Clear Topic Sentence, Logical Progression</div>
+        <div class="rule-body">
+          <p>Each paragraph in a brief should develop a single idea, announced in its opening sentence and supported by everything that follows. The topic sentence is not merely an organisational convenience — it is the argument in miniature, and a judge who reads only the topic sentences of a well-constructed argument should be able to follow the entire logical progression. Paragraphs that wander across multiple ideas, or that bury the key proposition somewhere in the middle, force the judge to infer the structure rather than follow it.</p>
+          <p>Paragraph length deserves attention. Very long paragraphs — running to a full page or more — signal that the writer has not yet identified the single idea the paragraph is developing. Very short paragraphs — one or two sentences — can be effective for emphasis but, used repeatedly, fragment the argument and prevent the sustained analytical development that complex legal arguments require. A good working default is four to eight sentences per paragraph, with the length varying in proportion to the complexity of the idea being developed.</p>
+          <p>Transitions between paragraphs — the words and phrases that connect one idea to the next — are among the most revealing signals of the quality of legal analysis. If you cannot write a natural transition between two consecutive paragraphs, that is a strong signal that the logical connection between the ideas is unclear — and if the connection is unclear to you, it will be invisible to the reader. Forced transitions ("Moreover," "Furthermore," "Additionally") that could be placed anywhere are the worst variety — they create the appearance of logical connection without its substance.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 4</div>
+        <div class="rule-name">Eliminate Every Unnecessary Word</div>
+        <div class="rule-body">
+          <p>Garner has written extensively on the specific redundancies that infest legal writing, and the brief treatment in this book is equally brisk. The principle is absolute: every word that does not do work should be removed. This is not a counsel of brevity for its own sake — it is recognition that every unnecessary word is a tax on the reader's attention, and that the accumulated weight of unnecessary words gradually degrades the quality of the reading experience until the judge begins to skim.</p>
+          <p>Common categories of surplus verbiage the authors identify: throat-clearing introductions ("It is well established that...," "As the court below correctly noted..."); redundant doublets inherited from legal tradition ("null and void," "each and every," "terms and conditions" — pick one); the phrase "the fact that" (almost always replaceable by a single word — "because," "although," "when"); nominalised verbs ("make an argument" for "argue," "conduct an investigation" for "investigate"); and excessive hedging ("it would appear that," "it seems that," "arguably") which weakens propositions that should be stated confidently.</p>
+          <p>The practical discipline Garner recommends is to read every sentence of the finished draft asking: what would be lost if this word, phrase, or sentence were removed? If the answer is "nothing," remove it. If the answer is "a slight nuance that adds something but not much," usually remove it. Legal argument is not literature — there is no value in beautiful redundancy, and there is real cost in every word that makes the judge's task marginally harder.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 5</div>
+        <div class="rule-name">Formatting: Use White Space, Headers, and Lists to Aid Comprehension</div>
+        <div class="rule-body">
+          <p>The visual presentation of a brief — the density of text on the page, the use of headers and sub-headers, the treatment of lists and enumerations — affects how easily a judge can navigate and extract its content. A page solid with undifferentiated text invites skimming; a page that uses white space, clear headers, and appropriately formatted lists invites careful reading, because the structure of the argument is made visible at a glance.</p>
+          <p>Scalia and Garner recommend using sub-headers generously to divide long arguments into clearly labelled segments; using numbered or bulleted lists for genuinely enumerable items (three or more parallel items that would be harder to follow if integrated into prose); and avoiding the visual clutter of excessive footnoting — particularly the practice of putting substantive argument in footnotes, which forces the reader to interrupt the main thread to follow a secondary one.</p>
+          <p>On fonts and formatting: follow the court's rules scrupulously, and within those rules, choose the most readable option. Serif fonts (the authors favour Century for court submissions, as does much of appellate practice) are generally more readable than sans-serif for extended prose. Adequate margins and line spacing are not luxuries — they are contributions to the readability of the document. A brief that is physically difficult to read is a brief that works against itself.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Writing · 6</div>
+        <div class="rule-name">Revise Ruthlessly — The First Draft Is Never the Brief</div>
+        <div class="rule-body">
+          <p>One of the book's most consistent themes is that good legal writing is rewriting. The first draft of a brief is a thinking document — it externalises the arguments so that they can be examined, tested, reorganised, and refined. It is rarely close to the document that should be filed. The advocate who sends the first draft to court has not yet done the real work of brief-writing.</p>
+          <p>The authors recommend a specific revision sequence: first, revise for structure and logic (does the argument flow? are the major points in the right order? does the evidence fully support each claim?); then, revise for clarity (is every sentence immediately understandable? is every technical term necessary and defined?); then, revise for economy (cut every unnecessary word); and finally, revise for style (is the prose readable? does it have appropriate rhythm and variety?). Attempting to do all of these simultaneously in a single revision pass produces briefs that are improved on some dimensions at the expense of others.</p>
+          <p>Reading the brief aloud is among the most effective revision tools available — far more revealing than silent reading, because the ear catches rhythmic awkwardness, unclear syntax, and excessive length that the eye passes over. A sentence that you cannot read aloud smoothly is a sentence that a tired judge cannot follow silently. The reading-aloud test is not optional for serious brief writers.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRIEF ARGUMENT -->
+    <div id="brief3" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part II — The Written Brief</div>
+        <div class="p-title">Argument: The Substance of Legal Persuasion</div>
+        <div class="p-desc">How to use authority, handle adverse precedent, construct legal reasoning, use policy arguments effectively, and deal with the full range of challenges that legal argument presents.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 1</div>
+        <div class="rule-name">Use Authority Correctly — Cite What the Court Will Respect</div>
+        <div class="rule-body">
+          <p>Not all legal authority is equal, and Scalia and Garner are precise about the hierarchy. Binding authority — precedent from the very court you are arguing before, and from courts above it — must be addressed. Persuasive authority — decisions from other jurisdictions, secondary sources, treatises — can supplement binding authority but cannot replace it, and the attempt to lead with persuasive authority when binding authority exists (or conspicuously does not support you) signals a weak case.</p>
+          <p>On the use of Supreme Court precedent specifically: always look for the most on-point holding, and quote it with precision. Do not paraphrase where the exact language of the opinion is what you need — courts are rightly sceptical of paraphrases that slightly reframe the holding, and the discrepancy will be noticed. At the same time, do not quote at such length that the quotation overwhelms the analysis — the purpose of quotation is to establish the authority for a proposition that you then apply to the facts of your case. The analysis is the advocacy; the quotation is the support.</p>
+          <p>The authors are particularly pointed about string citations — the practice of listing multiple authorities for a single proposition without discussing any of them. A string of five citations creates the impression of overwhelming authority; a court that actually checks them will often find that most are only marginally relevant. One or two fully explained authorities are almost always more persuasive than five cited without analysis.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 2</div>
+        <div class="rule-name">Confront Adverse Authority — Do Not Hide From It</div>
+        <div class="rule-body">
+          <p>The treatment of adverse authority is one of the clearest tests of an advocate's credibility and competence. Every significant case will have authority that points against the desired outcome — cases that seem to require the opposite result, statutes that appear to support the other side, factual findings from below that are difficult to square with the argument being made. The instinct is to minimise, bury, or ignore these. The correct response, Scalia and Garner insist, is the opposite.</p>
+          <p>Adverse authority should be identified, quoted accurately, and distinguished specifically and honestly. The distinction must be a real one — a genuine difference in legally material facts, a different procedural posture, a different statutory framework — not a sophistic reframing that the court will see through immediately. If the adverse authority cannot be genuinely distinguished, it must be acknowledged as a conflict and argued against directly, with a clear explanation of why the court should decline to follow it. This is hard. It is also the only credible approach.</p>
+          <p>The alternative — hoping the court doesn't notice — virtually never succeeds before experienced appellate judges who have read the opposition's brief, which will certainly have cited the authority you omitted. The advocate who did not address a major adverse case is now in the worst possible position: they have both failed to deal with the authority and demonstrated that they were aware of it (since the other side found it). The resulting damage to credibility extends to every other argument in the brief.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 3</div>
+        <div class="rule-name">Statutory and Textual Arguments: Start With the Text</div>
+        <div class="rule-body">
+          <p>Scalia's textualism shapes this section profoundly. When the argument involves statutory interpretation, constitutional language, or any other text, the analysis must begin with the text itself — its ordinary meaning, its grammatical structure, its relationship to surrounding provisions, and its consistency with the document as a whole. Legislative history, committee reports, floor statements, and other extrinsic evidence of legislative intent occupy a subordinate and contested role in Scalia's interpretive framework, and he and Garner are clear that leading with legislative history before exhausting the textual analysis is a strategic mistake before many judges.</p>
+          <p>The practical advice: quote the relevant statutory text early and completely. Do not paraphrase statutory language, because the paraphrase will always differ slightly from the text in ways that matter. Show how the ordinary meaning of the words, read in context, produces the result you advocate. Only then — if the text alone is insufficient or ambiguous — address the interpretive aids that might supplement the textual analysis, and even then, address the most authoritative ones (the structure of the statute, the relationship to related provisions) before the least authoritative ones (isolated committee statements, sponsor testimony).</p>
+          <p>Scalia and Garner also address canons of construction — the traditional rules for interpreting ambiguous texts — at length. These tools (expressio unius, ejusdem generis, the rule against superfluity, and others) are part of the shared interpretive vocabulary of courts and have genuine persuasive force when correctly applied. They are also frequently misapplied, and the brief that invokes a canon in a situation where it clearly does not apply loses credibility on the point.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 4</div>
+        <div class="rule-name">Policy Arguments: Use Sparingly and Secondarily</div>
+        <div class="rule-body">
+          <p>Policy arguments — the consequences of adopting a legal rule, the practical effects on affected parties, the broader social implications of a decision — have a place in legal advocacy, but a carefully circumscribed one. Courts are not legislatures; they are not primarily in the business of optimising social outcomes, and an argument that is primarily about the wisdom of a legal rule rather than its correct derivation from existing authorities invites the response that the court is not the appropriate forum for that argument.</p>
+          <p>The correct use of policy arguments is supplementary and confirmatory: having established the correct legal result from authority and text, the advocate can reinforce that result by showing that it also produces sensible practical outcomes. "Not only does the text, structure, and precedent support this reading — it is also the reading that produces workable, just results in practice" is a strong closing to a legal argument. "The other side's reading would produce absurd results" is a legitimate move when the absurdity is real and demonstrable, because courts generally prefer interpretations that do not lead to obvious practical dysfunction.</p>
+          <p>The authors warn specifically against two failures: the policy argument that substitutes for legal analysis (signalling that the legal case is weak), and the policy argument that is based on speculation about outcomes rather than established facts or common sense. Both undermine rather than support the legal argument they are supposed to supplement.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 5</div>
+        <div class="rule-name">Analogical Reasoning: Draw Comparisons That Clarify, Not Distract</div>
+        <div class="rule-body">
+          <p>Analogical reasoning — arguing that the present case is like a precedent case and should be decided the same way, or unlike it and should be distinguished — is the fundamental mode of common law legal argument. Scalia and Garner treat it with the care it deserves. The effective analogy is one where the similarities between cases are legally material — where the facts that are the same are the facts that are relevant to the legal principle being applied — and where the differences are legally immaterial.</p>
+          <p>The ineffective analogy imports the conclusion it is supposed to support: the "this is just like X" move that collapses on examination because the relevant similarity is in the desired outcome rather than in the legally operative facts. Courts see through these analogies instantly, and they damage credibility without advancing the argument. The strongest analogical arguments are those where the resemblance between cases is specific, concrete, and focused on precisely the legal element in dispute.</p>
+          <p>Disanalogy — distinguishing adverse precedent — is the mirror image and is equally demanding. The distinction must be legally operative: the difference between the cases must be a difference that the legal rule in question would recognise as material. A difference in the parties' names, the jurisdiction, the time period, or any other legally irrelevant factor is not a distinction — it is an evasion, and it will be recognised as such.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Argument · 6</div>
+        <div class="rule-name">The Reply Brief: Be Surgical, Not Comprehensive</div>
+        <div class="rule-body">
+          <p>The reply brief is not a second opening brief — it is a surgical instrument for addressing the specific arguments the other side has made that require a direct response. Scalia and Garner are clear that the common approach of restating the entire opening argument in the reply brief wastes the opportunity the reply provides. Judges have read both briefs; they do not need a third repetition of the appellant's position. What they need — and what the reply should provide — is specific, direct engagement with the opposition's best arguments.</p>
+          <p>This means identifying the two or three points in the opposition's brief that most directly challenge your position and addressing them precisely and completely. It also means resisting the temptation to address every point the other side made — doing so signals that you cannot distinguish strong arguments from weak ones, and wastes space on points that the court has already evaluated and found unpersuasive. The reply brief that is focused, confident, and brief — in many cases significantly shorter than the page limit — is almost always more effective than one that attempts to be comprehensive.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORAL PREP -->
+    <div id="oral1" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part III — Oral Argument</div>
+        <div class="p-title">Preparation: How to Get Ready for the Bench</div>
+        <div class="p-desc">Oral argument before an appellate court is unlike any other professional performance. The preparation it requires is total, the margin for error is small, and the difference between the prepared and the unprepared is immediately and dramatically visible.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Oral Prep · 1</div>
+        <div class="rule-name">Know the Record Completely — There Is No Excuse for Ignorance</div>
+        <div class="rule-body">
+          <p>The record — the trial court proceedings, the evidence admitted, the findings made, the rulings challenged — is the factual foundation of the entire appeal. A judge who asks about a specific piece of evidence, a particular witness's testimony, or the exact procedural posture of a ruling expects the advocate to know the answer immediately and precisely. "I believe that's in the record at page..." is not acceptable. Neither is "I'd have to check..." The advocate who does not know the record is not prepared for oral argument.</p>
+          <p>Scalia and Garner recommend a systematic approach to record mastery: an indexed summary of the key record references, organised by subject matter and cross-referenced to the points being argued, that can be navigated rapidly during argument when a specific reference is needed. This tool is not optional for complex appeals — it is the difference between the advocate who can immediately confirm or deny a judge's characterisation of the evidence and the one who cannot, and that difference is visible and consequential.</p>
+          <p>Record mastery also supports the most important quality in oral argument: confidence. The advocate who knows the record completely can engage with questions about the facts without hesitation, without hedging, and without the visible anxiety that signals unpreparedness. That confidence itself — the quality of someone who has nothing to hide because they know exactly what is there — is persuasive in a way that is difficult to manufacture and impossible to fake.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Oral Prep · 2</div>
+        <div class="rule-name">Know the Law — Every Relevant Case, Forward and Backward</div>
+        <div class="rule-body">
+          <p>Oral argument tests legal knowledge in real time, under pressure, before an audience that often knows the relevant cases as well as or better than the advocate. The judge who asks "How do you distinguish the holding in X?" expects a specific, immediate, accurate answer — not a request to return to the issue in a letter, not a hedge about which part of the holding is being referenced, and certainly not a blank look that reveals the case has not been read recently.</p>
+          <p>The authors recommend that preparation include a thorough re-reading of every significant case cited in both briefs — not just your own characterisation of those cases, but the actual opinions, because the bench may quote language you have not specifically addressed. Particularly important is the thorough analysis of the cases the other side relies on most heavily: you must know those cases well enough to explain why they do not control, with specific reference to their facts and holdings.</p>
+          <p>Beyond individual cases, the advocate should understand the doctrinal landscape — the pattern of the relevant line of authority, the tensions within it, the direction it appears to be moving. A judge who asks "Where does this argument lead in light of the last five years of this court's jurisprudence on the question?" is asking a question that can only be answered by someone who has thought about the area as a whole, not just the specific cases most directly on point.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Oral Prep · 3</div>
+        <div class="rule-name">Prepare Your Opening — But Do Not Script the Rest</div>
+        <div class="rule-body">
+          <p>The first sixty seconds of oral argument are the only portion that can be scripted with any confidence of delivery — because after that, questions from the bench will almost certainly redirect the argument. The opening should be prepared with great care: it must introduce the advocate, frame the issue, state the requested relief, and establish the central theme of the argument in a form that is memorable and immediately comprehensible. It must be practised until it can be delivered naturally and without notes, because reading from a script in the first moments of argument creates an impression of unpreparedness that is hard to overcome.</p>
+          <p>Beyond the opening, however, scripting is dangerous. An advocate who has memorised their argument and is then interrupted by questions faces the choice of either abandoning the script (losing their place and confidence) or pressing through the questions to reach their prepared material (appearing unresponsive and annoying the bench). Neither is acceptable. The effective oral advocate has a thorough command of the substance — every argument, every case, every factual reference — organised not as a script but as a flexible framework that can be entered and exited at any point in response to the court's questions.</p>
+          <p>Scalia and Garner recommend preparing a list of the two or three points that must be made during the argument, in order of priority, and ensuring that those points are made regardless of how the questioning develops. Everything else is flexible. This approach — a firm substantive core within a completely flexible structure — is the model for effective oral advocacy.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Oral Prep · 4</div>
+        <div class="rule-name">Moot Court: Practise Under Fire Before the Real Fire</div>
+        <div class="rule-body">
+          <p>There is no substitute for moot court — a practise argument before colleagues who ask hard questions, push weak answers, and simulate the adversarial pressure of a real bench. Scalia and Garner are emphatic: no advocate, however experienced, should appear in a significant appellate argument without having first argued the case under rigorous mock-bench conditions. The first time you encounter a hard question should not be in the actual argument.</p>
+          <p>The value of moot court is not that it will predict the actual questions (it won't, entirely) but that it forces the advocate to defend every aspect of their position under real pressure, reveals the weaknesses they have not yet addressed, and builds the reflexes needed to engage with questions quickly, directly, and confidently. An advocate who has been through a rigorous moot court will have encountered at least some version of most of the hard questions the bench will ask, and will have developed responses that are both accurate and articulable under pressure.</p>
+          <p>The moot court panel should be as formidable as possible — ideally including at least one person who is actively hostile to your position and will ask the most difficult questions imaginable. The comfortable moot court, where everyone helps you refine arguments you already know are strong, is significantly less valuable than the uncomfortable one that forces you to defend positions you thought were secure.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Oral Prep · 5</div>
+        <div class="rule-name">Know Your Worst Arguments — And Be Prepared to Abandon Them</div>
+        <div class="rule-body">
+          <p>Before the argument, the advocate should assess every position they intend to defend and honestly evaluate which ones are weakest. This is not to say they should abandon good arguments that are difficult — difficulty is not weakness. But the argument that is genuinely indefensible at the limits, that can be pushed by a determined questioner into absurdity, should either be reformulated or dropped before the argument, not during it.</p>
+          <p>The specific preparation recommended is to imagine the worst possible hypothetical question for each argument and to formulate the best possible answer. If there is no good answer — if the hypothetical exposes a genuine flaw in the position — the position needs to be revised. If there is a good answer, the advocate now has it ready when the question comes. This process of hypothesis testing, done thoroughly, converts anxiety about hard questions into confidence: you know where the hard questions are, you know your answers, and you can engage with the bench's most challenging moves without the defensive hesitation that signals unpreparedness.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORAL DELIVERY -->
+    <div id="oral2" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part III — Oral Argument</div>
+        <div class="p-title">Delivery: The Performance of Legal Advocacy</div>
+        <div class="p-desc">How you stand, how you speak, how you use your time, how you project confidence without arrogance — the physical and rhetorical craft of oral advocacy before a live bench.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Delivery · 1</div>
+        <div class="rule-name">Project Confidence Without Arrogance</div>
+        <div class="rule-body">
+          <p>The tone of oral argument should be that of a professional who knows their case completely and is there to help the court understand it — not to lecture, not to perform, not to advocate with the theatrical urgency of a jury summation. Appellate judges do not need to be persuaded that the case matters; they know it matters. They need to be given the clearest possible account of why the law requires the result you are seeking, from an advocate who visibly knows what they are talking about.</p>
+          <p>Confidence — the kind that comes from thorough preparation and genuine mastery of the material — is persuasive in a way that performed confidence is not. The advocate who speaks at a measured pace, makes direct eye contact with the questioning judge, pauses before answering difficult questions rather than blurting the first response, and maintains composure when challenged projects the quality of someone who has nothing to hide. The advocate who speaks too quickly (often a sign of nervousness), avoids eye contact, or becomes defensive when challenged projects the opposite.</p>
+          <p>Arrogance — treating questions as interruptions, visibly dismissing the concerns behind a question, or responding to the bench with condescension — is the advocate's most self-destructive possible mode. Scalia and Garner note, with characteristic directness, that judges are not impressed by lawyers who think they are smarter than the bench. They are impressed by lawyers who know their case, answer questions directly, and treat the judicial process with the respect it deserves.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Delivery · 2</div>
+        <div class="rule-name">Speak to the Judges, Not to the Lectern</div>
+        <div class="rule-body">
+          <p>Reading from notes during oral argument — beyond the opening sentences — is almost always a mistake. Notes become a crutch that draws attention downward rather than toward the bench, breaks eye contact at exactly the moments when connection with the questioning judge is most important, and creates the impression of an advocate who is not confident enough in their case to discuss it naturally. The judge who is watching an advocate read their argument is watching someone who is not really having a conversation with them — and oral argument is, at its best, a sophisticated legal conversation.</p>
+          <p>The alternative is a thorough command of the material — arguments, cases, record citations — organised mentally in a flexible framework that permits natural discussion. Eye contact with the questioning judge should be maintained throughout the answer to their question; shifting attention to other judges on the panel is appropriate when making general points, but the questioner should feel that their specific question has received the full attention of the advocate while it is being answered.</p>
+          <p>Physical composure matters more than many advocates realise. Stand still; do not rock, pace, or fidget. Keep your hands either at your sides or resting on the lectern — not in your pockets, not gesturing randomly. Speak at a pace that can be followed comfortably (which is typically slower than feels natural under the pressure of argument). These physical disciplines create the impression of calm authority that complements and reinforces the substantive qualities of the argument.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Delivery · 3</div>
+        <div class="rule-name">Manage Your Time — Guard the Points That Must Be Made</div>
+        <div class="rule-body">
+          <p>Time management is one of the most consistently underestimated challenges of oral argument. The advocate who plans a twenty-minute argument and is interrupted by questions from the first moment will find that the argument they prepared is substantially longer than the time available, and that the choice of what to sacrifice in real time is among the most difficult decisions in advocacy. Without prior planning, the sacrifice is usually random — the arguments cut are those that happened to come last, not those that are actually weakest.</p>
+          <p>The authors recommend a specific approach: identify the two or three points that must be made regardless of how the argument unfolds, and treat those as the non-negotiable core. Everything else — additional supporting arguments, extended development of secondary points, policy reinforcement — is available to be shortened or omitted as time requires. An advocate who reaches the end of their argument having made every essential point, even if the argument was shorter than expected, has succeeded. One who ran out of time before reaching the key points has failed in the most basic sense.</p>
+          <p>The management of questions also requires time consciousness. A single extended question-and-answer exchange can consume several minutes of argument time. The advocate must be aware of this and must periodically assess whether the exchange is generating progress toward the essential points or moving away from them. If moving away, it is appropriate to signal a desire to return to the main argument: "If I may, Your Honour, I'd like to address that point more fully after covering the central issue of..." Done smoothly, this is effective; done abruptly, it is rude.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Delivery · 4</div>
+        <div class="rule-name">Rebuttal: Make It Count or Waive It</div>
+        <div class="rule-body">
+          <p>Rebuttal — the brief period available to the appellant after the appellee's argument — is one of the most frequently misused opportunities in appellate practice. The typical misuse: the advocate returns to the lectern and raises new points, or restates their opening arguments, or responds to minor peripheral points in the opposition's argument, rather than addressing the one or two most significant challenges that the appellee raised.</p>
+          <p>The correct use of rebuttal is surgical: identify, during the appellee's argument, the one or two points that were most damaging or most left unaddressed, and address them directly and precisely in rebuttal. Rebuttal should typically be short — two or three minutes at most — because a long rebuttal creates the impression that there is much to rebut, which is itself damaging. A short, precise, confident rebuttal that directly contradicts the appellee's strongest point and ends crisply is far more effective than an extended recapitulation.</p>
+          <p>Scalia and Garner make a point that many advocates find counterintuitive: it is sometimes better to waive rebuttal than to deliver a weak one. If the appellee's argument raised nothing that was not already addressed in the opening argument, and if nothing new or damaging was introduced, there is no shame in declining rebuttal. The advocate who rises to rebut and then says nothing of substance has wasted the court's time and ended the argument on a weak note.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORAL QUESTIONS -->
+    <div id="oral3" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Part III — Oral Argument</div>
+        <div class="p-title">Questions: The Heart of Appellate Oral Argument</div>
+        <div class="p-desc">Questions from the bench are not interruptions — they are the argument. How you handle them determines the outcome. Scalia and Garner's most specific and most practically important guidance covers this territory in greatest depth.</div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 1</div>
+        <div class="rule-name">Welcome Questions — They Are Opportunities, Not Obstacles</div>
+        <div class="rule-body">
+          <p>The psychological reorientation that Scalia and Garner most urgently recommend is the transformation of the advocate's relationship to judicial questions. Most advocates experience questions as interruptions — disruptions of the carefully prepared argument that must be managed and disposed of before the real argument can resume. This is exactly wrong. Questions from the bench are the argument. They are the points on which the judges are uncertain, the issues that are genuinely influencing their thinking, the concerns that, if left unaddressed, will determine the outcome.</p>
+          <p>An oral argument in which the bench asks no questions is not a sign that the argument was so clear that no clarification was needed — it is a warning sign that the judges have already made up their minds (possibly against you) and see no point in engaging. A bench that asks many, hard questions is a bench that is actively wrestling with the case — which means they are persuadable. The advocate who welcomes questions, who responds to them with evident engagement rather than visible irritation, and who treats each question as an opportunity to address the court's actual concerns is the advocate who is having the real argument.</p>
+          <p>Scalia, who was himself among the most aggressive questioners in the history of Supreme Court oral argument, was explicit about this: the questions he asked most aggressively were precisely the questions he most needed answered — the ones where his analysis had not yet produced a firm conclusion. An advocate who helped him work through those questions constructively was an advocate who was actually influencing the outcome. One who evaded or resisted was simply making his eventual decision more difficult, not less.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 2</div>
+        <div class="rule-name">Answer Directly — Then Explain</div>
+        <div class="rule-body">
+          <p>The single most important rule of oral argument, stated more times and with more emphasis than any other in the book: answer the question directly. Not after a long preamble. Not after re-framing the question. Not by answering a different question. Answer the question that was asked, with the direct answer it calls for, as the first words out of your mouth — and then explain and qualify as needed.</p>
+          <p>Most questions that seem to require a complex answer actually call for a direct answer followed by explanation. "Yes, because..." or "No, but the reason that doesn't control here is..." are the structures of honest advocacy. "Well, that's a very good question, and I think we need to understand the background..." is evasion, and judges detect it immediately and with annoyance. The advocate who begins with the direct answer — even when the answer is uncomfortable — and then provides the full context demonstrates both honesty and command of the material. The evasive advocate demonstrates neither.</p>
+          <p>Questions that begin with "Would your rule require..." or "Under your position, would the court have to hold..." are hypotheticals testing the outer limits of the proposed rule. They deserve direct answers: "Yes, it would, and that result is defensible because..." or "No, the rule can be stated more narrowly..." Not "That's not this case" (which is an evasion) and not a lengthy recitation of the facts of the case at bar (which is a change of subject). The bench knows it's not this case — they are asking about the rule, and they deserve an answer about the rule.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 3</div>
+        <div class="rule-name">Categorise Questions — Understand What Is Really Being Asked</div>
+        <div class="rule-body">
+          <p>Scalia and Garner offer a taxonomy of judicial questions that experienced advocates learn to recognise and respond to appropriately. Questions seeking information (the judge does not know a fact or case and wants to) call for a direct, informative answer. Questions testing the rule (hypotheticals probing the limits of the position) call for direct engagement with the hypothetical. Questions expressing concern (the judge is worried about the implications of your position) call for an honest engagement with the concern — acknowledging its legitimacy and explaining why it does not alter the correct outcome. Questions designed to help (the judge is suggesting an argument or framing that might support your position) call for receptivity and, if the suggestion is sound, incorporation.</p>
+          <p>The most dangerous category of question is the one that seems hostile but is actually an invitation: the judge who poses a sharp hypothetical is often testing whether you can handle it — and an honest, direct, confident response to the hardest hypothetical is the most powerful advocacy an oral advocate can perform. Scalia himself has described moments when an advocate's crisp, honest answer to a hard hypothetical changed his preliminary assessment of the case. The response to the hypothetical was not just an answer — it was evidence of the quality of the entire legal position.</p>
+          <p>Questions that express a firmly settled contrary view — where the judge is not seeking information but signalling their conclusion — call for a different response. Do not spend precious argument time trying to convert a judge who has signalled a firm conclusion; acknowledge their position respectfully, briefly state your best counter-argument, and move on. The goal in that exchange is not to win that judge but to maintain your credibility and avoid conceding anything that could be used against you with the remainder of the bench.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 4</div>
+        <div class="rule-name">Never Argue With the Bench — Disagree Respectfully</div>
+        <div class="rule-body">
+          <p>Disagreement with a judge's characterisation of a precedent, a fact, or the implications of a legal rule is entirely appropriate and sometimes necessary. But the form of that disagreement matters enormously. "With respect, Your Honour, I believe the holding in X is somewhat different from that characterisation..." is advocacy. "No, that's not what X held" is rudeness, and it is remembered. The substance of the correction is the same; the form is completely different; and the form is what determines whether the correction succeeds or creates resentment.</p>
+          <p>Scalia and Garner are explicit that judges are not above making mistakes about the law, mischaracterising cases, or pressing the advocate based on a misunderstanding of the record. When this happens, the advocate must correct it — silently accepting an incorrect premise will produce a decision based on that incorrect premise. But the correction must be done with the respect owed to the office, and with the recognition that the judge may have access to information or reasoning that has not yet been articulated. "If the court's reading of X is correct, then I would agree — but I believe the case actually held..." is the form that permits the correction without the confrontation.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 5</div>
+        <div class="rule-name">Concede What Must Be Conceded — Freely and Specifically</div>
+        <div class="rule-body">
+          <p>The willingness to concede — clearly, specifically, and without apparent pain — is one of the most powerful signals of credibility in oral argument. The advocate who concedes the points that cannot honestly be defended, and does so freely rather than under compulsion, demonstrates that they are a reliable guide to the merits of the case — someone the court can trust. The advocate who refuses to concede anything, who defends every inch of their position regardless of its merits, signals the opposite: that they are advocates in the pejorative sense, incapable of distinguishing their strong positions from their weak ones.</p>
+          <p>Scalia describes the experience of watching an advocate concede a difficult point during argument and finding, counterintuitively, that it increased rather than decreased his confidence in the advocate's other positions. The concession functioned as evidence of honesty — and honesty about the weaknesses of a case makes the assertions about its strengths more credible. The advocate who will tell you when they are wrong can be trusted when they say they are right.</p>
+          <p>The practical corollary: prepare your concessions in advance. Identify the points that cannot honestly be defended and decide, before the argument, that you will concede them promptly if raised. This preparation prevents the worst outcome — the advocate who knows a point is indefensible but responds with visible discomfort and evasion rather than a clean concession, which is worse than either defending or conceding.</p>
+        </div>
+      </div>
+
+      <div class="rule-block">
+        <div class="rule-num">Questions · 6</div>
+        <div class="rule-name">Read the Bench — And Respond to What You See</div>
+        <div class="rule-body">
+          <p>Oral argument is a live, dynamic process, and the effective advocate adapts to what is actually happening in the room rather than executing a predetermined plan. This requires the ability to read the bench — to understand from the pattern and content of questions which judges are sympathetic, which are opposed, which are uncertain, and what specific concerns are driving their thinking. This reading, done in real time, should shape the emphasis and direction of the argument.</p>
+          <p>The judge who asks multiple questions about a specific point is signalling that the point is critical to their analysis — and the advocate who recognises this should give that point the extended treatment it deserves, even if it was scheduled to be handled briefly. The judge who asks no questions but visibly reacts to specific assertions (leaning forward, making notes, exchanging glances with colleagues) is signalling interest in those points. The entire bench that falls silent — with no questions forthcoming — may be signalling either that the argument is going well (no need to clarify) or that it is going badly (no point in engaging). Learning to distinguish these signals comes with experience, but attending to them at all is the beginning.</p>
+          <p>Scalia and Garner end this section with a principle that encapsulates the entire approach to oral advocacy: the argument is not a presentation, it is a conversation. The advocate who treats it as a conversation — who listens as carefully as they speak, who responds to what they hear, who is genuinely present with the bench rather than executing a script — is the advocate who is actually persuading. The one who is performing is just putting on a show.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#203860; margin-top:0;">From the Bench and the Brief</div>
+        <div class="section-title">Key Passages from Making Your Case</div>
+
+        <div class="quote-item"><div class="quote-text">"The brief must be written for the judge, not for the client, not for the senior partner, and not for yourself."</div><div class="quote-ref">Part II · The Written Brief</div></div>
+        <div class="quote-item"><div class="quote-text">"The statement of facts is not a neutral recitation — it is the first and often the most powerful argument in the brief."</div><div class="quote-ref">Part II · Statement of Facts</div></div>
+        <div class="quote-item"><div class="quote-text">"Credibility is the lawyer's most valuable asset. It is years in the making and seconds in the losing."</div><div class="quote-ref">Part I · General Principles</div></div>
+        <div class="quote-item"><div class="quote-text">"If you cannot state your case in a single clear sentence, you have not yet understood it well enough to argue it."</div><div class="quote-ref">Part I · General Principles</div></div>
+        <div class="quote-item"><div class="quote-text">"Never assume the court will not notice the adverse authority. They will. And they will notice that you did not address it."</div><div class="quote-ref">Part II · Adverse Authority</div></div>
+        <div class="quote-item"><div class="quote-text">"The question presented is not just the first thing the judge reads — it is the frame through which everything else is read. Frame it to win."</div><div class="quote-ref">Part II · Question Presented</div></div>
+        <div class="quote-item"><div class="quote-text">"Point headings should argue, not merely describe. A table of contents that summarises your argument is itself a form of advocacy."</div><div class="quote-ref">Part II · Point Headings</div></div>
+        <div class="quote-item"><div class="quote-text">"Every word that does not earn its place weakens the words that have earned theirs."</div><div class="quote-ref">Part II · Style</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not begin your argument by thanking the court for the opportunity to appear. It is their job to hear you. Begin instead with your best argument."</div><div class="quote-ref">Part III · Oral Argument</div></div>
+        <div class="quote-item"><div class="quote-text">"A question from the bench is not an interruption of your argument. It is your argument — the real one, the one the court actually needs to decide."</div><div class="quote-ref">Part III · Handling Questions</div></div>
+        <div class="quote-item"><div class="quote-text">"Answer the question asked. Not a related question. Not a better question. The question asked. Then explain."</div><div class="quote-ref">Part III · Handling Questions</div></div>
+        <div class="quote-item"><div class="quote-text">"The advocate who will concede what must be conceded is the advocate the court can trust. That trust is worth more than the conceded point."</div><div class="quote-ref">Part III · Concessions</div></div>
+        <div class="quote-item"><div class="quote-text">"Never say 'I think' or 'I believe' when stating a proposition of law. Say what the law is. You are there to inform the court, not to share your opinions."</div><div class="quote-ref">Part III · Oral Argument Style</div></div>
+        <div class="quote-item"><div class="quote-text">"The advocate who reads from notes during oral argument has told the court that they do not know their own case well enough to discuss it."</div><div class="quote-ref">Part III · Delivery</div></div>
+        <div class="quote-item"><div class="quote-text">"Moot your argument. The first time you face a hard question should not be before the real court."</div><div class="quote-ref">Part III · Preparation</div></div>
+        <div class="quote-item"><div class="quote-text">"The question is not whether you can win a debate with the judge who disagrees. It is whether you can maintain your credibility with the judges who are still persuadable."</div><div class="quote-ref">Part III · Hostile Questions</div></div>
+        <div class="quote-item"><div class="quote-text">"Policy arguments confirm what law requires; they do not substitute for it. Lead with the law."</div><div class="quote-ref">Part II · Policy Arguments</div></div>
+        <div class="quote-item"><div class="quote-text">"Do not make your three best arguments and your four weakest ones. Make only your three best. The weakest arguments undermine the strongest."</div><div class="quote-ref">Part I · Selection of Arguments</div></div>
+        <div class="quote-item"><div class="quote-text">"Know the limits of your position before you take the lectern. The bench will find those limits, and you must already be there."</div><div class="quote-ref">Part III · Hypotheticals</div></div>
+        <div class="quote-item"><div class="quote-text">"The brief that is a pleasure to read has already begun to persuade before the argument section begins. Make it a pleasure to read."</div><div class="quote-ref">Part II · Style</div></div>
+        <div class="quote-item"><div class="quote-text">"Rebuttal exists to address what the other side said that most threatens your position. It does not exist to repeat what you said in your opening argument."</div><div class="quote-ref">Part III · Rebuttal</div></div>
+        <div class="quote-item"><div class="quote-text">"The advocate's job is to make the judge's job easier — to give them the clearest possible basis for the ruling they should reach. Every decision about the brief and the argument should serve that purpose."</div><div class="quote-ref">Part I · General Principles</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"Making Your Case is not a theoretical treatise on legal advocacy — it is a manual written by people who know, from the inside, what moves judges and what does not. Every principle in it is the distillation of something real: a brief that persuaded, an argument that succeeded, a moment in which the advocate's preparation and honesty made the difference. Read it, and then do the work."</p>
+  </div>
+
+</div>
+
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const TRIAL_TECHNIQUES_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --dark:#140e08; --dark2:#1e1610;
+    --amber:#7a4a0a; --amber-light:#a06418; --amber-bright:#d08830;
+    --gold:#c09020; --gold-light:#daa830;
+    --cream:#f4eed8; --cream-dark:#e4d8c0;
+    --border-c:#b09060; --red:#6a1010; --blue:#1a2858;
+    --muted:#1c1408; --text:#140e08;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body,.wrap{font-family:'Cormorant Garamond',serif;background:transparent;color:var(--text);}
+  .wrap{max-width:900px;margin:0 auto;padding:0 0 3rem;}
+
+  .hero{background:var(--dark);color:var(--cream);padding:3.5rem 3rem 3rem;text-align:center;border-bottom:4px double var(--amber-light);position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(122,74,10,0.08) 29px);pointer-events:none;}
+  .hero-ornament{font-size:20px;color:var(--amber-bright);letter-spacing:14px;margin-bottom:1rem;opacity:0.75;}
+  .hero-title{font-family:'IM Fell English',serif;font-size:42px;line-height:1.1;color:var(--amber-bright);letter-spacing:1px;text-shadow:0 2px 10px rgba(0,0,0,0.7);}
+  .hero-subtitle{font-family:'IM Fell English',serif;font-style:italic;font-size:16px;color:#907040;margin-top:0.5rem;}
+  .hero-author{margin-top:1rem;font-size:14px;color:#706030;letter-spacing:3px;text-transform:uppercase;}
+  .hero-year{display:inline-block;margin-top:0.3rem;font-size:12px;color:#504820;letter-spacing:2px;}
+
+  .stat-strip{display:flex;justify-content:center;gap:2rem;background:var(--dark);padding:1.2rem 2rem;border-bottom:1px solid var(--amber);flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat .num{font-family:'IM Fell English',serif;font-size:32px;color:var(--amber-bright);line-height:1;}
+  .stat .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#706030;margin-top:0.2rem;}
+
+  .tab-bar{display:flex;flex-wrap:wrap;background:#0c0a04;border-bottom:2px solid var(--amber);position:sticky;top:0;z-index:100;}
+  .tab{padding:0.65rem 0.78rem;font-family:'IM Fell English',serif;font-size:11.5px;color:#706030;cursor:pointer;border-right:1px solid #1e1610;transition:all 0.2s;white-space:nowrap;}
+  .tab:hover{color:var(--amber-bright);background:#1e1610;}
+  .tab.active{color:var(--amber-bright);background:#221a08;border-bottom:2px solid var(--amber-bright);}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .content-area{padding:0 2rem 2rem;background:var(--cream);border:1px solid var(--border-c);border-top:none;}
+
+  .intro-block{padding:2rem 0 1.5rem;border-bottom:1px solid var(--border-c);margin-bottom:1.8rem;}
+  .intro-block p{font-size:17px;line-height:1.85;color:var(--muted);font-style:italic;text-align:center;}
+
+  .section-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--amber);margin-bottom:0.3rem;margin-top:1.8rem;}
+  .section-title{font-family:'IM Fell English',serif;font-size:22px;color:var(--dark);border-bottom:1px solid var(--border-c);padding-bottom:0.4rem;margin-bottom:1.2rem;}
+
+  .concept-block{margin-bottom:1.8rem;padding:1rem 1.3rem;border-left:4px solid var(--amber-light);background:rgba(122,74,10,0.04);}
+  .concept-num{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:0.1rem;}
+  .concept-name{font-weight:600;font-size:17px;color:var(--red);margin-bottom:0.3rem;}
+  .concept-body{font-size:15.5px;line-height:1.78;color:#140e08;}
+  .concept-body p{margin-bottom:0.7rem;}
+  .concept-body p:last-child{margin-bottom:0;}
+
+  .rule-box{background:var(--dark);color:var(--cream);padding:1.1rem 1.4rem;margin:0.9rem 0 1.2rem;border-left:5px solid var(--gold);}
+  .rule-box .r-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.35rem;}
+  .rule-box p{font-size:15px;line-height:1.7;color:var(--cream);}
+
+  .part-banner{background:var(--dark);color:var(--cream);padding:1rem 1.5rem;margin:2rem -2rem 1.8rem;border-top:2px solid var(--amber);border-bottom:2px solid var(--amber);}
+  .part-banner .p-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--amber-bright);margin-bottom:0.2rem;}
+  .part-banner .p-title{font-family:'IM Fell English',serif;font-size:19px;color:var(--cream);}
+  .part-banner .p-desc{font-size:13px;color:#907040;margin-top:0.3rem;font-style:italic;}
+
+  .theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:0.8rem;margin-bottom:1.5rem;}
+  .theme-card{background:var(--dark);border:1px solid var(--amber);padding:1rem;border-radius:2px;}
+  .theme-card .t-name{font-family:'IM Fell English',serif;font-size:14px;color:var(--amber-bright);margin-bottom:0.25rem;}
+  .theme-card .t-desc{font-size:12.5px;color:#907040;line-height:1.45;}
+
+  .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:0.8rem 0 1.2rem;}
+  .do-box,.dont-box{padding:0.85rem 1rem;font-size:14px;line-height:1.6;}
+  .do-box{background:rgba(26,106,50,0.07);border-left:4px solid #2a8a4a;color:#0e2818;}
+  .dont-box{background:rgba(106,16,16,0.07);border-left:4px solid var(--red);color:#280e0e;}
+  .do-box strong,.dont-box strong{display:block;font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.35rem;}
+  .do-box strong{color:#2a8a4a;}
+  .dont-box strong{color:var(--red);}
+
+  .example-box{background:rgba(26,40,96,0.05);border:1px solid #a090b0;padding:0.85rem 1.1rem;margin:0.8rem 0 1.1rem;border-radius:2px;}
+  .example-box .ex-label{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#4050a0;margin-bottom:0.3rem;}
+  .example-box p{font-size:14.5px;line-height:1.65;color:var(--muted);font-style:italic;}
+
+  .step-list{list-style:none;margin:0.5rem 0 1.2rem;}
+  .step-list li{font-size:15px;line-height:1.65;color:var(--muted);padding:0.35rem 0 0.35rem 1.6rem;position:relative;border-bottom:1px dotted #c0b080;}
+  .step-list li:last-child{border-bottom:none;}
+  .step-list li::before{content:'▸';position:absolute;left:0;color:var(--amber-bright);font-size:12px;top:0.45rem;}
+
+  .quotes-section{background:var(--dark);margin:0 -2rem;padding:2.5rem 2rem;border-top:3px double var(--amber);}
+  .quotes-section .section-title{color:var(--amber-bright);border-bottom-color:#2a1a08;margin-top:0;}
+  .quote-item{border-left:3px solid var(--amber);padding:0.75rem 1.1rem;margin-bottom:1.1rem;background:rgba(122,74,10,0.09);}
+  .quote-text{font-family:'IM Fell English',serif;font-style:italic;font-size:16.5px;color:var(--cream);line-height:1.7;margin-bottom:0.35rem;}
+  .quote-ref{font-size:11px;color:#706030;letter-spacing:2px;text-transform:uppercase;}
+
+  .verdict-block{background:var(--amber);color:var(--cream);padding:2rem;text-align:center;border-top:3px double var(--amber-bright);}
+  .verdict-block p{font-family:'IM Fell English',serif;font-size:17px;line-height:1.7;font-style:italic;}
+
+  .divider{text-align:center;color:var(--amber);font-size:18px;letter-spacing:10px;margin:1.4rem 0;opacity:0.4;}
+
+  .checklist{list-style:none;margin:0.5rem 0 1.2rem;}
+  .checklist li{font-size:15px;line-height:1.65;color:var(--muted);padding:0.3rem 0 0.3rem 1.5rem;position:relative;border-bottom:1px dotted #c0b080;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist li::before{content:'◆';position:absolute;left:0;color:var(--amber-bright);font-size:9px;top:0.55rem;}
+
+  .phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.6rem;margin:1rem 0 1.5rem;}
+  .phase-pill{background:var(--dark);border:1px solid var(--amber);padding:0.7rem 0.5rem;text-align:center;border-radius:2px;}
+  .phase-pill .ph-num{font-family:'IM Fell English',serif;font-size:22px;color:var(--amber-bright);line-height:1;}
+  .phase-pill .ph-name{font-size:11px;color:#907040;letter-spacing:1px;text-transform:uppercase;margin-top:0.2rem;line-height:1.3;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ornament">⚖ TRIAL ⚖</div>
+    <div class="hero-title">Trial Techniques and Trials</div>
+    <div class="hero-subtitle">The Complete Guide to Every Stage of the Trial from Preparation to Verdict</div>
+    <div class="hero-author">Thomas A. Mauet</div>
+    <div class="hero-year">Tenth Edition · Wolters Kluwer · All Chapters &amp; Techniques Covered in Full</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><div class="num">10</div><div class="lbl">Edition</div></div>
+    <div class="stat"><div class="num">12</div><div class="lbl">Trial Stages</div></div>
+    <div class="stat"><div class="num">500+</div><div class="lbl">Pages</div></div>
+    <div class="stat"><div class="num">1</div><div class="lbl">Complete System</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('prep',this)">Preparation</div>
+    <div class="tab" onclick="show('theory',this)">Theory &amp; Theme</div>
+    <div class="tab" onclick="show('voir',this)">Voir Dire</div>
+    <div class="tab" onclick="show('opening',this)">Opening</div>
+    <div class="tab" onclick="show('direct',this)">Direct Exam</div>
+    <div class="tab" onclick="show('cross',this)">Cross-Exam</div>
+    <div class="tab" onclick="show('exhibits',this)">Exhibits</div>
+    <div class="tab" onclick="show('expert',this)">Experts</div>
+    <div class="tab" onclick="show('objections',this)">Objections</div>
+    <div class="tab" onclick="show('closing',this)">Closing</div>
+    <div class="tab" onclick="show('jury',this)">Jury &amp; Verdict</div>
+    <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="panel active">
+      <div class="intro-block">
+        <p>The most widely used trial advocacy textbook in American law schools — and on the desks of practising trial lawyers for decades. Mauet takes a lawyer from the very first moment of case analysis through the final verdict, covering every stage of trial with the same practical, systematic, and immediately applicable guidance. Nothing is theoretical. Everything is technique.</p>
+      </div>
+
+      <div class="section-label">The Book</div>
+      <div class="section-title">What This Book Is and Why It Endures</div>
+      <div class="concept-body">
+        <p>Thomas Mauet's <em>Trial Techniques and Trials</em> — now in its tenth edition — has been the standard reference for trial advocacy instruction in American law schools since its first publication. It is the book that generations of trial lawyers learned from in school and returned to before their most important cases. Its endurance is explained entirely by its utility: it is the most comprehensive, most practical, and most systematically organised guide to the complete trial process that exists in a single volume.</p>
+        <p>The book covers every stage of trial — from the first analysis of a new case through the return of a verdict — with equal depth and equal attention to practical technique. Each chapter addresses one stage of trial, explains the governing principles, identifies the specific techniques that make that stage effective, and illustrates those techniques with concrete examples. Unlike treatises that describe what good trial advocacy looks like, Mauet explains how to do it — not as a matter of talent or inspiration, but as a set of learnable, practisable, specific skills.</p>
+        <p>The tenth edition reflects decades of updating to incorporate developments in jury psychology, technology in the courtroom, the increasing sophistication of jurors, and the evolution of judicial expectations. It addresses bench trials as well as jury trials, state court as well as federal, and both civil and criminal contexts. But its core remains unchanged across every edition: the conviction that trial advocacy is a craft that can be mastered by any lawyer willing to study and practise its component skills with the same rigour they bring to legal analysis.</p>
+      </div>
+
+      <div class="section-label">Trial Architecture</div>
+      <div class="section-title">The Complete Stages of Trial</div>
+      <div class="phase-grid">
+        <div class="phase-pill"><div class="ph-num">1</div><div class="ph-name">Case Analysis</div></div>
+        <div class="phase-pill"><div class="ph-num">2</div><div class="ph-name">Theory &amp; Theme</div></div>
+        <div class="phase-pill"><div class="ph-num">3</div><div class="ph-name">Voir Dire</div></div>
+        <div class="phase-pill"><div class="ph-num">4</div><div class="ph-name">Opening Statement</div></div>
+        <div class="phase-pill"><div class="ph-num">5</div><div class="ph-name">Direct Exam</div></div>
+        <div class="phase-pill"><div class="ph-num">6</div><div class="ph-name">Cross-Exam</div></div>
+        <div class="phase-pill"><div class="ph-num">7</div><div class="ph-name">Exhibits</div></div>
+        <div class="phase-pill"><div class="ph-num">8</div><div class="ph-name">Expert Witnesses</div></div>
+        <div class="phase-pill"><div class="ph-num">9</div><div class="ph-name">Objections</div></div>
+        <div class="phase-pill"><div class="ph-num">10</div><div class="ph-name">Closing Argument</div></div>
+        <div class="phase-pill"><div class="ph-num">11</div><div class="ph-name">Instructions</div></div>
+        <div class="phase-pill"><div class="ph-num">12</div><div class="ph-name">Verdict</div></div>
+      </div>
+
+      <div class="section-label">Core Philosophy</div>
+      <div class="section-title">The Eight Principles Behind Everything Mauet Teaches</div>
+      <div class="theme-grid">
+        <div class="theme-card"><div class="t-name">Theory Before Technique</div><div class="t-desc">Every technique serves a theory of the case. Without a clear theory, even the best technique produces nothing.</div></div>
+        <div class="theme-card"><div class="t-name">Jurors Are the Audience</div><div class="t-desc">Every decision at trial — what to say, how to say it, what to show — must be made from the juror's perspective, not the lawyer's.</div></div>
+        <div class="theme-card"><div class="t-name">Simplicity Persuades</div><div class="t-desc">Juries are not persuaded by complexity. The lawyer who makes the complex simple wins. The one who makes the simple complex loses.</div></div>
+        <div class="theme-card"><div class="t-name">Preparation Is Everything</div><div class="t-desc">No technique substitutes for knowing the case completely. Preparation is not part of trial advocacy — it is its foundation.</div></div>
+        <div class="theme-card"><div class="t-name">Theme Repeats</div><div class="t-desc">The trial's theme must be stated in voir dire, opening, through witnesses, through exhibits, and in closing. Repetition builds conviction.</div></div>
+        <div class="theme-card"><div class="t-name">Stories Win</div><div class="t-desc">Jurors decide cases through narrative, not logic. The lawyer who tells the better story wins, all other things being equal.</div></div>
+        <div class="theme-card"><div class="t-name">Evidence Drives Argument</div><div class="t-desc">Arguments must be grounded in evidence. The closing argument that proves what the opening promised is the closing that wins.</div></div>
+        <div class="theme-card"><div class="t-name">Credibility Is Everything</div><div class="t-desc">The lawyer who is credible with the jury can lose individual exchanges and still win the case. The one who loses credibility loses everything.</div></div>
+      </div>
+    </div>
+
+    <!-- PREPARATION -->
+    <div id="prep" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Before the Trial Begins</div>
+        <div class="p-title">Trial Preparation — Building the Foundation for Everything That Follows</div>
+        <div class="p-desc">Mauet insists that the trial is won or lost before the first juror is seated. Preparation is not a preliminary activity — it is the primary activity, and every technique at trial is only as good as the preparation behind it.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Case Analysis</div>
+        <div class="concept-name">The First Step — Systematically Analysing What You Have</div>
+        <div class="concept-body">
+          <p>Case analysis begins with a complete, honest inventory of the facts, the law, and the evidence available to both sides. Mauet emphasises that this inventory must be conducted from both the plaintiff's and the defendant's perspective simultaneously — the lawyer who understands only their own case is unprepared for the cross-examinations, objections, and arguments that the other side will deploy. The goal of case analysis is to identify, as precisely as possible, what is genuinely disputed and what is not, what evidence is available to resolve the disputed questions, and what legal standards govern each element the fact-finder must decide.</p>
+          <p>The fact analysis identifies every fact that might be relevant, organises them by element of the legal claim or defence, and identifies which facts are undisputed, which are disputed, and which are unknown. The legal analysis identifies the elements that must be proved, the standard of proof for each, and the evidentiary rules that will govern how each element is established. The combined analysis produces a clear picture of where the case will be won or lost — which facts are the pivotal ones, which witnesses are the critical ones, and which arguments are the necessary ones.</p>
+          <p>Mauet stresses that this analysis must be done in writing — not held in the lawyer's head. The written case analysis forces the precision that mental analysis does not require, and it becomes the roadmap that every subsequent preparation step follows.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Trial Notebook</div>
+        <div class="concept-name">Organising the Trial — The Complete Pre-Trial System</div>
+        <div class="concept-body">
+          <p>Mauet's trial notebook system is one of the book's most practically useful contributions. The trial notebook is not simply a collection of documents — it is a complete organisational system that allows the trial lawyer to access any piece of information they need, during any stage of trial, without searching or hesitation. A lawyer who must search for a document, a prior statement, or a prepared question during trial has lost focus at exactly the moment focus is most critical.</p>
+          <p>The notebook is organised by trial stage: a section for voir dire (prepared questions, jury panel information, juror notes); a section for the opening statement (outline, key exhibits to display); sections for each witness (direct examination outline, exhibits for that witness, anticipated cross-examination points, anticipated objections and responses); a section for exhibits (log of all exhibits with foundation requirements); a section for cross-examination materials (prior statements, impeachment material organised by witness); a section for the jury instructions; and a section for the closing argument (outline keyed to the evidence admitted at trial).</p>
+          <p>The physical or digital organisation of the trial notebook must permit rapid access under pressure. Cross-referencing is essential: when a witness mentions an event during examination, the lawyer must be able to locate any relevant prior statement or document within seconds, not minutes. This level of organisation is not a luxury — it is the difference between the lawyer who controls the courtroom and the one who is always slightly behind.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Witness Preparation</div>
+        <div class="concept-name">Preparing Every Witness for Direct and Cross</div>
+        <div class="concept-body">
+          <p>Witness preparation is among the most time-intensive aspects of trial preparation and among the most neglected. Mauet addresses it with the thoroughness it deserves. Every witness who will testify — whether a lay witness, an expert, or the client — must be prepared for both what they will be asked on direct examination and what they will face on cross. Preparation that addresses only direct examination leaves the witness unprepared for the experience that will most test their credibility.</p>
+          <p>The preparation process begins with a complete review of the witness's prior statements — every deposition, every recorded interview, every written statement — so that the lawyer knows precisely what the witness has said before and can prepare the witness to be consistent with those prior statements. Inconsistency between trial testimony and prior statements is the most damaging form of impeachment available to the other side; it is also the most preventable, through thorough pre-trial preparation.</p>
+          <p>Beyond consistency, witness preparation addresses manner and presentation: how to listen to the question before answering; how to answer only what is asked without volunteering additional information; how to pause before answering difficult questions without appearing evasive; how to maintain composure under aggressive cross-examination; and how to address the jury during testimony rather than only the examining lawyer. These are not matters of deception — they are the skills of effective communication under the specific conditions of trial, and they require deliberate preparation to develop.</p>
+          <p>Mauet also addresses the preparation of the client specifically. The client has the most at stake in the outcome, the deepest emotional investment in the facts, and often the least experience with the courtroom environment. Client preparation requires additional sensitivity — the lawyer must help the client understand that honesty is both the ethical requirement and the most persuasive strategy, that the jury will see through evasion and inflation, and that the simple, direct telling of the truth is always the most powerful testimony available.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Exhibit Preparation</div>
+        <div class="concept-name">Preparing Every Exhibit for Admission and Maximum Impact</div>
+        <div class="concept-body">
+          <p>Every exhibit that will be offered at trial must be prepared in advance — not merely identified but fully prepared for admission. This means understanding the evidentiary foundation required for each exhibit, having witnesses identified and prepared to provide that foundation, knowing the anticipated objections and having the responses ready, and having the exhibits organised and labelled in the sequence in which they will be offered.</p>
+          <p>Mauet emphasises that exhibits serve two functions: they provide evidence (proving facts), and they create visual and tangible reality for the jury (making abstract or complex facts immediate and comprehensible). The preparation of exhibits must address both functions. An exhibit that establishes a fact but is incomprehensible to the jury serves only half its purpose. An exhibit that is visually compelling but whose evidentiary foundation is not carefully established will not be admitted. Both failures are catastrophic and both are preventable through adequate preparation.</p>
+          <p>Demonstrative exhibits — diagrams, charts, timelines, models, and presentations — require additional preparation because they are typically created by the lawyer's team rather than drawn from existing evidence. They must accurately represent the facts they depict, must be capable of surviving opposing counsel's cross-examination of their accuracy, and must be organised for maximum persuasive impact at the moment of their introduction. Mauet is specific about how demonstrative exhibits should be structured and timed for maximum effect.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Pre-Trial Motions</div>
+        <div class="concept-name">Shaping the Trial Before It Begins</div>
+        <div class="concept-body">
+          <p>Pre-trial motions are among the most powerful and most underutilised tools available to the trial lawyer. A motion in limine that excludes damaging evidence before trial is more valuable than any technique for managing that evidence once it has been admitted. A motion that limits the scope of the opposing expert's testimony shapes the entire evidentiary landscape within which the trial will be conducted. Mauet treats pre-trial motion practice as an integral part of trial preparation rather than as a separate preliminary step.</p>
+          <p>The motion in limine — a pre-trial motion to admit or exclude specific evidence — allows the trial lawyer to obtain advance rulings on evidentiary questions that would otherwise arise unpredictably during trial. Advance rulings allow the lawyer to plan the trial around the admissible evidence, prepare witnesses and exhibits without uncertainty about what will be permitted, and structure the opening statement with confidence that the evidence promised to the jury will actually be admitted. The lawyer who allows significant evidentiary questions to be resolved for the first time during trial is accepting unnecessary uncertainty at exactly the moment certainty is most valuable.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- THEORY AND THEME -->
+    <div id="theory" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Conceptual Foundation</div>
+        <div class="p-title">Theory of the Case &amp; Trial Theme — The Frame Around Everything</div>
+        <div class="p-desc">Before any technique can be effectively deployed, the lawyer must have a clear theory of the case and a memorable trial theme. These two concepts — one analytical, one communicative — are the most important decisions made before trial begins.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Theory of the Case</div>
+        <div class="concept-name">The Legal and Factual Framework That Governs the Entire Trial</div>
+        <div class="concept-body">
+          <p>The theory of the case is the complete, coherent story of what happened and why the law requires the result your client seeks. It addresses every element of the legal claim or defence, incorporates all the available evidence, explains away the weaknesses and contradictions in the case, and provides a framework within which every witness's testimony, every exhibit, and every argument makes sense. It is not a slogan — it is a complete analytical structure that the lawyer uses to organise every aspect of the trial.</p>
+          <p>Mauet insists that the theory of the case must be developed before any other trial preparation begins, because it determines everything that follows. The witnesses called and the order in which they are called, the exhibits offered and the sequence in which they are introduced, the opening statement's organisation and emphasis, the cross-examinations' focus and the closing argument's structure — all of these are decisions that the theory of the case makes, or at least strongly shapes. The lawyer who begins witness preparation without a clear theory of the case is preparing without knowing what the preparation is for.</p>
+          <p>A good theory of the case has four characteristics: it is legally sufficient (it establishes every required element of the claim or defence if the jury accepts it); it is factually credible (it is consistent with the available evidence and explains the inconsistencies); it is simple enough to be understood by a jury; and it is compelling enough to make the jury want to adopt it. The last characteristic is often underestimated — jurors are not computers calculating legal conclusions from proven premises. They are human beings who want to reach a result that feels right, and the theory of the case that connects to the jury's moral intuitions will be adopted even in the face of some factual difficulty, while the theory that feels wrong will be rejected even when it is technically sound.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Trial Theme</div>
+        <div class="concept-name">The Memorable Phrase That Carries the Theory Through the Entire Trial</div>
+        <div class="concept-body">
+          <p>The trial theme is the distillation of the theory of the case into a phrase, sentence, or concept that is memorable, emotionally resonant, and repeatable throughout the trial. Where the theory of the case is the complete analytical framework, the trial theme is its communicative expression — the handle by which the jury grabs and holds the case as they listen to testimony, evaluate exhibits, and ultimately deliberate. A trial without a theme is a trial whose facts and arguments leave no lasting impression; a trial with a powerful theme is a trial whose key point is impossible to forget.</p>
+          <p>Mauet provides extensive guidance on what makes an effective trial theme. It must be short — no longer than a sentence, ideally a phrase. It must be in the jury's language, not the lawyer's — no legal jargon, no technical terms. It must be emotionally honest — it must resonate with human experience in a way that feels true even to a juror who has never been in the specific situation. And it must be consistent with the evidence — a theme that promises what the evidence cannot deliver destroys credibility rather than building it.</p>
+          <p>The theme must appear in voir dire (to identify jurors who are already sympathetic to its underlying values), in the opening statement (as the organising framework for the entire story), through the direct examinations of key witnesses (reinforced by their testimony), and in the closing argument (as the culminating expression of what the evidence has proved). Its repetition across every stage of trial creates a cumulative psychological effect that no single statement could achieve.</p>
+          <div class="example-box">
+            <div class="ex-label">Theme vs. Theory — The Distinction</div>
+            <p>Theory: "The defendant knew the product was defective, failed to warn consumers despite that knowledge, and that failure caused the plaintiff's injury." This is complete, legal, and analytically sound. Theme: "Safety was sacrificed for profit." This is memorable, human, and emotionally resonant. Both express the same case. The theory organises the evidence; the theme organises the jury's moral response. Both are essential. Neither alone is sufficient.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Weaknesses and Gaps</div>
+        <div class="concept-name">Addressing Your Own Case's Problems Before the Other Side Does</div>
+        <div class="concept-body">
+          <p>Every case has weaknesses — facts, witnesses, or legal issues that are unfavourable to the client. The lawyer who pretends these weaknesses do not exist, or who hopes the jury will not notice them, is taking an enormous risk. Jurors notice weaknesses. If they hear about a weakness first from opposing counsel, they experience it as something the lawyer tried to hide, which damages credibility far beyond the weakness itself. If they hear about it first from the lawyer, they experience it as an honest acknowledgment from someone they trust — which actually strengthens credibility.</p>
+          <p>The technique Mauet recommends is anticipatory disclosure: identifying every significant weakness in the case before trial and deciding how to address it — in voir dire (to identify jurors who cannot accept the acknowledged weakness), in the opening statement (where it is disclosed honestly and placed in context), and through the examination of witnesses (where it is addressed directly before opposing counsel can exploit it). The weakness disclosed by the lawyer is far less damaging than the weakness revealed by the opponent.</p>
+          <p>The decision about which weaknesses to disclose and how requires genuine judgment. Not every unfavourable fact warrants pre-emptive disclosure — only those that are significant enough, and well-enough supported by the evidence, that opposing counsel will certainly emphasise them. The lawyer who discloses trivial weaknesses pre-emptively appears to be manufacturing virtue; the one who discloses only the genuine problems appears to be genuinely honest. The distinction matters, and jurors make it intuitively.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOIR DIRE -->
+    <div id="voir" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Jury Selection</div>
+        <div class="p-title">Voir Dire — Selecting the Jury That Can Hear Your Case Fairly</div>
+        <div class="p-desc">Voir dire is not primarily about finding the perfect juror — it is about identifying those who cannot be fair, beginning to build rapport with those who will be seated, and starting the process of introducing the trial's theme before the first witness testifies.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Purpose</div>
+        <div class="concept-name">The Three Goals of Voir Dire — Identification, Deselection, and Education</div>
+        <div class="concept-body">
+          <p>Mauet identifies three distinct and equally important goals of voir dire. The first is identification: discovering which potential jurors have attitudes, experiences, or biases that would make them unable or unwilling to decide the case fairly on the evidence. The second is deselection: using challenges — for cause and peremptory — to remove those jurors. The third is education: beginning to introduce the case's theory and theme to the jurors who will be seated, establishing rapport with them, and starting the process of persuasion that will continue through the entire trial.</p>
+          <p>The most common failure in voir dire is treating it exclusively as identification — asking questions designed to uncover juror bias without using the opportunity to begin building the lawyer's relationship with the jury. The lawyer who has used voir dire only to discover bias has wasted the only opportunity in the trial to speak directly with the jury in a conversational mode — to learn what they think and feel, and to share what the case is about in the honest, direct way that the formality of opening statement does not permit.</p>
+          <p>The equally common failure on the other side is using voir dire primarily as an opportunity to indoctrinate — to lecture potential jurors on the law, to pre-try the case, or to manipulate jurors' responses through loaded questions. This approach damages credibility, annoys both jurors and the court, and typically produces the opposite of the intended effect: jurors who have been manipulated during voir dire are more hostile, not more sympathetic, to the lawyer's case.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Question Design</div>
+        <div class="concept-name">How to Ask Questions That Reveal What You Need to Know</div>
+        <div class="concept-body">
+          <p>Effective voir dire questions are open-ended: they invite the potential juror to speak at length rather than simply confirming or denying a proposition the lawyer has stated. The open question — "Tell me about a time when you had a dispute with a business that you felt treated you unfairly" — produces far more useful information than the closed question — "Have you ever had a dispute with a business?" The open question reveals how the juror thinks, what they value, and how they communicate, all of which are essential to evaluating whether they can be a fair juror and to understanding what kind of juror they will be if seated.</p>
+          <p>Mauet provides specific techniques for follow-up questioning: the skill of taking a juror's answer and probing deeper, not through confrontation but through genuine curiosity. "Tell me more about that." "How did that make you feel?" "What would have had to happen for you to feel that was fair?" These follow-up questions reveal the layers of attitude and experience beneath the surface answer, and it is in those layers that the information needed to make intelligent jury selection decisions is found.</p>
+          <p>The voir dire must also address the case's specific weaknesses. The lawyer who asks the jury panel directly about potential problems — "This case will involve evidence that my client made statements that appear inconsistent with each other. Is there anyone who would find it impossible to give a fair hearing to someone in that situation?" — accomplishes two things simultaneously: it identifies jurors who cannot accept the weakness, and it begins preparing the rest of the panel for the weakness's existence, reducing its surprise impact when it arises at trial.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Challenges</div>
+        <div class="concept-name">For Cause and Peremptory — Using Both Strategically</div>
+        <div class="concept-body">
+          <p>A challenge for cause is available when a juror's stated attitudes, experiences, or relationships make it impossible for them to decide the case fairly and impartially. The standard varies by jurisdiction, but generally requires that the bias be substantial and that the juror have demonstrated an inability or unwillingness to set it aside. Challenges for cause are unlimited in number — the court will seat a fair jury regardless of how many jurors must be excused — and every challenge for cause preserved is a peremptory challenge saved.</p>
+          <p>Mauet addresses the techniques for developing a cause challenge: the series of follow-up questions that builds the record of the juror's bias, the rehabilitation attempts by the court and opposing counsel that must be anticipated, and the specific language that most clearly establishes that the juror's bias cannot be set aside. The lawyer who has not thought through the cause challenge before trial will lose it — not because the bias does not exist but because the record is not developed clearly enough for the court to rule on it confidently.</p>
+          <p>Peremptory challenges are limited in number and available without stated reason (subject to constitutional constraints prohibiting challenges based on race or gender). Mauet provides a framework for allocating peremptory challenges strategically: identifying the jurors most likely to be hostile and using peremptories on those who are hostile but who did not qualify for a cause challenge; protecting peremptories for late-revealed information; and distinguishing between jurors who are simply not ideal and jurors who are positively dangerous to the case.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Theme in Voir Dire</div>
+        <div class="concept-name">Introducing the Case's Core Values to the Panel</div>
+        <div class="concept-body">
+          <p>Voir dire is the only stage of trial at which the lawyer can have a genuine two-way conversation with jurors — asking what they think and listening to their responses. This opportunity is irreplaceable, and the skilled trial lawyer uses it to explore whether the jurors' values are aligned with the trial's theme. Not through manipulation, but through honest questions about values that the case will implicate: questions about personal responsibility, about the obligations of professionals or corporations, about what fairness means in the context of the specific type of dispute.</p>
+          <p>The juror who articulates a value during voir dire that aligns with the trial's theme has already, in a sense, committed to that value before the evidence is presented. When the closing argument invokes that same value — as demonstrated by the evidence — the juror experiences it as a confirmation of something they believe, not as an external argument being imposed on them. This is the deepest form of jury persuasion: helping jurors identify their own values as the basis for the verdict your client needs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPENING STATEMENT -->
+    <div id="opening" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The First Argument</div>
+        <div class="p-title">Opening Statement — Telling the Complete Story Before the Evidence Begins</div>
+        <div class="p-desc">The opening statement is the most important single speech in the trial. It creates the frame through which all subsequent evidence is received, introduces the witnesses and exhibits that will prove the case, and — if done well — makes the verdict feel inevitable before the first witness is sworn.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Purpose and Power</div>
+        <div class="concept-name">Why the Opening Statement Is the Trial's Most Decisive Moment</div>
+        <div class="concept-body">
+          <p>Mauet begins his treatment of opening statements with an observation that the research on juror decision-making consistently supports: jurors form strong preliminary judgments about the likely outcome of the case during the opening statements, and those preliminary judgments are highly resistant to subsequent revision. This is not a failure of the jury system — it is an expression of how human cognition works. Jurors, like all humans, receive subsequent information through interpretive frameworks established by prior information. The lawyer who establishes the framework during opening statements has secured a significant and durable advantage.</p>
+          <p>The opening statement must tell the complete story of the case — not a preview, not a summary, but the actual story, with specific facts, named witnesses, described exhibits, and a clear trajectory from what happened to why the law requires a verdict in the client's favour. Jurors who understand the complete story during opening will hear every piece of evidence as a component of a story they already understand. Jurors who do not will hear each piece of evidence in isolation, without the context that gives it meaning, and the other side's story will fill the vacuum.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Structure</div>
+        <div class="concept-name">How to Organise the Opening Statement for Maximum Persuasive Impact</div>
+        <div class="concept-body">
+          <p>Mauet's recommended structure for the opening statement reflects the principles of narrative persuasion: begin with the theme (establish the organising moral and factual framework before the specific facts are introduced); tell the story in chronological order wherever possible (chronological narrative is easiest for the jury to follow and remember); introduce the key witnesses by name and role (so the jury knows who is coming and what to listen for when they arrive); describe the key exhibits and what they will show (so the jury is prepared to receive them with their full evidentiary weight); and end with the verdict — a direct, specific request for exactly the result the evidence will support.</p>
+          <p>The opening must be specific, not abstract. Not "the evidence will show that the defendant was negligent" but "the evidence will show that on March 15, at 3:47 p.m., the defendant's truck ran a red light at the intersection of Main and First, striking my client's car on the driver's side at a speed of 45 miles per hour." Specific facts create mental images; abstract characterisations do not. The jury that has a specific mental image of what happened will remember it and evaluate the evidence against it. The jury that has only heard abstract characterisations will be forming their own mental images — which may not serve the lawyer's case.</p>
+          <p>The opening must also be honest. Every fact promised in the opening statement must be delivered by the evidence at trial. The lawyer who promises evidence that does not materialise — whether through inadvertent overstatement or deliberate inflation — has destroyed their credibility with the jury at the moment of greatest vulnerability: the closing argument, when the jury is comparing what was promised with what was delivered. Understating in the opening and overdelivering through the evidence is the safer and more persuasive strategy in every case.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Addressing Weaknesses</div>
+        <div class="concept-name">The Inoculation Technique — Pre-empting the Opponent's Best Points</div>
+        <div class="concept-body">
+          <p>The plaintiff who goes first in opening statements has a specific opportunity and a specific obligation: to address the case's most significant weaknesses before the defence does. If the plaintiff's lawyer has identified an adverse witness, a prior inconsistent statement, an unfavourable expert opinion, or a damaging document that the defence will certainly exploit, the honest and strategic approach is to raise it first — in the opening statement, in context, with the explanation that makes it comprehensible rather than devastating.</p>
+          <p>Mauet calls this the inoculation technique, borrowed from the medical model: exposing the jury to a weakened form of the opposing argument before the opposing counsel can deliver it at full strength. The jury that has already heard about a weakness, understood it in the plaintiff's framing, and accepted the explanation for it will be far less affected by the defence's exploitation of that weakness than the jury that encounters it for the first time during the defence case. The surprise of the disclosure is the weapon; pre-emption removes the weapon.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Delivery</div>
+        <div class="concept-name">How to Present the Opening — Connection, Confidence, and Clarity</div>
+        <div class="concept-body">
+          <p>The opening statement must be delivered conversationally — as if the lawyer is telling the jury a story they need to hear, not performing a prepared speech. This requires that the opening be thoroughly internalised, not memorised: the lawyer who has memorised the opening will appear robotic and disconnected; the one who knows the story thoroughly and is telling it naturally will appear genuine and trustworthy. The difference in the jury's response is dramatic and immediate.</p>
+          <p>Eye contact is essential throughout the opening. The lawyer who reads from notes, looks at a screen, or addresses the front wall rather than the jurors is communicating, however unintentionally, that the case is not important enough to merit their full attention. Jurors who feel unaddressed will disengage; jurors who feel directly spoken to will lean in. The opening statement is the trial lawyer's first opportunity to establish a personal connection with the jury, and that connection — or its absence — shapes every subsequent interaction.</p>
+          <p>Mauet also addresses the use of visual aids during opening statements. Properly used, visual aids — displays of key documents, timelines, diagrams of the incident scene, photographs of the parties and witnesses — enormously enhance the jury's comprehension and retention of the story being told. Improperly used, they interrupt the narrative flow, create technical difficulties that undermine the lawyer's appearance of competence, and substitute visual complexity for the simple human story that is the opening's most powerful element. The decision about what visual aids to use and when must be made with the same rigour applied to every other aspect of the trial.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECT EXAMINATION -->
+    <div id="direct" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Building the Case</div>
+        <div class="p-title">Direct Examination — Eliciting the Testimony That Proves the Case</div>
+        <div class="p-desc">Direct examination is where the lawyer's case is built — fact by fact, witness by witness. The challenge is to present testimony in a way that is credible, compelling, and clear, while remaining in the background so that the witness's own voice carries the story.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Principles</div>
+        <div class="concept-name">The Fundamental Rules of Effective Direct Examination</div>
+        <div class="concept-body">
+          <p>The paradox of direct examination is that the lawyer must do enough to elicit clear, complete, and compelling testimony while doing as little as possible — because the witness's own credible voice is always more persuasive than the lawyer's questions. The lawyer who asks short, clear questions that give the witness room to speak naturally produces testimony that sounds genuine; the lawyer whose questions are so detailed and leading that the witness seems to be confirming the lawyer's narrative rather than telling their own story produces testimony that sounds rehearsed and less credible.</p>
+          <p>Mauet's principles of direct examination: use short, simple, non-leading questions; organise the examination to tell a clear story; establish the witness's credibility before eliciting the substance of their testimony; use the witness's strongest facts at the beginning and end of the examination (primacy and recency); and stop when the witness has said everything they need to say. The witness who is asked one question too many after they have said everything necessary will often say something that diminishes what came before.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Organisation</div>
+        <div class="concept-name">Structuring the Direct Examination for Story and Clarity</div>
+        <div class="concept-body">
+          <p>Every direct examination should be organised around a narrative: who this witness is, why their testimony matters, what they personally observed or know, and what that testimony means for the verdict. The organisational structure must make these elements clear to a juror who begins with no knowledge of the witness and must end with a complete, memorable understanding of their contribution to the case.</p>
+          <p>Mauet recommends beginning every direct examination with a brief period of background questioning that establishes the witness's identity, background, and relationship to the case. This serves two functions: it humanises the witness for the jury (turning them from a name on a witness list into a person with a life and a perspective), and it allows the witness to answer several questions comfortably before reaching the substantive testimony — building confidence and natural communication rhythm before the most important questions are asked.</p>
+          <p>The body of the direct examination should track the witness's knowledge of the key facts in the order that makes them most comprehensible and most compelling. This is usually chronological, but not always — sometimes the most important fact should be established first, with the context that explains it developed afterward. The order of questions within the examination is itself an argument: it tells the jury what is most important, what context is needed to understand it, and how the pieces of the witness's testimony fit together into a coherent picture.</p>
+          <p>The conclusion of the direct examination should end on the witness's most powerful, most memorable contribution — the specific fact or observation that most clearly supports the theory of the case. Ending on a strong note ensures that the last thing the jury hears from this witness, before they face cross-examination, is the testimony most important to the case. After that final question, stop. The instinct to ask one more question "to make sure" is an instinct that consistently weakens examinations that were complete.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Witness Credibility</div>
+        <div class="concept-name">Building and Protecting the Witness's Credibility with the Jury</div>
+        <div class="concept-body">
+          <p>The most important characteristic of any witness's testimony is credibility — the jury's belief that the witness is telling the truth as they know it. Credibility is not established through the substance of testimony alone; it is established through the manner in which the witness testifies, the honesty with which they acknowledge limitations and uncertainty, and the consistency of what they say with everything else the jury has heard and seen.</p>
+          <p>Mauet addresses credibility building as an active component of direct examination preparation. The witness who acknowledges on direct examination that there are aspects of the events they did not observe, facts they cannot remember precisely, or interpretations they are uncertain about is a witness who appears honest — because honest witnesses always have such limitations. The witness who claims perfect recollection, complete observation, and total certainty about everything they describe will be exposed on cross-examination, and the exposure will be more damaging because of the overstated certainty.</p>
+          <p>The technique of pre-emptive disclosure applies to witness credibility as well: if the witness has a prior conviction, a prior inconsistent statement, or a prior relationship with the lawyer or client that opposing counsel will reveal on cross, it should be brought out on direct examination. The jury that hears it first from the lawyer's witness experiences it as an honest disclosure; the jury that hears it first from opposing counsel experiences it as a revelation of something the lawyer tried to hide.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Handling Difficult Testimony</div>
+        <div class="concept-name">When the Witness's Story Is Complicated or Partially Adverse</div>
+        <div class="concept-body">
+          <p>Few witnesses tell only the facts that support the lawyer's case. Most witnesses have knowledge that is partially helpful and partially unhelpful — facts that support the theory of the case mixed with facts that complicate or undercut it. The technique for handling partially adverse testimony on direct examination is the same as for handling weaknesses in the case overall: address it directly, in your own framing, before opposing counsel can exploit it.</p>
+          <p>Mauet addresses the specific challenge of the witness whose prior statements are inconsistent with their anticipated trial testimony. The preparation for this situation requires the lawyer to understand exactly where the inconsistencies lie, to have the witness acknowledge them honestly on direct rather than waiting for cross, and to present the explanation for the inconsistency in the most credible possible terms. An inconsistency that is acknowledged and explained on direct examination is far less damaging than the same inconsistency revealed for the first time on cross-examination in the opposing lawyer's framing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CROSS-EXAMINATION -->
+    <div id="cross" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Attacking the Opposition</div>
+        <div class="p-title">Cross-Examination — The Complete Mauet System for Effective Cross</div>
+        <div class="p-desc">Mauet's cross-examination teaching is among the most systematic and practical in the literature — covering goals, planning, technique, control, and every category of impeachment. Cross-examination, properly executed, is the most powerful tool available at trial.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Goals</div>
+        <div class="concept-name">What Cross-Examination Must Accomplish — Clarity Before Action</div>
+        <div class="concept-body">
+          <p>Mauet begins with goal-setting — the identification, before any question is written, of precisely what the cross-examination must accomplish for this witness. Cross-examination without clear goals produces aimless questioning that accomplishes nothing and risks damaging the cross-examiner's own case. Cross-examination with clear goals produces focused, efficient, devastating examinations that advance the theory of the case regardless of how the witness responds.</p>
+          <p>The possible goals of cross-examination fall into three categories. The first is to elicit affirmative testimony that supports the cross-examiner's case — facts that the witness must concede because they are clearly established by the evidence, which serve the cross-examiner's theory regardless of the witness's overall credibility. The second is to challenge the witness's credibility — through prior inconsistent statements, through evidence of bias, through exposing the limitations of their opportunity to observe, through demonstrating prior convictions or other credibility-affecting facts. The third is to limit the damage done by the direct examination — to establish that the witness's knowledge is limited, that their conclusions are uncertain, or that aspects of their testimony do not actually establish what the other side claimed they did.</p>
+          <p>Mauet is emphatic that not every cross-examination requires all three of these goals, and that many witnesses should not be cross-examined at all — or should be examined only briefly on one or two safe points. The most damaging cross-examination error is the examination that was not needed — the examination that gives a credible, sympathetic witness another opportunity to repeat their damaging testimony, expand on it, and reinforce it. If the witness's testimony can be minimised by brevity rather than destroyed by extended examination, brevity is almost always the wiser choice.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Control Through Technique</div>
+        <div class="concept-name">Leading Questions, Narrow Focus, and the Discipline of Restraint</div>
+        <div class="concept-body">
+          <p>Effective cross-examination requires leading questions — the same fundamental requirement identified by every serious authority on the subject. The leading question limits the witness's answer and ensures that the cross-examiner, not the witness, is driving the examination. Mauet's instruction on leading questions in cross goes beyond the mere injunction to use them: he addresses how to construct them so that the witness's options are genuinely limited, how to handle witnesses who resist the question's frame, and how to recover when a witness's unexpected answer threatens to derail the examination.</p>
+          <p>The discipline of restraint is equally fundamental. The cross-examiner who has achieved a damaging concession must move on — not dwell on it, not ask the witness to explain it, not ask the jury to appreciate it. The damaging concession that stands alone is powerful; the one that is followed by additional questions inviting explanation is weakened by every word of explanation the witness produces. Make the point. Stop. The jury heard it.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Prior Statement Impeachment</div>
+        <div class="concept-name">The Commit-Confront Method in Detail</div>
+        <div class="concept-body">
+          <p>Mauet's method for impeachment by prior inconsistent statement is built on the same fundamental structure described by Pozner and Dodd: commit the witness to their current testimony before confronting them with the prior inconsistency. The specific technique he teaches: first, nail down the current testimony with a series of specific, leading questions that leave no room for the witness to retreat; second, establish the circumstances of the prior statement that make it reliable (time, place, oath, context); third, read or display the prior statement precisely and ask the witness to confirm that they made it.</p>
+          <p>The final step — the confrontation — must be handled with precise language. After reading the prior statement, the cross-examiner asks not "Doesn't that contradict what you just said?" (which invites explanation) but "That is what you said on [date], before [person]." The statement is asserted; the witness must agree or disagree with whether they made it. The inconsistency is now visible to the jury without having been argued — the lawyer has placed two things before the jury and allowed them to see the contradiction. The argument that the inconsistency undermines credibility is made in closing, not during cross.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Bias and Interest Impeachment</div>
+        <div class="concept-name">Establishing Why the Witness Has Reason to Tell a Particular Story</div>
+        <div class="concept-body">
+          <p>The bias impeachment establishes, through objective and specific facts, that the witness has a personal, financial, professional, or relational interest in the outcome of the case that gives them a motive to shade or distort their testimony. Mauet's technique is identical to the safe-question approach: establish the specific, objective facts of the relationship or interest one at a time, through leading questions, without asking the witness to characterise or evaluate the relationship. The lawyer who asks "Isn't it true that you're biased in favour of the plaintiff?" will receive a denial; the lawyer who establishes that the witness has worked with the plaintiff for ten years, that the plaintiff's company has paid the witness $200,000 in consulting fees over that period, and that the witness expects the relationship to continue after this case is resolved has established the bias through facts the witness cannot deny.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">When Not to Cross-Examine</div>
+        <div class="concept-name">The Most Important Cross-Examination Decision — Whether to Cross at All</div>
+        <div class="concept-body">
+          <p>Mauet addresses this question with a directness that distinguishes his treatment from many others: there are witnesses who should not be cross-examined at all, or who should receive only a minimal cross-examination. The witness who has testified briefly and without significant damage to the cross-examiner's case, who is sympathetic to the jury, and who has no available impeachment is a witness who should be dismissed without cross-examination. Rising to cross-examine such a witness signals to the jury that the testimony was more important than it appeared, invites the witness to repeat and reinforce their testimony, and risks an answer that causes damage the direct examination did not.</p>
+          <p>The decision not to cross-examine requires confidence — the confidence that the direct examination did not significantly damage the case and that cross-examination cannot significantly help it. This confidence comes from the thorough case analysis and cross-examination preparation that Mauet insists upon: the cross-examiner who has identified the specific goals of each witness's cross-examination in advance will know, when the direct examination ends, whether those goals are achievable and worth pursuing. The one who has not done this analysis will almost always err on the side of cross-examining, because the absence of a plan produces the anxiety that something important must be done even when nothing productive is available.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXHIBITS -->
+    <div id="exhibits" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Physical Evidence</div>
+        <div class="p-title">Exhibits and Demonstrative Evidence — Making Facts Visible and Tangible</div>
+        <div class="p-desc">Exhibits transform abstract testimony into visible, tangible, memorable reality. The juror who sees a document, photograph, or diagram understands and remembers the fact it establishes far more completely than the juror who only heard it described. Managing exhibits effectively is a complete technical skill.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Foundation Requirements</div>
+        <div class="concept-name">The Evidentiary Foundation — What Every Exhibit Requires</div>
+        <div class="concept-body">
+          <p>Every exhibit requires an evidentiary foundation before it can be admitted — a predicate of testimony or stipulation that establishes the exhibit's authenticity, relevance, and admissibility under the applicable rules of evidence. Mauet provides a complete guide to the foundation requirements for every major category of exhibit: documents (authentication, chain of custody where required, business records foundation for records under the hearsay exception); photographs (authentication establishing that the photo accurately depicts what it purports to depict at the relevant time); physical objects (authentication, chain of custody where the object's condition is significant); and electronic evidence (authentication of digital documents, records, and communications under the specific requirements that courts have developed for this category).</p>
+          <p>The foundation must be prepared before trial for every exhibit intended to be offered. This means identifying the witness who will provide each element of the foundation, preparing that witness to provide it in the exact form required, and anticipating the objections opposing counsel will make so that responses are ready. The lawyer who attempts to lay foundation for an exhibit without advance preparation will make technical errors — failing to ask the specific questions required, using the wrong form of question, or omitting a required element — that result in the exhibit being excluded. Every excluded exhibit is testimony the jury cannot hear and a promise made in the opening statement that cannot be kept.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Offering Exhibits</div>
+        <div class="concept-name">The Mechanics of Introducing Evidence — Precision and Timing</div>
+        <div class="concept-body">
+          <p>Mauet walks through the complete procedure for offering a physical exhibit: marking for identification (establishing a specific reference that will be used throughout the trial); showing to opposing counsel (the professional courtesy required in most courts); showing to the witness (to establish that the witness recognises it as part of the foundation); eliciting the foundation testimony; and moving the exhibit into evidence with the specific motion required in the jurisdiction. Each step must be performed in the correct order; failure to follow the procedure results in objections that interrupt the examination's flow and may result in exclusion.</p>
+          <p>The timing of exhibit introduction is itself a strategic decision. Exhibits should generally be offered when they have maximum impact — at the moment in the witness's testimony when the exhibit most naturally and powerfully illustrates what the witness has just said. An exhibit offered too early, before the context that gives it meaning has been established, will not have its full effect; an exhibit offered too late, after the testimony it would have illustrated has passed, is an afterthought. The exact moment of introduction must be planned as deliberately as every other aspect of the examination.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Demonstrative Exhibits</div>
+        <div class="concept-name">Diagrams, Timelines, Charts, and Technology — Making the Complex Clear</div>
+        <div class="concept-body">
+          <p>Demonstrative exhibits — materials created for the trial to illustrate or explain the evidence rather than constitute evidence themselves — are among the most powerful tools available to the trial lawyer. A well-prepared timeline makes the sequence of events clear to a jury that would otherwise lose track of dates and intervals. A diagram of the accident scene allows the jury to understand positions and sight lines that words alone cannot convey. A summary chart of financial data converts hundreds of pages of documents into a comprehensible pattern. Mauet addresses each category of demonstrative exhibit with specific guidance on design, preparation, and use.</p>
+          <p>The design of demonstrative exhibits must prioritise clarity over comprehensiveness. The chart that contains everything the data shows will typically be too complex to be effective with a jury; the chart that shows only the most important relationship in the data, simply and clearly, will be retained and used during deliberations. The instinct to include all available information in a demonstrative exhibit must be resisted: the jury needs to understand one thing clearly, not twelve things poorly.</p>
+          <p>Technology in the courtroom — presentations on electronic displays, video evidence, animated reconstructions, computer-generated models — must be mastered sufficiently that technical difficulties do not arise during trial. The lawyer whose technology fails during trial has lost credibility at a critical moment and has created a gap in the presentation that is difficult to fill. Every technological exhibit must be tested on the court's specific equipment in the specific courtroom before trial, not on the assumption that it will work because it worked in the office.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Using Exhibits with Witnesses</div>
+        <div class="concept-name">The Art of Integrating Physical Evidence with Testimony</div>
+        <div class="concept-body">
+          <p>The admitted exhibit is only as powerful as the examination that contextualises it. Mauet provides specific techniques for using exhibits most effectively in examination: the method for drawing attention to the specific portion of a document that is most significant (rather than displaying the entire document and expecting the jury to find the relevant passage); the technique for having a witness mark a diagram to show positions, routes, or features relevant to their testimony; the approach for playing video or audio evidence in the context of the witness's testimony so that the jury understands what they are seeing or hearing and why it matters.</p>
+          <p>The exhibit should not replace testimony — it should amplify it. The witness who describes what happened and then points to the diagram to show where it happened has given the jury two ways to receive and remember the information: verbal description and visual reinforcement. The two-channel presentation is consistently more effective than either alone, which is why the careful integration of exhibits with testimony — planned in advance, executed at the right moment — is one of the most powerful tools of trial advocacy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT WITNESSES -->
+    <div id="expert" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Technical Evidence</div>
+        <div class="p-title">Expert Witnesses — Direct and Cross of the Specialised Witness</div>
+        <div class="p-desc">Expert witnesses present the unique challenge of technical testimony in the language of the courtroom. The lawyer must be able to present expert testimony so juries understand it, and cross-examine opposing experts so juries doubt it — using two entirely different skill sets.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Qualifying the Expert</div>
+        <div class="concept-name">Establishing Credentials Without Overdoing It</div>
+        <div class="concept-body">
+          <p>The qualification of an expert witness — establishing that they possess the knowledge, skill, experience, training, or education required to offer opinions in the relevant field — is a necessary predicate to expert testimony but should not consume more trial time than it deserves. Juries are generally prepared to accept experts in established fields without exhaustive credential recitation; spending fifteen minutes establishing that a medical doctor is qualified to testify about orthopedic injuries will not make the jury more receptive to the testimony and may actively irritate them.</p>
+          <p>Mauet recommends a disciplined approach to qualification: establish the specific credentials most relevant to the specific opinions to be offered, establish experience in the specific context of the dispute, and move quickly to the substance. The expert's qualifications are most persuasive when they are directly connected to the specific question they are being asked to address — "Dr. Smith has performed over two hundred shoulder surgeries, including twenty surgeries on injuries of the type suffered by the plaintiff" is more persuasive than a general recitation of medical school, residency, and board certifications.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Direct Examination of Experts</div>
+        <div class="concept-name">Presenting Technical Testimony so the Jury Understands and Accepts It</div>
+        <div class="concept-body">
+          <p>The fundamental challenge of expert direct examination is translation: converting technically complex information into language and concepts that a jury of non-specialists can understand without significant distortion of the technical substance. Mauet's approach centres on the use of analogy, plain language, and visual aids as the primary tools of translation. The expert who explains a medical condition through an analogy to everyday experience, supported by a diagram of the relevant anatomy, will be understood and credited far more readily than the one who uses technical vocabulary throughout and assumes the jury will follow.</p>
+          <p>The organisation of expert direct examination should follow a logical progression: what the expert was asked to do; what information and materials they reviewed; what methodology they applied; what they found; and what opinion they reached. This structure mirrors the scientific method familiar to most jurors and gives the testimony an internal logic that makes the opinion feel earned rather than arbitrary. The opinion that arrives at the end of a transparently logical process of examination is far more persuasive than the opinion delivered without context.</p>
+          <p>Mauet also addresses the specific challenge of the expert who wants to use technical language because they believe it is more precise. The lawyer must work with the expert in preparation to identify plain-language equivalents for every technical term that will appear in the testimony, and to replace those terms wherever possible without sacrificing accuracy. The expert who concedes, under the lawyer's guidance, that "they broke it" is a more effective communicator than the one who explains "the defendant's actions resulted in a breach of the structural integrity of the component" — even if the technical formulation is more precise.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Cross-Examination of Experts</div>
+        <div class="concept-name">Undermining the Opinion Without Challenging the Credentials</div>
+        <div class="concept-body">
+          <p>Cross-examining the opposing expert is among the most technically demanding tasks in trial advocacy, and Mauet addresses it with particular care. The fundamental principle: challenge the opinion, not the expert. The expert who has been accepted by the court as qualified has credentials the jury respects — a direct attack on those credentials will make the cross-examiner appear unreasonable. The expert's credentials are not the target; the reliability of this specific opinion, based on these specific inputs, reached by this specific methodology, is the target.</p>
+          <p>The chapter-based approach to expert cross-examination is most effective: a chapter establishing what facts the expert was provided; a chapter establishing what facts the expert was not provided; a chapter establishing what assumptions the expert made and what the opinion would be under different assumptions; a chapter establishing the limitations of the methodology used; and, where applicable, a chapter using the expert's own published work, prior testimony, or stated professional standards against the opinion given in this case. Each chapter proves one point independently; together they systematically undermine the reliability of the opinion without requiring the cross-examiner to dispute the expert's overall competence.</p>
+          <p>The textbook cross of the expert is the chapter establishing what they were not told. An expert opinion is only as reliable as the information on which it is based. The expert who was not given significant facts from the case — medical records, test results, eyewitness accounts, prior similar incidents — cannot have given a fully reliable opinion. Establishing this limitation, fact by fact, through safe leading questions, is available in virtually every case involving an opposing expert and is among the most effective cross-examination techniques available.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Learned Treatise Impeachment</div>
+        <div class="concept-name">Using the Expert's Own Field Against the Expert</div>
+        <div class="concept-body">
+          <p>Federal Rule of Evidence 803(18) and its state equivalents permit the use of learned treatises — authoritative texts in the expert's field — to impeach expert testimony. The technique: first, establish that the text is authoritative in the field (either through the expert's own concession or through the testimony of another expert); second, read the passage that contradicts the expert's opinion or methodology; third, ask the expert to explain the conflict. The expert who cannot distinguish between their opinion and the authoritative text in their own field has a serious credibility problem. The expert who distinguishes by disparaging the authoritative text in front of the jury takes an even greater risk.</p>
+          <p>This technique requires thorough preparation — the cross-examiner must have read the relevant literature, identified the specific passages that contradict the opposing expert's position, and prepared the exact questions needed to establish the text's authority before reading the contradicting passage. The expert who has not been given the specific passage before cross-examination began cannot prepare a response; the one who has been given it in advance will have a prepared response. Mauet addresses the specific question of whether to provide the passage in advance — the answer depends on whether having a prepared response damages the cross-examination more than the element of surprise would benefit it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBJECTIONS -->
+    <div id="objections" class="panel">
+      <div class="part-banner">
+        <div class="p-label">Evidentiary Control</div>
+        <div class="p-title">Objections — The Science of Keeping Evidence Out and Getting Evidence In</div>
+        <div class="p-desc">Objections are not interruptions — they are a tool of trial strategy. The lawyer who knows when to object, how to state the ground, and when to let things go controls the evidentiary landscape of the trial.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Decision to Object</div>
+        <div class="concept-name">When to Object — Strategic Analysis Beyond Mere Admissibility</div>
+        <div class="concept-body">
+          <p>Mauet begins the objections chapter with a principle that most evidence courses do not teach: the mere fact that evidence is inadmissible does not mean the objection should be made. The decision to object at trial is a strategic decision that must balance the benefit of excluding the evidence against the cost of the objection itself — the interruption of the examination's flow, the possibility that the objection draws more attention to the evidence than silence would have, and the risk that the objection is overruled and the evidence comes in anyway, having now been twice emphasised.</p>
+          <p>The objection should be made when the evidence is genuinely damaging and the ground for exclusion is solid. It should generally not be made when the evidence will be admitted anyway (either because the ground is weak or because the opposing party will simply re-offer it through a proper foundation); when the evidence is not significantly damaging even if admitted; or when the objection will draw more attention to the evidence than the evidence itself has received. The lawyer who objects reflexively to everything inadmissible will be overruled repeatedly, will appear obstructionist to the jury, and will waste the credibility that sustained objections to genuinely damaging evidence require.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Common Objections</div>
+        <div class="concept-name">The Major Evidentiary Grounds — Stated Precisely and Deployed Strategically</div>
+        <div class="concept-body">
+          <p>Mauet addresses each major category of evidentiary objection with the same systematic treatment: the substantive rule that supports the objection, the specific language in which the objection should be stated, the most common responses opposing counsel will make, and the tactical considerations that should govern whether to make the objection at all.</p>
+          <p>The major objections addressed include: relevance (the evidence does not tend to prove or disprove a fact of consequence — a broad objection whose success depends on the strength of the connection argument); hearsay (the out-of-court statement offered for the truth of the matter asserted — the most technically complex objection, requiring knowledge of the numerous exceptions and exemptions that permit specific categories of out-of-court statement); foundation (the predicate facts establishing the exhibit's authenticity or the witness's personal knowledge have not been established); leading (the question suggests its own answer and is impermissible on direct examination); speculation (the witness is being asked to state an opinion or inference rather than a fact within their personal knowledge); and opinion (a lay witness is being asked to state a conclusion reserved for expert witnesses).</p>
+          <p>The hearsay objection deserves specific attention because it is both the most frequently encountered and the most frequently confused. Mauet's treatment of hearsay covers the definition, the major exceptions (excited utterance, present sense impression, business records, prior consistent and inconsistent statements, party admissions), and the specific foundational requirements for each. The lawyer who knows the hearsay rule and its exceptions at this level of specificity can both exploit hearsay to admit helpful out-of-court statements and exclude harmful ones with equal confidence.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Making the Record</div>
+        <div class="concept-name">Preserving Error for Appeal Through Precise Objection Practice</div>
+        <div class="concept-body">
+          <p>The trial lawyer's objection practice serves two distinct audiences: the trial court (which must rule on the objection) and the appellate court (which, if the case is appealed, must evaluate whether the ruling was error and whether that error affected the verdict). These two audiences require different things from the objection. For the trial court, the objection must be timely, specific as to ground, and stated in a way that gives the court enough information to rule. For the appellate court, the record must be clear enough that the appellate panel can evaluate the ruling without speculation about what evidence was involved, what ground was asserted, and why the ruling mattered.</p>
+          <p>Mauet addresses the mechanics of making a proper record: stating the ground for the objection specifically (not simply "Objection" but "Objection, hearsay"); making an offer of proof when an objection is sustained (so the appellate record contains the substance of the excluded evidence); requesting a limiting instruction when evidence is admitted for one purpose but not another (to preserve the issue of whether the jury considered it only for the permitted purpose); and moving to strike testimony that has been admitted before an objection could be made. Each of these mechanisms serves the record-making function that preserves the right to appellate review.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Responding to Objections</div>
+        <div class="concept-name">How to Defend the Admissibility of Your Own Evidence</div>
+        <div class="concept-body">
+          <p>Every important piece of evidence in the trial will face an objection from opposing counsel. The lawyer who has not prepared a response to each anticipated objection will be caught flat-footed at exactly the moment when confidence and precision are most important. Mauet's approach to responding to objections mirrors his approach to making them: responses must be specific (identifying the exact rule that permits the evidence), concise (stated briefly enough that the court can process them quickly), and connected to the specific evidence at issue (not a general statement of the rule but an application of the rule to this specific piece of evidence).</p>
+          <p>The offer of proof — the explanation of the evidence's relevance and admissibility made outside the jury's hearing when an objection has been sustained — is treated by Mauet as a critical advocacy opportunity. The offer of proof is addressed to the court, which has the power to reconsider its ruling; a well-organised, specific, and persuasive offer of proof will sometimes cause the court to admit evidence that was initially excluded. Even when it does not, the offer of proof makes the record that allows the appellate court to evaluate whether exclusion was error.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSING ARGUMENT -->
+    <div id="closing" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The Final Argument</div>
+        <div class="p-title">Closing Argument — Weaving the Evidence into the Verdict</div>
+        <div class="p-desc">The closing argument is the one moment at trial when the lawyer can speak directly, as an advocate, without the constraint of question-and-answer. It is the opportunity to take the evidence the jury has heard and seen and weave it into a coherent, compelling argument for the verdict the client deserves.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Purpose and Power</div>
+        <div class="concept-name">What Closing Argument Must Accomplish</div>
+        <div class="concept-body">
+          <p>Mauet begins with the fundamental question of what closing argument is for — and his answer is more specific than most treatments of the subject. Closing argument is not a summary of the evidence (the jury heard the evidence and does not need it recited). It is not a repetition of the opening statement (which was a preview of what the evidence would show). It is an argument — a complete, structured, logically organised demonstration that the evidence heard at trial, evaluated under the governing legal standards, requires a verdict in the client's favour. The distinction between summary and argument is the distinction between telling the jury what happened and telling them what it means and what it requires.</p>
+          <p>The closing argument must also deliver on the promises made in the opening statement. The jury that heard the opening statement remembered what was promised; they have been evaluating the evidence throughout the trial against those promises. The closing argument that confirms every promise — that demonstrates that the evidence delivered everything the opening described — produces a powerful sense of confirmation and reliability. The closing argument that glosses over unfulfilled promises produces the opposite: a sense that the lawyer was not honest, which undermines everything the argument contains.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Structure</div>
+        <div class="concept-name">How to Organise the Closing Argument for Maximum Persuasive Impact</div>
+        <div class="concept-body">
+          <p>Mauet's recommended structure for closing argument reflects the same primacy-recency principles that govern every other aspect of trial: begin with the theme (the strongest possible re-statement of the trial's core moral and factual claim), develop the argument through the evidence (organising the evidence around the elements the jury must decide, not in the order it was presented at trial), address the opposition's strongest points (honestly and specifically, with responses that have been prepared in advance), and end with a direct, specific request for the exact verdict the evidence requires.</p>
+          <p>The organisation of the argument around the jury instructions is particularly important. The jury will deliberate using the judge's instructions as their framework — they will evaluate the evidence against each element of the legal standard as the instructions define it. The closing argument that organises the evidence around those same elements — "The judge will instruct you that to find for the plaintiff on this claim, you must find three things. Let me show you the evidence that establishes each one" — gives the jury a structure for deliberation that serves the client. The argument that is organised differently from the instructions requires the jury to do the organisational work of connecting the argument to the instructions — work that many jurors will not do, or will do incorrectly.</p>
+          <p>The handling of damages in a civil case closing argument deserves specific attention. Mauet provides detailed guidance on how to present a damages argument that is both honest and compelling: how to describe each element of damages with the specificity that makes it real to the jury; how to argue the amount of non-economic damages (pain and suffering, emotional distress, loss of enjoyment of life) without appearing to exploit the client's injuries; and how to use the evidence to support the specific damages figure requested rather than appearing to pull the number out of the air.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Arguing the Evidence</div>
+        <div class="concept-name">Using Specific Evidence to Build the Logical Case for the Verdict</div>
+        <div class="concept-body">
+          <p>The most important technical skill of closing argument is the ability to connect specific evidence to specific legal conclusions. Not "the evidence shows that the defendant was negligent" but "Dr. Garcia testified that the standard of care required a second x-ray within twenty-four hours of the initial injury. Mr. Johnson testified that the defendant's nurses' notes contain no record of a second x-ray. The defendant cannot produce a single piece of paper showing that the required x-ray was ever taken. That is negligence — specific, documented, and uncontested." The specificity of the evidence reference gives the argument the solidity that general characterisation cannot achieve.</p>
+          <p>Mauet teaches the technique of using exhibits in closing argument to maximum effect: displaying the key documents, photographs, and demonstrative aids at the moments in the argument when they most powerfully illustrate the points being made. The exhibit shown during closing argument activates the jury's memory of the moment it was introduced at trial, which activates the associated testimony, which reinforces the argument with the sensory and cognitive experience the jury has already had. This is not repetition — it is integration of everything the jury has experienced into a coherent, vivid argument.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Rebuttal</div>
+        <div class="concept-name">The Plaintiff's Final Word — Using It Precisely</div>
+        <div class="concept-body">
+          <p>In most jurisdictions, the plaintiff (or prosecution) has the right to open and close the closing argument, with the defence presenting their closing argument in between. The plaintiff's rebuttal — the opportunity to respond to the defence's closing argument after the defence has spoken — is a valuable but easily wasted opportunity. Mauet's guidance on rebuttal is consistent with his guidance on every other stage: identify the defence's strongest points during their argument, and respond only to those. Do not re-argue the main closing argument. Do not raise new arguments that should have been made in the main closing. Address specifically, directly, and briefly the two or three points in the defence's closing that most directly challenge the plaintiff's case, and then stop.</p>
+          <p>The rebuttal that simply re-argues the entire case adds nothing — and irritates a jury that has already heard the argument once. The rebuttal that directly and specifically contradicts the defence's most persuasive points, with the specific evidence that answers them, leaves the jury with a final impression of strength and confidence that shapes the deliberations. The last words the jury hears before they retire are the words that most directly influence the first minutes of deliberation — when the most vocal jurors are most likely to establish the frame within which everyone else will argue.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- JURY INSTRUCTIONS AND VERDICT -->
+    <div id="jury" class="panel">
+      <div class="part-banner">
+        <div class="p-label">The End of the Trial</div>
+        <div class="p-title">Jury Instructions, Deliberations &amp; Verdict — The Final Stage</div>
+        <div class="p-desc">The jury instructions define the legal standards by which the jury decides. The verdict form determines how they express that decision. Both must be understood, influenced where possible, and used to maximum advantage in closing argument.</div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Jury Instructions</div>
+        <div class="concept-name">Understanding and Influencing the Legal Framework for Deliberation</div>
+        <div class="concept-body">
+          <p>Jury instructions are the judge's statement to the jury of the legal rules that govern their decision. They define the elements of each claim and defence, specify the burdens of proof, explain how to evaluate credibility and weigh evidence, and define the specific legal standards that govern each factual question the jury must resolve. Understanding the instructions that will be given is essential to trial preparation — because the instructions define what the evidence must prove, and every decision about witness preparation, exhibit organisation, and argument structure should be made with the instructions in mind.</p>
+          <p>Mauet addresses the process of requesting and objecting to jury instructions — the opportunity, available in most jurisdictions, to submit proposed instructions and to object to instructions proposed by the opposing party or by the court. This opportunity is significant: a favourable instruction framing a legal standard in terms that support the client's theory of the case is worth more than any single piece of evidence. An unfavourable instruction that frames the standard in terms that benefit the other side can undo the effect of an otherwise well-tried case. The lawyer who treats the instruction conference as an afterthought has missed one of the most powerful opportunities available in trial practice.</p>
+          <p>The closing argument must be organised around the instructions as delivered — using the specific language of the instructions to demonstrate that the evidence satisfies each required element. The jury that hears the closing argument in the language of the instructions they are about to receive will be able to use the closing argument as a guide to deliberation. The jury that hears a closing argument in language different from the instructions must translate between the two — a cognitive burden that will not always be completed correctly or in the client's favour.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Verdict Form</div>
+        <div class="concept-name">Designing the Document Through Which the Jury Speaks</div>
+        <div class="concept-body">
+          <p>The verdict form — the document the jury fills out to express their decision — is a powerful tool that many trial lawyers pay insufficient attention to. The design of the verdict form determines how the jury organises its deliberations: a general verdict form (simply "We find for the plaintiff" or "We find for the defendant") gives the jury maximum freedom but provides no information about how individual issues were resolved; a special verdict form (asking the jury to answer specific factual questions) structures deliberations around those questions and reveals the jury's reasoning in a way that may provide grounds for post-trial relief or clarify what was and was not decided for purposes of appeal.</p>
+          <p>In civil cases, the plaintiff generally has an incentive to prefer verdict forms that keep the jury focused on the ultimate question of liability and damages rather than individual elements; the defence generally has an incentive to prefer forms that require the jury to address each element separately, where the plaintiff must satisfy each one to prevail. Mauet addresses the strategic considerations on both sides and provides guidance on how to propose verdict forms that advance the client's interests and how to respond to the other side's proposed forms.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">Post-Verdict Motions</div>
+        <div class="concept-name">What Happens After the Verdict — and How to Prepare for It During Trial</div>
+        <div class="concept-body">
+          <p>The trial lawyer's work does not end when the jury returns a verdict. Post-verdict motions — motions for judgment as a matter of law, motions for new trial, motions for remittitur or additur of damages — are available as mechanisms for challenging adverse verdicts, and the foundation for each must be built during trial, not afterward. Mauet addresses the specific trial-level requirements for each post-verdict motion: the renewal of the motion for judgment at the close of all evidence (required in federal courts to preserve the post-verdict motion); the specific objections to jury instructions needed to preserve instructional error for appeal; and the evidentiary objections whose preservation in the trial record allows the appellate court to review admissibility rulings.</p>
+          <p>The lawyer who has tried the case with post-verdict and appellate proceedings in mind — who has been careful at each stage to make the record that supports these later arguments — will have significantly more options after an adverse verdict than one who tried the case thinking only about the jury's immediate response. This dual awareness — trying the case to win before the jury while simultaneously building the record that permits effective post-verdict and appellate advocacy — is among the most demanding skills in trial practice, and Mauet addresses it with the same systematic thoroughness he brings to every other aspect of the trial.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <div class="concept-num">The Bench Trial</div>
+        <div class="concept-name">Adjusting Every Technique for the Judge as Fact-Finder</div>
+        <div class="concept-body">
+          <p>Mauet devotes specific attention to the bench trial — the trial in which the judge serves as both the legal authority and the fact-finder, with no jury. The same fundamental skills apply — case analysis, theory of the case, witness preparation, examination technique, exhibits — but they must be adjusted for a very different audience. The judge is a trained professional who understands legal concepts, evaluates evidence more analytically than emotionally, and has seen many similar cases. The techniques that work specifically for jury communication — the simple language, the repeated theme, the emotional narrative — must be calibrated for an audience whose sophistication and prior exposure to similar evidence is completely different from a jury's.</p>
+          <p>In the bench trial, technical legal arguments and detailed evidentiary foundations receive more attention, because the judge understands and evaluates them at a level a jury cannot. The opening statement is more analytical and less narrative. The direct examination is more focused on specific facts and less on humanising the witness. The closing argument is more precisely tied to the legal elements and may be supplemented by a post-trial brief that sets out the legal arguments with full citation. And the record-making function of objections and offers of proof is even more important, since the trial court's evidentiary rulings in a bench trial are more extensively reviewed on appeal than jury trial evidentiary rulings governed by the harmless error doctrine.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div id="quotes" class="panel">
+      <div class="quotes-section" style="margin:0 -2rem; padding:2rem 2rem;">
+        <div class="section-label" style="color:#604020; margin-top:0;">The Trial Lawyer's Handbook</div>
+        <div class="section-title">Key Passages from Trial Techniques and Trials</div>
+
+        <div class="quote-item"><div class="quote-text">"The trial is not won in the courtroom. It is won in the weeks and months of preparation that precede the trial — when the lawyer understands their case, the other side's case, and exactly what must be proved and how."</div><div class="quote-ref">Chapter 1 · Trial Preparation</div></div>
+        <div class="quote-item"><div class="quote-text">"The theory of the case is the complete story of what happened and why the law requires the verdict your client seeks. Without it, every technique is a hammer in search of a nail."</div><div class="quote-ref">Chapter 2 · Theory of the Case</div></div>
+        <div class="quote-item"><div class="quote-text">"The theme is not a slogan. It is the moral and factual truth of the case, distilled into a phrase the jury will carry into the deliberation room. Everything that happens at trial either reinforces it or undermines it."</div><div class="quote-ref">Chapter 2 · Trial Theme</div></div>
+        <div class="quote-item"><div class="quote-text">"Disclose your weaknesses before the other side does. The jury that hears a problem first from you will credit you for your honesty. The jury that hears it first from opposing counsel will credit you with trying to hide it."</div><div class="quote-ref">Chapter 2 · Weaknesses</div></div>
+        <div class="quote-item"><div class="quote-text">"Voir dire is not just jury selection. It is the first opportunity to establish rapport with the people who will decide your case — to find out what they think and to begin the process of persuasion before the first witness is sworn."</div><div class="quote-ref">Chapter 3 · Voir Dire</div></div>
+        <div class="quote-item"><div class="quote-text">"The opening statement creates the frame through which every piece of subsequent evidence is received. The lawyer who controls that frame controls the trial. The one who cedes it to the other side is fighting uphill from the first witness."</div><div class="quote-ref">Chapter 4 · Opening Statement</div></div>
+        <div class="quote-item"><div class="quote-text">"Promise only what the evidence will deliver. The jury is comparing what you promised in opening with what they received through trial. The gap between those two things is the measure of your credibility."</div><div class="quote-ref">Chapter 4 · Opening Statement</div></div>
+        <div class="quote-item"><div class="quote-text">"On direct examination, the witness is the story. Your job is to ask the questions that allow the witness to tell it — simply, specifically, and in their own voice. The more you talk, the less they are heard."</div><div class="quote-ref">Chapter 5 · Direct Examination</div></div>
+        <div class="quote-item"><div class="quote-text">"Begin and end direct examination with your strongest testimony. The jury remembers the first thing they hear and the last thing they hear. Everything in the middle is context. Do not waste the premium positions."</div><div class="quote-ref">Chapter 5 · Direct Examination</div></div>
+        <div class="quote-item"><div class="quote-text">"Cross-examination without clear goals is not cross-examination — it is improvised risk-taking. Identify what each cross must accomplish before you begin writing a single question."</div><div class="quote-ref">Chapter 6 · Cross-Examination</div></div>
+        <div class="quote-item"><div class="quote-text">"When the cross-examination has achieved its purpose, stop. The most dangerous question in cross-examination is the last one — the one asked after the examination is complete, that hands the witness the opportunity to recover."</div><div class="quote-ref">Chapter 6 · Cross-Examination</div></div>
+        <div class="quote-item"><div class="quote-text">"Some witnesses should not be crossed at all. The examination that gives a sympathetic, credible witness another opportunity to repeat their testimony is worse than no examination. Know when silence is the stronger choice."</div><div class="quote-ref">Chapter 6 · When Not to Cross</div></div>
+        <div class="quote-item"><div class="quote-text">"Every exhibit requires a foundation prepared in advance. The lawyer who lays exhibit foundation without preparation will make technical errors that result in exclusion. Every excluded exhibit is a promise broken to the jury."</div><div class="quote-ref">Chapter 7 · Exhibits</div></div>
+        <div class="quote-item"><div class="quote-text">"Expert cross-examination targets the opinion, not the expert. The court has already validated their credentials. Challenge what they were given, what they were not given, and what they assumed. The opinion is only as reliable as its inputs."</div><div class="quote-ref">Chapter 8 · Expert Witnesses</div></div>
+        <div class="quote-item"><div class="quote-text">"The decision to object is a strategic decision, not a reflex. The admissibility of evidence is necessary but not sufficient for the objection. Ask whether the objection serves the case — whether the benefit of exclusion outweighs the cost of making the evidence more prominent."</div><div class="quote-ref">Chapter 9 · Objections</div></div>
+        <div class="quote-item"><div class="quote-text">"Closing argument is not a summary of evidence. It is an argument — a complete demonstration that the evidence heard at trial, evaluated under the legal standards the judge will provide, requires a verdict in your client's favour."</div><div class="quote-ref">Chapter 10 · Closing Argument</div></div>
+        <div class="quote-item"><div class="quote-text">"Organise the closing argument around the jury instructions. The jury will deliberate using those instructions as their framework. Give them your argument in the same language, and your argument becomes their guide."</div><div class="quote-ref">Chapter 10 · Closing Argument</div></div>
+        <div class="quote-item"><div class="quote-text">"Jury instructions define what the evidence must prove. Every decision made in trial preparation, in witness examination, and in argument must be made with the instructions in mind. The lawyer who ignores the instructions until the end has been ignoring the goal."</div><div class="quote-ref">Chapter 11 · Jury Instructions</div></div>
+        <div class="quote-item"><div class="quote-text">"Try the case to win before the jury while simultaneously building the record that supports appellate review. These are not competing objectives — the lawyer who does both has mastered the full scope of the trial lawyer's craft."</div><div class="quote-ref">Chapter 12 · Post-Verdict</div></div>
+        <div class="quote-item"><div class="quote-text">"Trial advocacy is a craft. It can be learned, improved, and mastered through study, preparation, and practice. The lawyer who treats it as one will consistently outperform the one who treats it as an expression of personality."</div><div class="quote-ref">Introduction</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-block">
+    <p>"Trial Techniques and Trials is not a book about individual moments at trial. It is a complete system — a coherent framework for understanding, preparing, and conducting every stage of trial from the first case analysis to the final verdict. Mauet's enduring achievement is making this system teachable, learnable, and available to every lawyer willing to bring to their trial practice the same analytical rigour they bring to their legal research."</p>
+  </div>
+
+</div>
+<script>
+  function show(id,el){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
+`;
+
+const BEYOND_GOOD_EVIL_HTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Beyond Good and Evil — A Comprehensive Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
+  :root {
+    --dark: #0c1220;
+    --dark2: #131c2e;
+    --maroon: #6a1a2a;
+    --maroon-light: #8a2a3a;
+    --maroon-bright: #b04050;
+    --gold: #c09030;
+    --gold-light: #daa840;
+    --cream: #f3eed8;
+    --cream-dark: #e3d8c0;
+    --border-c: #9080a0;
+    --blue: #1e3060;
+    --blue-light: #4060a0;
+    --text: #0c1220;
+    --muted: #2a1828;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body,.wrap { font-family:'Cormorant Garamond',serif; background:transparent; color:var(--text); }
+  .wrap { max-width:880px; margin:0 auto; padding:0 0 3rem; }
+
+  .hero { background:var(--dark); color:var(--cream); padding:3.5rem 3rem 3rem; text-align:center; border-bottom:4px double var(--maroon-light); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(106,26,42,0.07) 29px); pointer-events:none; }
+  .hero-ornament { font-size:20px; color:var(--maroon-bright); letter-spacing:14px; margin-bottom:1rem; opacity:0.75; }
+  .hero-title { font-family:'IM Fell English',serif; font-size:46px; line-height:1.1; color:var(--maroon-bright); letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.7); }
+  .hero-subtitle { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:#7060a0; margin-top:0.5rem; }
+  .hero-author { margin-top:1.1rem; font-size:14px; color:#503050; letter-spacing:3px; text-transform:uppercase; }
+  .hero-year { display:inline-block; margin-top:0.3rem; font-size:12px; color:#402040; letter-spacing:2px; }
+
+  .stat-strip { display:flex; justify-content:center; gap:2rem; background:var(--dark); padding:1.2rem 2rem; border-bottom:1px solid var(--maroon); flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat .num { font-family:'IM Fell English',serif; font-size:32px; color:var(--maroon-bright); line-height:1; }
+  .stat .lbl { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#503050; margin-top:0.2rem; }
+
+  .tab-bar { display:flex; flex-wrap:wrap; background:#080c18; border-bottom:2px solid var(--maroon); position:sticky; top:0; z-index:100; }
+  .tab { padding:0.65rem 0.8rem; font-family:'IM Fell English',serif; font-size:11.5px; color:#503050; cursor:pointer; border-right:1px solid #131c2e; transition:all 0.2s; white-space:nowrap; }
+  .tab:hover { color:var(--maroon-bright); background:#131c2e; }
+  .tab.active { color:var(--maroon-bright); background:#18101a; border-bottom:2px solid var(--maroon-bright); }
+
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .content-area { padding:0 2rem 2rem; background:var(--cream); border:1px solid var(--border-c); border-top:none; }
+
+  .intro-block { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border-c); margin-bottom:1.8rem; }
+  .intro-block p { font-size:17px; line-height:1.85; color:var(--muted); font-style:italic; text-align:center; }
+
+  .section-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--maroon); margin-bottom:0.3rem; margin-top:1.8rem; }
+  .section-title { font-family:'IM Fell English',serif; font-size:22px; color:var(--dark); border-bottom:1px solid var(--border-c); padding-bottom:0.4rem; margin-bottom:1.2rem; }
+
+  .body-text { font-size:16px; line-height:1.85; color:var(--muted); margin-bottom:1.1rem; text-align:justify; }
+  .body-text strong { color:var(--maroon); font-weight:600; }
+
+  .tip-block { margin-bottom:1.8rem; padding:1rem 1.3rem; border-left:4px solid var(--maroon); background:rgba(106,26,42,0.04); }
+  .tip-num { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--maroon); margin-bottom:0.1rem; }
+  .tip-name { font-weight:600; font-size:17px; color:var(--blue); margin-bottom:0.3rem; }
+  .tip-body { font-size:15.5px; line-height:1.78; color:#0c1820; }
+  .tip-body p { margin-bottom:0.7rem; }
+  .tip-body p:last-child { margin-bottom:0; }
+
+  .rule-box { background:var(--dark); color:var(--cream); padding:1.2rem 1.5rem; margin:1rem 0 1.3rem; border-left:5px solid var(--gold); }
+  .rule-box .r-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-light); margin-bottom:0.4rem; }
+  .rule-box p { font-size:15.5px; line-height:1.7; color:var(--cream); }
+
+  .part-banner { background:var(--dark); color:var(--cream); padding:1rem 1.5rem; margin:2rem -2rem 1.8rem; border-top:2px solid var(--maroon); border-bottom:2px solid var(--maroon); }
+  .part-banner .p-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--maroon-bright); margin-bottom:0.2rem; }
+  .part-banner .p-title { font-family:'IM Fell English',serif; font-size:19px; color:var(--cream); }
+  .part-banner .p-desc { font-size:13px; color:#7060a0; margin-top:0.3rem; font-style:italic; }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:0.8rem; margin-bottom:1.5rem; }
+  .theme-card { background:var(--dark); border:1px solid var(--maroon); padding:1rem; border-radius:2px; }
+  .theme-card .t-name { font-family:'IM Fell English',serif; font-size:14px; color:var(--maroon-bright); margin-bottom:0.25rem; }
+  .theme-card .t-desc { font-size:12.5px; color:#7060a0; line-height:1.45; }
+
+  .do-dont { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:0.8rem 0 1.2rem; }
+  .do-box, .dont-box { padding:0.85rem 1rem; font-size:14px; line-height:1.6; }
+  .do-box { background:rgba(26,106,50,0.07); border-left:4px solid #2a7a3a; color:#0e2818; }
+  .dont-box { background:rgba(106,26,26,0.07); border-left:4px solid var(--maroon); color:#280e0e; }
+  .do-box strong, .dont-box strong { display:block; font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.35rem; }
+  .do-box strong { color:#2a7a3a; }
+  .dont-box strong { color:var(--maroon); }
+  .do-box ul, .dont-box ul { list-style:none; padding:0; margin:0; }
+  .do-box li, .dont-box li { padding:0.2rem 0 0.2rem 0.9rem; position:relative; }
+  .do-box li::before { content:'▸'; position:absolute; left:0; color:#2a7a3a; }
+  .dont-box li::before { content:'▸'; position:absolute; left:0; color:var(--maroon); }
+
+  .example-box { background:rgba(30,48,96,0.06); border:1px solid #9090c0; padding:0.85rem 1.1rem; margin:0.8rem 0 1.1rem; border-radius:2px; }
+  .example-box .ex-label { font-family:'IM Fell English',serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--blue-light); margin-bottom:0.3rem; }
+  .example-box p { font-size:14.5px; line-height:1.65; color:var(--muted); font-style:italic; }
+
+  .quotes-section { background:var(--dark); margin:0 -2rem; padding:2.5rem 2rem; border-top:3px double var(--maroon); }
+  .quotes-section .section-title { color:var(--maroon-bright); border-bottom-color:#2a1028; margin-top:0; }
+  .quote-item { border-left:3px solid var(--maroon); padding:0.75rem 1.1rem; margin-bottom:1.1rem; background:rgba(106,26,42,0.09); }
+  .quote-text { font-family:'IM Fell English',serif; font-style:italic; font-size:16.5px; color:var(--cream); line-height:1.7; margin-bottom:0.35rem; }
+  .quote-ref { font-size:11px; color:#503050; letter-spacing:2px; text-transform:uppercase; }
+
+  .verdict-block { background:var(--maroon); color:var(--cream); padding:2rem; text-align:center; border-top:3px double var(--maroon-bright); }
+  .verdict-block p { font-family:'IM Fell English',serif; font-size:17px; line-height:1.7; font-style:italic; }
+
+  .divider { text-align:center; color:var(--maroon); font-size:18px; letter-spacing:10px; margin:1.4rem 0; opacity:0.4; }
+
+  .checklist { list-style:none; margin:0.5rem 0 1.2rem 0; }
+  .checklist li { font-size:15px; line-height:1.65; color:var(--muted); padding:0.3rem 0 0.3rem 1.5rem; position:relative; border-bottom:1px dotted #c0b0c0; }
+  .checklist li:last-child { border-bottom:none; }
+  .checklist li::before { content:'▸'; position:absolute; left:0; color:var(--maroon-bright); font-size:12px; top:0.45rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============================ HERO ============================ -->
+<div class="hero">
+  <div class="hero-ornament">◆ ◆ ◆</div>
+  <div class="hero-title">Beyond Good and Evil</div>
+  <div class="hero-subtitle">Prelude to a Philosophy of the Future</div>
+  <div class="hero-author">Friedrich Nietzsche</div>
+  <div class="hero-year">First Published 1886</div>
+</div>
+
+<div class="stat-strip">
+  <div class="stat"><div class="num">296</div><div class="lbl">Aphorisms</div></div>
+  <div class="stat"><div class="num">9</div><div class="lbl">Major Parts</div></div>
+  <div class="stat"><div class="num">1886</div><div class="lbl">Published</div></div>
+</div>
+
+<!-- ============================ TAB BAR ============================ -->
+<div class="tab-bar">
+  <div class="tab active" onclick="show('overview',this)">Overview</div>
+  <div class="tab" onclick="show('context',this)">Preface &amp; Context</div>
+  <div class="tab" onclick="show('argument',this)">Central Argument</div>
+  <div class="tab" onclick="show('architecture',this)">Architecture</div>
+  <div class="tab" onclick="show('parts1to3',this)">Parts I–III</div>
+  <div class="tab" onclick="show('parts4to6',this)">Parts IV–VI</div>
+  <div class="tab" onclick="show('parts7to9',this)">Parts VII–IX</div>
+  <div class="tab" onclick="show('moralities',this)">Master &amp; Slave</div>
+  <div class="tab" onclick="show('doctrines',this)">3 Doctrines</div>
+  <div class="tab" onclick="show('themes',this)">Deeper Themes</div>
+  <div class="tab" onclick="show('glossary',this)">Glossary</div>
+  <div class="tab" onclick="show('quotes',this)">Quotes</div>
+  <div class="tab" onclick="show('matters',this)">Why It Matters</div>
+</div>
+
+<div class="content-area">
+
+<!-- ============================ OVERVIEW ============================ -->
+<div class="panel active" id="overview">
+  <div class="intro-block">
+    <p>“Good” and “evil” are not eternal truths discovered by reason; they are historical products of human psychology, biology, and power, and any honest philosophy of the future must begin by going beyond them.</p>
+  </div>
+
+  <div class="section-label">The Book</div>
+  <div class="section-title">What This Book Is and Why It Matters</div>
+
+  <p class="body-text">Beyond Good and Evil is Friedrich Nietzsche’s 1886 attack on the entire moral and philosophical inheritance of Europe. He wrote it in the hope of dragging philosophy out of the abstract systems of Plato, Descartes, and Kant, and onto a more honest, biological, psychological footing. The subtitle — <em>Prelude to a Philosophy of the Future</em> — is exact: this book is not the future philosophy itself, but the clearing of ground that must come first.</p>
+
+  <p class="body-text">It is composed of <strong>296 numbered sections</strong> (most of them aphorisms or short essays) grouped into <strong>nine parts</strong>. The style is deliberately unsystematic, aphoristic, often deliberately offensive. Nietzsche is not building a tower of arguments; he is firing test shots into convictions the reader has never examined. The book’s purpose is to make you uncomfortable about beliefs you have always held safely.</p>
+
+  <div class="rule-box">
+    <div class="r-label">In One Sentence</div>
+    <p>Going “beyond good and evil” does not mean becoming an immoral person; it means stepping outside the inherited moral framework long enough to see it clearly. It is a position of intellectual honesty, not of license.</p>
+  </div>
+
+  <div class="section-label">Three Pillars</div>
+  <div class="section-title">The Book in Three Movements</div>
+
+  <div class="three-rules">
+    <div class="rule-card">
+      <div class="r-num">I</div>
+      <div class="r-title">Demolition</div>
+      <div class="r-desc">Tear down the prejudices of philosophers, the comforts of religion, and the unexamined morality of the herd.</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">II</div>
+      <div class="r-title">Diagnosis</div>
+      <div class="r-desc">Treat morality as a natural, historical phenomenon — observe it as a naturalist observes the behaviour of animals.</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">III</div>
+      <div class="r-title">Construction</div>
+      <div class="r-desc">Sketch the figure of the noble human being who can create new values once the old ones have decayed.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Reading Notes</div>
+  <div class="section-title">How to Approach the Book</div>
+
+  <ul class="checklist">
+    <li>Read it slowly. The aphorisms are designed to detonate, not to be skimmed.</li>
+    <li>Do not look for a system. Nietzsche refuses to build one on principle.</li>
+    <li>Expect to disagree, and ask why you disagree. That reaction is the point.</li>
+    <li>Distinguish his arguments from his nineteenth-century prejudices, especially on women and on certain peoples.</li>
+    <li>If you feel insulted, keep reading — the chapter you find most offensive may be the one you most need.</li>
+  </ul>
+</div>
+
+<!-- ============================ PREFACE & CONTEXT ============================ -->
+<div class="panel" id="context">
+  <div class="section-label">Before You Read</div>
+  <div class="section-title">When, Why, and How This Book Was Written</div>
+
+  <p class="body-text">Beyond Good and Evil was written in 1885 and published at Nietzsche’s own expense in 1886. He was forty-one, in poor health, almost completely alone, living in cheap rooms in the Swiss Alps in summer and the Italian Riviera in winter. He had resigned his university chair seven years earlier because of headaches and near-blindness, and he had broken with his closest friend, the composer Richard Wagner, whom he had once worshipped and now regarded as a charlatan of German nationalism.</p>
+
+  <p class="body-text">The book sold barely a hundred copies in its first year. By the time Nietzsche could have known it would change the world, he had already collapsed into the madness that ended his working life in January 1889. He never knew the book had readers.</p>
+
+  <div class="section-label">The Preface</div>
+  <div class="section-title">“Supposing Truth Is a Woman…”</div>
+
+  <p class="body-text">The book opens with one of the most provocative sentences in nineteenth-century philosophy: <em>“Supposing truth is a woman — what then?”</em> The image is meant to unsettle. Philosophers, Nietzsche says, have approached truth as clumsy suitors approach a woman — pompously, abstractly, with no understanding of what they are dealing with. They have written gigantic systems and called them objective when they were really attempts at seduction by a man who had no idea how to court.</p>
+
+  <p class="body-text">The preface goes further. The greatest philosophical error of the modern age, he says, is the dogmatism of Plato — the invention of “pure spirit” and “the good in itself.” Christianity is “Platonism for the people.” For two thousand years Europe has lived under this dogma, and the modern crisis is what happens when it begins to collapse. The book that follows is an attempt to think clearly in that collapse.</p>
+
+  <div class="rule-box">
+    <div class="r-label">Why This Matters for the Whole Book</div>
+    <p>The preface frames everything that follows. Beyond Good and Evil is not an isolated attack on “good and evil”; it is an attempt to map what comes after the long Platonic-Christian dream has ended. Nietzsche is not killing morality for fun. He is asking how human beings can live, think, and create when the metaphysical scaffolding has been pulled away.</p>
+  </div>
+
+  <div class="section-label">Where It Sits</div>
+  <div class="section-title">The Book in Nietzsche’s Career</div>
+
+  <table class="parts-table">
+    <thead>
+      <tr><th>Year</th><th>Work</th><th>Role</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="pn">1872</td><td class="pt">The Birth of Tragedy</td><td>Early aesthetic philosophy; still under Wagner’s influence.</td></tr>
+      <tr><td class="pn">1878</td><td class="pt">Human, All Too Human</td><td>Break with Wagner; turn toward psychological realism.</td></tr>
+      <tr><td class="pn">1882</td><td class="pt">The Gay Science</td><td>“God is dead” first announced; the book’s philosophical premise.</td></tr>
+      <tr><td class="pn">1883–85</td><td class="pt">Thus Spoke Zarathustra</td><td>His prophetic, lyrical statement of the Übermensch and eternal recurrence.</td></tr>
+      <tr><td class="pn">1886</td><td class="pt"><strong>Beyond Good and Evil</strong></td><td>The cool, prose-philosophical version of what Zarathustra said in poetry.</td></tr>
+      <tr><td class="pn">1887</td><td class="pt">On the Genealogy of Morals</td><td>The follow-up: a sustained essay on the historical origins of guilt and conscience.</td></tr>
+      <tr><td class="pn">1888</td><td class="pt">Twilight of the Idols, The Antichrist</td><td>Final feverish works; collapse follows in January 1889.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="body-text">Beyond Good and Evil is best read as <strong>the prose argument behind Thus Spoke Zarathustra</strong>. Where Zarathustra speaks in parables and poems, Beyond Good and Evil makes the same claims in the cooler form of philosophical prose. He himself called it a “critique of modernity, science, the arts, and politics included.”</p>
+
+  <div class="example-box">
+    <div class="ex-label">A Practical Reading Order</div>
+    <p>If you have not read Nietzsche before, Beyond Good and Evil is the right entry point: more accessible than Zarathustra, more sustained than the aphorism books. After it, read On the Genealogy of Morals as the follow-up he himself recommended — three long essays that develop several of this book’s central claims.</p>
+  </div>
+
+  <div class="section-label">A Necessary Warning</div>
+  <div class="section-title">Nietzsche and the Nazis</div>
+
+  <p class="body-text">Nietzsche was not a Nazi and would have despised them. He hated antisemitism so violently that he broke with his sister, Elisabeth, partly over her marriage to a notorious antisemite. He called nationalism a sickness and the Germans, in particular, a heavy and self-deceiving people.</p>
+
+  <p class="body-text">After his collapse, however, Elisabeth took control of his manuscripts and his estate. She edited his unpublished notes into a book she called <em>The Will to Power</em>, suppressed passages that contradicted her politics, and welcomed Hitler to the Nietzsche Archive in Weimar. The Nazis seized on the distortion. The text of Beyond Good and Evil itself, written and published by Nietzsche, contains some of the strongest anti-nationalist and anti-antisemitic passages in nineteenth-century European literature.</p>
+
+  <div class="warning-box">
+    <div class="w-label">If You Have Heard the Slogans</div>
+    <p>Almost everything popular culture “knows” about Nietzsche — that he was a proto-Nazi, that he glorified domination, that the Übermensch is a master race — comes from his sister’s forgery and from twentieth-century propaganda. The actual book is subtler, more ironic, and more humane than the legend. Read it, and you will be surprised how much of what you thought you knew was wrong.</p>
+  </div>
+</div>
+
+<!-- ============================ CENTRAL ARGUMENT ============================ -->
+<div class="panel" id="argument">
+  <div class="section-label">Central Argument</div>
+  <div class="section-title">The Philosophy of the Future</div>
+
+  <p class="body-text">Nietzsche’s central claim is that traditional philosophy has been dishonest about what it really is. Philosophers, he says, do not arrive at their views through pure reason; they begin with deep prejudices — moral, temperamental, even physiological — and then construct arguments that lead exactly to the conclusions they wanted from the start. Every great philosophy, he writes, is <strong>a kind of involuntary memoir, a confession of its author</strong>.</p>
+
+  <p class="body-text">From this starting point he draws a sweeping consequence: if our moral concepts are not eternal truths but human creations shaped by struggle, fear, gratitude, and resentment, then they can be examined, criticized, and ultimately revalued. The task of the new philosopher — what he calls a “philosopher of the future” — is not to defend received morality but to question it from the outside, to ask why we believe what we believe, and to dare to create new values where the old ones have decayed.</p>
+
+  <div class="rule-box">
+    <div class="r-label">The Title Explained</div>
+    <p>“Beyond good and evil” names a vantage point, not a programme. From it, the inherited categories of morality come into view as historical objects — products of particular peoples, struggles, and psychologies — rather than as eternal laws. The philosopher’s task is to reach that vantage point without falling into nihilism on the way.</p>
+  </div>
+
+  <div class="section-label">The New Philosopher</div>
+  <div class="section-title">What Nietzsche Wants Philosophy to Become</div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <strong>Honest Philosophy</strong>
+      <ul>
+        <li>Admits its own drives and instincts.</li>
+        <li>Treats morality as something to be explained.</li>
+        <li>Creates values; does not just classify them.</li>
+        <li>Is willing to be solitary and unwelcome.</li>
+        <li>Loves problems more than answers.</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <strong>Dishonest Philosophy</strong>
+      <ul>
+        <li>Pretends to begin from nowhere, with no body.</li>
+        <li>Defends its inherited morality as “self-evident.”</li>
+        <li>Imitates science to feel respectable.</li>
+        <li>Wants applause from the crowd or the state.</li>
+        <li>Mistakes its conclusions for its starting points.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="ex-label">A Famous Move</div>
+    <p>Nietzsche asks the question no one had asked: why should we want truth at all? Why not untruth, or uncertainty? Many of the beliefs that allow human beings to flourish are demonstrably false. Useful illusion may matter more than accurate description. This single move overturns the unspoken contract of Western thought.</p>
+  </div>
+</div>
+
+<!-- ============================ ARCHITECTURE ============================ -->
+<div class="panel" id="architecture">
+  <div class="section-label">Architecture</div>
+  <div class="section-title">The Nine Parts at a Glance</div>
+
+  <p class="body-text">The book is structured as a tour, beginning with a critique of philosophy itself, moving through religion, morality, the universities, the European political situation of the 1880s, and finally arriving at a positive vision: the “noble” type of person Nietzsche believed civilization needed if it was not to collapse into mediocrity. Each part can be read on its own, but read together they trace a single arc from demolition to construction.</p>
+
+  <table class="parts-table">
+    <thead>
+      <tr><th>Part</th><th>Title</th><th>Theme</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="pn">I</td><td class="pt">On the Prejudices of Philosophers</td><td>How philosophy has always smuggled in its conclusions before it began.</td></tr>
+      <tr><td class="pn">II</td><td class="pt">The Free Spirit</td><td>The kind of mind needed to think honestly once old certainties are gone.</td></tr>
+      <tr><td class="pn">III</td><td class="pt">The Religious Nature</td><td>A psychological dissection of religion, especially Christianity.</td></tr>
+      <tr><td class="pn">IV</td><td class="pt">Epigrams and Interludes</td><td>A pause: 123 short, sharp aphorisms on human nature.</td></tr>
+      <tr><td class="pn">V</td><td class="pt">Natural History of Morals</td><td>Morality treated as a biological and historical phenomenon.</td></tr>
+      <tr><td class="pn">VI</td><td class="pt">We Scholars</td><td>A critique of academic philosophy and the modern scientist.</td></tr>
+      <tr><td class="pn">VII</td><td class="pt">Our Virtues</td><td>What virtue might look like for a more honest age.</td></tr>
+      <tr><td class="pn">VIII</td><td class="pt">Peoples and Fatherlands</td><td>Europe, nationalism, the Jews, Germans, French, English.</td></tr>
+      <tr><td class="pn">IX</td><td class="pt">What Is Noble?</td><td>The positive vision: the “higher” human being.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="theme-grid">
+    <div class="theme-card"><div class="t-name">Demolition</div><div class="t-desc">Parts I–III tear down philosophy, the “I,” and religion.</div></div>
+    <div class="theme-card"><div class="t-name">Pause</div><div class="t-desc">Part IV: 123 epigrams on human nature — the book’s breathing room.</div></div>
+    <div class="theme-card"><div class="t-name">Diagnosis</div><div class="t-desc">Parts V–VI examine morality and the modern scholar from outside.</div></div>
+    <div class="theme-card"><div class="t-name">Diagnosis II</div><div class="t-desc">Parts VII–VIII examine modern virtue and the European political condition.</div></div>
+    <div class="theme-card"><div class="t-name">Construction</div><div class="t-desc">Part IX sketches the noble soul — the book’s positive vision.</div></div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <p class="body-text" style="text-align:center;font-style:italic;">The Master &amp; Slave and Three Doctrines tabs trace themes that run across all nine parts.</p>
+</div>
+
+<!-- ============================ PARTS I–III ============================ -->
+<div class="panel" id="parts1to3">
+
+  <div class="part-banner">
+    <div class="p-label">Part One</div>
+    <div class="p-title">On the Prejudices of Philosophers</div>
+    <div class="p-desc">Sections 1–23 · The opening attack on the foundations of all philosophy that came before.</div>
+  </div>
+
+  <p class="body-text">Nietzsche begins by asking a question no philosopher had thought to ask out loud: <strong>why should we want truth at all?</strong> Why not untruth, or uncertainty, or even ignorance? The question sounds strange because we have inherited the assumption — from Plato through Christianity to modern science — that truth is automatically preferable to falsehood. Nietzsche refuses to take that assumption for granted. Many of the beliefs that have allowed human beings to flourish, he points out, are demonstrably untrue. Useful illusion may matter more than accurate description.</p>
+
+  <p class="body-text">From there he attacks the idea of the “thing in itself,” the notion of a pure spirit thinking pure thoughts independent of any body. He argues that what we call thinking is in fact a small, conscious surface above a vast unconscious life of drives, instincts, and bodily needs. <em>“It thinks,”</em> he says, would be more accurate than <em>“I think.”</em> The grammatical subject “I” is a fiction we add afterward.</p>
+
+  <p class="body-text">He singles out Kant’s “synthetic a priori judgments” and the Stoic ideal of living “according to nature” as examples of philosophers smuggling their values into descriptions of reality. Nature is indifferent; to live according to nature is therefore impossible, and what the Stoics actually did was project their own ideal back onto the world and call it law. Every philosophy, on this reading, is a hidden self-portrait.</p>
+
+  <div class="section-label">Specific Targets</div>
+  <div class="section-title">Four Old Errors He Demolishes</div>
+
+  <div class="tip-block">
+    <div class="tip-num">Error 1</div>
+    <div class="tip-name">The “Causa Sui” — Self-Caused Cause</div>
+    <div class="tip-body">
+      <p>Theologians and metaphysicians had long imagined a being that causes itself — God, the soul, the free will. Nietzsche calls this “the best self-contradiction that has been conceived so far.” Nothing causes itself. The desire for a self-caused cause is, he says, the desire to be one’s own absolute master, free of the world; it is a form of vanity dressed as metaphysics.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Error 2</div>
+    <div class="tip-name">Free Will and Unfree Will Are Both Wrong</div>
+    <div class="tip-body">
+      <p>The free-will defenders want to take credit for their virtues. The determinists want to escape blame for their faults. Both, Nietzsche says, are mistakes of the same kind. The truth is that there is only <strong>strong will and weak will</strong>. The interesting question is not whether the will is free, but whether it is firm or flabby, capable of long aim or scattered. Morality, properly understood, is about the cultivation of strong will, not the metaphysics of choice.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Error 3</div>
+    <div class="tip-name">The Soul-Atom Superstition</div>
+    <div class="tip-body">
+      <p>Christianity gave Europe the idea of an indivisible, immortal soul — a kind of spiritual atom inside each person. Modern science has, in Nietzsche’s view, mostly inherited this idea in disguised form: the “subject,” the unified self, the “I” that has experiences. He proposes that we drop the superstition without dropping psychology. The self is not a single thing; it is <strong>a society of drives</strong>, often in conflict, sometimes in temporary alliance, with consciousness sitting on top like a captain who thinks he is steering when in fact the crew below has decided where to go.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Error 4</div>
+    <div class="tip-name">Spinoza, Schopenhauer, and the English</div>
+    <div class="tip-body">
+      <p>Nietzsche names names. He attacks Spinoza for hiding his loneliness behind geometric proofs. He attacks his old hero Schopenhauer for dressing up Christian pessimism in Buddhist robes — the “will to live” that wants to deny itself is, he says, just monkish self-loathing in metaphysical disguise. He attacks the English “moral psychologists” (Hobbes, Locke, Mill, Bentham) for being shallow — for trying to derive morality from utility, comfort, or pleasure, which he regards as the philosophy of shopkeepers.</p>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <div class="r-label">Key Takeaways</div>
+    <p>Truth is not self-evidently more valuable than untruth. Reason is not the foundation of life but a thin instrument shaped by deeper drives. The “I” that supposedly thinks is a grammatical illusion. Causa sui is a vanity. Free vs. unfree will is the wrong question — strong vs. weak will is the right one. The soul is not an atom but a society of drives. Every great philosophy is the involuntary confession of its author.</p>
+  </div>
+
+  <div class="part-banner">
+    <div class="p-label">Part Two</div>
+    <div class="p-title">The Free Spirit</div>
+    <div class="p-desc">Sections 24–44 · The character and discipline of the mind that can survive without inherited certainties.</div>
+  </div>
+
+  <p class="body-text">Having dismantled the old idea of philosophy, Nietzsche now describes the kind of person who can think after the demolition. He calls this person the <strong>free spirit</strong> — not a free thinker in the cheap modern sense of someone who simply rejects authority, but a serious, disciplined, even severe person who has earned freedom by passing through long periods of doubt, solitude, and self-overcoming.</p>
+
+  <p class="body-text">The free spirit is suspicious of his own opinions, even his own most cherished convictions. He has learned that convictions can be prisons. He values intellectual cleanliness above comfort, and is willing to live without the certainties that most people need in order to feel safe. This is not skepticism for its own sake; it is the precondition for a more honest creativity.</p>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <strong>The Free Spirit</strong>
+      <ul>
+        <li>Submits to harder rules than convention requires.</li>
+        <li>Is suspicious of his own convictions.</li>
+        <li>Prefers solitude to comforting agreement.</li>
+        <li>Sees freedom as something earned, not given.</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <strong>The “Free-Thinker”</strong>
+      <ul>
+        <li>Rejects rules to be comfortable.</li>
+        <li>Doubts only conventional things.</li>
+        <li>Confuses tolerance with insight.</li>
+        <li>Is, in Nietzsche’s view, a coward in slow motion.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="part-banner">
+    <div class="p-label">Part Three</div>
+    <div class="p-title">The Religious Nature</div>
+    <div class="p-desc">Sections 45–62 · Religion, especially Christianity, examined as a psychological and historical phenomenon.</div>
+  </div>
+
+  <p class="body-text">Nietzsche treats religion not as true or false, but as a <strong>strategy</strong>. Religions, especially Christianity, are tools for managing certain psychological types — above all, those who suffer and feel weak. Christianity, he argues, took the values of the powerless (humility, meekness, pity, obedience) and reinterpreted them as the highest virtues. By doing this, it made the weak feel valuable and the strong feel guilty. This was, in his view, a remarkable historical achievement and a long-term disaster.</p>
+
+  <p class="body-text">He is careful not to caricature religious belief. He grants that religion has produced genuine spiritual depth, and that the saint and the ascetic represent a real psychological achievement — the disciplining of the inner life on a grand scale. What troubles him is not depth but consequence. A civilization that takes the morality of slaves and weaklings as binding on everyone, including the strong and the creative, eventually produces a herd of comfortable, harmless, mediocre people. He calls this the <strong>“last man.”</strong></p>
+
+  <p class="body-text">The famous declaration “God is dead,” introduced in his earlier book <em>The Gay Science</em>, is the silent backdrop of this part. Beyond Good and Evil does not need to repeat the slogan. It assumes that the cultural authority of Christianity has collapsed, and asks what comes next. Nietzsche’s worry is that nothing comes next — that Europeans will continue to live by Christian morality long after they have stopped believing the doctrines that supported it, producing an exhausted, sentimental civilization without the courage to create new values.</p>
+
+  <div class="section-label">A Closer Look</div>
+  <div class="section-title">The Three Rungs of Religious Cruelty</div>
+
+  <p class="body-text">In one of the book’s most penetrating passages, Nietzsche traces what he calls the historical ladder of religious cruelty — the price human beings have paid, in self-inflicted suffering, for their gods.</p>
+
+  <div class="three-rules">
+    <div class="rule-card">
+      <div class="r-num">I</div>
+      <div class="r-title">Sacrificing Others</div>
+      <div class="r-desc">In the earliest religions, men sacrificed their loved ones — children, prisoners, the firstborn — to the gods.</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">II</div>
+      <div class="r-title">Sacrificing the Self</div>
+      <div class="r-desc">Later, in the “moral epoch,” men sacrificed their own strongest instincts — their nature — to a god who demanded purity.</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">III</div>
+      <div class="r-title">Sacrificing God</div>
+      <div class="r-desc">Finally, in the modern age, men sacrifice God himself — for the sake of nothingness, of a final cruelty: atheism without a new ideal.</div>
+    </div>
+  </div>
+
+  <p class="body-text">Each rung is a step further into self-cruelty. The third rung, the modern one, is the most dangerous: a generation has killed God but has not replaced him, and so it punishes itself with a meaningless universe rather than with an angry one. This is Nietzsche’s diagnosis of nineteenth-century European nihilism, and it is sharper than most that have come since.</p>
+
+  <div class="section-label">A Surprising Defence</div>
+  <div class="section-title">The Old Testament vs. the New</div>
+
+  <p class="body-text">Despite his hostility to Christianity, Nietzsche reserves some of his warmest praise in the entire book for the <strong>Hebrew Bible</strong>. The Old Testament, he says, contains men, things, and speeches on so grand a scale that Greek and Indian literature have nothing to put beside it. He stands in awe and reverence before these enormous remnants of what man once was.</p>
+
+  <p class="body-text">The New Testament, by contrast, he calls a book of the small soul — a sentimental, parochial, half-religious half-rococo product of a Greek-Jewish lower-middle-class population. To bind these two books into one and call it “the Bible,” he says, is perhaps the worst sin of literary taste in history. This passage alone, written in 1886, gives the lie to every later attempt to enlist Nietzsche for antisemitism.</p>
+
+  <div class="rule-box">
+    <div class="r-label">What He Says About Religion</div>
+    <p>Religion is, in part, a means by which a society manages its weaker, more suffering members. Christianity inverted older value-systems by turning the qualities of the powerless into virtues. The genuine saint represents real psychological mastery, but at a heavy biological cost. The history of religion is a ladder of cruelty: first against others, then against the self, finally against God himself. The danger of modern atheism is not unbelief but the comfortable mediocrity left behind when belief is lost without anything taking its place.</p>
+  </div>
+</div>
+
+<!-- ============================ PARTS IV–VI ============================ -->
+<div class="panel" id="parts4to6">
+
+  <div class="part-banner">
+    <div class="p-label">Part Four</div>
+    <div class="p-title">Epigrams and Interludes</div>
+    <div class="p-desc">Sections 63–185 · A long pause: 123 short aphorisms on love, marriage, friendship, vanity, and human nature.</div>
+  </div>
+
+  <p class="body-text">Part Four is unusual: it abandons argument almost completely and consists of one hundred and twenty-three short aphorisms, some only a single sentence long. They are not building a case; they are notes from a sharp observer of human behaviour. Nietzsche is at his most readable here, and at his most psychologically penetrating.</p>
+
+  <p class="body-text">The aphorisms cover love, vanity, marriage, friendship, gratitude, revenge, the differences between men and women, the social uses of pity, and the small daily lies people tell themselves and one another. Some are uncomfortable. Some are very funny. Most contain a small observation that, if taken seriously, would change how you read other people for the rest of your life.</p>
+
+  <p class="body-text">These epigrams are not decoration. They are the practical underside of his philosophical claims. If morality is psychology, then philosophy must include sharp psychological observation. Part Four shows what that looks like in practice.</p>
+
+  <div class="example-box">
+    <div class="ex-label">A Few Representative Lines</div>
+    <p>“He who fights with monsters should look to it that he himself does not become a monster.”<br>
+    “What is done out of love always takes place beyond good and evil.”<br>
+    “There is more wisdom in your body than in your deepest philosophy.”<br>
+    “The thought of suicide is a great consolation: by means of it one gets through many a dark night.”</p>
+  </div>
+
+  <div class="part-banner">
+    <div class="p-label">Part Five</div>
+    <div class="p-title">Natural History of Morals</div>
+    <div class="p-desc">Sections 186–203 · Morality treated not as eternal truth but as a phenomenon to be observed like a natural process.</div>
+  </div>
+
+  <p class="body-text">In Part Five Nietzsche turns to morality itself and proposes treating it the way a naturalist treats the behaviour of animals — as something that has appeared in history, varies between cultures, and can be described and compared. Up to that point, he says, every moral philosopher had simply assumed his own morality and tried to give it a foundation. <strong>None had asked the prior question: what kind of phenomenon is morality, considered from outside?</strong></p>
+
+  <p class="body-text">When you ask that question, two large historical forms emerge. He calls them <strong>master morality</strong> and <strong>slave morality</strong>. They are not necessarily tied to literal masters and slaves; they are two patterns of valuation that recur throughout history, sometimes mixed in the same person. The full treatment of this distinction is in the Master &amp; Slave tab.</p>
+
+  <p class="body-text">It is essential to read this carefully. Nietzsche is not telling his readers to become cruel. He is making a historical and psychological argument: that the morality dominant in modern Europe is largely a slave morality, and that its rise was driven less by reason than by the long resentment of the weak against the strong. He thinks both moralities have produced great human types, but he believes that an exclusive triumph of slave morality, especially in its modern, secularized democratic form, leads to cultural exhaustion.</p>
+
+  <div class="section-label">The Diagnosis Sharpens</div>
+  <div class="section-title">Three Specific Targets in Part Five</div>
+
+  <div class="tip-block">
+    <div class="tip-num">Target 1</div>
+    <div class="tip-name">The Herd Instinct</div>
+    <div class="tip-body">
+      <p>Nietzsche argues that what passes for “morality” in modern Europe is, at bottom, the herd instinct in the individual — the long-trained reflex to do what neighbours do, to feel what they feel, to want what they want. Morality has become a way of disappearing into the group. The herd man does not need a shepherd because he has become a sheep among sheep. <strong>To be moral, in this sense, is to be invisible.</strong></p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Target 2</div>
+    <div class="tip-name">English Utilitarianism</div>
+    <div class="tip-body">
+      <p>He attacks the English moral philosophers — Bentham, Mill, the “utility” school — with particular contempt. Their attempt to derive morality from “the greatest happiness of the greatest number,” he says, is morality for shopkeepers. It assumes that comfort is the highest good and that the avoidance of suffering is the meaning of life. He calls this <em>“the green-pasture happiness of the herd”</em> — and points out that every great human achievement has come not from comfort-seekers but from people who could embrace difficulty, danger, and even cruelty toward themselves.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Target 3</div>
+    <div class="tip-name">“Thou Shalt” vs. “I Will”</div>
+    <div class="tip-body">
+      <p>He distinguishes two basic types of morality. <strong>“Thou shalt” moralities</strong> hand down a fixed code from outside: tradition, religion, custom, law. They produce reliable, predictable people and stable cultures. <strong>“I will” moralities</strong> create their values from within, in answer to the unique situation of an individual life. They are rare, dangerous, and the source of every genuine cultural advance. Modern Europe, Nietzsche says, is exhausted because it has lost confidence in its old “thou shalt” without yet developing the strength for an honest “I will.”</p>
+    </div>
+  </div>
+
+  <div class="part-banner">
+    <div class="p-label">Part Six</div>
+    <div class="p-title">We Scholars</div>
+    <div class="p-desc">Sections 204–213 · An attack on the modern academic philosopher and the hyper-specialized scientist.</div>
+  </div>
+
+  <p class="body-text">In Part Six Nietzsche turns on his own profession. The genuine philosopher, in his sense of the word, is rare and almost extinct. Universities, he says, have replaced him with the <strong>scholar</strong> — a careful, hard-working, narrowly trained specialist who knows a great deal about a small subject and very little about life. The scholar serves knowledge but does not command it. He arranges, classifies, and corrects, but he no longer creates.</p>
+
+  <p class="body-text">He is equally severe with the modern scientist who imagines that science is the new master of value. Science can describe how things are, but it cannot tell anyone how to live or what is worth doing. To pretend otherwise is, in Nietzsche’s view, simply a new form of priesthood, with the laboratory replacing the altar.</p>
+
+  <p class="body-text">The genuine philosopher, by contrast, is <strong>a commander and legislator of values</strong>. He does not merely interpret the world; he says what is to be valued and what is not. Such people are dangerous and unwelcome, which is why universities prefer scholars.</p>
+
+  <div class="rule-box">
+    <div class="r-label">The Three Modern Types</div>
+    <p>The <em>scholar</em> arranges and corrects but does not create. The <em>scientist</em> describes how things are but cannot say what is worth doing. The <em>genuine philosopher</em> commands and legislates values — and is, for that reason, almost extinct in the modern university.</p>
+  </div>
+</div>
+
+<!-- ============================ PARTS VII–IX ============================ -->
+<div class="panel" id="parts7to9">
+
+  <div class="part-banner">
+    <div class="p-label">Part Seven</div>
+    <div class="p-title">Our Virtues</div>
+    <div class="p-desc">Sections 214–239 · What virtue could mean for a more honest age, including the famously controversial remarks on women.</div>
+  </div>
+
+  <p class="body-text">In Part Seven Nietzsche asks what virtues a free, honest, post-Christian person might cultivate. He does not answer with a catalogue. He insists that virtues should be <strong>private, individual, and difficult</strong> — not the same set of comfortable rules for everyone. Each strong person, he says, should have his own virtues, suited to his own task in life. The democratic insistence that morality must be the same for all people is, in his view, a leveling instinct, an enemy of human greatness.</p>
+
+  <div class="section-label">A New Virtue</div>
+  <div class="section-title">Honesty as the Last Virtue Left Standing</div>
+
+  <p class="body-text">If Christian morality is dying, what virtue is the modern free spirit left with? Nietzsche’s answer is striking: <strong>intellectual honesty</strong> — what the Germans call <em>Redlichkeit</em>. Not the social honesty of telling no lies in business, but a deeper integrity: the refusal to lie to oneself about what one believes, what one wants, what one feels. This is, he says, the one virtue Christianity has not yet polluted, because Christianity itself does not really demand it. The free spirit must be honest about himself even when honesty is uncomfortable, even when it costs him friends, even when it leaves him with no consoling beliefs.</p>
+
+  <div class="section-label">A Dangerous Virtue</div>
+  <div class="section-title">The Critique of Pity</div>
+
+  <p class="body-text">One of Part Seven’s most surprising arguments — and one that scandalised Nietzsche’s contemporaries — is his attack on <strong>pity</strong> as a virtue. Christianity and the modern humanitarian movements had made pity (compassion, sympathy with suffering) the highest moral feeling. Nietzsche disagrees. Pity, he argues, is more dangerous than it looks. It depresses the one who pities, weakens the one who is pitied, and multiplies suffering rather than reducing it. <strong>It can also be a hidden form of contempt</strong> — a way of feeling superior to the sufferer while wearing the mask of love.</p>
+
+  <p class="body-text">He is careful here. He does not say one should be cruel. He says the strong person helps from <em>fullness</em>, not from pity — gives because he has too much, not because the other person’s suffering pulls something soft out of him. The difference matters. Help given from fullness respects the other person’s strength; help given from pity often does not.</p>
+
+  <div class="section-label">The Final Target</div>
+  <div class="section-title">“Modern Ideas”</div>
+
+  <p class="body-text">Nietzsche speaks of “modern ideas” with consistent contempt. He means the package of liberal-democratic-humanitarian ideals that dominated nineteenth-century Europe and still dominate the West today: equality, universal compassion, progress, the belief that human suffering is the central problem and human comfort the central goal. He calls these ideas, as a group, <strong>“green-pasture happiness”</strong> — the contentment of grazing animals. They are, he says, the slow secular afterlife of Christian morality, and they produce a small, soft, untragic kind of human being. His most controversial demand is that we judge a civilization not by how comfortable it makes its average person, but by how high a peak it allows its rare ones to reach.</p>
+
+  <p class="body-text">This part also contains the passages on women that have made the book notorious. Nietzsche makes generalisations about women and men that are unmistakably products of nineteenth-century European prejudice, and that no honest reader today is required to accept. They are best read as a window onto the limits of even his self-criticism: a man who could see through the prejudices of two thousand years of philosophy could not see through the prejudices of his own dinner table. <strong>The book is great in spite of these passages, not because of them.</strong></p>
+
+  <div class="warning-box">
+    <div class="w-label">A Note for the Modern Reader</div>
+    <p>Reading Nietzsche well means neither defending what is indefensible in him nor using it to dismiss the rest. The remarks on women in Part Seven, and certain passages on race in Part Eight, are dated and limited. The arguments about morality, religion, and self-knowledge that surround them are not.</p>
+  </div>
+
+  <div class="part-banner">
+    <div class="p-label">Part Eight</div>
+    <div class="p-title">Peoples and Fatherlands</div>
+    <div class="p-desc">Sections 240–256 · Europe in the 1880s: the rise of nationalism, his attitude toward Germans and Jews, and the ideal of the “good European.”</div>
+  </div>
+
+  <p class="body-text">Part Eight is Nietzsche’s political diagnosis. He is writing in an age of rising nationalism, growing antisemitism, and a Germany newly unified under Bismarck. <strong>He hates almost all of it.</strong> He calls modern nationalism a sickness, a small and noisy passion suited to provincial people who cannot bear the larger task of becoming European. He attacks German antisemitism in particular, going out of his way to praise the cultural achievements of European Jews and to mock the loud nationalists of his own country. (After his death, his sister edited his unpublished notes to suggest the opposite, and the Nazis later seized on the distortion. The actual text of Beyond Good and Evil is unambiguous.)</p>
+
+  <p class="body-text">In place of nationalism he sketches the figure of the <strong>“good European”</strong> — a person whose loyalties are continental rather than tribal, whose culture is wider than any one nation, and who feels himself the heir to the whole tradition rather than the citizen of one corner of it. This passage has aged remarkably well.</p>
+
+  <p class="body-text">The chapter then surveys the European nations as he understood them: the French, in his view, kept Europe’s best literary and psychological culture; the English were practical but philosophically mediocre; the Germans were strong but heavy and poorly self-aware; the Russians, whose strength he both admired and feared, represented the largest reserve of will on the continent. These are sweeping cultural caricatures, and he knew it. They are useful as a snapshot of how a sharp observer in 1886 saw his world.</p>
+
+  <div class="section-label">A Deeper Argument</div>
+  <div class="section-title">Democracy as the Heir of Christianity</div>
+
+  <p class="body-text">Nietzsche makes one of his most provocative claims in this part: <strong>modern democracy is the political form of Christian morality.</strong> Christianity taught that all souls are equal before God; democracy says all citizens are equal before the law. The metaphysical claim has been replaced by the political claim, but the underlying instinct — the leveling of difference, the suspicion of the high — is the same. The democratic movement, he says, is not a contradiction of Christianity but its inheritor. When the modern atheist insists on equality and human rights, he is, without knowing it, still living inside the moral world of the Sermon on the Mount.</p>
+
+  <p class="body-text">This is not Nietzsche endorsing aristocracy or monarchy. He is making a historical observation: the values we treat as self-evidently rational — equality, universal compassion, the dignity of every individual — are not rational deductions from neutral premises. They are <strong>the secularised remainder of a particular religion</strong>. Once you see this, you can begin to ask whether they are still serving us, or whether something new is needed.</p>
+
+  <div class="section-label">A Hard Claim</div>
+  <div class="section-title">Suffering and the Production of Greatness</div>
+
+  <p class="body-text">In one of the part’s most disturbing passages, Nietzsche argues that <strong>suffering — including imposed suffering, including the suffering of the many for the sake of the few — has been the precondition of every great human type</strong>. He does not say this with relish. He says it as a historian: every culture that has produced philosophy, art, or genuine spiritual depth has done so on the back of hard discipline, often cruel discipline, often inflicted on people other than the philosophers and artists themselves. The modern dream of abolishing suffering, he warns, may also abolish the conditions for greatness.</p>
+
+  <p class="body-text">This is one of the passages most often quoted out of context to make Nietzsche sound like a monster. Read carefully, it is a tragic observation, not a recommendation. He is asking whether the cost of comfort is mediocrity, and warning that we may not like the answer.</p>
+
+  <div class="part-banner">
+    <div class="p-label">Part Nine</div>
+    <div class="p-title">What Is Noble?</div>
+    <div class="p-desc">Sections 257–296 · The book’s positive vision: a portrait of the higher, noble human being.</div>
+  </div>
+
+  <p class="body-text">The final part is the closest the book comes to a positive doctrine. Nietzsche asks what nobility means once it has been separated from birth, class, and inherited title. His answer is that nobility is <strong>a form of soul</strong>: a deep self-respect that does not need recognition, a capacity for solitude, an instinct to take responsibility for oneself rather than blame circumstances, and the strength to give to others out of fullness rather than out of pity.</p>
+
+  <p class="body-text">The noble person feels reverence — above all, reverence for himself, but also for whatever is greater than himself. He does not seek equality; he assumes a natural order of rank. He is capable of cruelty, but he is also capable of generosity on a scale the modern person can hardly imagine. He is not loud; in fact he is usually silent about what he most cares about, because what is deepest in him cannot be communicated to those who have not lived it.</p>
+
+  <p class="body-text">These pages are some of the most lyrical Nietzsche ever wrote. They are also where readers most often misunderstand him. <strong>“Nobility” in this book is not a license to despise other people.</strong> It is a demand made on oneself — a standard of inwardness so high that very few will reach it, and those who do will have no need to humiliate anyone.</p>
+
+  <div class="section-label">A Central Concept</div>
+  <div class="section-title">Order of Rank (Rangordnung)</div>
+
+  <p class="body-text">Throughout Part Nine and the book as a whole, Nietzsche keeps returning to <strong>“order of rank”</strong> — <em>Rangordnung</em>. He does not mean social hierarchy in the sense of class or caste. He means the inner truth that some things are higher and some are lower: that a Bach fugue is not on the same level as a tavern song, that Plato is not on the same level as a tabloid moralist, that depth of soul is not interchangeable with shallowness. The democratic instinct, he says, wants to deny this — wants to insist that everything is at the same level if enough people prefer it. He thinks this denial is the greatest cultural lie of the modern age. Real culture rests on <em>pathos of distance</em>: the felt sense that some heights exist, even if one has not yet reached them oneself.</p>
+
+  <div class="section-label">A Beautiful Passage</div>
+  <div class="section-title">The Genius of the Heart</div>
+
+  <p class="body-text">In one of the most lyrical sections of the entire book — section 295, on the god Dionysus — Nietzsche describes what he calls <strong>“the genius of the heart.”</strong> This is the rare person whose touch makes everyone around him richer, deeper, more themselves. He does not flatter, does not impose, does not even speak much. He simply has a presence that draws out what is best in others, that makes them want to become more than they were. This is, for Nietzsche, the true mark of nobility: not domination, not even brilliance, but the silent gift of <em>making other souls grow</em>. It is one of the gentlest and most surprising passages he ever wrote.</p>
+
+  <div class="section-label">The Closing</div>
+  <div class="section-title">“From High Mountains”</div>
+
+  <p class="body-text">The book ends not with an argument but with a poem — “From High Mountains: Aftersong.” Nietzsche climbs to a high place and waits for friends who never come. The old friends of his youth are gone, lost or transformed; the new friends he hoped for have not yet arrived. He waits alone among the peaks. The poem is an admission of the price of his work: real solitude, the kind that comes from going further than one’s contemporaries are willing to go. It is also a quiet hope that someone, eventually, will climb high enough to find him there.</p>
+
+  <div class="rule-box">
+    <div class="r-label">Marks of the Noble Soul</div>
+    <p>Reverence for what is deeper than oneself, including in oneself. A capacity to be alone without being lonely. Willingness to take responsibility, especially when one could escape blame. Generosity that flows from fullness, not from guilt or fear. Silence about the things that matter most. A natural assumption of rank — not pride in one’s station, but seriousness about one’s task. Cheerfulness in the face of difficulty; gratitude for one’s own existence. The genius of the heart: making other souls grow simply by being present.</p>
+  </div>
+</div>
+
+<!-- ============================ MASTER & SLAVE ============================ -->
+<div class="panel" id="moralities">
+  <div class="section-label">Cross-Cutting Theme</div>
+  <div class="section-title">Master Morality and Slave Morality</div>
+
+  <p class="body-text">This distinction runs through the book and is worth treating in its own right because it is the most often misunderstood. Nietzsche is not saying that some races or classes of people are masters and others slaves. He is describing <strong>two psychological logics by which values are produced</strong>.</p>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <strong>Master Morality</strong>
+      <ul>
+        <li>Originates among those who feel powerful, healthy, self-affirming.</li>
+        <li>Calls itself “good” first; “bad” is whatever falls short of that fullness.</li>
+        <li>Values: courage, generosity, pride, truthfulness, honour, strength.</li>
+        <li>Looks at the weak with compassionate distance, not hatred.</li>
+        <li>Creates values out of an overflowing sense of life.</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <strong>Slave Morality</strong>
+      <ul>
+        <li>Originates among those who feel powerless, fearful, resentful.</li>
+        <li>Calls the powerful “evil” first; “good” is whatever is its opposite.</li>
+        <li>Values: humility, pity, patience, kindness, equality, obedience.</li>
+        <li>Looks at the strong with hidden fear and a need to make them feel guilty.</li>
+        <li>Creates values out of resentment toward what one cannot become.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="body-text">The master logic begins with self-affirmation. The strong person calls himself good because he experiences his own life as full and overflowing. “Bad” is then a secondary, almost dismissive label for what falls short — the cowardly, the petty, the small. There is no obsession here with the bad; it is simply not interesting.</p>
+
+  <p class="body-text">The slave logic begins with the opposite movement. It begins with hatred of the powerful. The powerful are first labelled “evil,” and then, as a kind of consolation, the qualities of the weak — patience, humility, obedience — are relabelled “good.” Here the negative term is primary; the positive term is invented afterwards. <strong>Slave morality is therefore reactive in its very structure. It cannot exist without an enemy.</strong></p>
+
+  <div class="rule-box">
+    <div class="r-label">The Disturbing Conclusion</div>
+    <p>Nietzsche believes that the moral inheritance of modern Europe — Christian, then secular humanitarian — is overwhelmingly slave-moral in this technical sense, and that the dominant emotion of modern public life is therefore <em>resentment</em>, even when it dresses itself as compassion or fairness. Almost every later social theorist who has written about resentment, victimhood, or the morality of modern democratic politics has been arguing with this passage, whether they admit it or not.</p>
+  </div>
+
+  <div class="section-label">Practical Distinction</div>
+  <div class="section-title">How to Recognise the Two in Daily Life</div>
+
+  <ul class="checklist">
+    <li>If a value is defined by what it opposes, it is probably slave-moral.</li>
+    <li>If a virtue requires constantly pointing at someone else’s vice to feel itself, it is reactive.</li>
+    <li>If self-respect depends on the recognition of an enemy, the structure is slave-moral.</li>
+    <li>If generosity is given out of fullness, with no expectation of gratitude, the structure is master-moral.</li>
+    <li>If equality is demanded as a way of pulling the strong down, it is resentment; if difference is honoured calmly, it is not.</li>
+  </ul>
+</div>
+
+<!-- ============================ THREE DOCTRINES ============================ -->
+<div class="panel" id="doctrines">
+  <div class="section-label">Three Famous Doctrines</div>
+  <div class="section-title">Will to Power, Eternal Recurrence, and the Übermensch</div>
+
+  <p class="body-text">These three ideas appear in Beyond Good and Evil but are scattered, hinted at, never set out as a system. A reader new to Nietzsche needs a brief map.</p>
+
+  <div class="three-rules">
+    <div class="rule-card">
+      <div class="r-num">I</div>
+      <div class="r-title">Will to Power</div>
+      <div class="r-desc">The deepest drive in living things — the urge to grow, expand, overcome resistance.</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">II</div>
+      <div class="r-title">Eternal Recurrence</div>
+      <div class="r-desc">A thought experiment: could you affirm your life so completely you would will it to repeat forever?</div>
+    </div>
+    <div class="rule-card">
+      <div class="r-num">III</div>
+      <div class="r-title">Übermensch</div>
+      <div class="r-desc">The “over-man” — a future human type who creates his own values without leaning on anyone.</div>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Doctrine 1</div>
+    <div class="tip-name">Will to Power</div>
+    <div class="tip-body">
+      <p>Nietzsche proposes that the most fundamental drive in living things is not survival, not pleasure, not reproduction, but <strong>the urge to grow, to expand, to overcome resistance, to extend one’s reach</strong>. He calls this the will to power. It is at work in the artist creating a sculpture, in the philosopher mastering a problem, in the lover, the businessman, the soldier, and (in a more cramped form) in the resentful person who cannot create and so tears down.</p>
+      <p>To say that life is will to power is not to celebrate domination; it is to claim that what we usually call “survival” is a thin description of something much hungrier.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Doctrine 2</div>
+    <div class="tip-name">Eternal Recurrence</div>
+    <div class="tip-body">
+      <p>Imagine a demon told you that your life, exactly as it is, would be repeated an infinite number of times — the same joys, the same humiliations, the same boredom, in the same order, forever. Would you collapse, or would you bless the demon?</p>
+      <p>Nietzsche uses this thought experiment as a <strong>test</strong>. The free, noble person can affirm his own life so completely that he would will it to recur eternally. The exhausted, resentful person cannot. Eternal recurrence is therefore less a cosmological theory than the most demanding question a person can ask himself.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Doctrine 3</div>
+    <div class="tip-name">The Übermensch</div>
+    <div class="tip-body">
+      <p>The Übermensch — sometimes translated “superman” or, more accurately, “over-man” — is the figure of a future human being who has gone beyond the herd, who creates his own values, and who lives without the supports of God, tradition, or public opinion. He is barely sketched in Beyond Good and Evil; the fuller portrait is in <em>Thus Spoke Zarathustra</em>.</p>
+      <p><strong>He is not a master race or a political ruler. He is an individual.</strong> The point of the idea is to give a name to a possibility — the possibility that human beings are not the end of the road, but a bridge.</p>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="w-label">A Warning About These Three Words</div>
+    <p>All three concepts — will to power, eternal recurrence, and the Übermensch — were grotesquely distorted in the twentieth century, especially by Nazi propagandists. Nietzsche himself loathed antisemites and German nationalists, and the actual text of Beyond Good and Evil is one of the strongest documents in the European tradition against both. A reader returning to the source after the slogans is usually surprised by how subtle, ironic, and demanding the original is.</p>
+  </div>
+</div>
+
+<!-- ============================ DEEPER THEMES ============================ -->
+<div class="panel" id="themes">
+  <div class="section-label">Underlying Currents</div>
+  <div class="section-title">Themes That Run Through the Whole Book</div>
+
+  <p class="body-text">Beyond the famous doctrines, Nietzsche keeps returning to a handful of ideas that shape how he reads everything else — philosophy, religion, morality, politics, even the sentences of his own text. A reader who notices these currents will see the book as a single argument rather than a collection of provocations.</p>
+
+  <div class="tip-block">
+    <div class="tip-num">Theme 1</div>
+    <div class="tip-name">Perspectivism — There Are No Facts, Only Interpretations</div>
+    <div class="tip-body">
+      <p>Nietzsche’s theory of knowledge, scattered across the book, is what later philosophers would call <strong>perspectivism</strong>. There is no “view from nowhere,” no objective standpoint outside all human concerns. Every act of seeing is the seeing of <em>somebody</em>, from a particular body, at a particular moment in history, shaped by particular needs.</p>
+      <p>This does not mean truth is impossible or that all opinions are equal. It means that what we call objectivity is the cultivated ability to <strong>see a thing from many perspectives at once</strong> — to switch between viewpoints and notice what each one hides as well as what it reveals. The richer one’s set of perspectives, the closer one comes to truth. The fewer one has, the more one mistakes one’s prejudices for facts.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Theme 2</div>
+    <div class="tip-name">The Herd Instinct in the Individual</div>
+    <div class="tip-body">
+      <p>This is one of Nietzsche’s most useful diagnostic concepts. The “herd” is not other people; it is the herd <em>inside oneself</em> — the trained reflex to think what neighbours think, to feel what they feel, to want what they want. Most of what an ordinary person calls his beliefs, his tastes, his moral instincts, are not his at all. They are echoes of the surrounding crowd, picked up in childhood and carried for life without examination.</p>
+      <p>The free spirit’s first task is to notice when the herd is speaking through him. The second is to find out what, if anything, would still be there if it stopped. This is harder than it sounds, because the herd voice usually feels like one’s own.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Theme 3</div>
+    <div class="tip-name">The Ascetic Ideal</div>
+    <div class="tip-body">
+      <p>Sketched in this book and developed at length in the next one, <em>On the Genealogy of Morals</em>, the <strong>ascetic ideal</strong> is the deep instinct that life as it is is not enough — that something must be denied, mortified, suppressed in order for life to have meaning. The ascetic ideal speaks through the saint who fasts, the philosopher who renounces sensuality, the scientist who suppresses his passions in the name of objectivity, and the modern moralist who treats every desire as suspect.</p>
+      <p>Nietzsche’s sharpest insight here: <strong>even atheism is often a form of the ascetic ideal</strong>. The militant unbeliever who denies God in the name of cold truth is still acting out the priest’s instinct — sacrificing comfort to a higher imperative. The ascetic ideal survives the death of God, because it was never really about God in the first place.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Theme 4</div>
+    <div class="tip-name">Solitude as a Discipline</div>
+    <div class="tip-body">
+      <p>Almost every chapter contains a quiet defence of solitude. Not loneliness, which Nietzsche distinguishes carefully — loneliness is the herd-instinct deprived of its herd. <strong>Solitude is the deliberate creation of a space in which one can hear one’s own thoughts without the constant pressure of agreement.</strong> The free spirit needs it the way a swimmer needs water. Without it, even the strongest thinker drifts back into the average opinions of his time.</p>
+      <p>This is one of the few practical recommendations the book actually makes. If you want to think honestly, you must spend long stretches alone — not as punishment, not as monkish withdrawal, but as the basic working condition of an honest life.</p>
+    </div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Theme 5</div>
+    <div class="tip-name">Style as Argument</div>
+    <div class="tip-body">
+      <p>The form of the book is part of its meaning. Nietzsche refuses to write a treatise because he believes treatises lie about how thinking actually happens. Real thinking proceeds by sudden leaps, by sharp aphorisms that interrupt and reverse, by long detours into psychology, by jokes and insults and sudden lyrical passages. The aphoristic form is not a weakness; it is <strong>an honest portrait of the way a serious mind works</strong>.</p>
+      <p>This also means the book demands a different kind of reader. You cannot skim it for arguments and assemble them into a position. You have to live with each section, let it irritate or delight you, and watch for the larger pattern that emerges only after weeks or months. Nietzsche calls this kind of reading <em>“rumination”</em> — the slow, repeated chewing of a thought, the way a cow re-chews grass.</p>
+    </div>
+  </div>
+
+  <div class="section-label">A Selection from Part IV</div>
+  <div class="section-title">The Epigrams in Their Own Right</div>
+
+  <p class="body-text">The 123 short aphorisms of Part Four deserve their own treatment. They are organised loosely by theme, and the selection below gives a representative cross-section of what Nietzsche observed when he turned his eye on the daily life of human beings.</p>
+
+  <div class="theme-grid">
+    <div class="theme-card"><div class="t-name">On Love</div><div class="t-desc">“What is done out of love always takes place beyond good and evil.”</div></div>
+    <div class="theme-card"><div class="t-name">On Solitude</div><div class="t-desc">“In solitude the solitary man consumes himself; in the multitude he is consumed by the many. Now choose.”</div></div>
+    <div class="theme-card"><div class="t-name">On the Body</div><div class="t-desc">“There is more wisdom in your body than in your deepest philosophy.”</div></div>
+    <div class="theme-card"><div class="t-name">On Convictions</div><div class="t-desc">“Convictions are more dangerous enemies of truth than lies.”</div></div>
+    <div class="theme-card"><div class="t-name">On Marriage</div><div class="t-desc">“It is not lack of love but lack of friendship that makes unhappy marriages.”</div></div>
+    <div class="theme-card"><div class="t-name">On Memory</div><div class="t-desc">“‘I have done that,’ says my memory. ‘I cannot have done that,’ says my pride, and remains inexorable. Eventually — memory yields.”</div></div>
+    <div class="theme-card"><div class="t-name">On Honesty</div><div class="t-desc">“What is the seal of attained liberty? — No longer to be ashamed of oneself.”</div></div>
+    <div class="theme-card"><div class="t-name">On Madness</div><div class="t-desc">“Madness is rare in individuals, but in groups, parties, peoples, and ages, it is the rule.”</div></div>
+    <div class="theme-card"><div class="t-name">On Pity</div><div class="t-desc">“Whoever cannot give, neither can take.”</div></div>
+    <div class="theme-card"><div class="t-name">On Friendship</div><div class="t-desc">“One has regarded life carelessly if one has failed to see the hand that — kills with leniency.”</div></div>
+    <div class="theme-card"><div class="t-name">On the Self</div><div class="t-desc">“The man of knowledge must be able not only to love his enemies but also to hate his friends.”</div></div>
+    <div class="theme-card"><div class="t-name">On Suffering</div><div class="t-desc">“The thought of suicide is a great consolation: by means of it one gets through many a dark night.”</div></div>
+  </div>
+
+  <div class="rule-box">
+    <div class="r-label">How to Read the Epigrams</div>
+    <p>Read no more than five or six in one sitting. Stop on the one that irritates you most and ask why. The aphorisms are designed to function as small mirrors. The reader’s reaction — agreement, anger, embarrassment, recognition — is itself the data Nietzsche wants you to notice.</p>
+  </div>
+</div>
+
+<!-- ============================ GLOSSARY ============================ -->
+<div class="panel" id="glossary">
+  <div class="section-label">Reference</div>
+  <div class="section-title">Key Concepts — A Working Glossary</div>
+
+  <p class="body-text">Nietzsche uses a small number of technical terms in idiosyncratic ways. The brief definitions below are intended as a working reference for re-reading the text.</p>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 01</div>
+    <div class="tip-name">Free Spirit</div>
+    <div class="tip-body"><p>Not a free thinker in the journalistic sense, but a person who has earned freedom of mind by passing through long discipline, doubt, and solitude. The free spirit is the precondition for honest thought once inherited certainties have collapsed.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 02</div>
+    <div class="tip-name">Master Morality</div>
+    <div class="tip-body"><p>A way of producing values that begins with self-affirmation. The strong call themselves “good” out of fullness; “bad” is a secondary, dismissive label for what is small. Values: courage, pride, generosity, truthfulness.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 03</div>
+    <div class="tip-name">Slave Morality</div>
+    <div class="tip-body"><p>A way of producing values that begins with resentment. The powerful are first labelled “evil”; the qualities of the weak are then relabelled “good.” The negative term is primary; the positive is invented afterwards. Reactive in structure.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 04</div>
+    <div class="tip-name">Will to Power</div>
+    <div class="tip-body"><p>The most fundamental drive in living things: the urge to grow, expand, overcome resistance, and extend one’s reach. Found in the artist, philosopher, lover, and (in distorted form) the resentful person. Not synonymous with domination.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 05</div>
+    <div class="tip-name">Eternal Recurrence</div>
+    <div class="tip-body"><p>A thought experiment: would you will your life, in every detail, to repeat infinitely? A test of how completely a person can affirm his own existence. Less a cosmological theory than a measure of inner strength.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 06</div>
+    <div class="tip-name">Übermensch</div>
+    <div class="tip-body"><p>The “over-man”: a future human type who creates his own values without leaning on God, tradition, or public opinion. Sketched only briefly in this book; developed at length in <em>Thus Spoke Zarathustra</em>. An individual, not a race or class.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 07</div>
+    <div class="tip-name">Last Man</div>
+    <div class="tip-body"><p>The opposite of the Übermensch: a comfortable, mediocre human being who has lost the capacity for great longing or great risk. Nietzsche’s warning about what democratic-Christian Europe is producing if no new values appear.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 08</div>
+    <div class="tip-name">Resentment (<em>Ressentiment</em>)</div>
+    <div class="tip-body"><p>A long, slow hatred felt by the weak toward the strong, which cannot discharge itself in action and so turns inward, becoming creative — inventing new values that condemn what it cannot achieve. The engine of slave morality.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 09</div>
+    <div class="tip-name">Pathos of Distance</div>
+    <div class="tip-body"><p>The inner sense of rank — the feeling that some things are higher and others lower, in oneself and in others. Nietzsche thinks every great culture has rested on this sense, and that modern democracy is destroying it in the name of equality.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 10</div>
+    <div class="tip-name">Revaluation of All Values</div>
+    <div class="tip-body"><p>The task of the philosopher of the future: not to defend the existing morality but to ask, of every received value, what kind of life it serves and whether that life is one we should want. The book’s entire project, summarised in a phrase.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 11</div>
+    <div class="tip-name">Perspectivism</div>
+    <div class="tip-body"><p>Nietzsche’s theory of knowledge: there is no view from nowhere. All seeing is the seeing of someone, from a body, in a moment, shaped by needs. Objectivity is not the absence of perspective but the cultivated ability to hold many perspectives at once.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 12</div>
+    <div class="tip-name">Herd Instinct</div>
+    <div class="tip-body"><p>Not other people, but the herd inside oneself — the trained reflex to think what neighbours think and call it one’s own opinion. Most of what an ordinary person calls his beliefs are echoes of the surrounding crowd. The free spirit’s first task is to notice when the herd is speaking through him.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 13</div>
+    <div class="tip-name">Ascetic Ideal</div>
+    <div class="tip-body"><p>The deep instinct that life as it is is not enough — that something must be denied, mortified, suppressed for life to have meaning. Speaks through the saint, the philosopher, the scientist, even the modern moralist. Survives the death of God: militant atheism is often the ascetic ideal in disguise.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 14</div>
+    <div class="tip-name">Causa Sui</div>
+    <div class="tip-body"><p>The “self-caused cause” — the imagined being that brings itself into existence, free of the world. Nietzsche calls it the best self-contradiction in the history of philosophy. The desire for a causa sui is the desire to be one’s own absolute master, a vanity dressed as metaphysics.</p></div>
+  </div>
+
+  <div class="tip-block">
+    <div class="tip-num">Concept 15</div>
+    <div class="tip-name">Strong Will vs. Weak Will</div>
+    <div class="tip-body"><p>Nietzsche’s replacement for the “free will vs. determinism” debate. The interesting question is not whether the will is metaphysically free but whether it is firm or flabby — capable of long aim or scattered, able to bind itself to a single task or distracted by every passing impulse.</p></div>
+  </div>
+</div>
+
+<!-- ============================ QUOTES ============================ -->
+<div class="panel" id="quotes">
+  <div class="quotes-section">
+    <div class="section-label" style="color:#9060d0;">In His Own Words</div>
+    <div class="section-title">Notable Passages</div>
+
+    <p style="font-size:15px;color:#a090c0;line-height:1.7;margin-bottom:1.5rem;font-style:italic;">A book of aphorisms cannot really be summarised; it has to be heard. The lines below are some of the most famous and representative from Beyond Good and Evil. Section numbers refer to the standard Kaufmann translation.</p>
+
+    <div class="quote-item">
+      <div class="quote-text">“He who fights with monsters should look to it that he himself does not become a monster. And when you gaze long into an abyss, the abyss also gazes into you.”</div>
+      <div class="quote-ref">Section 146</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“There are no moral phenomena at all, but only a moral interpretation of phenomena.”</div>
+      <div class="quote-ref">Section 108</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“It is hard enough to remember my opinions, without also remembering my reasons for them.”</div>
+      <div class="quote-ref">Epigrams</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“What is done out of love always takes place beyond good and evil.”</div>
+      <div class="quote-ref">Section 153</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“In every philosophy there is a point at which the philosopher’s ‘conviction’ appears on the stage.”</div>
+      <div class="quote-ref">Section 8</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“A philosopher: that is a man who constantly experiences, sees, hears, suspects, hopes, and dreams extraordinary things.”</div>
+      <div class="quote-ref">Section 292</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“The Christian resolution to find the world ugly and bad has made the world ugly and bad.”</div>
+      <div class="quote-ref">Section 130</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“Whoever despises himself still respects himself as one who despises.”</div>
+      <div class="quote-ref">Section 78</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“Madness is something rare in individuals — but in groups, parties, peoples, and ages, it is the rule.”</div>
+      <div class="quote-ref">Section 156</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“The noble soul has reverence for itself.”</div>
+      <div class="quote-ref">Section 287</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“There is more wisdom in your body than in your deepest philosophy.”</div>
+      <div class="quote-ref">Aphorism</div>
+    </div>
+
+    <div class="quote-item">
+      <div class="quote-text">“The thought of suicide is a great consolation: by means of it one gets through many a dark night.”</div>
+      <div class="quote-ref">Section 157</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ WHY IT MATTERS ============================ -->
+<div class="panel" id="matters">
+  <div class="section-label">Closing</div>
+  <div class="section-title">Why This Book Still Matters</div>
+
+  <p class="body-text">More than a hundred and forty years after its publication, Beyond Good and Evil keeps refusing to become a museum piece. Almost every serious twentieth-century discussion of morality, of psychology in its non-clinical sense, of the nature of resentment in modern politics, of the limits of secular humanism, has had to deal with the questions Nietzsche raised here.</p>
+
+  <p class="body-text">Freud read him with admiration and sometimes with envy. Heidegger spent decades arguing with him. The existentialists, the postmodernists, and many of their critics all start from problems he sharpened. Whatever you think of his answers, the questions are now permanent fixtures of serious thought.</p>
+
+  <p class="body-text">For the ordinary reader, the value of the book is more direct. <strong>It is a sustained, beautifully written, often funny attack on intellectual cowardice.</strong> It demands that you ask, of every belief you hold, what kind of person it makes you and what kind of life it serves. It refuses easy answers. It refuses, for that matter, to be a book of answers at all. It is a book of better questions.</p>
+
+  <div class="section-label">A Final Word</div>
+  <div class="section-title">The Generosity Behind the Severity</div>
+
+  <p class="body-text">It is also, in the end, a generous book. Nietzsche’s severity comes from a faith that human beings are capable of more than they have so far been: more honest, more inwardly free, more capable of greatness. He calls his book a <em>Prelude to a Philosophy of the Future</em> because he believed, against most of the evidence of his own century, that such a future was possible. Reading him well is partly a way of keeping that question open.</p>
+
+  <div class="verdict-block">
+    <p>“The noble soul has reverence for itself.”<br>— And the task of the philosopher of the future is to make such a soul possible again.</p>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <p style="text-align:center;font-style:italic;color:var(--maroon);font-family:'IM Fell English',serif;font-size:13px;letter-spacing:3px;">End of Summary</p>
+</div>
+
+</div><!-- /content-area -->
+</div><!-- /wrap -->
+
+<script>
+  function show(id, el){
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
+
+</body>
+</html>
+`;
+
+
+
+
+
+/* ════════════════════════════════════════════════════════════════
+   SEED ARTICLES
+   ════════════════════════════════════════════════════════════════ */
+const SEED_ARTICLES = [
+  {
+    id: "dubai-cassation-2026-4-135",
+    title: "حكم محكمة تمييز دبي — الطعنان رقما 4 و 135 لسنة 2026 تجاري",
+    author: "محكمة تمييز دبي",
+    category: "arabic-law",
+    excerpt: "حجية الأمر المقضي ومبدأ نسبية أثر العقود — نقض جزئي بسبب سابقة الفصل في النزاع أمام محاكم أبوظبي. جلسة 25-2-2026.",
+    date: "25-2-2026",
+    readTime: "35 د",
+    corePrinciple: [
+      {
+        text: "قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، فمتى حاز الحكم قوة الأمر المقضي امتنع على الخصوم العودة إلى المناقشة في المسألة التي فُصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.",
+        source: "حجية الأمر المقضي · المادة 87 من قانون الإثبات",
+      },
+      {
+        text: "إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير. ولكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة الشركاء فيها، فلا تُلزَم بديون غيرها ولا تُطالَب بحقوقها.",
+        source: "نسبية أثر العقود · المادتان 250 و 252 من قانون المعاملات المدنية",
+      },
+    ],
+    body: [
+          "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+          "باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة التمييز — بالجلسة العلنية المنعقدة يوم 25-02-2026 بمقر محكمة التمييز بدبي. في الطعن رقم 4 لسنة 2026 طعن تجاري. طاعن: و. ا. ا. د. مطعون ضدهم: ط. ا. ل. ا. ا. ذ. ش. ذ. ا. ا. ، س. ا. م. ، س. ك. م. ، ز. ز. ، س. ل. م. ، ج. ر. الحكم المطعون فيه: الصادر بالاستئناف رقم 2025/2731 استئناف تجاري بتاريخ 25-12-2025.",
+          "أصدرت المحكمة الحكم التالي بعد الاطلاع على الأوراق وسماع تقرير التلخيص الذي أعده وتلاه بجلسة المرافعة السيد القاضي المقرر دكتور/ محسن إبراهيم، وبعد المداولة:",
+          "حيث إن الوقائع — على ما يبين من الحكم المطعون فيه وسائر الأوراق — تتحصل في أن الطاعن في الطعن رقم 135 لسنة 2026 تجاري (جيزهونج رين) أقام على المطعون ضدهم فيه (1- وقار أحمد الله ديتا، 2- زهينكسين زهانج، 3- طريق الإخلاص لتجارة السيارات المستعملة ذ.م.م — شركة الشخص الواحد، 4- سينوباك أوتو م.م.ح، 5- سينوباك كارز م.م.ح، 6- سينوباك للسيارات م.م.ح) الدعوى رقم 2404 لسنة 2024 تجاري بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه وبينهم.",
+          "وإلزام المطعون ضدهم من الثالثة حتى الأخيرة والطاعن بأن يؤدوا إليه مبلغ 24,823,268 درهماً (أربعة وعشرون مليوناً وثمانمائة وثلاثة وعشرون ألفاً ومائتان وثمانية وستون درهماً) والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.",
+          "وقال بياناً لذلك إنه أحد رجال الأعمال الصينيين وله العديد من الاستثمارات في الدولة وخارجها، وبتاريخ 1/4/2023 أبرم اتفاقية تعاون مع المطعون ضدهم من الثاني حتى الأخيرة تهدف إلى تكوين شراكة في مجال تجارة السيارات، على أن تكون حصته فيها بنسبة 84.94% من أسهمها بمبلغ 14,654,984.81 درهماً، وحصة المطعون ضده الأول بنسبة 13.06% بمبلغ 2,252,559.46 درهماً، وحصة المطعون ضده الثاني بنسبة 2% بمبلغ 345,051.19 درهماً.",
+          "وقد سدد للمطعون ضده الأول مبلغ 11,656,096 درهماً بموجب إقرارات وسندات قبض، إلا أن المطعون ضده الأول أخل بتنفيذ التزاماته التعاقدية ولم ينشئ الشركة، ولم يقم بإدخال باقي أطراف الاتفاقية في الشركة، ولم يزوده بالبيانات المالية عن كيفية تصرفه في المبالغ التي تسلمها منه ومآلها، ولم يوزع الأرباح أو يرد له المبالغ التي سددها، وكذا عوائد استثماراتها الاتفاقية بواقع 28% سنوياً ليكون العائد الاستثماري المستحق له عن المبالغ التي استلمها المطعون ضده الأول منه حتى تاريخ 31/1/2024 مبلغ 2,572,247 درهم، بما يحق له فسخ هذه الاتفاقية واسترداد ما سبق وأن سدده، والتعويض عما فاته من كسب وما لحقه من خسارة. ومن ثم فقد أقام الدعوى بما سلف من طلبات.",
+          "ندبت المحكمة خبيراً وبعد أن أودع تقريريه الأصلي والتكميلي حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023 ورفضت ما عدا ذلك من طلبات. استأنف (المدعي) الطاعن في الطعن رقم 135 لسنة 2026 تجاري هذا الحكم بالاستئناف رقم 2731 لسنة 2025 تجاري، وبتاريخ 25-12-2025 قضت المحكمة بإلغاء الحكم المستأنف فيما قضى به من رفض طلبي استرداد المبلغ الذي سدده الطاعن في الطعن رقم 135 لسنة 2026 تجاري، والتعويض، وبإلزام المطعون ضده الأول بأن يؤدي إليه مبلغ 11,706,096 درهماً والفائدة القانونية بواقع 5% سنوياً من تاريخ المطالبة وحتى السداد التام، على أن تسري الفائدة على مبلغ التعويض من تاريخ صيرورة الحكم نهائياً.",
+          "طعن المدعى عليه الأول في هذا الحكم بالتمييز بالطعن رقم 4 لسنة 2026 تجاري بموجب صحيفة أودعت إلكترونياً لدى مكتب إدارة الدعوى بتاريخ 02-01-2026 بطلب نقض الحكم المطعون فيه والإحالة. قدم محامي المطعون ضده الأول مذكرة بالرد دفع فيها بعدم قبول الطعن لمخالفته لإعمال موجبات المادة 179 من قانون الإجراءات المدنية رقم (42) لسنة 2022 والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وعلى بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه؛ إذ دُوِّن بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية — في حين أن تاريخ الحكم محل الطعن هو 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي، وطلب رفض الطعن.",
+          "كما قدم الطاعن مذكرة أبدى فيها دفعاً بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 تجاري أبوظبي والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. كما طعن المدعي في ذات الحكم بالتمييز بالطعن رقم 135/2026 بموجب صحيفة أودعت لدى مكتب إدارة الدعوى بتاريخ 21-01-2026 بطلب نقض الحكم المطعون فيه والقضاء له بكافة طلباته في الدعوى. لم يقدم المطعون ضدهم مذكرة بالرد، وإذ عرض الطعنان على هذه المحكمة في غرفة مشورة فرأت أنهما جديران بالنظر وحددت جلسة لنظرهما وفيها قررت حجزهما للحكم لجلسة اليوم.",
+          "⁂",
+          "وحيث إنه عن دفع المطعون ضده الأول في الطعن رقم 4 لسنة 2026 بعدم قبول الطعن لعدم اشتمال صحيفة الطعن على البيانات الجوهرية المقررة بالمادة 179 من قانون الإجراءات المدنية رقم 42 لسنة 2022 — والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وبيان الحكم المطعون فيه وتاريخ صدوره — إذ ورد بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية، في حين أن تاريخ الحكم محل الطعن صدر بتاريخ 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي.",
+          "وحيث إن هذا الدفع غير سديد. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً لنص المادة (179) من قانون الإجراءات المدنية رقم 42 لسنة 2022 أنه: «1. يرفع الطعن بالنقض بصحيفة تودع مكتب إدارة الدعوى في المحكمة التي أصدرت الحكم، أو المحكمة الاتحادية العليا أو محكمة النقض أو محكمة التمييز — بحسب الأحوال — موقعة من محامٍ مقبول للمرافعة أمامها، على أن يقدم ما يفيد أداء الرسم كاملاً مع التأمين خلال (3) ثلاثة أيام عمل تالية لتاريخ الإشعار بتقدير الرسم، ويقيد الطعن في السجل المعد لذلك عقب استيفاء ذلك الإجراء».",
+          "«4- يجب أن تشتمل الصحيفة علاوة على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم على بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه إذا كان قد تم الإعلان وبيان الأسباب التي بني عليها الطعن وطلبات الطاعن. 5- إذا لم يحصل الطعن على الوجه المتقدم كان غير مقبول، وتحكم المحكمة من تلقاء نفسها بعدم قبوله».",
+          "وكان المشرع قد استهدف من ذكر بيانات الحكم المطعون فيه وأسماء الخصوم التعريفَ بالحكم المطعون فيه والمحكمة التي أصدرته وأشخاص وصفات من تتردد بينهم الخصومة تعريفاً كافياً ينفي الجهالة أو اللبس، حتى لا يكتنف الغموضُ الصحيفةَ وشخص المحكوم له أو المحكوم عليه. وقد رتبت هذه المادة البطلان على النقص أو الخطأ الجسيم في أسماء الخصوم أو صفاتهم، متى كان من شأنه التجهيل بالخصم أو إحداث لبس في التعرف على شخصيته، بما قد يؤدي إلى عدم التعريف بحقيقة شخصيته أو إلى استبدال شخص بآخر لا شأن له بالخصومة. أما إذا كان النقص أو الخطأ في بيانات الحكم المطعون عليه وأسماء الخصوم أو صفاتهم لا يؤدي إلى التشكيك أو التجهيل في حقيقة القضية المطعون في حكمها والخصم أو اتصاله بالخصومة، فلا محل لإعمال جزاء البطلان المنصوص عليه في المادة سالفة البيان.",
+          "وكان البين من صحيفة الطعن أنها أوردت بديباجتها أسماء الخصوم فيها، وأن الحكم المطعون فيه رقم 2731 لسنة 2025 استئناف تجاري وأنه صدر بتاريخ 25-12-2025، وقد اختتمت بطلبات الطاعن بطلب قبول الطعن شكلاً، وبصفة مستعجلة وقف تنفيذ الحكم المطعون فيه، وفي الموضوع بنقض الحكم المطعون فيه. ومن ثم فإنها تكون قد اشتملت على البيانات الجوهرية التي تطلبتها المادة 179 من المرسوم بقانون رقم 42 لسنة 2022. ولا ينال من ذلك ما ورد خطأً بالصحيفة في البند أولاً منها من أن الحكم المطعون فيه صدر من محاكم أبوظبي بتاريخ 24-12-2025، إذ أن هذا الخطأ ليس من شأنه أن يؤدي إلى التجهيل بالحكم المطعون فيه أو يفقد الصحيفة شروط قبولها، بما يضحى معه الدفع قائماً على غير أساس.",
+          "وحيث إن الطعنين استوفيا أوضاعهما الشكلية.",
+          "⁂",
+          "أولاً — الطعن رقم 135 لسنة 2026 تجاري",
+          "وحيث إن الطعن أقيم على ثلاثة أسباب، ينعى الطاعن بالأول والثاني منها على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، إذ قضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة بالتضامن مع المطعون ضده الأول في أداء المبلغ المقضي به والتعويض، رغم تمسكه بأنهم شركاء في الاتفاقية محل التداعي، وأن المطعون ضده الأول يمتلك المطعون ضدهم من الثالثة حتى الأخيرة، وأن امتلاك الأخير لتلك الشركات كان سبباً لعقد الاتفاقية محل الطعن، وأنهم استحصلوا منه على جزء من المبلغ الذي أداه بغرض تفعيل الاتفاقية، بما كان يتعين إلزامهم بالتضامن بأداء المبلغ المقضي به والتعويض، والعوائد المتوقعة للربح بواقع 28% عن المبلغ الذي أداه (6,104,203.88 درهم) من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025 وما يستجد منها وفق البين بتقرير الخبير الاستشاري المقدم منه. وإذ خالف الحكم المطعون فيه هذا النظر وقضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة مع المطعون ضده الأول في سداد المبلغ المقضي به والأرباح المتوقعة، فهو مما يعيبه ويستوجب نقضه.",
+          "وحيث إن هذا النعي مردود. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً للمادتين 250 و252 من قانون المعاملات المدنية أنه إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير، ولكن يجوز أن يكسبه حقاً، مما يدل على أن العقد آثاره نسبية لا تتعدى أطرافه والخلف العام والخلف الخاص لكل منهما والدائنين في الحدود التي بينها القانون. فلا يرتب العقد التزاماً في ذمة الغير، ولا تنصرف الحقوق الناشئة عنه إلا إلى طرفيه، إلا أن يتضمن اشتراطاً لمصلحة الغير.",
+          "وأن لكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة وشخصية أية شركة أخرى وعن ذمة وشخصية الشركاء فيها، فلا تلتزم أي منها بديون الأخرى أو تطالب بحقوقها. وكان الثابت من الاتفاقية المؤرخة 1-4-2023 أنها مبرمة بين الطاعن والمطعون ضدهما الأول والثاني بأشخاصهم. ومن ثم فإن آثارها لا تنصرف إلا لهؤلاء فقط دون المطعون ضدهم من الثالثة حتى الأخيرة. وإذ انتهى الحكم المطعون فيه إلى ما يوافق هذا النظر — ولم يلزم المطعون ضدهم الثلاثة الآخرين مع المطعون ضده الأول — بالمبلغ المقضي به والتعويض، فإنه يكون قد انتهى إلى النتيجة الصحيحة في هذا الشأن، بما يكون معه النعي عليه بما ورد بهذين السببين قائماً على غير أساس.",
+          "وحيث إن الطاعن ينعى بالسبب الثالث على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، وفي بيانه يقول إن الحكم المطعون فيه رفض إلزام المطعون ضده الأول (الطاعن في الطعن رقم 4 لسنة 2026 تجاري) بأن يؤدي إليه عوائد أرباح المبلغ المسلم إليه، كما قدر له تعويضاً بخساً — رغم أن الاتفاقية محل التداعي نصت على استحقاقه لعوائد أرباح بواقع 28% — بما يحق له اقتضاء أرباح عن المبلغ الذي أداه للمطعون ضده الأول بواقع 6,104,203.88 درهم من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025، وأن ما حاق به من أضرار يجاوز التعويض المقضي به، بما كان يتعين القضاء بالتعويض المطالب به جبراً للضرر، وهو مما يعيب الحكم بما يستوجب نقضه. وتشير المحكمة إلى الرد على هذا السبب مع الطعن رقم 4 لسنة 2026 تجاري.",
+          "⁂",
+          "ثانياً — الطعن رقم 4 لسنة 2026 تجاري",
+          "وحيث إنه عن دفع الطاعن بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين 1180 و1297 لسنة 2024 نقض تجاري أبوظبي — فإنه من المقرر في قضاء هذه المحكمة أن مقتضى المادة 94 من قانون الإجراءات المدنية أن الدفع بعدم جواز نظر الدعوى لسابقة الفصل فيها من النظام العام تقضي به المحكمة من تلقاء نفسها، ولو لم يتمسك به أي من الخصوم، طالما كانت عناصره مطروحة عليها. ويجوز إبداؤه في أي مرحلة ولو لأول مرة أمام محكمة التمييز، طالما كانت عناصره مطروحة.",
+          "وعلة ذلك احترام حجية الحكم السابق صدوره في نفس الدعوى، وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. وأنه يشترط لإعمال حجية الشيء المحكوم فيه — عملاً بنص المادة 87 من قانون الإثبات — وحدة الخصوم والموضوع والسبب، ولا يمنع من وحدة الموضوع اختلاف الطلبات في الدعويين، إذ يكفي أن يكون الحكم السابق قد حسم النزاع حول مسألة أساسية أو مسألة كلية شاملة يتوقف على ثبوتها أو نفيها ثبوت أو نفي الحق موضوع الدعوى التالية.",
+          "ومن المقرر كذلك أن قضاء الحكم النهائي في منطوقه أو في أسبابه المرتبطة به في مسألة أساسية يحوز قوة الأمر المقضي به، ويكون مانعاً للخصوم أنفسهم من التنازع في هذه المسألة في دعوى تالية تكون فيها هذه المسألة بذاتها هي الأساس فيما يدعيه أحد الطرفين من حقوق مترتبة عليها. وأن قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، وأنه متى حاز الحكم قوة الأمر المقضي فإنه يمنع الخصوم في الدعوى التي صدر فيها من العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.",
+          "لما كان ذلك، وكان المطعون ضده الأول جيزهونج رين (المدعي في الدعوى) سبق وأن أقام على الطاعن وقار أحمد الله ديتا والمطعون ضده الثاني (زهينكسين زهانج) الدعوى رقم 146 لسنة 2024 تجاري أبوظبي بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه والطاعن والمطعون ضده الثاني، وإلزامهما بأن يؤديا إليه مبلغ 24,823,268 درهماً والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.",
+          "وقُضي في تلك الدعوى بفسخ عقد الشراكة المؤرخ 1-4-2023، وبإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.",
+          "وقد طعن المدعي في تلك الدعوى (المطعون ضده الأول) على هذا الحكم بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي، وقُضي فيه بتاريخ 30-4-2024 برفض الاستئناف وتأييد الحكم المستأنف. كما طعن في ذات الحكم المدعى عليه (وقار أحمد الله ديتا) بالاستئناف رقم 1442 لسنة 2024 تجاري، وقُضي فيه بتاريخ 28-12-2024 بعدم جواز الاستئناف لسابقة الفصل فيه بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي. فطعن عليه بالتمييز بالطعن رقم 1180 لسنة 2024 تجاري، وبتاريخ 25/12/2024 قضت محكمة النقض بعدم جواز الطعن. وكذا بالطعن رقم 1297 لسنة 2024 تجاري، وبتاريخ 4-2-2025 قضت المحكمة برفض الطعن.",
+          "وكانت طلبات (المطعون ضده الأول) قِبَل المدعى عليه الأول (الطاعن) في الدعوى الماثلة هي ذات طلباته في الدعوى السابقة رقم 146 لسنة 2024 تجاري أبوظبي، وعن ذات الموضوع وبذات السبب. بما يمتنع معه على الخصوم التنازع في المسألة التي فصل فيها الحكم السابق بدعوى تالية، ولو بأدلة قانونية أو واقعية لم تسبق إثارتها في الدعوى السابقة، أو أُثيرت فيها ولم يبحثها الحكم الصادر في تلك الدعوى، طالما كانت تلك المسألة هي بذاتها الأساس فيما يدعيه أي من الطرفين قِبل الآخر من حقوق مترتبة عليها لم تتغير، وتناضل فيها الطرفان في الدعوى السابقة، واستقرت حقيقتها بالحكم السابق استقراراً جامعاً مانعاً من إعادة مناقشته، وذلك احتراماً لحجية الحكم النهائي البات الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي والمردد بين طرفي الطعن.",
+          "بما كان يتعين على الحكم المطعون فيه القضاء بعدم جواز نظر الدعوى بشأن طلب المدعي (المطعون ضده الأول في الطعن رقم 4 لسنة 2026 تجاري — الطاعن في الطعن رقم 135 لسنة 2026 تجاري) استرداد ما سبق وأن سدده للطاعن مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. وإذ خالف الحكم المطعون فيه هذا النظر، فهو مما يعيبه ويستوجب نقضه.",
+          "وحيث إن المحكمة قد انتهت إلى نقض الحكم المطعون فيه وفقاً لما تقدم، فإن النعي عليه بما ورد بالسبب الثالث من أسباب الطعن رقم 135 لسنة 2026 تجاري يكون قائماً على غير أساس متعيناً رفضه.",
+          "⁂",
+          "وحيث إن الاستئناف رقم 2731 لسنة 2025 صالح للفصل فيه — ولما تقدم، وكان البين بالأوراق أن الحكم الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي، سبق له وأن نظر ذات الطلبات في الدعوى قِبَل الطاعن وانتهى بحكم نهائي بات حائز لقوة الأمر المقضي بإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.",
+          "بما يمتنع معه على الخصوم في الدعوى السابقة العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها أو أُثيرت ولم يبحثها الحكم الصادر فيها، وذلك احتراماً لحجية الحكم السابق صدوره في نفس الدعوى. وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. بما يتعين معه القضاء بعدم جواز نظر الدعوى بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها بالدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 والطعنين بالنقض رقمي 1180 و1297 لسنة 2024 أبوظبي.",
+          "(دون طلب الفسخ، بحسبان أن محكمة أول درجة حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023، وقد ارتضى المدعى عليه الأول هذا الحكم ولم يستأنفه، وإنما الذي استأنفه هو المدعي — المحكوم له — وأن القاعدة هي ألا يضار طاعن بطعنه).",
+          "وحيث إنه ولما كان القضاء بعدم جواز نظر الدعوى لسابقة الفصل فيها بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، يستوي في النتيجة وقضاء محكمة الدرجة الأولى برفض تلك الطلبات، بما يتعين معه رفض الاستئناف في هذا الشأن وفقاً لما أنشأته هذه المحكمة من أسباب.",
+          "⁂",
+          "فلهذه الأسباب",
+          "حكمت المحكمة في الطعن رقم 135 لسنة 2026 تجاري برفضه، وبإلزام الطاعن بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين.",
+          "وفي الطعن رقم 4 لسنة 2026 تجاري بنقض الحكم المطعون فيه فيما قضى به من إلزام الطاعن بأن يؤدي للمطعون ضده الأول مبلغ 11,706,096 درهماً، وبإلزام المطعون ضده الأول بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة.",
+          "وفي الاستئناف رقم 2731 لسنة 2025 تجاري برفضه، وألزمت المستأنف بالمصروفات ومبلغ ألف درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين."
+    ],
+  },
+  {
+    id: "dubai-appeal-2013-1",
+    title: "حكم محكمة استئناف دبي — الاستئناف رقم 1 لسنة 2013 تجاري",
+    author: "محكمة استئناف دبي",
+    category: "arabic-law",
+    excerpt: "الاعتراف بحكم تحكيم أجنبي صادر في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك 1958 — جلسة 9-7-2013.",
+    date: "9-7-2013",
+    readTime: "30 د",
+    corePrinciple: [
+      {
+        text: "الاتفاقيات الدولية التي صادقت عليها دولة الإمارات تُعدُّ قانوناً داخلياً واجب التطبيق، ويلتزم القاضي بإعمال أحكامها على ما يُعرض عليه من منازعات في شأن تنفيذ أحكام المحكَّمين الأجنبية. ولا تُرفض إجابة طلب الاعتراف بحكم التحكيم الأجنبي ما لم تثبت إحدى الحالات الواردة حصراً في المادة الخامسة من اتفاقية نيويورك.",
+        source: "اتفاقية نيويورك 1958 · المرسوم الاتحادي رقم 43 لسنة 2006",
+      },
+    ],
+    body: [
+          "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+          "باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة الاستئناف — بالجلسة العلنية المنعقدة يوم 09-07-2013 بمقر محكمة الاستئناف بدبي. في الاستئناف رقم 1 لسنة 2013 استئناف تجاري. مستأنف: م. ا. ش. ذ. م. م. ضد مستأنف ضده: ش. ب. ت. ا. ب. ج. ا. ب. ا. ا. ك. .. ك. ج. ش. ا. الحكم المستأنف: الصادر بالدعوى رقم 2012/681 تجاري كلي بتاريخ 09-12-2012.",
+          "أصدرت المحكمة الحكم التالي بعد الإطلاع على الأوراق وسماع المرافعة والمداولة:",
+          "وحيث أن محكمة أول درجة وبجلسة 9-12-2012 قضت في الدعوى رقم 681-2012 تجاري كلي حضوريا بالتصديق على حكم التحكيم الصادر في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) بتاريخ 20-7-2011 في شتوتجارت - ألمانيا عن المحكم الفرد (جوشيم كوجنبيرغ)، وبإلزام المدعى عليها بمصروفات الدعوى ومبلغ ألف درهم مقابل أتعاب المحاماة، ورفضت ما عدا ذلك من طلبات.",
+          "ولما كان هذا الحكم لم يلق قبولاً لدى المدعى عليها فقد طعن وكيلها عليه بالاستئناف الراهن بصحيفة أودعت قلم كتاب هذه المحكمة بتاريخ 2-1-2013، وقدم مذكرة شارحة على سند من أن الحكم المستأنف أخطأ في تطبيق القانون وشابه الفساد في الاستدلال والقصور في التسبيب ومخالفة الثابت في الأوراق، وطلب في ختامها قبول الاستئناف شكلا وفي الموضوع إلغاء الحكم المستأنف والقضاء مجددا برفض الدعوى وإلزام المستأنف ضدها بالرسوم والمصاريف ومقابل أتعاب المحاماة.",
+          "وذلك على سند من أن محكمة أول درجة قضت بالتصديق على حكم التحكيم الأجنبي موضوع الدعوى على خلاف صحيح القانون ولم تقض بالاعتراف به بل رفضت ما عدا ذلك من طلبات، وقد ارتضت المستأنف ضدها ذلك القضاء ولم تطعن عليه بما يتعين إلغاؤه. كما أنه لا يجوز التحكيم في المسائل التي لا يجوز فيها الصلح، وأن موضوع النزاع ناشئ عن اتفاقية توزيع حصري وتختص المحكمة التي يقع في دائرتها محل التنفيذ، وهذه القاعدة من النظام العام ولا يجوز مخالفتها، ومن ثم لا يجوز تسوية النزاع بالتحكيم وفي ذلك تعارض مع السياسة العامة للدولة، ويكون شرط التحكيم الوارد في الاتفاقية باطلا لمخالفته النظام العام.",
+          "ولقضاء محكمة أول درجة بالعلم الشخصي في شأن انضمام دولة الإمارات وجمهورية ألمانيا الاتحادية إلى اتفاقية نيويورك، ولأن المستأنف ضدها لم تقدم كامل الاتفاق وملحقاته ولم تقدم ترجمة قانونية معتمدة، ولأن النسخة الإنجليزية من الاتفاق وحكم التحكيم غير ممهورين بتوقيع المترجم وختمه، ولأن حكم التحكيم لم يصبح ملزما للطرفين، وأن المستأنفة لم توقع على وثيقة التحكيم، والمستأنف ضدها لم تقدم كامل أجزاء حكم المحكم، وأن التحكيم تم في فرنسا وليس ألمانيا بالمخالفة لاتفاق التحكيم، بما يلزم على المحكمة رفض طلب الاعتراف بحكم التحكيم. وأرفقت صورة من قانون التحكيم الألماني بشأن اختصاص المحكمة العليا بتنفيذ حكم المحكمين، وكتابا من المحكم إلى القنصلية الفرنسية لإصدار تأشيرة للمستشار القانوني للمستأنفة لحضور اجتماع بباريس.",
+          "ومثلت المستأنف ضدها بوكيل عنها وقدم مذكرة طلب في ختامها رفض الاستئناف وتأييد الحكم المستأنف، وقدم قائمة صادرة عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) بالدول التي انضمت وصادقت على اتفاقية نيويورك ومن ضمنها دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية، ووثيقة المهمة وبيانا بالشروط والأحكام المرجعية بأن مكان التحكيم شتوتجارت - ألمانيا، ورسالة بريد إلكتروني بعقد جلسة التحكيم الأولى في شتوتجارت ما لم يتفق الأطراف على عقدها في باريس لتخفيض تكاليف الطيران دون تغيير للمقر القانوني للتحكيم. ثم تبادل طرفا الاستئناف تقديم المذكرات وصمم كل منهما على دفاعه، فقررت المحكمة حجز الاستئناف للحكم لجلسة 25-6-2013 ثم مدت أجل النطق بالحكم لجلسة اليوم.",
+          "⁂",
+          "وحيث إنه عن شكل الاستئناف فإنه قد جاء ممن يملكه قانونا خلال الأجل المنصوص عليه بأحكام المادة (159) من قانون الإجراءات المدنية المعدل، وعن حكم قابل للاستئناف وقد استوفى كافة شروطه الشكلية المقررة قانونا وبما يتعين قبوله شكلا.",
+          "وحيث إنه عن موضوع الاستئناف وفي ضوء حاصل أسبابه سالفة البيان عملا بالأثر الناقل للاستئناف، فإنه ولما كان المقرر قضاء لدى محكمة تمييز دبي الموقرة أن مفاد نص المادتين 165 و 166 من قانون الإجراءات المدنية أن محكمة الاستئناف لا تقتصر وظيفتها على مراقبة الحكم المستأنف من حيث سلامة التطبيق القانوني فحسب، وإنما يترتب على رفع الاستئناف نقل موضوع الاستئناف إلى محكمة الدرجة الثانية لتفصل فيه من جديد، دونما حاجة لإعادة القضية إلى محكمة الدرجة الأولى التي استنفدت ولايتها بالحكم في الموضوع، وذلك في حدود طلبات المستأنف.",
+          "وإعادة طرحه عليها بكل ما اشتمل عليه من أدلة ودفوع وأوجه دفاع لتقول كلمتها فيه بقضاء مسبب يواجه عناصر النزاع الواقعية والقانونية على حد سواء، لا على أساس ما كان مقدما فيها أمام محكمة أول درجة فحسب بل أيضا على أساس ما يطرح من هذه الأدلة وأوجه الدفاع والدفوع الموضوعية ويكون قد فات على الطرفين إبداؤه أمام محكمة أول درجة. ولها في هذا النطاق كمحكمة موضوع السلطة التامة في بحث الأدلة والمستندات والقرائن وأقوال الشهود وفي موازنة بعضها بالبعض الآخر وترجيح ما تطمئن إليه منها واستخلاص ما ترى أنه الواقع في الدعوى. (الطعن رقم 129 لسنة 2009 أحوال شخصية بجلسة 2-2-2010).",
+          "وحيث إنه متى كان ذلك وكانت (المدعية) المستأنف ضدها قد أقامت دعواها أمام محكمة أول درجة بطلب التصديق والاعتراف بحكم التحكيم الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC)، والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها وإلزام خصمتها (المدعى عليها) المستأنفة بالمصروفات.",
+          "وحيث إنه هديا بما تقدم فإن هذه الدعوى لا تخرج عن كونها منازعة في شأن الاعتراف بأحكام المحاكم الأجنبية وأحكام المحكمين والتي تناولها المرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 بموافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع، ومن ثم يصار إلى القضاء بإجابة طالب الاعتراف بها إلى طلبه أو رفضه بحسب الأحوال.",
+          "⁂",
+          "وحيث إنه ولما كان ما تقدم وكان المقرر لدى محكمة تمييز دبي الموقرة أنه ولئن كان المشرع قد نظم في الباب الثالث من الكتاب الثاني من قانون الإجراءات المدنية القواعد المتعلقة بالتحكيم في دولة الإمارات العربية المتحدة والإجراءات الواجب اتباعها عند طلب الخصوم التصديق على حكم المحكمة أو بطلانه، فقد نصت الفقرة الرابعة من المادة 212 من هذا القانون على أنه: «يجب أن يصدر حكم المحكم في دولة الإمارات العربية المتحدة وإلا اتبعت في شأنه القواعد المقررة لأحكام المحكمين الصادرة في بلد أجنبي».",
+          "كما نصت المادة 213 منه على أنه: «في التحكيم الذي يتم بين الخصوم خارج المحكمة فيجب على المحكمين أن يسلموا صورة من الحكم إلى كل طرف خلال خمسة أيام من صدور قرار التحكيم وتنظر المحكمة في تصديق أو إبطال القرار بناء على طلب أحد الخصوم بالإجراءات المعتادة لرفع الدعوى». ونصت الفقرة الأولى من المادة 215 من ذات القانون على أنه: «لا ينفذ حكم المحكمين إلا إذا صادقت عليه المحكمة التي أودع الحكم قلم كتابها وذلك بعد الاطلاع على الحكم ووثيقة التحكيم والتثبت من أنه لا يوجد مانع من تنفيذه».",
+          "وكان مفاد هذه النصوص مجتمعة أن التصديق على أحكام المحكمين الصادرة داخل دولة الإمارات هي وحدها التي تدخل في ولاية المحاكم الوطنية دون أحكام المحكمين الصادرة في دولة أجنبية، يستوي في ذلك أن تكون هذه الأحكام مما يجوز التصديق عليها في الدولة التي صدرت فيها من عدمه. إلا أنه من المقرر أيضا وفق ما تقضي به المادة 238 من قانون الإجراءات المدنية أن الاتفاقيات الدولية التي أصبحت تشريعا نافذ المفعول في دولة الإمارات العربية المتحدة بالتصديق عليها تعد قانونا داخليا واجب التطبيق في الدولة، ويلتزم القاضي بإعمال أحكامها على ما يعرض عليه من منازعات في شأن تنفيذ أحكام المحاكم الأجنبية وأحكام المحكمين.",
+          "وكان الثابت بالمرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 موافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع.",
+          "⁂",
+          "وقد نصت المادة الأولى من هذه الاتفاقية على أنه: «1- تطبق هذه الاتفاقية على الاعتراف بقرارات التحكيم وتنفيذها متى صدرت هذه القرارات في أراضي دولة خلاف الدولة التي يطلب الاعتراف بهذه القرارات وتنفيذها فيها، ومتى كانت ناشئة عن خلافات بين أشخاص طبيعيين أو اعتباريين، وتنطبق أيضا على قرارات التحكيم التي لا تعتبر قرارات محلية في الدولة التي يطلب فيها الاعتراف بهذه القرارات وتنفيذها. 2- لا يقتصر مصطلح (قرارات التحكيم) على القرارات التي يصدرها محكمون معينون لكل قضية بل يشمل أيضا القرارات التي يصدرها هيئات تحكيم دائمة تكون الأطراف قد أحالت إليها».",
+          "ونصت المادة الثانية من ذات الاتفاقية على أن: «1- تعترف كل دولة متعاقدة بأي اتفاق مكتوب يتعهد فيه الطرفان بأن يحيلوا إلى التحكيم جميع الخلافات أو أية خلافات نشأت أو قد تنشأ بينهما بالنسبة لعلاقة قانونية محددة. 2- يشمل مصطلح (اتفاق مكتوب) أي شرط تحكيم يرد في عقد أو أي اتفاق تحكيم وقع عليه من الطرفين أو وارد في رسائل أو برقيات متبادلة».",
+          "ونصت المادة الثالثة منها على أنه: «على كل دولة متعاقدة أن تعترف بقرارات التحكيم كقرارات ملزمة وأن تقوم بتنفيذها وفقا للقواعد الإجرائية المتبعة في الإقليم الذي يحتج فيه بالقرار طبقا للشروط الواردة في المواد التالية، ولا تفرض على الاعتراف بقرارات التحكيم التي تنطبق عليها هذه الاتفاقية أو على تنفيذها شروط أكثر تشددا بكثير أو رسوم أو أعباء أعلى بكثير مما يفرض على الاعتراف بقرارات التحكيم المحلية أو على تنفيذها».",
+          "كما نصت المادة الرابعة منها على أنه: «1- للحصول على الاعتراف والتنفيذ المذكورين في المادة السابقة يقوم الطرف الذي يطلب الاعتراف والتنفيذ وقت تقديم الطلب بتقديم ما يلي: أ- القرار الأصلي مصدقا عليه حسب الأصول المتبعة أو نسخة منه معتمدة حسب الأصول، ب- الاتفاق الأصلي المشار إليه في المادة الثانية أو صورة منه معتمدة حسب الأصول. 2- متى كان الحكم المذكور أو الاتفاق المذكور بلغة خلاف اللغة الرسمية للبلد الذي يحتج فيه بالقرار يجب على الطرف الذي يطلب الاعتراف بالقرار وتنفيذه أن يقدم ترجمة لها تبين الوثيقتين بهذه اللغة، ويجب أن تكون الترجمة معتمدة من موظف رسمي أو مترجم محلف أو ممثل قانوني أو قنصلي».",
+          "وكذلك نصت المادة الخامسة من الاتفاقية على أنه: «1- لا يجوز رفض طلب الاعتراف بالقرار وتنفيذه بناء على طلب الطرف المحتج ضده بهذا القرار إلا إذا قدم ذلك الطرف إلى السلطة المختصة التي يطلب فيها الاعتراف والتنفيذ ما يثبت: أ- أن طرفي الاتفاق المشار إليه في المادة الثانية كان بمقتضى القانون المنطبق عليهما في حالة من حالات انعدام الأهلية، أو كان الاتفاق غير صحيح بمقتضى القانون الذي أخضع له الطرفان الاتفاق، أو إذا لم يكن هناك ما يشير إلى ذلك بمقتضى قانون البلد الذي صدر فيه القرار.",
+          "ب- أن الطرف الذي يحتج ضده بالقرار لم يخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم أو كان لأي سبب آخر غير قادر على عرض قضيته. ج- أن القرار يتناول خلافا لم تتوقعه أو تتضمنه شروط الإحالة إلى التحكيم ويتضمن قرارات بشأن مسائل تتجاوز نطاق الإحالة إلى التحكيم، على أن يراعى في الحالات التي يمكن فيها فصل القرارات المتعلقة بالمسائل التي تخضع للتحكيم عن المسائل التي لا تخضع، أنه يجوز الاعتراف بجزء القرار الذي يتضمن قرارات تتعلق بمسائل تخضع للتحكيم وتنفيذ هذا الجزء.",
+          "د- أن تشكيل هيئة التحكيم أو أن إجراءات التحكيم لم تكن وفقا لاتفاق الطرفين أو لم تكن في حالة عدم وجود مثل هذا الاتفاق وفقا لقانون البلد الذي جرى فيه التحكيم. هـ- أن القرار لم يصبح بعد ملزما للطرفين أو أنه نقض أو أوقف تنفيذه من قبل سلطة مختصة في البلد الذي صدر فيه أو بموجب قانون هذا البلد. 2- كذلك يجوز رفض الاعتراف بقرار التحكيم ورفض تنفيذه إذا تبين للسلطة المختصة في البلد الذي يطلب فيه الاعتراف بالقرار وتنفيذه: أ- أنه لا يمكن تسوية موضوع النزاع بالتحكيم طبقا لقانون ذلك البلد، أو ب- أن الاعتراف بالقرار أو تنفيذه يتعارض مع السياسة العامة لذلك البلد». (الطعن رقم 132 لسنة 2012 تجاري الصادر بجلسة 18-9-2012).",
+          "⁂",
+          "وحيث إنه ولما كان ما تقدم وكان الحكم المطلوب الاعتراف به الصادر من المحكم هو حكم أجنبي صادر خارج دولة الإمارات العربية المتحدة في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك في شأن الاعتراف بأحكام التحكيم وتنفيذها والتي صادقت عليها دولة الإمارات العربية المتحدة بموجب المرسوم الاتحادي رقم 43 لسنة 2006 في شأن انضمام دولة الإمارات العربية المتحدة لاتفاقية نيويورك للاعتراف بقرارات التحكيم الأجنبية وتنفيذها.",
+          "وإذ قدمت المستأنف ضدها نسخة من حكم التحكيم معتمدة وفق الأصول ومصدقة، وأصل اتفاقية التوزيع المتضمنة الاتفاق على التحكيم معتمدة وفق الأصول ومصدقة، كما قدمت ترجمتهما القانونية، فإنها تكون قد استوفت متطلبات المادة الرابعة من القانون المذكور.",
+          "وحيث إن الرقابة القضائية لهذه المحكمة على حكم المحكم الأجنبي عند النظر في طلب الاعتراف بالحكم الأجنبي وتنفيذه إنما تقتصر على التثبت من عدم مخالفته لما ورد بالمرسوم الاتحادي سالف البيان، وذلك باستيفائه لمقومات الحكم الشكلية والموضوعية المتطلبة فيه والواردة في المادتين 4 و 5 منه، كون أن الحكم التحكيمي موضوع الدعوى مصدق حسب الأصول المتبعة، ولم يتبين لهذه المحكمة أن النزاع موضوع حكم التحكيم من المسائل التي لا يجوز فيها الصلح، كما لم تتبين المحكمة مخالفته للنظام العام.",
+          "لا سيما وأن المستأنفة لم تقدم لهذه المحكمة توافر حالة من الحالات التي وردت بالمادة الخامسة من المرسوم المذكور آنفا، حيث إنها لم تثبت توافر حالة من حالات انعدام الأهلية، أو أن الاتفاق لم يكن صحيحا، أو أنها لم تخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم، أو أنها كانت غير قادرة على عرض دفاعها أمامه، أو أن حكم المحكم تناول ما يخالف أو يجاوز شرط التحكيم الوارد في الاتفاقية المبرمة مع المستأنف ضدها، أو أن تشكيل هيئة التحكيم أو إجراءاته لم تكن وفقا لتلك الاتفاقية، أو أن حكم المحكم لم يصبح بعد ملزما لطرفيه أو أنه نقض أو أوقف تنفيذه من قبل السلطة المختصة في جمهورية ألمانيا الاتحادية البلد الذي صدر فيه.",
+          "ولما كان حكم التحكيم موضوع الدعوى قد استوفى الشروط الواردة بالمرسوم سالف البيان، فإنه يتعين على المحكمة — وبالبناء على ما أنشأته من أسباب تتفق وصحيح القانون — الاعتراف بالحكم التحكيمي الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC) والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها.",
+          "ولا ينال من ذلك ما نعت به المستأنفة من أن قضاء الحكم المستأنف كان بالتصديق وليس بالاعتراف، لكون المستأنف ضدها قد طلب التصديق والاعتراف وساوت بينهما في طلباتها، فضلا عن أن التصديق صنو الاعتراف. وإذ انتهت هذه المحكمة في أسبابها على نحو ما سلف بيانه إلى الاعتراف بالحكم المراد الاعتراف به، فمن ثم يكون الاستئناف وارد على غير سند صحيح وتقضي المحكمة برفضه.",
+          "كما لا ينال من ذلك باقي ما أثارته المستأنفة في مذكرتها الشارحة والوارد سلفا بأسباب هذا الحكم، ذلك أنه من المقرر قانونا أن الأصل في إجراءات التحكيم أن تكون قد روعيت، وعلى من يدعي أنها قد خولفت إقامة الدليل على صحة ما يدعيه، والمناط في هذا الخصوص هو الاعتداد بالبيانات المثبتة بحكم المحكم، ودون تتبع لما يبديه الخصم من دفاع ظاهر الفساد.",
+          "إذ أن دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية منضمتان إلى اتفاقية نيويورك وفق بيان القائمة الصادر عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) والمقدم نسخة منها من المستأنف ضدها. كما أنه لا يستلزم توقيع من قام بالترجمة على أصل السند المحرر بلغة أجنبية والذي قام بترجمته، ويكتفى بتوقيعه على السند الذي أنشأه والمتضمن أعمال الترجمة إلى العربية التي قام بها. وكذلك لأن المستأنف ضدها قدمت أصل الاتفاقية وحكم المحكم وترجمتهما القانونية، وأن إجراء إحدى جلسات التحكيم في باريس بفرنسا — وهي إحدى دول الاتحاد الأوروبي — درءا لتكلفة الطيران وبموافقة الطرفين دون تغيير للمقر القانوني للتحكيم وهي شتوتجارت بألمانيا، لا ينال من هذا الحكم.",
+          "وحيث إنه عن رسوم ومصروفات الاستئناف شاملة أتعاب المحاماة وعن درجتي التقاضي، فإنه ولما كان غرم التداعي يقع على من كانت عاقبة أمره خسرانه، وكانت المستأنفة هي من خسرت الدعوى، فإن المحكمة تلزمها بالرسوم والمصاريف ومبلغ ألفي درهم مقابل أتعاب المحاماة، عملا بالمادتين 133 و 168 من قانون الإجراءات المدنية المعدل.",
+          "⁂",
+          "فلهذه الأسباب",
+          "حكمت المحكمة بقبول الاستئناف شكلا، وفي الموضوع برفضه وتأييد الحكم المستأنف، وألزمت المستأنفة بالرسوم والمصاريف عن درجتي التقاضي ومبلغ ألفي درهم مقابل أتعاب المحاماة.",
+          "أمين السر — رئيس الدائرة"
+    ],
+  },
+  {
+    id: "winning-brief-garner",
+    title: "The Winning Brief — Full Summary",
+    author: "Bryan A. Garner",
+    category: "law",
+    excerpt: "100 tips for persuasive briefing in trial and appellate courts — complete coverage.",
+    date: "Oxford UP",
+    readTime: "45 min",
+    richHtml: WINNING_BRIEF_HTML,
+    body: [],
+  },
+  {
+    id: "point-made-guberman",
+    title: "Point Made — Full Summary",
+    author: "Ross Guberman",
+    category: "law",
+    excerpt: "How to write like the nation's top advocates — comprehensive techniques and examples.",
+    date: "Oxford UP",
+    readTime: "40 min",
+    richHtml: POINT_MADE_HTML,
+    body: [],
+  },
+  {
+    id: "cross-examination-pozner-dodd",
+    title: "Cross-Examination — Full Summary",
+    author: "Pozner & Dodd",
+    category: "law",
+    excerpt: "Science and craft of cross-examination — complete chapter-level coverage.",
+    date: "LexisNexis",
+    readTime: "45 min",
+    richHtml: CROSS_EXAMINATION_HTML,
+    body: [],
+  },
+  {
+    id: "making-your-case-scalia-garner",
+    title: "Making Your Case — Full Summary",
+    author: "Scalia & Garner",
+    category: "law",
+    excerpt: "The art of persuading judges — from one of the Court's clearest voices and the foremost legal-writing authority.",
+    date: "Thomson West",
+    readTime: "35 min",
+    richHtml: MAKING_YOUR_CASE_HTML,
+    body: [],
+  },
+  {
+    id: "trial-techniques-mauet",
+    title: "Trial Techniques — Full Summary",
+    author: "Thomas A. Mauet",
+    category: "law",
+    excerpt: "The complete trial advocacy primer — from voir dire and openings through cross-examination and closing.",
+    date: "Aspen Casebook",
+    readTime: "50 min",
+    richHtml: TRIAL_TECHNIQUES_HTML,
+    body: [],
+  },
+  {
+    id: "beyond-good-and-evil",
+    title: "Beyond Good and Evil — Full Summary",
+    author: "Friedrich Nietzsche",
+    category: "philosophy",
+    excerpt: "A comprehensive walkthrough of Nietzsche's critique of dogmatic philosophy, master/slave morality, and the will to power.",
+    date: "1886",
+    readTime: "40 min",
+    richHtml: BEYOND_GOOD_EVIL_HTML,
+    body: [],
+  },
+  {
+    id: "the-prince",
+    title: "The Prince — Full Summary",
+    author: "Niccolò Machiavelli",
+    category: "book-summaries",
+    excerpt: "The foundational treatise on political power, statecraft, and the realities of rule.",
+    date: "1532",
+    readTime: "30 min",
+    richHtml: PRINCE_HTML,
+    body: [],
+  },
+  {
+    id: "art-of-war",
+    title: "The Art of War — Full Summary",
+    author: "Sun Tzu",
+    category: "book-summaries",
+    excerpt: "The 13 chapters on strategy, deception, terrain, and the art of winning without fighting.",
+    date: "5th c. BCE",
+    readTime: "30 min",
+    richHtml: ART_OF_WAR_HTML,
+    body: [],
+  },
+  {
+    id: "worldly-wisdom",
+    title: "The Art of Worldly Wisdom — Full Summary",
+    author: "Baltasar Gracián",
+    category: "book-summaries",
+    excerpt: "300 maxims on prudence, perception, self-mastery, and navigating the social world.",
+    date: "1647",
+    readTime: "35 min",
+    richHtml: WORLDLY_WISDOM_HTML,
+    body: [],
+  },
+  {
+    id: "laws-of-human-nature",
+    title: "The Laws of Human Nature — Full Summary",
+    author: "Robert Greene",
+    category: "book-summaries",
+    excerpt: "18 laws decoding behaviour, character, and the hidden forces driving people.",
+    date: "2018",
+    readTime: "40 min",
+    richHtml: HUMAN_NATURE_HTML,
+    body: [],
+  },
+  {
+    id: "33-strategies-of-war",
+    title: "The 33 Strategies of War — Full Summary",
+    author: "Robert Greene",
+    category: "book-summaries",
+    excerpt: "33 strategies of conflict — from defensive warfare to grand strategy and unconventional war.",
+    date: "2006",
+    readTime: "35 min",
+    richHtml: STRATEGIES_OF_WAR_HTML,
+    body: [],
+  },
+  {
+    id: "inflation-psychology",
+    title: "Inflation, Interest Rates, and Market Psychology",
+    author: "Editorial Note",
+    category: "economic",
+    excerpt: "Why expectations matter as much as fundamentals when prices begin to climb.",
+    date: "Apr 2026",
+    readTime: "6 min",
+    body: [
+      "Inflation is taught as a mechanical phenomenon — too much money chasing too few goods — and the equation is broadly correct as far as it goes. What the textbook treatment understates is the role of expectation. Once households and firms come to believe that prices will continue to rise, they act in ways that ensure the prophecy fulfils itself. The market, in this respect, is not a thermometer but a thermostat with a long memory.",
+      "The central bank's traditional response is interest rates. Raising the cost of capital cools investment, dampens consumption, and — through these channels — restores the equilibrium between supply and demand. The mechanism is real, but it is also slow. Estimates suggest that monetary policy operates with lags of twelve to eighteen months, which means that the rate set today is wrestling with the inflation of last spring.",
+      "Psychology compresses the lag in one direction and lengthens it in the other. A credible central bank can subdue inflation expectations with a single decisive move; a discredited one can hike repeatedly with little effect, because the market has already priced in the bank's eventual capitulation. Credibility, hard to acquire and easy to lose, is the missing variable in most monetary models. It belongs to the realm of intuition more than calculation, and it is therefore liable to the heuristic distortions that govern other social facts.",
+      "For the investor, three implications follow. First, the level of nominal rates matters less than the trajectory of expectations. A 5% rate that is widely expected to fall behaves like a much looser policy than a 4% rate widely expected to rise. Second, asset classes do not respond uniformly: equities reprice on the discount-rate channel, bonds on the inflation-expectations channel, real estate on the financing-cost channel. Third, scarcity in particular markets — energy, semiconductors, housing — can drive headline numbers in ways that obscure the underlying monetary picture.",
+      "The honest synthesis is that inflation is a partly psychological phenomenon governed by partly mechanical instruments. The central banker's task is to hold the line until expectations re-anchor; the investor's task is to read the line being held. Neither party is operating with the certainty the press tends to attribute to them.",
+    ],
+  },
+];
+
+/* ════════════════════════════════════════════════════════════════
+   STORAGE
+   ════════════════════════════════════════════════════════════════ */
+const STORAGE_KEY = "athenaeum-v1";
+const safeGet = async () => {
+  try {
+    const r = await window.storage?.get(STORAGE_KEY);
+    return r ? JSON.parse(r.value) : null;
+  } catch { return null; }
+};
+const safeSet = async (data) => {
+  try { await window.storage?.set(STORAGE_KEY, JSON.stringify(data)); } catch {}
+};
+
+/* ════════════════════════════════════════════════════════════════
+   APP
+   ════════════════════════════════════════════════════════════════ */
+export default function Athenaeum() {
+  // view: { kind: 'list' | 'reader' | 'editor' | 'collection', ... }
+  const [view, setView] = useState({ kind: "list", category: "all" });
+  const [customArticles, setCustomArticles] = useState([]);
+  const [library, setLibrary] = useState({ highlights: [], quotes: [], vocabulary: [], reading: {} });
+  const [search, setSearch] = useState("");
+  const [fontSize, setFontSize] = useState(1); // 0=small, 1=med, 2=large
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selection, setSelection] = useState(null);
+  const [dictPopup, setDictPopup] = useState(null);
+  const articleRef = useRef(null);
+
+  /* Load persisted data */
+  useEffect(() => {
+    safeGet().then(d => {
+      if (d) {
+        setCustomArticles(d.customArticles || []);
+        setLibrary({
+          highlights: d.library?.highlights || [],
+          quotes:     d.library?.quotes     || [],
+          vocabulary: d.library?.vocabulary || [],
+          reading:    d.library?.reading    || {},
+        });
+        if (d.fontSize !== undefined) setFontSize(d.fontSize);
+      }
+    });
+  }, []);
+
+  const persist = useCallback((next) => {
+    safeSet({ customArticles, library, fontSize, ...next });
+  }, [customArticles, library, fontSize]);
+
+  /* All articles combined */
+  const allArticles = useMemo(() => [...customArticles, ...SEED_ARTICLES], [customArticles]);
+
+  /* Selection handler */
+  useEffect(() => {
+    const handler = () => {
+      const sel = window.getSelection();
+      const text = sel?.toString().trim();
+      if (!text || text.length < 2) { setSelection(null); return; }
+      if (!articleRef.current?.contains(sel.anchorNode)) { setSelection(null); return; }
+      const range = sel.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setSelection({
+        text,
+        x: rect.left + rect.width / 2,
+        y: rect.top - 8,
+        articleId: view.kind === "reader" ? view.articleId : null,
+      });
+    };
+    document.addEventListener("mouseup", handler);
+    document.addEventListener("touchend", handler);
+    return () => {
+      document.removeEventListener("mouseup", handler);
+      document.removeEventListener("touchend", handler);
+    };
+  }, [view]);
+
+  useEffect(() => {
+    const close = () => { setSelection(null); setDictPopup(null); };
+    window.addEventListener("scroll", close, true);
+    return () => window.removeEventListener("scroll", close, true);
+  }, []);
+
+  // Listen for "mark as read" toggles from the iframe books
+  useEffect(() => {
+    const onMsg = (e) => {
+      const d = e.data;
+      if (!d || d.type !== "athenaeum-mark-section" || !d.articleId) return;
+      setLibrary(prev => {
+        const reading = { ...(prev.reading || {}) };
+        const prior = reading[d.articleId] || {};
+        const sections = new Set(prior.readSections || []);
+        if (d.read) sections.add(d.panelId);
+        else sections.delete(d.panelId);
+        reading[d.articleId] = {
+          ...prior,
+          readSections: Array.from(sections),
+          totalPanels: d.allPanels ? d.allPanels.length : (prior.totalPanels || 0),
+          lastSeen: Date.now(),
+        };
+        const next = { ...prev, reading };
+        safeSet({ customArticles, library: next, fontSize });
+        return next;
+      });
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [customArticles, fontSize]);
+
+  // Toggle a plain-text article's "marked as read" state
+  const toggleMarkRead = useCallback((articleId) => {
+    setLibrary(prev => {
+      const reading = { ...(prev.reading || {}) };
+      const prior = reading[articleId] || {};
+      reading[articleId] = { ...prior, marked: !prior.marked, lastSeen: Date.now() };
+      const next = { ...prev, reading };
+      safeSet({ customArticles, library: next, fontSize });
+      return next;
+    });
+  }, [customArticles, fontSize]);
+
+  /* Actions */
+  const addHighlight = () => {
+    if (!selection) return;
+    const next = {
+      ...library,
+      highlights: [...library.highlights, {
+        id: Date.now(), text: selection.text, articleId: selection.articleId,
+        when: new Date().toLocaleDateString(),
+      }],
+    };
+    setLibrary(next); persist({ library: next });
+    setSelection(null); window.getSelection()?.removeAllRanges();
+  };
+
+  const addQuote = () => {
+    if (!selection) return;
+    const a = allArticles.find(x => x.id === selection.articleId);
+    const next = {
+      ...library,
+      quotes: [...library.quotes, {
+        id: Date.now(), text: selection.text, articleId: selection.articleId,
+        source: a ? `${a.author}, "${a.title}"` : "Unknown",
+        when: new Date().toLocaleDateString(),
+      }],
+    };
+    setLibrary(next); persist({ library: next });
+    setSelection(null); window.getSelection()?.removeAllRanges();
+  };
+
+  const lookup = () => {
+    if (!selection) return;
+    const word = selection.text.toLowerCase().replace(/[^a-z]/g, "");
+    setDictPopup({ word, x: selection.x, y: selection.y });
+    setSelection(null);
+  };
+
+  const saveWord = (word, entry) => {
+    if (library.vocabulary.find(v => v.word === word)) return;
+    const next = {
+      ...library,
+      vocabulary: [...library.vocabulary, { id: Date.now(), word, ...entry, when: new Date().toLocaleDateString() }],
+    };
+    setLibrary(next); persist({ library: next });
+  };
+
+  const removeFrom = (kind, id) => {
+    const next = { ...library, [kind]: library[kind].filter(x => x.id !== id) };
+    setLibrary(next); persist({ library: next });
+  };
+
+  const saveCustomArticle = (article) => {
+    const finalArticle = { ...article, id: article.id || `custom-${Date.now()}`, custom: true };
+    const exists = customArticles.find(a => a.id === finalArticle.id);
+    const next = exists
+      ? customArticles.map(a => a.id === finalArticle.id ? finalArticle : a)
+      : [finalArticle, ...customArticles];
+    setCustomArticles(next);
+    safeSet({ customArticles: next, library, fontSize });
+    setView({ kind: "reader", articleId: finalArticle.id });
+  };
+
+  const deleteCustomArticle = (id) => {
+    const next = customArticles.filter(a => a.id !== id);
+    setCustomArticles(next);
+    safeSet({ customArticles: next, library, fontSize });
+  };
+
+  /* Filter by current category + search */
+  const visibleArticles = useMemo(() => {
+    let list = allArticles;
+    if (view.kind === "list" && view.category !== "all") {
+      list = list.filter(a => a.category === view.category);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(a =>
+        a.title.toLowerCase().includes(q) ||
+        a.author.toLowerCase().includes(q) ||
+        a.excerpt.toLowerCase().includes(q) ||
+        (a.body || []).some(p => p.toLowerCase().includes(q)) ||
+        (a.richHtml ? a.richHtml.toLowerCase().includes(q) : false)
+      );
+    }
+    return list;
+  }, [allArticles, view, search]);
+
+  const renderArticleParagraph = (text, articleId) => {
+    const marks = library.highlights.filter(h => h.articleId === articleId).map(h => h.text);
+    if (!marks.length) return text;
+    const positions = [];
+    marks.forEach(m => {
+      let i = text.indexOf(m);
+      while (i !== -1) { positions.push({ start: i, end: i + m.length }); i = text.indexOf(m, i + m.length); }
+    });
+    positions.sort((a,b) => a.start - b.start);
+    const filtered = [];
+    positions.forEach(p => { if (!filtered.length || p.start >= filtered[filtered.length-1].end) filtered.push(p); });
+    const parts = [];
+    let cursor = 0;
+    filtered.forEach((p, idx) => {
+      if (cursor < p.start) parts.push(text.slice(cursor, p.start));
+      parts.push(<mark key={idx} className="user-highlight">{text.slice(p.start, p.end)}</mark>);
+      cursor = p.end;
+    });
+    if (cursor < text.length) parts.push(text.slice(cursor));
+    return parts;
+  };
+
+  const FONT_SCALES = [0.85, 1.0, 1.15, 1.32, 1.5, 1.7];
+  const safeFontIdx = Math.max(0, Math.min(FONT_SCALES.length - 1, fontSize));
+  const fontPx = FONT_SCALES[safeFontIdx];
+
+  return (
+    <div className="body min-h-screen flex" style={{ background: "var(--cream)" }}>
+      <GlobalStyles />
+
+      {/* SIDEBAR */}
+      <Sidebar
+        view={view}
+        setView={(v) => { setView(v); setSidebarOpen(false); }}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onAddText={() => { setView({ kind: "editor" }); setSidebarOpen(false); }}
+      />
+
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 0 }}>
+        <Header
+          search={search} setSearch={setSearch}
+          fontSize={fontSize} setFontSize={(n) => { setFontSize(n); safeSet({ customArticles, library, fontSize: n }); }}
+          onToggleSidebar={() => setSidebarOpen(o => !o)}
+          showFontControls={view.kind === "reader"}
+        />
+
+        <main className="flex-1 overflow-y-auto thin-scroll">
+          {view.kind === "list" && (
+            <ListView
+              articles={visibleArticles}
+              category={view.category}
+              library={library}
+              onOpen={(id) => setView({ kind: "reader", articleId: id })}
+              onAddText={() => setView({ kind: "editor" })}
+              onDelete={deleteCustomArticle}
+            />
+          )}
+          {view.kind === "reader" && (
+            <ReaderView
+              article={allArticles.find(a => a.id === view.articleId)}
+              onBack={() => setView({ kind: "list", category: "all" })}
+              articleRef={articleRef}
+              renderParagraph={renderArticleParagraph}
+              fontPx={fontPx}
+              library={library}
+              onToggleMarkRead={toggleMarkRead}
+              onEdit={() => {
+                const a = allArticles.find(a => a.id === view.articleId);
+                if (a?.custom) setView({ kind: "editor", editingId: a.id });
+              }}
+            />
+          )}
+          {view.kind === "editor" && (
+            <EditorView
+              existing={view.editingId ? customArticles.find(a => a.id === view.editingId) : null}
+              onSave={saveCustomArticle}
+              onCancel={() => setView({ kind: "list", category: "all" })}
+            />
+          )}
+          {view.kind === "collection" && (
+            <CollectionView
+              kind={view.collection}
+              library={library}
+              allArticles={allArticles}
+              onRemove={removeFrom}
+              onJump={(articleId) => setView({ kind: "reader", articleId })}
+            />
+          )}
+          {view.kind === "daily" && (
+            <DailyQuoteView
+              library={library}
+              allArticles={allArticles}
+              onJump={(articleId) => setView({ kind: "reader", articleId })}
+              onGoToQuotes={() => setView({ kind: "collection", collection: "quotes" })}
+            />
+          )}
+        </main>
+      </div>
+
+      {/* SELECTION TOOLBAR */}
+      {selection && (
+        <div className="fixed z-50 fade tooltail glow-card"
+          style={{
+            left: Math.max(140, Math.min(typeof window !== "undefined" ? window.innerWidth - 140 : 800, selection.x)),
+            top: Math.max(60, selection.y - 56),
+            transform: "translateX(-50%)",
+            padding: 4, display: "flex", gap: 0,
+          }}>
+          <ToolBtn onClick={addHighlight} icon={<Highlighter size={13}/>} label="Highlight"/>
+          {selection.articleId && <ToolBtn onClick={addQuote} icon={<Quote size={13}/>} label="Save Quote"/>}
+          <ToolBtn onClick={lookup} icon={<Languages size={13}/>} label="Define"/>
+        </div>
+      )}
+
+      {dictPopup && (
+        <DictionaryCard
+          word={dictPopup.word} x={dictPopup.x} y={dictPopup.y}
+          onClose={() => setDictPopup(null)}
+          onSave={saveWord}
+          saved={library.vocabulary.some(v => v.word === dictPopup.word)}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ════════════════════════════════════════════════════════════════ */
+function Sidebar({ view, setView, open, onClose, onAddText }) {
+  const isActive = (kind, val) => {
+    if (kind === "daily")        return view.kind === "daily";
+    if (kind === "all-articles") return view.kind === "list" && view.category === "all";
+    if (kind === "category")     return view.kind === "list" && view.category === val;
+    if (kind === "collection")   return view.kind === "collection" && view.collection === val;
+    return false;
+  };
+
+  return (
+    <>
+      {/* Mobile overlay */}
+      {open && <div onClick={onClose} className="lg:hidden fixed inset-0 z-30 fade" style={{background:"rgba(0,0,0,0.55)"}}/>}
+
+      <aside
+        className={`sidebar-fixed ${open ? "open" : ""} fixed lg:sticky top-0 left-0 z-40 h-screen w-[260px] flex flex-col`}
+        style={{ background: "var(--navy)", color: "var(--cream)" }}>
+
+        {/* Brand */}
+        <div className="px-5 py-5 flex items-center gap-3 border-b" style={{ borderColor: "#1A1A1A" }}>
+          <div className="logo-mark dark"><AthenaeumMark size={22}/></div>
+          <div>
+            <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "#C8BD9A" }}>
+              Digital Library
+            </div>
+            <div className="display text-2xl leading-tight italic" style={{ fontWeight: 500 }}>Athenaeum</div>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto thin-scroll px-3 py-5 space-y-0.5">
+          <NavBtn
+            label="All Articles"
+            icon={BookOpen}
+            active={isActive("all-articles")}
+            onClick={() => setView({ kind: "list", category: "all" })}
+            small
+          />
+
+          <div className="ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3" style={{ color: "#A8A088" }}>
+            Categories
+          </div>
+          {CATEGORIES.map(c => (
+            <NavBtn key={c.id} label={c.name} icon={c.icon} rtl={c.rtl}
+              active={isActive("category", c.id)}
+              onClick={() => setView({ kind: "list", category: c.id })}/>
+          ))}
+
+          <div className="ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3" style={{ color: "#A8A088" }}>
+            My Library
+          </div>
+          {COLLECTIONS.map(c => (
+            <NavBtn key={c.id} label={c.name} icon={c.icon}
+              active={isActive("collection", c.id)}
+              onClick={() => setView({ kind: "collection", collection: c.id })}/>
+          ))}
+
+          <div className="my-3 mx-3" style={{ height: 1, background: "#1A1A1A" }}/>
+
+          {/* Daily Quote — pinned at end */}
+          <NavBtn
+            label="Quote of the Day"
+            icon={Sparkles}
+            active={isActive("daily")}
+            onClick={() => setView({ kind: "daily" })}
+          />
+        </nav>
+
+        {/* Add Text */}
+        <div className="p-4 border-t" style={{ borderColor: "#1A1A1A" }}>
+          <button onClick={onAddText}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 ui text-[11px] tracking-[0.18em] transition"
+            style={{
+              background: "var(--cream-3)",
+              color: "var(--ink)",
+              borderRadius: 999,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            }}>
+            <Plus size={14}/> Add Text
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function NavBtn({ label, icon: Icon, active, onClick, small, rtl }) {
+  return (
+    <button onClick={onClick} data-active={active}
+      className="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left">
+      <span className="flex items-center justify-center w-8 h-8 rounded shrink-0"
+        style={{ background: active ? "var(--gold-soft)" : "#1A1A1A" }}>
+        <Icon size={15} style={{ color: active ? "var(--gold)" : "#E8DDB8" }}/>
+      </span>
+      <span style={{
+        fontFamily: rtl
+          ? "'Noto Naskh Arabic', serif"
+          : "'Cormorant Garamond', serif",
+        fontStyle: rtl ? "normal" : "italic",
+        fontWeight: active ? (rtl ? 700 : 600) : (rtl ? 600 : 500),
+        color: active ? "var(--cream-3)" : "#EFE5C2",
+        fontSize: rtl ? "1.1rem" : (small ? "0.95rem" : "1.05rem"),
+        direction: rtl ? "rtl" : "ltr",
+        flex: 1,
+        textAlign: rtl ? "right" : "left",
+      }}>{label}</span>
+    </button>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════════════════════════════ */
+function Header({ search, setSearch, fontSize, setFontSize, onToggleSidebar, showFontControls }) {
+  return (
+    <header className="sticky top-0 z-20 px-4 md:px-8 py-4 flex items-center gap-4"
+      style={{ background: "var(--cream)", borderBottom: "1.5px solid var(--rule)" }}>
+      <button onClick={onToggleSidebar}
+        className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg"
+        style={{ background: "var(--cream-3)", border: "1px solid var(--rule)" }}>
+        <Menu size={18} style={{ color: "var(--ink)" }}/>
+      </button>
+
+      <div className="hidden md:flex items-center gap-3">
+        <div className="logo-mark"><AthenaeumMark size={22}/></div>
+        <div>
+          <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "var(--ink-3)" }}>
+            Personal Knowledge Library
+          </div>
+          <div className="display text-xl leading-tight italic" style={{ fontWeight: 500, color: "var(--ink)" }}>
+            Athenaeum
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1"/>
+
+      {/* Search */}
+      <div className="flex-1 md:flex-none md:w-[340px] max-w-md flex items-center gap-2 px-4 py-2.5 rounded-full"
+        style={{ background: "var(--cream-3)", border: "1px solid var(--rule)" }}>
+        <Search size={14} style={{ color: "var(--ink-3)" }}/>
+        <input value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Search articles, words, quotes…"
+          className="bg-transparent outline-none flex-1 body text-sm"
+          style={{ color: "var(--ink)" }}/>
+      </div>
+
+      {/* Font size stepper — A− / A+ for e-ink touch */}
+      {showFontControls && (
+        <div className="flex items-center gap-0.5 p-1 rounded-full"
+          style={{ background: "var(--cream-3)", border: "1.5px solid var(--rule)" }}
+          title="Font size">
+          <button
+            onClick={() => setFontSize(Math.max(0, fontSize - 1))}
+            disabled={fontSize <= 0}
+            aria-label="Decrease font size"
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: 44, height: 44,
+              background: "transparent",
+              color: fontSize <= 0 ? "var(--ink-3)" : "var(--ink)",
+              opacity: fontSize <= 0 ? 0.4 : 1,
+              fontFamily: "Cormorant Garamond, serif",
+              fontWeight: 700,
+              fontSize: 17,
+              lineHeight: 1,
+            }}>
+            A−
+          </button>
+          <div style={{ width: 1, height: 24, background: "var(--rule)" }}/>
+          <button
+            onClick={() => setFontSize(Math.min(5, fontSize + 1))}
+            disabled={fontSize >= 5}
+            aria-label="Increase font size"
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: 44, height: 44,
+              background: "transparent",
+              color: fontSize >= 5 ? "var(--ink-3)" : "var(--ink)",
+              opacity: fontSize >= 5 ? 0.4 : 1,
+              fontFamily: "Cormorant Garamond, serif",
+              fontWeight: 700,
+              fontSize: 22,
+              lineHeight: 1,
+            }}>
+            A+
+          </button>
+        </div>
+      )}
+    </header>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LIST VIEW (main content cards + Add Text panel)
+   ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   SECTION MASTHEAD — editorial header for category list views
+   ════════════════════════════════════════════════════════════════ */
+
+// Per-category metadata: tagline + ornament + accent.
+// Falls back gracefully for unknown categories.
+const SECTION_META = {
+  "law":            { numeral: "I",  taglineEn: "Briefs, advocacy, and the architecture of persuasion." },
+  "economic":       { numeral: "II", taglineEn: "Markets, scarcity, and the choreography of choice." },
+  "philosophy":     { numeral: "III",taglineEn: "Being, knowing, and questions that refuse to settle." },
+  "tech":           { numeral: "IV", taglineEn: "Algorithms, networks, and the philosophy of the artefact." },
+  "book-summaries": { numeral: "V",  taglineEn: "Distilled volumes — the canon, condensed." },
+  "arabic-law":     { numeral: "VI", taglineAr: "أحكام قضائية ومذكرات في الفقه القانوني." },
+  "all":            { numeral: "—",  taglineEn: "Everything in the library, gathered." },
+};
+
+// Convert a count to display form: roman in LTR, eastern-arabic in RTL
+function formatCount(n, isRtl) {
+  if (isRtl) {
+    const arabicNumerals = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+    return String(n).split("").map(d => arabicNumerals[+d] || d).join("");
+  }
+  return String(n).padStart(2, "0");
+}
+
+function SectionMasthead({ category, heading, isRtl, itemCount }) {
+  const meta = SECTION_META[category] || {};
+  const tagline = isRtl ? meta.taglineAr : meta.taglineEn;
+  const itemLabel = isRtl
+    ? (itemCount === 1 ? "مقال واحد" : itemCount === 2 ? "مقالان" : `${formatCount(itemCount, true)} مقالات`)
+    : `${formatCount(itemCount, false)} ${itemCount === 1 ? "Item" : "Items"}`;
+  const sectionLabel = isRtl ? "قسم" : "Section";
+
+  return (
+    <div className="card rise" style={{
+      padding: "2rem 2rem 1.75rem",
+      direction: isRtl ? "rtl" : "ltr",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Decorative gold corner ornament — always on the trailing side */}
+      <div style={{
+        position: "absolute",
+        [isRtl ? "left" : "right"]: 0,
+        top: 0,
+        width: 80,
+        height: 80,
+        background: `linear-gradient(${isRtl ? "225deg" : "135deg"}, var(--gold-soft) 0%, transparent 70%)`,
+        opacity: 0.6,
+        pointerEvents: "none",
+      }}/>
+
+      {/* Eyebrow row — direction:rtl on parent handles ordering automatically */}
+      <div className="flex items-center gap-3 mb-4">
+        <span style={{ width: 28, height: 1.5, background: "var(--gold)", flexShrink: 0 }}/>
+        <span style={{
+          fontSize: 10,
+          letterSpacing: isRtl ? "0.2em" : "0.32em",
+          textTransform: isRtl ? "none" : "uppercase",
+          color: "var(--gold-deep)",
+          fontWeight: 700,
+          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'DM Mono', monospace",
+        }}>
+          {sectionLabel} · {meta.numeral || "—"}
+        </span>
+      </div>
+
+      {/* Main title row */}
+      <div className="flex items-baseline gap-4 mb-3 flex-wrap">
+        <h2 style={{
+          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
+          fontStyle: isRtl ? "normal" : "italic",
+          fontWeight: isRtl ? 700 : 600,
+          fontSize: isRtl ? "clamp(2.2rem, 5vw, 3rem)" : "clamp(2rem, 4.5vw, 2.75rem)",
+          color: "var(--ink)",
+          lineHeight: 1.05,
+          margin: 0,
+        }}>
+          {heading}
+        </h2>
+
+        <span style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: "italic",
+          fontSize: "1.4rem",
+          color: "var(--gold)",
+          opacity: 0.55,
+          letterSpacing: "0.4em",
+          padding: "0 0.25rem",
+          alignSelf: "center",
+        }}>
+          ◆
+        </span>
+      </div>
+
+      {/* Tagline */}
+      {tagline && (
+        <p style={{
+          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
+          fontStyle: isRtl ? "normal" : "italic",
+          fontSize: isRtl ? "1.05rem" : "1.15rem",
+          color: "var(--ink-2)",
+          fontWeight: 400,
+          lineHeight: 1.55,
+          margin: "0 0 1.25rem",
+          maxWidth: "38rem",
+        }}>
+          {tagline}
+        </p>
+      )}
+
+      {/* Bottom row: count → rule → invitation. direction:rtl flips ordering for Arabic. */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.85rem",
+        paddingTop: "1rem",
+        borderTop: "1px solid var(--rule)",
+      }}>
+        <span style={{
+          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'DM Mono', monospace",
+          fontSize: 11,
+          letterSpacing: isRtl ? "0.05em" : "0.22em",
+          textTransform: isRtl ? "none" : "uppercase",
+          color: "var(--gold-deep)",
+          fontWeight: 700,
+          flexShrink: 0,
+        }}>
+          {itemLabel}
+        </span>
+        <span style={{ flex: 1, height: 1, background: "var(--rule)" }}/>
+        <span style={{
+          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
+          fontStyle: isRtl ? "normal" : "italic",
+          fontSize: isRtl ? "0.9rem" : "0.95rem",
+          color: "var(--ink-3)",
+          flexShrink: 0,
+        }}>
+          {isRtl ? "اختر مقالا للقراءة" : "Select an article to begin"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ListView({ articles, category, library, onOpen, onAddText, onDelete }) {
+  const heading = category === "all" ? "Articles & Summaries" : CATEGORY_LABELS[category];
+  const isRtl = isRtlCategory(category);
+
+  return (
+    <div className="px-4 md:px-8 py-6 md:py-8 grid grid-cols-12 gap-6">
+      {/* Articles column */}
+      <div className="col-span-12 xl:col-span-8 2xl:col-span-9 space-y-4">
+        {/* Section masthead */}
+        <SectionMasthead
+          category={category}
+          heading={heading}
+          isRtl={isRtl}
+          itemCount={articles.length}
+        />
+
+        {articles.length === 0 ? (
+          <div className="card px-8 py-16 text-center rise">
+            <div className="display text-5xl mb-3 italic" style={{ color: "var(--gold)" }}>◆</div>
+            <p className="display text-xl italic mb-1" style={{ color: "var(--ink-2)" }}>
+              No articles in this section yet.
+            </p>
+            <p className="body text-sm mb-6" style={{ color: "var(--ink-3)" }}>
+              Use the editor to add your own piece.
+            </p>
+            <button onClick={onAddText} className="reader-btn">
+              <Plus size={14}/> Add Text
+            </button>
+          </div>
+        ) : (
+          articles.map((a, i) => (
+            <ArticleCard key={a.id} article={a} onOpen={() => onOpen(a.id)}
+              onDelete={a.custom ? () => onDelete(a.id) : null}
+              status={getReadStatus(a, library)}
+              progress={getReadProgress(a, library)}
+              style={{ animationDelay: `${i * 0.04}s` }}/>
+          ))
+        )}
+      </div>
+
+      {/* Add Text panel */}
+      <aside className="col-span-12 xl:col-span-4 2xl:col-span-3">
+        <div className="card p-6 sticky top-24 rise">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="display text-2xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
+              Add Text
+            </h3>
+            <span className="tag">Full Page</span>
+          </div>
+          <p className="body text-sm leading-relaxed mb-6" style={{ color: "var(--ink-3)" }}>
+            Open a full-page editor and paste your own articles, notes, or chapters. They will appear in your library and can be highlighted, quoted, and looked up the same way.
+          </p>
+          <button onClick={onAddText} className="pill-light">
+            <Plus size={13}/> Open Editor
+          </button>
+        </div>
+
+        <div className="card p-6 mt-4 rise" style={{ animationDelay: "0.1s" }}>
+          <div className="ui text-[9px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--gold-deep)" }}>
+            How to use
+          </div>
+          <ul className="body text-sm leading-relaxed space-y-2.5" style={{ color: "var(--ink-2)" }}>
+            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>i.</span><span>Open any article and select text to <em>highlight</em>, <em>save a quote</em>, or <em>define</em>.</span></li>
+            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>ii.</span><span>Definitions show English, Arabic, IPA, and a brief gloss.</span></li>
+            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>iii.</span><span>Saved items live in <em>Quotes</em> and <em>Vocabulary</em>.</span></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function ArticleCard({ article: a, onOpen, onDelete, status = "new", progress = 0, style }) {
+  const isRtl = isRtlCategory(a.category);
+  const rtlStyle = isRtl ? {
+    direction: "rtl",
+    fontFamily: "'Noto Naskh Arabic', serif",
+    textAlign: "right",
+  } : null;
+  return (
+    <div className="card px-6 py-5 rise" style={style}>
+      <div className="flex items-start justify-between gap-3 mb-3 flex-wrap"
+        style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="tag">{CATEGORY_LABELS[a.category] || "Misc"}</span>
+          <StatusBadge status={status} percent={progress}/>
+        </div>
+        {onDelete && (
+          <button onClick={(e) => { e.stopPropagation(); if (confirm("Delete this article?")) onDelete(); }}
+            className="opacity-50 hover:opacity-100" title="Delete">
+            <Trash2 size={14} style={{ color: "var(--ink-3)" }}/>
+          </button>
+        )}
+      </div>
+      <h3 onClick={onOpen} className={isRtl ? "mb-2 cursor-pointer leading-tight" : "display text-2xl md:text-[1.7rem] mb-2 cursor-pointer leading-tight"}
+        style={{
+          fontWeight: isRtl ? 700 : 600,
+          color: "var(--ink)",
+          fontSize: isRtl ? "1.5rem" : undefined,
+          ...rtlStyle,
+        }}>
+        {a.title}
+      </h3>
+      <p className={isRtl ? "text-sm md:text-[0.95rem] mb-4 leading-relaxed" : "body text-sm md:text-[0.95rem] mb-4 italic leading-relaxed"}
+        style={{ color: "var(--ink-3)", ...rtlStyle }}>
+        {a.author} {a.excerpt && `— ${a.excerpt}`}
+      </p>
+      <div className="flex items-center justify-between">
+        <button onClick={onOpen} className="reader-btn">
+          <BookOpen size={12}/> Open Reader
+        </button>
+        <div className="ui text-[9px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
+          {a.readTime} · {a.date}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   READER VIEW
+   ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   BOOX E-INK OVERRIDE for embedded book HTML
+   Injects a stylesheet that:
+   • forces light page + dark text (high contrast for e-ink)
+   • saturates accent colors so they survive Kaleido 3 desaturation
+   • removes shadows / blurs
+   • applies CSS zoom for the user font-size control
+   ════════════════════════════════════════════════════════════════ */
+function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections) {
+  const overrideCss = `
+<style id="boox-eink-override">
+  @import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap');
+
+  *, *::before, *::after {
+    text-shadow: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* === BOOKERLY-LIKE BODY FONT (Literata) — body text only, headings keep their original face === */
+  body, .wrap, p, .tip-body, .tip-body p, .intro-block p, .intro-block,
+  .quote-text, .quote-ref, .example-box p, .example-box,
+  .do-box, .dont-box, .checklist, .checklist li,
+  .theme-card .t-desc, .stat .lbl, .p-desc,
+  .verdict-block p, .hero-author, .hero-year, .hero-subtitle {
+    font-family: 'Literata', 'Cormorant Garamond', Georgia, serif !important;
+  }
+  /* Headings explicitly KEEP their original display face (IM Fell English etc.) */
+  .hero-title, .section-title, .section-label, .tip-name, .tip-num,
+  .p-label, .p-title, .stat .num, .theme-card .t-name, h1, h2, h3, h4, h5, h6 {
+    /* font-family inherited from each book's own CSS — do not override */
+  }
+
+  /* Override root variables so var() references switch to light theme */
+  html, body, .wrap, :root {
+    --dark: #FAF5E1 !important;
+    --dark2: #F2EAD0 !important;
+    --text: #0A0A0A !important;
+    --muted: #2D2D2D !important;
+    --cream: #FAF5E1 !important;
+    --cream-dark: #EFE6C8 !important;
+    --border-c: #1A1A1A !important;
+    --maroon: #6A1A2A !important;
+    --maroon-light: #8B2436 !important;
+    --maroon-bright: #6A1A2A !important;
+    --gold: #9E6F1A !important;
+    --gold-light: #6A4500 !important;
+    --blue: #1E3060 !important;
+    --blue-light: #2A4078 !important;
+  }
+
+  html { background: #F2EAD0 !important; }
+  body {
+    background: #F2EAD0 !important;
+    color: #0A0A0A !important;
+    zoom: ${fontMultiplier};
+  }
+
+  /* Invert all common dark sections */
+  .hero, .part-banner, .stat-strip, .quotes-section, .verdict-block,
+  .tab-bar, .theme-card, .tip-block {
+    background: #FAF5E1 !important;
+    color: #0A0A0A !important;
+    border-color: #1A1A1A !important;
+  }
+
+  /* Inline style overrides for any element painted with dark hex */
+  [style*="background:#0c1220"], [style*="background: #0c1220"],
+  [style*="background:#131c2e"], [style*="background: #131c2e"],
+  [style*="background:#080c18"], [style*="background: #080c18"],
+  [style*="background:#18101a"], [style*="background: #18101a"],
+  [style*="background-color:#0c1220"], [style*="background-color: #0c1220"],
+  [style*="background-color:#131c2e"], [style*="background-color: #131c2e"] {
+    background: #FAF5E1 !important;
+    background-color: #FAF5E1 !important;
+    color: #0A0A0A !important;
+  }
+
+  /* Any remaining white text becomes dark */
+  [style*="color:#fff"],     [style*="color: #fff"],
+  [style*="color:#ffffff"],  [style*="color: #ffffff"],
+  [style*="color:white"],    [style*="color: white"],
+  [style*="color:var(--cream)"] {
+    color: #0A0A0A !important;
+  }
+
+  /* Force dark text inside originally-dark sections */
+  .hero, .hero *, .part-banner, .part-banner *, .stat-strip, .stat-strip *,
+  .quotes-section, .quotes-section *, .verdict-block, .verdict-block *,
+  .theme-card, .theme-card * {
+    color: #0A0A0A !important;
+  }
+
+  /* Preserve accent colors with strong saturation */
+  .hero-title { color: #6A1A2A !important; font-weight: 700 !important; }
+  .hero-subtitle { color: #1E3060 !important; }
+  .hero-author { color: #2D2D2D !important; }
+  .hero-year { color: #4A4A4A !important; }
+  .hero-ornament { color: #6A1A2A !important; opacity: 1 !important; }
+
+  .section-label, .tip-num, .p-label {
+    color: #6A1A2A !important;
+    font-weight: 600 !important;
+  }
+  .section-title, .p-title { color: #0A0A0A !important; font-weight: 600 !important; }
+  .tip-name { color: #1E3060 !important; }
+  .stat .num { color: #6A1A2A !important; font-weight: 700 !important; }
+  .stat .lbl { color: #4A4A4A !important; }
+  .theme-card .t-name { color: #6A1A2A !important; font-weight: 600 !important; }
+  .theme-card .t-desc { color: #2D2D2D !important; }
+  .quote-text { color: #0A0A0A !important; font-weight: 500 !important; }
+  .quote-ref { color: #6A1A2A !important; }
+  .p-desc { color: #4A4A4A !important; }
+
+  /* Tabs — bold across all books, clearer for e-ink touch */
+  .tab {
+    color: #1A1A1A !important;
+    background: #EFE6C8 !important;
+    border-right: 1px solid #1A1A1A !important;
+    font-weight: 700 !important;
+  }
+  .tab:hover { color: #6A1A2A !important; background: #FAF5E1 !important; }
+  .tab.active {
+    color: #6A1A2A !important;
+    background: #F2EAD0 !important;
+    border-bottom: 3px solid #6A1A2A !important;
+    font-weight: 700 !important;
+  }
+
+  /* Theme cards: light bg + strong border */
+  .theme-card {
+    background: #FAF5E1 !important;
+    border: 1.5px solid #6A1A2A !important;
+  }
+
+  /* Quote items */
+  .quote-item {
+    background: #EFE6C8 !important;
+    border-left: 4px solid #6A1A2A !important;
+  }
+  .quote-item .quote-text { color: #0A0A0A !important; }
+  .quote-item .quote-ref { color: #6A1A2A !important; }
+
+  /* Do/Dont contrast */
+  .do-box {
+    background: #DCE6CF !important;
+    color: #0A0A0A !important;
+    border-left: 5px solid #2A6B3A !important;
+  }
+  .do-box strong { color: #1A4F1A !important; }
+  .dont-box {
+    background: #ECD8D8 !important;
+    color: #0A0A0A !important;
+    border-left: 5px solid #6A1A2A !important;
+  }
+  .dont-box strong { color: #6A1A2A !important; }
+
+  /* Examples */
+  .example-box {
+    background: #EFE6C8 !important;
+    border: 1px solid #1E3060 !important;
+  }
+  .example-box .ex-label { color: #1E3060 !important; }
+  .example-box * { color: #0A0A0A !important; }
+
+  /* Tip blocks */
+  .tip-block {
+    background: #FAF5E1 !important;
+    border-left: 5px solid #6A1A2A !important;
+    border-radius: 4px !important;
+  }
+  .tip-body, .tip-body p, .tip-body * { color: #0A0A0A !important; }
+
+  /* Verdict */
+  .verdict-block {
+    background: #F2EAD0 !important;
+    border-top: 3px double #6A1A2A !important;
+  }
+  .verdict-block p { color: #0A0A0A !important; font-style: italic !important; }
+
+  /* Misc */
+  .section-title { border-bottom: 1.5px solid #1A1A1A !important; }
+  .intro-block { border-bottom: 1.5px solid #6A1A2A !important; }
+  .intro-block p { color: #2D2D2D !important; }
+  .checklist li { color: #2D2D2D !important; border-bottom: 1px solid #C0B49E !important; }
+  .checklist li::before { color: #6A1A2A !important; }
+  .divider { color: #6A1A2A !important; opacity: 0.7 !important; }
+
+  /* Content area */
+  .content-area { background: #F2EAD0 !important; border-color: #1A1A1A !important; }
+
+  /* Underlines / borders */
+  hr, .rule, .separator { border-color: #1A1A1A !important; }
+
+  /* ✓ mark before tabs the user has marked as read */
+  .tab.tab-read::before {
+    content: "✓";
+    display: inline-block;
+    margin-right: 5px;
+    color: #2A6B3A !important;
+    font-weight: 700;
+    font-size: 0.95em;
+  }
+
+  /* Manual "Mark as read" footer that we append to each panel */
+  .athenaeum-mark-footer {
+    margin: 2.5rem 0 0.5rem !important;
+    padding: 1.6rem 1rem 0.4rem !important;
+    border-top: 1.5px solid #1A1A1A !important;
+    text-align: center !important;
+  }
+  .athenaeum-mark-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 11px 26px !important;
+    background: #FAF5E1 !important;
+    border: 2px solid #1A1A1A !important;
+    color: #0A0A0A !important;
+    font-family: \'DM Mono\', \'Cormorant Garamond\', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.18em !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    border-radius: 999px !important;
+    cursor: pointer !important;
+  }
+  .athenaeum-mark-btn:hover { background: #1A1A1A !important; color: #FAF5E1 !important; }
+  .athenaeum-mark-btn.is-read {
+    background: #2A6B3A !important;
+    color: #FAF5E1 !important;
+    border-color: #2A6B3A !important;
+  }
+  .athenaeum-mark-btn.is-read:hover { background: #1A4F2A !important; border-color: #1A4F2A !important; }
+
+  /* Whole-summary footer — distinct from per-section buttons */
+  .athenaeum-mark-footer.is-whole {
+    margin: 3rem 0 2rem !important;
+    padding: 2rem 1rem !important;
+    border-top: 2px double #9E6F1A !important;
+    border-bottom: 2px double #9E6F1A !important;
+    background: #FAF5E1 !important;
+  }
+  .athenaeum-mark-footer.is-whole::before {
+    content: "End of summary";
+    display: block;
+    font-family: \'Cormorant Garamond\', \'DM Mono\', serif !important;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #9E6F1A !important;
+    margin-bottom: 1rem !important;
+    text-align: center;
+  }
+  .athenaeum-mark-btn-whole {
+    padding: 14px 32px !important;
+    font-size: 12px !important;
+    border: 2.5px solid #9E6F1A !important;
+    background: #FAF5E1 !important;
+    color: #5C3F0A !important;
+  }
+  .athenaeum-mark-btn-whole:hover {
+    background: #9E6F1A !important;
+    color: #FAF5E1 !important;
+  }
+  .athenaeum-mark-btn-whole.is-read {
+    background: #5C3F0A !important;
+    color: #FAF5E1 !important;
+    border-color: #5C3F0A !important;
+  }
+  .athenaeum-mark-btn-whole.is-read:hover {
+    background: #3C2A06 !important;
+    border-color: #3C2A06 !important;
+  }
+
+  /* === FULL-WIDTH READING FRAME (BOOX TAB ULTRA C PRO) === */
+  /* Kill all browser default margins so the iframe edges = the content edges */
+  html, body { margin: 0 !important; padding: 0 !important; }
+
+  /* Each book bakes its own narrow .wrap (780–880px). Override to fill the iframe edge-to-edge. */
+  .wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* The cream content panel: NO border, fill the whole iframe horizontally.
+     Padding stays inside so the text has breathing room. */
+  .content-area {
+    padding: 0 1.5rem 2rem !important;
+    margin: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  /* Hero/banner: no inner offset beyond the wrap */
+  .hero, .part-banner, .stat-strip, .quotes-section, .verdict-block, .intro-block {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Tab bar runs wall-to-wall */
+  .tab-bar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Panels get breathing room without wasted gutters */
+  .panel { padding: 1.5rem 0 2rem !important; margin: 0 !important; }
+
+  /* Tip blocks, theme cards, quote items: keep left accent, no horizontal margin */
+  .tip-block {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 1.25rem 1.5rem !important;
+  }
+  .theme-card { padding: 1.25rem 1.5rem !important; margin-left: 0 !important; margin-right: 0 !important; }
+  .quote-item { padding: 1rem 1.5rem !important; margin-left: 0 !important; margin-right: 0 !important; }
+  .do-box, .dont-box, .example-box { padding: 1rem 1.5rem !important; margin-left: 0 !important; margin-right: 0 !important; }
+
+  /* Rule boxes (used in Trial Techniques, Cross-Examination, Beyond Good and Evil)
+     originally render as dark navy background with cream text. On the cream-themed
+     e-ink layout that creates white-on-cream and the text disappears. Force a
+     light surface with dark text and a strong gold accent on the left. */
+  .rule-box {
+    background: #FAF5E1 !important;
+    color: #0A0A0A !important;
+    border-left: 5px solid #9E6F1A !important;
+    padding: 1.25rem 1.5rem !important;
+    margin: 1rem 0 1.3rem !important;
+  }
+  .rule-box * { color: #0A0A0A !important; }
+  .rule-box p, .rule-box li, .rule-box span {
+    color: #0A0A0A !important;
+    font-weight: 500 !important;
+  }
+  .rule-box .r-label {
+    color: #5C3F0A !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3em !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Advocate-initial badges (Point Made): keep visible against any background */
+  .adv-initial {
+    background: #1A4F2A !important;
+    color: #FAF5E1 !important;
+    font-weight: 700 !important;
+    border: 1px solid #1A4F2A !important;
+  }
+
+  /* Larger tablet: more breathing room inside content-area, still full width */
+  @media (min-width: 768px) {
+    .content-area { padding-left: 2.25rem !important; padding-right: 2.25rem !important; }
+    .panel { padding: 2rem 0 2.5rem !important; }
+  }
+</style>`;
+
+  // Manual mark-as-read system:
+  // - Seeds tabs/buttons from prior readSections.
+  // - Appends a "Mark as read" button at the end of each .panel (or the whole
+  //   body if the book has no panel structure).
+  // - Toggling the button updates the corresponding tab's ✓ and posts a message.
+  const trackerJs = `
+<script>
+(function() {
+  try {
+    var ARTICLE_ID = ${JSON.stringify(articleId || "")};
+    var READ_SECTIONS = ${JSON.stringify(Array.from(readSections || []))};
+
+    function getPanels() {
+      return Array.from(document.querySelectorAll(".panel"));
+    }
+    function getPanelIdFromTab(tab) {
+      var oc = tab.getAttribute("onclick") || "";
+      var m = oc.match(/show\s*\(\s*['\"]([^'\"]+)['\"]/);
+      return m ? m[1] : null;
+    }
+    function getTabByPanelId(id) {
+      var tabs = document.querySelectorAll(".tab");
+      for (var i = 0; i < tabs.length; i++) {
+        if (getPanelIdFromTab(tabs[i]) === id) return tabs[i];
+      }
+      return null;
+    }
+    function setSectionRead(panelId, isRead) {
+      var tab = getTabByPanelId(panelId);
+      if (tab) {
+        if (isRead) tab.classList.add("tab-read");
+        else tab.classList.remove("tab-read");
+      }
+      var btns = document.querySelectorAll(
+        ".athenaeum-mark-btn[data-panel-id=\"" + panelId + "\"]"
+      );
+      var isWhole = panelId === "_whole";
+      Array.prototype.forEach.call(btns, function(b){
+        if (isRead) {
+          b.classList.add("is-read");
+          b.textContent = isWhole
+            ? "✓ Whole summary read · Click to undo"
+            : "✓ Read · Click to mark as pending";
+        } else {
+          b.classList.remove("is-read");
+          b.textContent = isWhole
+            ? "Mark whole summary as read"
+            : "Mark as read";
+        }
+      });
+    }
+    function reportToggle(panelId, isRead, allPanels) {
+      try {
+        parent.postMessage({
+          type: "athenaeum-mark-section",
+          articleId: ARTICLE_ID,
+          panelId: panelId,
+          read: isRead,
+          allPanels: allPanels,
+        }, "*");
+      } catch(e) {}
+    }
+    function buildButton(panelId, isRead) {
+      var footer = document.createElement("div");
+      footer.className = "athenaeum-mark-footer";
+      var btn = document.createElement("button");
+      btn.className = "athenaeum-mark-btn" + (isRead ? " is-read" : "");
+      btn.setAttribute("data-panel-id", panelId);
+      btn.textContent = isRead ? "✓ Read · Click to mark as pending" : "Mark as read";
+      footer.appendChild(btn);
+      return footer;
+    }
+    function attachClick(panel, btn, allPanelIds) {
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-panel-id");
+        var willBe = !btn.classList.contains("is-read");
+        setSectionRead(id, willBe);
+        reportToggle(id, willBe, allPanelIds);
+      });
+    }
+    function addPerPanelButtons() {
+      var panels = getPanels();
+      var ids = panels.map(function(p){ return p.id; }).filter(Boolean);
+      panels.forEach(function(panel){
+        var id = panel.id;
+        if (!id) return;
+        if (panel.querySelector(".athenaeum-mark-footer")) return;
+        var isRead = READ_SECTIONS.indexOf(id) !== -1;
+        var footer = buildButton(id, isRead);
+        panel.appendChild(footer);
+        attachClick(panel, footer.querySelector("button"), ids);
+      });
+    }
+    function addWholeBookButton(asSummaryLevel) {
+      // Pick the outermost container so the summary-level button sits below
+      // the last panel rather than inside it.
+      var container = document.querySelector(".content-area")
+                   || document.querySelector(".wrap")
+                   || document.body;
+      if (!container) return;
+      // Avoid duplicate _whole footer if already injected
+      if (container.querySelector(".athenaeum-mark-footer.is-whole")) return;
+      var isRead = READ_SECTIONS.indexOf("_whole") !== -1;
+      var footer = document.createElement("div");
+      footer.className = "athenaeum-mark-footer is-whole";
+      var btn = document.createElement("button");
+      btn.className = "athenaeum-mark-btn athenaeum-mark-btn-whole" + (isRead ? " is-read" : "");
+      btn.setAttribute("data-panel-id", "_whole");
+      btn.textContent = isRead
+        ? "✓ Whole summary read · Click to undo"
+        : (asSummaryLevel ? "Mark whole summary as read" : "Mark as read");
+      footer.appendChild(btn);
+      // Append to body so it appears at the very bottom regardless of layout
+      (document.body || container).appendChild(footer);
+      attachClick(null, btn, ["_whole"]);
+    }
+    function applyInitial() {
+      READ_SECTIONS.forEach(function(id){
+        if (id !== "_whole") setSectionRead(id, true);
+      });
+    }
+    function init() {
+      applyInitial();
+      var panels = getPanels();
+      if (panels.length > 0) addPerPanelButtons();
+      addWholeBookButton(panels.length > 0);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  } catch(e) { /* no-op */ }
+})();
+</script>`;
+
+
+  // Build the head additions (CSS) and body tail additions (script)
+  const headPayload = overrideCss;
+  const bodyTail    = trackerJs;
+
+  let out = rawHtml;
+  if (out.includes("</head>")) {
+    out = out.replace("</head>", headPayload + "</head>");
+  } else if (/<body[^>]*>/i.test(out)) {
+    out = out.replace(/<body([^>]*)>/i, "<body$1>" + headPayload);
+  } else {
+    out = headPayload + out;
+  }
+  // Append tracker script before </body> so DOM is ready
+  if (out.includes("</body>")) {
+    out = out.replace("</body>", bodyTail + "</body>");
+  } else {
+    out = out + bodyTail;
+  }
+  return out;
+}
+
+function ReaderView({ article: a, onBack, articleRef, renderParagraph, fontPx, onEdit, library, onToggleMarkRead }) {
+  const iframeRef = useRef(null);
+  const [iframeHeight, setIframeHeight] = useState(2400);
+  const initialReadSections = useMemo(
+    () => (library?.reading?.[a?.id]?.readSections || []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [a?.id]
+  );
+  const readPct = a ? getReadProgress(a, library) * 100 : 0;
+  const isMarkedRead = !!library?.reading?.[a?.id]?.marked;
+  const isRtl = a ? isRtlCategory(a.category) : false;
+
+  // Build the e-ink-styled iframe HTML with current font scale.
+  // Re-runs when article or fontPx changes, causing the iframe to reload.
+  const enhancedHtml = useMemo(
+    () => (a?.richHtml
+      ? buildEinkRichHtml(a.richHtml, fontPx, a.id, initialReadSections)
+      : null),
+    // Intentionally NOT depending on readSections after mount — iframe handles
+    // updates locally, parent only seeds initial state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [a?.id, a?.richHtml, fontPx]
+  );
+
+  // Auto-size iframe to its content
+  useEffect(() => {
+    if (!a?.richHtml) return;
+    setIframeHeight(2400); // reset on article/font change so we re-measure
+    const tick = () => {
+      const f = iframeRef.current;
+      if (!f) return;
+      try {
+        const doc = f.contentDocument;
+        if (doc?.body) {
+          const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+          if (h && Math.abs(h - iframeHeight) > 4) setIframeHeight(h + 32);
+        }
+      } catch {}
+    };
+    const iv = setInterval(tick, 400);
+    return () => clearInterval(iv);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [a?.id, fontPx]);
+
+  if (!a) return null;
+
+  // ── RICH HTML ARTICLE (book summaries with original styling, e-ink retuned) ──
+  if (a.richHtml) {
+    return (
+      <>
+      <ProgressBar percent={readPct}/>
+      <article className="px-2 md:px-4 py-6 max-w-[1500px] mx-auto rise">
+        <div className="flex items-center justify-between mb-4 px-2">
+          <button onClick={onBack}
+            className="ui text-[11px] tracking-[0.2em] uppercase flex items-center gap-2"
+            style={{ color: "var(--ink)" }}>
+            <ArrowLeft size={14}/> Back to Library
+          </button>
+          <span className="tag">{CATEGORY_LABELS[a.category] || "Misc"}</span>
+        </div>
+
+        <div style={{
+          border: "1.5px solid var(--rule)",
+          borderRadius: 10,
+          overflow: "hidden",
+          background: "var(--cream-3)",
+        }}>
+          <iframe
+            ref={iframeRef}
+            srcDoc={enhancedHtml}
+            title={a.title}
+            sandbox="allow-same-origin allow-scripts"
+            style={{
+              width: "100%",
+              height: iframeHeight,
+              border: "none",
+              display: "block",
+              background: "transparent",
+            }}
+          />
+        </div>
+
+        <div className="mt-8 ui text-[10px] tracking-[0.25em] uppercase text-center" style={{ color: "var(--ink-3)" }}>
+          By {a.author} · {a.readTime} · {a.date}
+        </div>
+      </article>
+      </>
+    );
+  }
+
+  // ── STANDARD ARTICLE ──
+  return (
+    <>
+    <ProgressBar percent={readPct}/>
+    <article className="px-4 md:px-8 py-8 max-w-[1400px] mx-auto rise">
+      <div className="flex items-center justify-between mb-8">
+        <button onClick={onBack}
+          className="ui text-[11px] tracking-[0.2em] uppercase flex items-center gap-2 transition"
+          style={{ color: "var(--ink-3)" }}>
+          <ArrowLeft size={14}/> Back to Library
+        </button>
+        {a.custom && onEdit && (
+          <button onClick={onEdit} className="reader-btn" style={{ background: "var(--cream-3)", color: "var(--ink)", border: "1px solid var(--rule)" }}>
+            Edit
+          </button>
+        )}
+      </div>
+
+      <header className={isRtl ? "max-w-3xl mx-auto mb-12 pb-8 border-b" : "max-w-3xl mx-auto mb-12 pb-8 border-b"}
+        style={{ borderColor: "var(--rule)", ...(isRtl ? { direction: "rtl", textAlign: "right" } : {}) }}>
+        <span className="tag mb-5 inline-block">{CATEGORY_LABELS[a.category] || "Misc"}</span>
+        <h1 className={isRtl ? "leading-[1.15] mb-4 mt-2" : "display leading-[1.05] mb-4 mt-2"}
+          style={{
+            fontSize: "clamp(2rem, 5vw, 3.4rem)",
+            fontWeight: isRtl ? 700 : 600,
+            color: "var(--ink)",
+            fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : undefined,
+          }}>
+          {a.title}
+        </h1>
+        {a.excerpt && (
+          <p className={isRtl ? "text-xl md:text-2xl mb-5" : "display text-xl md:text-2xl italic mb-5"}
+            style={{
+              color: "var(--ink-2)",
+              fontWeight: 400,
+              fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : undefined,
+            }}>
+            {a.excerpt}
+          </p>
+        )}
+        <div className="ui text-[10px] tracking-[0.25em] uppercase flex items-center gap-3 flex-wrap" style={{ color: "var(--ink-3)" }}>
+          <span>{isRtl ? "بقلم" : "By"} {a.author}</span><span>·</span><span>{a.readTime}</span><span>·</span><span>{a.date}</span>
+        </div>
+      </header>
+
+      {/* Core legal principle — headnote-style pull quote */}
+      {a.corePrinciple && (
+        <div className="max-w-3xl mx-auto">
+          {(Array.isArray(a.corePrinciple) ? a.corePrinciple : [a.corePrinciple]).map((cp, i) => (
+            <div key={i} className={"core-principle" + (isRtl ? "" : " ltr")}>
+              <div className="core-principle__label">{isRtl ? "المبدأ" : "The Principle"}</div>
+              <p className="core-principle__text">{cp.text}</p>
+              {cp.source && <div className="core-principle__source">{cp.source}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div ref={articleRef}
+        className={isRtl ? "reading-column article-body rtl-arabic mx-auto" : "reading-column article-body mx-auto"}
+        style={{ fontSize: `${fontPx}rem` }}>
+        {a.body.map((p, i) => (
+          <React.Fragment key={i}>
+            <p>{renderParagraph(p, a.id)}</p>
+            {i === Math.floor(a.body.length / 2) - 1 && a.body.length > 4 && (
+              <div className="gold-rule"><span className="gold-rule__mark"/></div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* Manual mark-as-read */}
+      <div className="max-w-3xl mx-auto mt-12 mb-2 text-center">
+        <button onClick={() => onToggleMarkRead?.(a.id)}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "11px 26px",
+            background: isMarkedRead ? "#2A6B3A" : "var(--cream-3)",
+            border: `2px solid ${isMarkedRead ? "#2A6B3A" : "var(--ink)"}`,
+            color: isMarkedRead ? "var(--cream-3)" : "var(--ink)",
+            fontFamily: "DM Mono, monospace",
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            borderRadius: 999,
+            cursor: "pointer",
+          }}>
+          {isMarkedRead ? "✓ Read · Click to mark as pending" : "Mark as read"}
+        </button>
+      </div>
+
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t text-center"
+        style={{ borderColor: "var(--rule)" }}>
+        <div className="display text-3xl italic" style={{ color: "var(--gold)" }}>◆</div>
+        <div className="ui text-[10px] tracking-[0.3em] uppercase mt-2" style={{ color: "var(--ink-3)" }}>End</div>
+      </div>
+    </article>
+    </>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   EDITOR VIEW — add or edit your own article
+   ════════════════════════════════════════════════════════════════ */
+function EditorView({ existing, onSave, onCancel }) {
+  const [title, setTitle] = useState(existing?.title || "");
+  const [author, setAuthor] = useState(existing?.author || "");
+  const [category, setCategory] = useState(existing?.category || "philosophy");
+  const isRtl = isRtlCategory(category);
+  const [excerpt, setExcerpt] = useState(existing?.excerpt || "");
+  const [bodyText, setBodyText] = useState(existing?.body?.join("\n\n") || "");
+
+  const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
+  const readMinutes = Math.max(1, Math.round(wordCount / 230));
+
+  const handleSave = () => {
+    if (!title.trim() || !bodyText.trim()) {
+      alert("Please give the piece a title and some body text.");
+      return;
+    }
+    onSave({
+      id: existing?.id,
+      title: title.trim(),
+      author: author.trim() || "Unknown",
+      category,
+      excerpt: excerpt.trim() || bodyText.trim().slice(0, 140) + "…",
+      body: bodyText.split(/\n{2,}/).map(p => p.trim()).filter(Boolean),
+      date: existing?.date || new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+      readTime: `${readMinutes} min`,
+    });
+  };
+
+  return (
+    <div className="px-4 md:px-8 py-6 md:py-10 max-w-[1100px] mx-auto rise">
+      <div className="flex items-center justify-between mb-8">
+        <button onClick={onCancel}
+          className="ui text-[11px] tracking-[0.2em] uppercase flex items-center gap-2"
+          style={{ color: "var(--ink-3)" }}>
+          <ArrowLeft size={14}/> Cancel
+        </button>
+        <button onClick={handleSave} className="reader-btn">
+          <Save size={13}/> Save Article
+        </button>
+      </div>
+
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="tag">Editor</span>
+          <span className="ui text-[10px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
+            {wordCount} words · {readMinutes} min read
+          </span>
+        </div>
+        <h2 className="display text-3xl md:text-4xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
+          {existing ? "Edit your article" : "Add your own article"}
+        </h2>
+        <p className="body text-sm mt-2" style={{ color: "var(--ink-3)" }}>
+          Paste any text — a chapter, an essay, a research note. Separate paragraphs with a blank line.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-12 gap-4 mb-4">
+        <div className="col-span-12 md:col-span-7">
+          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Title</label>
+          <input value={title} onChange={e => setTitle(e.target.value)}
+            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
+            placeholder={isRtl ? "مثال: ملاحظات على رسالة لوك الثانية" : "e.g. Notes on Locke's Second Treatise"}/>
+        </div>
+        <div className="col-span-12 md:col-span-5">
+          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Author</label>
+          <input value={author} onChange={e => setAuthor(e.target.value)}
+            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
+            placeholder={isRtl ? "المؤلف أو المصدر" : "Author or source"}/>
+        </div>
+        <div className="col-span-12 md:col-span-5">
+          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Category</label>
+          <div className="relative">
+            <select value={category} onChange={e => setCategory(e.target.value)}
+              className="editor-input appearance-none pr-10">
+              {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: "var(--ink-3)" }}/>
+          </div>
+        </div>
+        <div className="col-span-12 md:col-span-7">
+          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Excerpt (optional)</label>
+          <input value={excerpt} onChange={e => setExcerpt(e.target.value)}
+            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
+            placeholder={isRtl ? "ملخص قصير أو عنوان فرعي" : "A one-line summary or subtitle"}/>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Body</label>
+        <textarea value={bodyText} onChange={e => setBodyText(e.target.value)}
+          className={"editor-input editor-textarea body" + (isRtl ? " rtl-arabic" : "")}
+          placeholder={isRtl
+            ? "الصق نصك هنا.\n\nافصل الفقرات بسطر فارغ مثل هذا.\n\nسيتم عرض كل فقرة بطباعة كتابية أنيقة."
+            : "Paste your text here.&#10;&#10;Separate paragraphs with a blank line, like this.&#10;&#10;Each paragraph will be rendered with proper book typography."}/>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   COLLECTION VIEW (Quotes, Vocabulary)
+   ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   DAILY QUOTE VIEW
+   ════════════════════════════════════════════════════════════════ */
+function DailyQuoteView({ library, allArticles, onJump, onGoToQuotes }) {
+  const pick = getDailyQuote(library?.quotes || []);
+  const today = formatTodayDate();
+  const sourceArticle = pick && pick.quote.articleId
+    ? allArticles.find(a => a.id === pick.quote.articleId)
+    : null;
+
+  return (
+    <div className="px-4 md:px-8 py-8 md:py-12 max-w-[1100px] mx-auto rise">
+      {/* Eyebrow */}
+      <div className="flex items-center gap-3 mb-3">
+        <Sparkles size={14} style={{ color: "var(--gold)" }}/>
+        <span className="ui text-[10px] tracking-[0.35em] uppercase" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
+          Quote of the Day
+        </span>
+      </div>
+      <div className="ui text-[10px] tracking-[0.25em] uppercase mb-10" style={{ color: "var(--ink-3)" }}>
+        {today}
+      </div>
+
+      {pick ? (
+        <>
+          {/* Bookplate-style quote card */}
+          <div className="card p-8 md:p-14 relative" style={{ minHeight: 320 }}>
+            {/* Big opening quote mark */}
+            <div className="display absolute" style={{
+              top: "0.2rem", left: "1rem",
+              fontSize: "9rem", lineHeight: 1, color: "var(--gold)", opacity: 0.45,
+              fontStyle: "italic",
+            }}>
+              "
+            </div>
+
+            <div className="relative" style={{ paddingTop: "3rem" }}>
+              <p className="display italic mb-8"
+                style={{
+                  fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
+                  lineHeight: 1.45,
+                  color: "var(--ink)",
+                  fontWeight: 500,
+                }}>
+                {pick.quote.text}
+              </p>
+
+              <div className="flex items-center gap-3 mb-2">
+                <div style={{ width: 30, height: 1, background: "var(--gold)" }}/>
+                <span className="ui text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
+                  Source
+                </span>
+              </div>
+              <p className="body italic" style={{ fontSize: "1.05rem", color: "var(--ink-2)" }}>
+                {pick.quote.source}
+              </p>
+
+              {sourceArticle && (
+                <button onClick={() => onJump(sourceArticle.id)}
+                  className="reader-btn mt-6">
+                  <BookOpen size={12}/> Open Source
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Footer meta */}
+          <div className="flex items-center justify-between mt-6 ui text-[10px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
+            <span>Quote {pick.index + 1} of {pick.total}</span>
+            <button onClick={onGoToQuotes} style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
+              Browse all quotes →
+            </button>
+          </div>
+
+          {/* About the rotation */}
+          <div className="card p-6 mt-8">
+            <div className="ui text-[10px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--gold-deep)" }}>
+              About this rotation
+            </div>
+            <p className="body text-[0.95rem] leading-relaxed" style={{ color: "var(--ink-2)" }}>
+              Each day, Athenaeum surfaces one quote from your saved collection — the same quote stays for the whole calendar day, then rotates at midnight. The selection is deterministic (based on the date), not random, so reloading the page won't change it.
+            </p>
+            <p className="body text-[0.95rem] leading-relaxed mt-3" style={{ color: "var(--ink-2)" }}>
+              Save more quotes by selecting any text in a reading view and tapping <em>Save Quote</em> in the toolbar — they'll all enter the rotation.
+            </p>
+          </div>
+        </>
+      ) : (
+        /* Empty state */
+        <div className="card p-10 md:p-16 text-center">
+          <div className="display text-6xl mb-4 italic" style={{ color: "var(--gold)" }}>"</div>
+          <h2 className="display text-3xl italic mb-3" style={{ fontWeight: 600, color: "var(--ink)" }}>
+            No quotes saved yet
+          </h2>
+          <p className="body text-[1rem] leading-relaxed mb-8 max-w-md mx-auto" style={{ color: "var(--ink-3)" }}>
+            Open any article, select a passage, and tap <em>Save Quote</em> in the toolbar.
+            Once you've saved a few, a different one will appear here every day.
+          </p>
+          <button onClick={() => onJump && (allArticles[0] && onJump(allArticles[0].id))}
+            className="reader-btn">
+            <BookOpen size={12}/> Start reading
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CollectionView({ kind, library, allArticles, onRemove, onJump }) {
+  const items = kind === "quotes" ? library.quotes : library.vocabulary;
+  const heading = kind === "quotes" ? "My Quotes" : "My Vocabulary";
+  const subhead = kind === "quotes" ? "Citations you've saved." : "Words you've looked up.";
+
+  const findArticle = (id) => allArticles.find(a => a.id === id);
+
+  return (
+    <div className="px-4 md:px-8 py-6 md:py-8 max-w-[1100px] mx-auto rise">
+      <div className="card flex items-center justify-between px-6 py-5 mb-5">
+        <div>
+          <h2 className="display text-2xl md:text-3xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
+            {heading}
+          </h2>
+          <p className="body text-sm italic" style={{ color: "var(--ink-3)" }}>{subhead}</p>
+        </div>
+        <span className="tag">{items.length} item{items.length !== 1 ? "s" : ""}</span>
+      </div>
+
+      {items.length === 0 ? (
+        <div className="card px-8 py-16 text-center">
+          <div className="display text-5xl mb-3 italic" style={{ color: "var(--gold)" }}>◆</div>
+          <p className="display text-xl italic" style={{ color: "var(--ink-2)" }}>
+            Nothing saved here yet.
+          </p>
+          <p className="body text-sm mt-1" style={{ color: "var(--ink-3)" }}>
+            Open any article and select text to begin.
+          </p>
+        </div>
+      ) : kind === "quotes" ? (
+        <div className="space-y-4">
+          {library.quotes.map(q => {
+            const a = findArticle(q.articleId);
+            return (
+              <div key={q.id} className="card p-6">
+                <div className="display text-5xl leading-none mb-1" style={{ color: "var(--gold)", opacity: 0.7 }}>“</div>
+                <p className="body italic text-[1.05rem] leading-relaxed mb-4" style={{ color: "var(--ink)" }}>
+                  {q.text}
+                </p>
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  {a ? (
+                    <button onClick={() => onJump(q.articleId)}
+                      className="ui text-[10px] tracking-[0.2em] uppercase flex items-center gap-1.5"
+                      style={{ color: "var(--gold-deep)" }}>
+                      → {q.source}
+                    </button>
+                  ) : (
+                    <span className="ui text-[10px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
+                      — {q.source}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 ui text-[10px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
+                    <span>{q.when}</span>
+                    <button onClick={() => onRemove("quotes", q.id)}><Trash2 size={12}/></button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {library.vocabulary.map(v => (
+            <div key={v.id} className="card p-5 flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="display text-2xl leading-tight" style={{ fontWeight: 600, color: "var(--ink)" }}>{v.word}</div>
+                <div className="ui text-[10px] mt-1" style={{ color: "var(--ink-3)" }}>{v.ipa}</div>
+                <div className="body text-sm italic mt-2" style={{ color: "var(--ink-2)" }}>{v.def}</div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="arabic-font text-2xl" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>{v.ar}</div>
+                <button onClick={() => onRemove("vocabulary", v.id)} className="mt-3 opacity-50 hover:opacity-100">
+                  <Trash2 size={12} style={{ color: "var(--ink-3)" }}/>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TOOLBAR BUTTON + DICTIONARY CARD
+   ════════════════════════════════════════════════════════════════ */
+function ToolBtn({ icon, label, onClick }) {
+  return (
+    <button onClick={onClick}
+      className="flex items-center gap-1.5 px-3 py-2 rounded-lg ui text-[10px] tracking-[0.18em] uppercase transition"
+      style={{ color: "var(--ink)" }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--cream-tag)"; e.currentTarget.style.color = "var(--gold-deep)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--ink)"; }}>
+      {icon}<span>{label}</span>
+    </button>
+  );
+}
+
+function DictionaryCard({ word, x, y, onClose, onSave, saved }) {
+  const entry = DICTIONARY[word];
+  const speak = () => {
+    try {
+      const u = new SpeechSynthesisUtterance(word);
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch {}
+  };
+  const ww = typeof window !== "undefined" ? window.innerWidth : 1024;
+  const wh = typeof window !== "undefined" ? window.innerHeight : 768;
+
+  return (
+    <>
+      <div onClick={onClose} className="fixed inset-0 z-40 fade" style={{ background: "rgba(0,0,0,0.55)" }}/>
+      <div className="fixed z-50 fade glow-card w-[340px] max-w-[92vw]"
+        style={{
+          left: Math.max(180, Math.min(ww - 180, x)),
+          top: Math.min(wh - 320, y + 28),
+          transform: "translateX(-50%)",
+        }}>
+        <div className="p-5">
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "var(--gold-deep)" }}>EN ↔ AR</div>
+              <h3 className="display text-3xl leading-none mt-1" style={{ fontWeight: 600, color: "var(--ink)" }}>{word}</h3>
+              {entry && <div className="ui text-[10px] mt-2" style={{ color: "var(--ink-3)" }}>{entry.ipa}</div>}
+            </div>
+            <button onClick={onClose} className="p-1" style={{ color: "var(--ink-3)" }}><X size={16}/></button>
+          </div>
+
+          {entry ? (
+            <>
+              <div className="my-4 py-3 border-y text-right" style={{ borderColor: "var(--rule)" }}>
+                <div className="arabic-font text-3xl" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>{entry.ar}</div>
+              </div>
+              <p className="body text-sm leading-relaxed italic mb-4" style={{ color: "var(--ink-2)" }}>
+                {entry.def}
+              </p>
+              <div className="flex items-center gap-2">
+                <button onClick={speak}
+                  className="flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full"
+                  style={{ border: "1px solid var(--rule)", color: "var(--ink)" }}>
+                  <Volume2 size={11}/> Hear
+                </button>
+                <button disabled={saved} onClick={() => onSave(word, entry)}
+                  className="flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full"
+                  style={{
+                    background: saved ? "transparent" : "var(--navy)",
+                    color: saved ? "var(--gold-deep)" : "var(--cream)",
+                    border: saved ? "1px solid var(--gold)" : "none",
+                  }}>
+                  <Bookmark size={11}/> {saved ? "Saved" : "Save"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="body text-sm italic py-3" style={{ color: "var(--ink-3)" }}>
+              No entry for <em>{word}</em>. Try a single full word.
+            </p>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

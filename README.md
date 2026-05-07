@@ -1,6 +1,6 @@
-# Antenaeum
+# Athenaeum
 
-Antenaeum is a static reading desk for saving vocabulary, quotes, highlights, and notes from your own texts.
+Athenaeum renders the provided `athenaeum.jsx` React file unchanged.
 
 ## Features
 
@@ -9,6 +9,6 @@ Antenaeum is a static reading desk for saving vocabulary, quotes, highlights, an
 - Quotes and highlights keep their original source.
 - Add, edit, import, and export texts.
 
-## Open
+## Run
 
-Open `index.html` in a browser. No build step or dependencies are required.
+Run `npm run dev -- --port 5173` and open `http://localhost:5173/`.
