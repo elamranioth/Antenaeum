@@ -1,0 +1,1270 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --dark:#040c14;--dark2:#081828;
+  --teal:#006878;--teal-l:#00a0b8;--teal-b:#40c8e0;
+  --gold:#b88020;--gold-l:#d4a030;
+  --cream:#f0ece0;--cream-d:#e0d8c8;
+  --border:#1a3848;--red:#7a1010;--green:#0a6040;
+  --muted:#0c1828;--text:#040c14;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body,.wrap{font-family:'Cormorant Garamond',serif;background:transparent;color:var(--text);}
+.wrap{max-width:920px;margin:0 auto;padding:0 0 3rem;}
+
+.hero{background:var(--dark);color:var(--cream);padding:3.5rem 3rem 3rem;text-align:center;border-bottom:4px double var(--teal-l);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(0,104,120,0.07) 29px);pointer-events:none;}
+.hero-badge{font-size:11px;color:var(--teal-b);letter-spacing:16px;margin-bottom:1.2rem;opacity:0.65;}
+.hero-title{font-family:'IM Fell English',serif;font-size:58px;line-height:1.0;color:var(--teal-b);letter-spacing:2px;text-shadow:0 0 60px rgba(64,200,224,0.15),0 2px 12px rgba(0,0,0,0.9);}
+.hero-subtitle{font-family:'IM Fell English',serif;font-style:italic;font-size:17px;color:var(--teal-l);margin-top:0.7rem;}
+.hero-meta{margin-top:1rem;font-size:12px;color:#1a3848;letter-spacing:3px;text-transform:uppercase;}
+
+.stat-strip{display:flex;justify-content:center;gap:2rem;background:var(--dark);padding:1.2rem 2rem;border-bottom:1px solid var(--teal);flex-wrap:wrap;}
+.stat .num{font-family:'IM Fell English',serif;font-size:32px;color:var(--teal-b);line-height:1;display:block;}
+.stat .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#1a3848;}
+
+.tab-bar{display:flex;flex-wrap:wrap;background:#020a10;border-bottom:2px solid var(--teal);position:sticky;top:0;z-index:100;}
+.tab{padding:0.6rem 0.75rem;font-family:'IM Fell English',serif;font-size:11.5px;color:#1a3848;cursor:pointer;border-right:1px solid #081828;transition:all 0.2s;white-space:nowrap;}
+.tab:hover{color:var(--teal-b);background:#081828;}
+.tab.active{color:var(--teal-b);background:#0c2030;border-bottom:2px solid var(--teal-b);}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+.ca{padding:0 2rem 2rem;background:var(--cream);border:1px solid var(--border);border-top:none;}
+
+.ib{padding:2rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem;}
+.ib p{font-size:17px;line-height:1.85;color:var(--muted);font-style:italic;text-align:center;}
+
+.sl{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--teal);margin-bottom:0.3rem;margin-top:1.8rem;}
+.st{font-family:'IM Fell English',serif;font-size:22px;color:var(--dark);border-bottom:1px solid var(--border);padding-bottom:0.4rem;margin-bottom:1.2rem;}
+
+.cb{margin-bottom:1.8rem;padding:1rem 1.3rem;border-left:4px solid var(--teal-l);background:rgba(0,104,120,0.04);}
+.cn{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.1rem;}
+.cname{font-weight:600;font-size:17px;color:var(--red);margin-bottom:0.3rem;}
+.cbody{font-size:15.5px;line-height:1.78;color:#040c14;}
+.cbody p{margin-bottom:0.7rem;}
+.cbody p:last-child{margin-bottom:0;}
+
+.kbox{background:var(--dark);color:var(--cream);padding:1rem 1.4rem;margin:0.9rem 0 1.2rem;border-left:5px solid var(--gold);}
+.kbox .kl{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-l);margin-bottom:0.35rem;}
+.kbox p{font-size:15px;line-height:1.7;color:var(--cream);}
+
+.codebox{background:#071420;color:var(--teal-b);padding:1rem 1.4rem;margin:0.8rem 0 1.2rem;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;border-left:4px solid var(--teal);overflow-x:auto;white-space:pre;}
+
+.pb{background:var(--dark);color:var(--cream);padding:1rem 1.5rem;margin:2rem -2rem 1.8rem;border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);}
+.pb .pl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--teal-b);margin-bottom:0.2rem;}
+.pb .pt{font-family:'IM Fell English',serif;font-size:19px;color:var(--cream);}
+.pb .pd{font-size:13px;color:var(--teal-l);margin-top:0.3rem;font-style:italic;}
+
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0.8rem;margin-bottom:1.5rem;}
+.tc{background:var(--dark);border:1px solid var(--teal);padding:1rem;border-radius:2px;}
+.tc .tn{font-family:'IM Fell English',serif;font-size:14px;color:var(--teal-b);margin-bottom:0.25rem;}
+.tc .td{font-size:12.5px;color:var(--teal-l);line-height:1.45;}
+
+.ddgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:0.8rem 0 1.2rem;}
+.sbox,.rbox{padding:0.85rem 1rem;font-size:14px;line-height:1.6;}
+.sbox{background:rgba(10,96,64,0.08);border-left:4px solid #2a8a5a;color:#0e2818;}
+.rbox{background:rgba(122,16,16,0.07);border-left:4px solid var(--red);color:#280e0e;}
+.sbox strong,.rbox strong{display:block;font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.35rem;}
+.sbox strong{color:#2a8a5a;}
+.rbox strong{color:var(--red);}
+
+.mathbox{background:#e8f4f8;border:1px solid #8ab8c8;padding:0.85rem 1.1rem;margin:0.8rem 0 1.1rem;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.7;color:#040c14;}
+
+.tline{display:flex;gap:1.2rem;margin-bottom:1.3rem;align-items:flex-start;}
+.tyear{font-family:'IM Fell English',serif;font-size:13px;color:var(--teal-b);min-width:60px;padding-top:0.1rem;letter-spacing:1px;}
+.tcontent{flex:1;border-left:2px solid var(--border);padding-left:1rem;}
+.tcontent .tt{font-weight:600;font-size:15.5px;color:var(--red);margin-bottom:0.15rem;}
+.tcontent .tb{font-size:14.5px;line-height:1.65;color:var(--muted);}
+
+.dgwrap{margin:1.2rem 0 1.6rem;background:rgba(0,104,120,0.03);border:1px solid var(--border);padding:1.2rem;}
+
+.ctable{width:100%;border-collapse:collapse;font-size:14.5px;margin:0.8rem 0 1.2rem;}
+.ctable th{background:var(--dark);color:var(--teal-b);padding:0.5rem 0.8rem;font-family:'IM Fell English',serif;font-weight:500;text-align:left;font-size:12.5px;letter-spacing:1px;}
+.ctable td{padding:0.45rem 0.8rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;font-size:14.5px;}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:hover td{background:rgba(0,104,120,0.04);}
+
+.qs{background:var(--dark);margin:0 -2rem;padding:2.5rem 2rem;border-top:3px double var(--teal);}
+.qs .st{color:var(--teal-b);border-bottom-color:#081828;margin-top:0;}
+.qi{border-left:3px solid var(--teal);padding:0.75rem 1.1rem;margin-bottom:1.1rem;background:rgba(0,104,120,0.09);}
+.qt{font-family:'IM Fell English',serif;font-style:italic;font-size:16.5px;color:var(--cream);line-height:1.7;margin-bottom:0.35rem;}
+.qr{font-size:11px;color:#1a3848;letter-spacing:2px;text-transform:uppercase;}
+
+.verdict{background:var(--teal-l);color:var(--cream);padding:2rem;text-align:center;border-top:3px double var(--teal-b);}
+.verdict p{font-family:'IM Fell English',serif;font-size:17px;line-height:1.7;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-badge">— THE COMPLETE SCIENCE OF SECRECY —</div>
+  <div class="hero-title">Cryptography</div>
+  <div class="hero-subtitle">From Caesar's Cipher to Quantum-Resistant Algorithms — Every Type, Every Concept, Every Attack</div>
+  <div class="hero-meta">Deep Research Compendium · All Branches Covered · Visual Explanations Included</div>
+</div>
+
+<div class="stat-strip">
+  <div class="stat"><span class="num">5000+</span><span class="lbl">Years of History</span></div>
+  <div class="stat"><span class="num">14</span><span class="lbl">Topic Areas</span></div>
+  <div class="stat"><span class="num">40+</span><span class="lbl">Algorithms</span></div>
+  <div class="stat"><span class="num">9</span><span class="lbl">Diagrams</span></div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="show('overview',this)">Overview</div>
+  <div class="tab" onclick="show('history',this)">History</div>
+  <div class="tab" onclick="show('foundations',this)">Foundations</div>
+  <div class="tab" onclick="show('classical',this)">Classical</div>
+  <div class="tab" onclick="show('symmetric',this)">Symmetric</div>
+  <div class="tab" onclick="show('modes',this)">Cipher Modes</div>
+  <div class="tab" onclick="show('asymmetric',this)">Asymmetric</div>
+  <div class="tab" onclick="show('hash',this)">Hash &amp; MAC</div>
+  <div class="tab" onclick="show('protocols',this)">Protocols</div>
+  <div class="tab" onclick="show('attacks',this)">Cryptanalysis</div>
+  <div class="tab" onclick="show('quantum',this)">Quantum</div>
+  <div class="tab" onclick="show('advanced',this)">Advanced</div>
+  <div class="tab" onclick="show('applications',this)">Applications</div>
+  <div class="tab" onclick="show('quotes',this)">Principles</div>
+</div>
+
+<div class="ca">
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+<div class="ib"><p>Cryptography is the science of securing communication in the presence of adversaries. It is simultaneously one of humanity's oldest practices and its most rapidly evolving technical discipline — the invisible infrastructure upon which every private message, financial transaction, and secure government communication depends.</p></div>
+
+<div class="sl">Definition</div>
+<div class="st">What Cryptography Is</div>
+<div class="cb">
+  <div class="cn">Core Definition</div>
+  <div class="cname">Cryptography, Cryptanalysis, Cryptology</div>
+  <div class="cbody">
+    <p><strong>Cryptography</strong> is the practice of designing systems that protect information from unauthorised access, modification, or denial of service. <strong>Cryptanalysis</strong> is the science of breaking those systems — finding weaknesses, exploiting patterns, recovering messages without the key. <strong>Cryptology</strong> is the overarching field that encompasses both. The three are inseparable: a cipher that has not been seriously attacked is not a proven cipher, only an unexamined one.</p>
+    <p>The core problem cryptography solves: Alice wants to send a message to Bob such that Eve, who can observe the channel between them, learns nothing about the message's content. This simple model — two parties communicating in the presence of a passive eavesdropper — expands into dozens of variants: active adversaries who can modify messages, adversaries who can inject messages, adversaries who know parts of the plaintext, adversaries who are one of the communicating parties themselves.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Security Goals</div>
+  <div class="cname">The CIA Triad and Beyond</div>
+  <div class="cbody">
+    <p>Cryptographic systems are designed to provide specific security properties. The three foundational ones — the CIA triad — are:</p>
+    <p><strong>Confidentiality:</strong> Only authorised parties can read the message. This is what most people think of when they think of cryptography — encryption that makes messages unreadable to those without the key.</p>
+    <p><strong>Integrity:</strong> The message has not been altered in transit. This requires more than encryption — it requires authentication codes or digital signatures that detect any modification, however small.</p>
+    <p><strong>Authenticity (and Non-repudiation):</strong> The message genuinely came from the claimed sender, and the sender cannot later deny having sent it. Digital signatures provide both.</p>
+    <p>Modern cryptography also addresses <strong>availability</strong> (resistance to denial-of-service), <strong>forward secrecy</strong> (past communications remain secure even if long-term keys are compromised), <strong>anonymity</strong>, and <strong>zero-knowledge</strong> (proving knowledge of a secret without revealing it).</p>
+  </div>
+</div>
+
+<div class="sl">The Landscape</div>
+<div class="st">Every Branch of Modern Cryptography</div>
+<div class="tg">
+  <div class="tc"><div class="tn">Symmetric Crypto</div><div class="td">Same key encrypts and decrypts. Fast, efficient. AES, ChaCha20. Requires secure key exchange.</div></div>
+  <div class="tc"><div class="tn">Asymmetric Crypto</div><div class="td">Public key encrypts, private key decrypts. RSA, ECC, Diffie-Hellman. Solves key exchange.</div></div>
+  <div class="tc"><div class="tn">Hash Functions</div><div class="td">One-way transformation. Fixed output. Integrity verification, passwords, digital signatures.</div></div>
+  <div class="tc"><div class="tn">Digital Signatures</div><div class="td">Asymmetric authentication. Proves origin, ensures non-repudiation. DSA, ECDSA, EdDSA.</div></div>
+  <div class="tc"><div class="tn">Cryptographic Protocols</div><div class="td">Complete systems: TLS, SSH, Signal. Combine primitives into secure communication channels.</div></div>
+  <div class="tc"><div class="tn">Quantum Cryptography</div><div class="td">QKD, BB84. Leverages quantum physics for information-theoretically secure key exchange.</div></div>
+  <div class="tc"><div class="tn">Post-Quantum Crypto</div><div class="td">Classical algorithms resistant to quantum attacks. Lattice-based, code-based, hash-based.</div></div>
+  <div class="tc"><div class="tn">Zero-Knowledge Proofs</div><div class="td">Prove knowledge without revealing it. ZK-SNARKs, ZK-STARKs. Privacy-preserving authentication.</div></div>
+  <div class="tc"><div class="tn">Homomorphic Encryption</div><div class="td">Compute on encrypted data without decrypting. Cloud computing without privacy loss.</div></div>
+  <div class="tc"><div class="tn">Multi-Party Computation</div><div class="td">Multiple parties jointly compute a function without revealing their inputs to each other.</div></div>
+  <div class="tc"><div class="tn">Secret Sharing</div><div class="td">Shamir's scheme. Split a secret among N parties — any K can reconstruct it.</div></div>
+  <div class="tc"><div class="tn">Steganography</div><div class="td">Hiding the existence of a message, not just its content. Concealment, not encryption.</div></div>
+</div>
+
+<!-- SVG: Overview diagram of crypto families -->
+<div class="dgwrap">
+<svg width="100%" viewBox="0 0 680 320" role="img">
+  <title>Cryptography family tree</title>
+  <defs><marker id="ar0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Root -->
+  <rect x="250" y="14" width="180" height="44" rx="6" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="15" fill="#40c8e0" x="340" y="41" text-anchor="middle" dominant-baseline="central">Cryptography</text>
+  <!-- Level 2 -->
+  <line x1="340" y1="58" x2="340" y2="80" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar0)"/>
+  <line x1="340" y1="72" x2="120" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="340" y1="72" x2="340" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="340" y1="72" x2="560" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <!-- Symmetric -->
+  <rect x="44" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="120" y="112" text-anchor="middle" dominant-baseline="central">Symmetric</text>
+  <!-- Asymmetric -->
+  <rect x="264" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="340" y="112" text-anchor="middle" dominant-baseline="central">Asymmetric (Public Key)</text>
+  <!-- Hash -->
+  <rect x="484" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="560" y="112" text-anchor="middle" dominant-baseline="central">Hash Functions</text>
+  <!-- Level 3 - Sym children -->
+  <line x1="120" y1="132" x2="120" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="120" y1="152" x2="60" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="120" y1="152" x2="180" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="20" y="168" width="80" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="60" y="185" text-anchor="middle" dominant-baseline="central">Block Ciphers</text>
+  <rect x="140" y="168" width="80" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="180" y="185" text-anchor="middle" dominant-baseline="central">Stream Ciphers</text>
+  <!-- Block children -->
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="60" y="220" text-anchor="middle">AES · DES · Blowfish</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="180" y="220" text-anchor="middle">ChaCha20 · RC4 · Salsa</text>
+  <!-- Level 3 - Asym children -->
+  <line x1="340" y1="132" x2="340" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="280" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="340" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="400" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="246" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="280" y="185" text-anchor="middle" dominant-baseline="central">RSA</text>
+  <rect x="318" y="168" width="44" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="340" y="185" text-anchor="middle" dominant-baseline="central">DH</text>
+  <rect x="366" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="400" y="185" text-anchor="middle" dominant-baseline="central">ECC</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="340" y="220" text-anchor="middle">RSA · ElGamal · ECDSA · EdDSA</text>
+  <!-- Level 3 - Hash children -->
+  <line x1="560" y1="132" x2="560" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="560" y1="152" x2="510" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="560" y1="152" x2="610" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="476" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="510" y="185" text-anchor="middle" dominant-baseline="central">SHA Family</text>
+  <rect x="578" y="168" width="64" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="610" y="185" text-anchor="middle" dominant-baseline="central">HMAC / MAC</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="560" y="220" text-anchor="middle">MD5 · SHA-256 · SHA-3 · bcrypt</text>
+  <!-- Bottom protocols -->
+  <rect x="160" y="258" width="360" height="38" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="340" y="277" text-anchor="middle" dominant-baseline="central">Cryptographic Protocols: TLS · SSH · PGP · Signal · IPsec</text>
+  <line x1="340" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <line x1="120" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <line x1="560" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+</svg>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="panel">
+<div class="ib"><p>Cryptography is as old as writing itself. Every era of human history has produced new ciphers — and new methods of breaking them. The history of cryptography is the history of an arms race that has never ended, only accelerated.</p></div>
+
+<div class="sl">5000 Years</div>
+<div class="st">The Complete Timeline of Cryptography</div>
+
+<div class="tline"><div class="tyear">~1900 BC</div><div class="tcontent"><div class="tt">Egyptian Non-Standard Hieroglyphics</div><div class="tb">The earliest known cryptographic use — an Egyptian scribe used non-standard hieroglyphics in inscriptions, possibly to add dignity or mystery, or to restrict understanding to initiates. Not a cipher in the modern sense but the first documented deliberate manipulation of writing for secrecy.</div></div></div>
+
+<div class="tline"><div class="tyear">~600 BC</div><div class="tcontent"><div class="tt">Atbash Cipher — Hebrew Cryptography</div><div class="tb">The Atbash cipher substitutes each letter of the Hebrew alphabet with the corresponding letter from the reverse alphabet (Aleph↔Tav, Beth↔Shin). Found in the Book of Jeremiah. A simple monoalphabetic substitution, but the first cipher with a documented use in religious and political text.</div></div></div>
+
+<div class="tline"><div class="tyear">~500 BC</div><div class="tcontent"><div class="tt">Scytale — Spartan Military Cipher</div><div class="tb">The Spartan military used a scytale: a cylinder around which a strip of parchment was wound. The message was written along the cylinder, then unwound. Only someone with an identical cylinder could read it. The first documented transposition cipher — rearranging letters rather than substituting them.</div></div></div>
+
+<div class="tline"><div class="tyear">~100 BC</div><div class="tcontent"><div class="tt">Caesar Cipher — The Shift Cipher</div><div class="tb">Julius Caesar used a simple shift cipher in his military correspondence, shifting each letter three positions forward in the Latin alphabet (A→D, B→E, etc.). Simple by modern standards but effective when few recipients could read at all. The first named cipher in recorded history.</div></div></div>
+
+<div class="tline"><div class="tyear">800 AD</div><div class="tcontent"><div class="tt">Al-Kindi — The Birth of Cryptanalysis</div><div class="tb">The Arab polymath Al-Kindi wrote <em>A Manuscript on Deciphering Cryptographic Messages</em> — the first known treatise on breaking ciphers. He invented frequency analysis: the observation that different letters appear at different frequencies in any language, allowing substitution ciphers to be broken statistically. This single insight made all monoalphabetic substitution ciphers vulnerable.</div></div></div>
+
+<div class="tline"><div class="tyear">1467</div><div class="tcontent"><div class="tt">Alberti Cipher Disk — Polyalphabetic Cipher</div><div class="tb">Leon Battista Alberti invented the cipher disk and the polyalphabetic cipher: using multiple different substitution alphabets within a single message, switching between them according to a key. This defeated frequency analysis. Alberti is sometimes called the "father of Western cryptology."</div></div></div>
+
+<div class="tline"><div class="tyear">1553</div><div class="tcontent"><div class="tt">Vigenère Cipher</div><div class="tb">Giovan Battista Bellaso (often misattributed to Blaise de Vigenère) published a polyalphabetic cipher using a keyword. Each letter of the keyword determines which alphabet to use for the corresponding plaintext letter. Called "le chiffre indéchiffrable" (the indecipherable cipher) for nearly three centuries — until Charles Babbage and Friedrich Kasiski broke it in the 1800s by detecting the key length through repeated patterns.</div></div></div>
+
+<div class="tline"><div class="tyear">1854</div><div class="tcontent"><div class="tt">Playfair Cipher</div><div class="tb">Charles Wheatstone invented (and Lord Playfair popularised) a digraph substitution cipher operating on pairs of letters in a 5×5 grid. Much stronger than single-letter substitution. Used by British forces in WWII for low-level tactical communications.</div></div></div>
+
+<div class="tline"><div class="tyear">1917</div><div class="tcontent"><div class="tt">One-Time Pad — Perfect Secrecy</div><div class="tb">Gilbert Vernam patented the one-time pad: XOR each plaintext bit with a truly random key bit. The result is information-theoretically secure — mathematically unbreakable, with no computational assumption required. Shannon later proved this rigorously in 1949. The limitation: the key must be as long as the message and never reused.</div></div></div>
+
+<div class="tline"><div class="tyear">1919–45</div><div class="tcontent"><div class="tt">The Enigma Machine and WWII Cryptography</div><div class="tb">The German Enigma machine used a series of rotating electromechanical rotors to perform a complex polyalphabetic substitution with a key space of approximately 10^23. The Allied effort to break it — at Bletchley Park, led by Alan Turing and others — is widely considered a decisive factor in the Allied victory. The statistical attack on Enigma was the birth of modern computational cryptanalysis and led directly to the development of the first electronic computers.</div></div></div>
+
+<div class="tline"><div class="tyear">1949</div><div class="tcontent"><div class="tt">Shannon's Information Theory</div><div class="tb">Claude Shannon published "A Mathematical Theory of Cryptography" (originally a secret Bell Labs report from 1945, declassified in 1949), placing cryptography on a rigorous mathematical foundation. He introduced the concepts of confusion, diffusion, perfect secrecy, and entropy as they apply to cipher design. Modern cryptography descends directly from this work.</div></div></div>
+
+<div class="tline"><div class="tyear">1976</div><div class="tcontent"><div class="tt">Diffie-Hellman and Public-Key Cryptography</div><div class="tb">Whitfield Diffie and Martin Hellman published "New Directions in Cryptography," introducing the revolutionary concept of public-key cryptography — the idea that two parties could establish a shared secret over an insecure channel without any prior shared key. This solved the fundamental key distribution problem that had plagued symmetric cryptography since its inception.</div></div></div>
+
+<div class="tline"><div class="tyear">1977</div><div class="tcontent"><div class="tt">RSA — The First Public-Key Cryptosystem</div><div class="tb">Ron Rivest, Adi Shamir, and Leonard Adleman published RSA, the first practical public-key cryptosystem, based on the hardness of factoring large integers. Separately, the NIST (then NBS) published DES — the first standardised symmetric cipher — after a design process involving the NSA. Both decisions shaped cryptographic practice for decades.</div></div></div>
+
+<div class="tline"><div class="tyear">1984–91</div><div class="tcontent"><div class="tt">Quantum Cryptography and PGP</div><div class="tb">Charles Bennett and Gilles Brassard published BB84 in 1984, the first quantum key distribution protocol. In 1991, Phil Zimmermann released PGP (Pretty Good Privacy), bringing public-key encryption to the masses and triggering a "crypto war" with the US government, which attempted (and failed) to prosecute Zimmermann for exporting strong encryption.</div></div></div>
+
+<div class="tline"><div class="tyear">2001</div><div class="tcontent"><div class="tt">AES — The Advanced Encryption Standard</div><div class="tb">After a five-year open competition, NIST selected Rijndael (designed by Joan Daemen and Vincent Rijmen) as the Advanced Encryption Standard. AES became the global standard for symmetric encryption — it is today used in virtually every encrypted communication on the planet.</div></div></div>
+
+<div class="tline"><div class="tyear">2013</div><div class="tcontent"><div class="tt">The Snowden Revelations</div><div class="tb">Edward Snowden's disclosures revealed the extent of NSA mass surveillance, including the deliberate weakening of cryptographic standards (notably the Dual_EC_DRBG random number generator, suspected of containing an NSA backdoor). The revelations accelerated adoption of end-to-end encryption and renewed interest in cryptographic standards transparency.</div></div></div>
+
+<div class="tline"><div class="tyear">2022–24</div><div class="tcontent"><div class="tt">NIST Post-Quantum Standards</div><div class="tb">NIST finalised the first post-quantum cryptography standards in 2024: CRYSTALS-Kyber (key encapsulation), CRYSTALS-Dilithium, FALCON, and SPHINCS+ (digital signatures). These algorithms are designed to resist attacks from both classical and quantum computers, particularly Shor's algorithm which would break RSA and ECC.</div></div></div>
+</div>
+
+<!-- FOUNDATIONS -->
+<div id="foundations" class="panel">
+<div class="ib"><p>Every cryptographic system rests on the same mathematical and conceptual foundations. Understanding these deeply — not just memorising definitions — is what separates the engineer who implements cryptography from the one who understands why it works and when it might fail.</p></div>
+
+<div class="sl">Core Vocabulary</div>
+<div class="st">The Language of Cryptography</div>
+
+<div class="cb">
+  <div class="cn">Basic Definitions</div>
+  <div class="cname">Plaintext, Ciphertext, Keys, and Algorithms</div>
+  <div class="cbody">
+    <p><strong>Plaintext (P):</strong> The original, readable message or data. May be text, binary data, audio, video — any information that the sender wishes to protect.</p>
+    <p><strong>Ciphertext (C):</strong> The encrypted form of the plaintext. Should appear random and reveal no information about the plaintext to anyone without the key.</p>
+    <p><strong>Key (K):</strong> The secret parameter that controls the encryption and decryption process. The security of a modern cipher rests entirely on the secrecy of the key, not the secrecy of the algorithm.</p>
+    <p><strong>Encryption function (E):</strong> C = E(K, P) — takes the key and plaintext, produces ciphertext.</p>
+    <p><strong>Decryption function (D):</strong> P = D(K, C) — takes the key and ciphertext, recovers plaintext.</p>
+    <p><strong>Algorithm (Cipher):</strong> The mathematical procedure that defines E and D. In modern cryptography, the algorithm is public — security depends only on key secrecy.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Foundational Principle</div>
+  <div class="cname">Kerckhoffs's Principle (1883)</div>
+  <div class="cbody">
+    <p>Auguste Kerckhoffs stated in 1883 what remains the most important single principle in cryptography: <em>a cryptosystem should be secure even if everything about the system, except the key, is public knowledge.</em></p>
+    <p>This principle seems counterintuitive — surely hiding the algorithm adds security? In practice, the opposite is true. Hidden algorithms cannot be publicly scrutinised and may contain subtle flaws. When they are eventually discovered (and secret algorithms always are), the entire system must be rebuilt. An algorithm whose design has been openly analysed by thousands of expert cryptanalysts over years provides far stronger assurance than one whose security rests on secrecy of design.</p>
+    <p>Claude Shannon restated this as: "The enemy knows the system." Assume the adversary knows everything except the key. This is called Kerckhoffs's principle or, in its Shannon formulation, the assumption of security through open design.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Information Theory</div>
+  <div class="cname">Shannon's Perfect Secrecy and Entropy</div>
+  <div class="cbody">
+    <p>Shannon proved rigorously what constitutes a perfectly secure cipher. A cryptosystem has <strong>perfect secrecy</strong> if and only if: for every plaintext P and every ciphertext C, the probability that P was the plaintext given that C was observed equals the prior probability of P. In other words: observing the ciphertext gives the attacker no information whatsoever about the plaintext.</p>
+    <p>Shannon proved that perfect secrecy requires that the key space be at least as large as the message space — the key must be at least as long as the message. The only cipher achieving perfect secrecy in practice is the <strong>one-time pad</strong>.</p>
+    <p><strong>Entropy</strong> measures the amount of uncertainty in a random variable. A key of n bits chosen uniformly at random has entropy n bits. The goal of an encryption system is to make the ciphertext appear to have maximum entropy from the attacker's perspective — indistinguishable from random noise.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Design Principles</div>
+  <div class="cname">Confusion, Diffusion, and the Avalanche Effect</div>
+  <div class="cbody">
+    <p>Shannon identified two fundamental operations required in a secure cipher:</p>
+    <p><strong>Confusion:</strong> The relationship between the key and the ciphertext should be as complex as possible. Each ciphertext bit should depend on many key bits in a complex, non-linear way. Implemented in practice through non-linear substitution (S-boxes).</p>
+    <p><strong>Diffusion:</strong> Each plaintext bit should influence many ciphertext bits. A change in a single plaintext bit should, on average, change half the ciphertext bits. This is the <strong>avalanche effect</strong> — small input changes cascade into large, unpredictable output changes. Implemented through permutation layers, mixing operations, and linear transformations.</p>
+    <p>Every modern block cipher achieves both: confusion through substitution tables, diffusion through permutation and mixing layers, iterated over multiple rounds to amplify both effects until the ciphertext appears entirely random.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Security Models</div>
+  <div class="cname">Security Definitions — What Does "Secure" Actually Mean?</div>
+  <div class="cbody">
+    <p>Modern cryptography defines security precisely through adversarial models. The most important are:</p>
+    <p><strong>Computational security:</strong> A cipher is computationally secure if breaking it requires more computational resources than any realistic adversary possesses. Security is expressed relative to a bound on computation (e.g., 2^128 operations is considered infeasible with current technology).</p>
+    <p><strong>IND-CPA (Indistinguishability under Chosen Plaintext Attack):</strong> An adversary who can encrypt any plaintext of their choice cannot distinguish the encryption of two different plaintexts of their choice. The minimum acceptable security for an encryption scheme.</p>
+    <p><strong>IND-CCA2 (Adaptive Chosen Ciphertext Attack):</strong> An adversary who can both encrypt and decrypt any message of their choice (except the challenge ciphertext) cannot distinguish the challenge. Stronger — requires authenticated encryption.</p>
+    <p><strong>CMA-secure (Chosen Message Attack):</strong> For signatures — an adversary who can get signatures on messages of their choice cannot forge a valid signature on a new message. The standard security requirement for digital signature schemes.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Fundamental Problem</div>
+  <div class="cname">The Key Distribution Problem — Why Asymmetric Crypto Was Necessary</div>
+  <div class="cbody">
+    <p>For 3,000 years, all cryptography was symmetric: both parties needed the same key, and that key had to be shared in advance through some secure channel. This created a fundamental circularity: to communicate securely, you first need to communicate securely (to share the key). In a world of growing networks, governments, and corporations, this required elaborate key distribution infrastructure — couriers, physical meetings, trusted intermediaries.</p>
+    <p>The invention of public-key cryptography in 1976 solved this. The insight: mathematical operations that are easy in one direction but hard to reverse. If Alice can publish a public key that allows anyone to encrypt to her, but only she (with her private key) can decrypt — the key distribution problem is solved. The public key can be shared openly; no secure channel is needed to establish it.</p>
+    <p>In practice, modern systems use a <strong>hybrid approach</strong>: asymmetric cryptography to securely exchange a symmetric key, then symmetric cryptography for the actual data (which is much faster). This is exactly what TLS does.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Random Number Generation</div>
+  <div class="cname">Why Cryptographic Randomness Is Life-or-Death</div>
+  <div class="cbody">
+    <p>Almost every cryptographic operation depends on genuinely unpredictable random numbers: key generation, IV selection, nonces, padding. A weak random number generator is often the single most catastrophic failure mode in a cryptographic system. Predictable keys, predictable IVs, predictable nonces — all have led to complete breaks of otherwise sound systems.</p>
+    <p>A <strong>CSPRNG</strong> (Cryptographically Secure Pseudo-Random Number Generator) must be computationally indistinguishable from true randomness — an attacker who observes any number of outputs cannot predict past or future outputs. Examples: /dev/urandom on Linux (uses environmental entropy), AES-CTR-DRBG (NIST standard), ChaCha20 (used by modern operating systems).</p>
+    <p>True randomness is seeded from physical entropy sources: hard drive access timing, network packet inter-arrival times, mouse movements, hardware random number generators (HRNG) using thermal noise or radioactive decay. The Dual_EC_DRBG controversy showed that a backdoored CSPRNG completely undermines all security built on it — you can have perfect algorithms and perfect protocols, and a bad random number generator breaks everything.</p>
+  </div>
+</div>
+</div>
+
+<!-- CLASSICAL -->
+<div id="classical" class="panel">
+<div class="ib"><p>Classical cryptography covers all encryption methods prior to the computer age — from simple letter substitutions to the polyalphabetic systems that resisted analysis for centuries. Understanding them reveals the core ideas that modern cryptography refines: substitution, transposition, confusion, and the constant arms race between cipher designer and cryptanalyst.</p></div>
+
+<div class="sl">Substitution Ciphers</div>
+<div class="st">Replacing Each Letter With Another</div>
+
+<!-- Caesar cipher diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Caesar Cipher — Shift by 3</div>
+<svg width="100%" viewBox="0 0 680 100" role="img">
+  <title>Caesar cipher: plaintext alphabet shifted 3 positions to produce ciphertext alphabet</title>
+  <!-- Plaintext row -->
+  <text font-family="'IM Fell English',serif" font-size="11" fill="#00a0b8" x="10" y="22" letter-spacing="0">PLAINTEXT:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="13" fill="#40c8e0" x="120" y="22">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</text>
+  <!-- Arrow -->
+  <line x1="10" y1="38" x2="670" y2="38" stroke="#1a3848" stroke-width="0.6" stroke-dasharray="3 3"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#b88020" x="10" y="52">+ shift 3 ↓</text>
+  <!-- Ciphertext row -->
+  <text font-family="'IM Fell English',serif" font-size="11" fill="#00a0b8" x="10" y="68" letter-spacing="0">CIPHERTEXT:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="13" fill="#40c8e0" x="120" y="68">D E F G H I J K L M N O P Q R S T U V W X Y Z A B C</text>
+  <!-- Example -->
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#7a1010" x="10" y="92" font-style="italic">Example: "HELLO" → "KHOOR"   (ROT-3)   |   "ATTACK AT DAWN" → "DWWDFN DW GDZQ"</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">Monoalphabetic Substitution</div>
+  <div class="cname">Caesar Cipher, Atbash, ROT13, and General Substitution</div>
+  <div class="cbody">
+    <p>A monoalphabetic substitution cipher maps each letter of the plaintext alphabet to a fixed letter in the ciphertext alphabet. The key is the mapping itself.</p>
+    <p><strong>Caesar cipher:</strong> A rotation cipher with shift k (Caesar used k=3). The key space is only 25 — trivially brute-forced. E(k,x) = (x+k) mod 26.</p>
+    <p><strong>Atbash:</strong> The reverse alphabet — A↔Z, B↔Y, etc. A Caesar cipher with k=13 in a self-inverse mapping. Key space of 1.</p>
+    <p><strong>ROT13:</strong> A shift of 13 — self-inverse because 13+13=26. Used to obscure text online (spoilers, offensive content) but provides no security.</p>
+    <p><strong>General substitution cipher:</strong> Any bijective mapping of the alphabet to itself. Key space is 26! ≈ 4×10^26 — too large to brute-force. But completely vulnerable to <strong>frequency analysis</strong>: in English, 'E' appears ~12.7% of the time, 'T' ~9.1%, 'A' ~8.2%. The most frequent ciphertext letter is almost certainly 'E'. With enough ciphertext (~100 characters), a substitution cipher can be broken in minutes by hand.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Polyalphabetic Substitution</div>
+  <div class="cname">Vigenère Cipher — Using Multiple Alphabets</div>
+  <div class="cbody">
+    <p>The Vigenère cipher uses a keyword to select which Caesar alphabet to use for each plaintext letter. If the keyword is KEY (K=10, E=4, Y=24), then the first letter is shifted by 10, the second by 4, the third by 24, the fourth by 10 again, and so on.</p>
+    <div class="codebox">Plaintext:  A T T A C K A T D A W N
+Key:        K E Y K E Y K E Y K E Y
+Ciphertext: K X R K G I K X B K A L</div>
+    <p>This defeats simple frequency analysis because each plaintext letter is encrypted differently depending on its position. However, it is breakable by the <strong>Kasiski test</strong> (1863): repeated plaintext sequences encrypted with the same key segment produce repeated ciphertext sequences. The distance between repetitions reveals the key length. Once the key length k is known, the cipher reduces to k independent Caesar ciphers, each breakable by frequency analysis.</p>
+    <p><strong>Beaufort cipher</strong> and <strong>Autokey cipher</strong> are variants. The autokey uses the plaintext itself as the key after the initial keyword — stronger than Vigenère but still breakable.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Digraph Substitution</div>
+  <div class="cname">Playfair Cipher — Encrypting Letter Pairs</div>
+  <div class="cbody">
+    <p>The Playfair cipher operates on pairs of letters (digraphs) using a 5×5 key square (I and J share a cell). Rules: pairs in the same row shift right; pairs in the same column shift down; other pairs form the opposite corners of their rectangle. Breaking it requires digraph frequency analysis — the distribution of letter pairs is more uniform than single letters, requiring more ciphertext.</p>
+    <p>Still vulnerable to statistical attack given sufficient ciphertext (~200+ characters). Used by British forces in WWI and WWII for low-level communications.</p>
+  </div>
+</div>
+
+<div class="sl">Transposition Ciphers</div>
+<div class="st">Rearranging Rather Than Replacing</div>
+
+<div class="cb">
+  <div class="cn">Transposition</div>
+  <div class="cname">Rail Fence and Columnar Transposition</div>
+  <div class="cbody">
+    <p>Transposition ciphers preserve all plaintext characters but rearrange their positions. Letter frequencies remain identical to the plaintext — frequency analysis immediately reveals that a transposition (not substitution) was used.</p>
+    <p><strong>Rail fence cipher:</strong> Write the message in a zigzag pattern across N rails, then read off each rail in turn.</p>
+    <div class="codebox">Message: ATTACKATDAWN (3 rails)
+Rail 1:  A . . . C . . . A . . .
+Rail 2:  . T . A . K . T . W . N
+Rail 3:  . . T . . . A . . . A .
+Cipher:  ACA TAKTAWN TAA → ACATAKTWNTAA</div>
+    <p><strong>Columnar transposition:</strong> Write the message in rows of width k (the key number), then read off columns in key-specified order. The key is a permutation of column numbers. Combining columnar transposition with substitution (product cipher) produces much stronger systems.</p>
+    <p><strong>Double transposition:</strong> Apply columnar transposition twice with different keys. Used by several nations in WWI — considered very secure at the time.</p>
+  </div>
+</div>
+
+<div class="sl">The Only Perfect Cipher</div>
+<div class="st">The One-Time Pad — Perfect Secrecy in Practice</div>
+
+<div class="cb">
+  <div class="cn">Perfect Secrecy</div>
+  <div class="cname">The One-Time Pad — Why It's Unbreakable and Impractical</div>
+  <div class="cbody">
+    <p>The one-time pad (OTP) XORs each plaintext bit with a corresponding key bit from a truly random key that is at least as long as the message and used only once:</p>
+    <div class="codebox">Plaintext:  1 0 1 1 0 0 1 0  ("K" in ASCII, partial)
+Key:        1 1 0 1 0 1 0 1  (random bits)
+Ciphertext: 0 1 1 0 0 1 1 1  (XOR)</div>
+    <p>Shannon proved this is information-theoretically secure: the ciphertext is completely independent of the plaintext. Given any ciphertext, every possible plaintext of the same length is equally likely as the original message. There is no statistical attack, no computational attack, no mathematical attack. The one-time pad is the only perfectly secure cipher ever discovered.</p>
+    <p><strong>The catch:</strong> Perfect secrecy requires a key as long as the message, truly random, and used exactly once. Key distribution becomes as difficult as the original message transmission. Reusing a key (the "two-time pad") completely destroys security — XORing two ciphertexts encrypted with the same key yields the XOR of the two plaintexts, which is cryptanalytically tractable. The Soviet diplomatic cables broken in the VENONA project were broken precisely because the Soviets reused OTP key pages under wartime production pressure.</p>
+  </div>
+</div>
+
+<div class="sl">The Breaker's Tool</div>
+<div class="st">Frequency Analysis — How Classical Ciphers Are Broken</div>
+
+<div class="cb">
+  <div class="cn">Cryptanalytic Technique</div>
+  <div class="cname">Frequency Analysis — Al-Kindi's Insight</div>
+  <div class="cbody">
+    <p>Every natural language has a characteristic distribution of letter frequencies. In English: E(12.7%), T(9.1%), A(8.2%), O(7.5%), I(7.0%), N(6.7%), S(6.3%), H(6.1%), R(6.0%)... This distribution is preserved in monoalphabetic substitution ciphers. The most frequent ciphertext letter is almost certainly the encryption of E.</p>
+    <p>Frequency analysis requires approximately 100 ciphertext characters to be effective. With modern computers it works on much smaller samples. Beyond single-letter frequencies, <em>digraph</em> and <em>trigraph</em> frequencies (TH, HE, THE, AND, ING) further narrow the analysis.</p>
+    <p>Defences against frequency analysis: polyalphabetic substitution (Vigenère), homophonic substitution (multiple ciphertext symbols for frequent letters), null characters (adding meaningless letters), running key cipher (using a text passage as the key). All are broken by more sophisticated statistical techniques.</p>
+  </div>
+</div>
+</div>
+
+<!-- SYMMETRIC -->
+<div id="symmetric" class="panel">
+<div class="ib"><p>Symmetric-key cryptography uses the same key for both encryption and decryption. It is fast, efficient, and forms the backbone of virtually all data-at-rest and high-throughput encryption. The challenge is secure key distribution — solved in practice by using asymmetric cryptography to exchange symmetric keys.</p></div>
+
+<div class="pb"><div class="pl">Block Ciphers</div><div class="pt">DES, 3DES, AES, Blowfish, Twofish — Encrypting Fixed-Size Blocks</div><div class="pd">Block ciphers operate on fixed-size blocks of data (64 or 128 bits) using a fixed-size key, applying multiple rounds of confusion and diffusion to produce ciphertext indistinguishable from random.</div></div>
+
+<div class="cb">
+  <div class="cn">DES — Data Encryption Standard (1977)</div>
+  <div class="cname">The First Standardised Cipher — and Why It Was Retired</div>
+  <div class="cbody">
+    <p>DES uses a 56-bit key on 64-bit blocks through 16 rounds of a <strong>Feistel network</strong>. In a Feistel structure, the block is split into two halves (L, R). Each round computes: L_new = R, R_new = L XOR F(R, subkey), where F is a complex non-linear function. After all rounds, the halves are recombined. The Feistel structure ensures that the same algorithm performs both encryption and decryption (with reversed key schedule) — simplifying hardware implementation.</p>
+    <p>DES was broken in 1998 when the EFF built "Deep Crack" — a $250,000 machine that could brute-force any DES key in under 3 days by exhaustive search of the 2^56 ≈ 72 quadrillion possible keys. The 56-bit key was too short. NSA involvement in DES's key length was controversial — the original proposal had 64-bit keys, reduced to 56 during the standardisation process.</p>
+    <p><strong>3DES (Triple DES):</strong> Applies DES three times with different keys: C = DES_K3(DES_K2^{-1}(DES_K1(P))). Effective key strength of 112 bits (2-key) or 168 bits (3-key). Slow and largely superseded by AES but still used in legacy financial systems (EMV payment cards).</p>
+  </div>
+</div>
+
+<!-- Feistel network SVG diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Feistel Network — One Round of DES</div>
+<svg width="100%" viewBox="0 0 680 280" role="img">
+  <title>Feistel network diagram showing one round: input block split into L and R halves, R fed to function F with round key, output XORed with L to produce new R, while old R becomes new L</title>
+  <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Input block -->
+  <rect x="200" y="14" width="280" height="38" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="14" fill="#40c8e0" x="340" y="33" text-anchor="middle" dominant-baseline="central">64-bit Input Block</text>
+  <!-- Split -->
+  <line x1="280" y1="52" x2="220" y2="82" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <line x1="380" y1="52" x2="460" y2="82" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="340" y="68" text-anchor="middle">split into two 32-bit halves</text>
+  <!-- L box -->
+  <rect x="140" y="82" width="160" height="44" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="220" y="104" text-anchor="middle" dominant-baseline="central">L (left half)</text>
+  <!-- R box -->
+  <rect x="380" y="82" width="160" height="44" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="460" y="104" text-anchor="middle" dominant-baseline="central">R (right half)</text>
+  <!-- F function box -->
+  <line x1="460" y1="126" x2="460" y2="150" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <rect x="400" y="150" width="120" height="44" rx="4" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="15" fill="#d4a030" x="460" y="172" text-anchor="middle" dominant-baseline="central">F (Round Function)</text>
+  <!-- Key input to F -->
+  <rect x="570" y="160" width="90" height="32" rx="4" fill="#040c14" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="615" y="176" text-anchor="middle" dominant-baseline="central">Round Key K_i</text>
+  <line x1="570" y1="176" x2="520" y2="176" stroke="#006878" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <!-- XOR circle -->
+  <line x1="460" y1="194" x2="460" y2="214" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="220" y1="126" x2="220" y2="222" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="220" y1="222" x2="426" y2="222" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <circle cx="460" cy="222" r="14" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="16" fill="#d4a030" x="460" y="228" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <!-- Output halves -->
+  <line x1="460" y1="126" x2="220" y2="240" stroke="#1a3848" stroke-width="0.6" stroke-dasharray="3 3"/>
+  <line x1="460" y1="236" x2="460" y2="252" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <line x1="220" y1="238" x2="220" y2="252" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <!-- Output -->
+  <rect x="140" y="252" width="160" height="38" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="220" y="271" text-anchor="middle" dominant-baseline="central">new L = old R</text>
+  <rect x="380" y="252" width="160" height="38" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="460" y="271" text-anchor="middle" dominant-baseline="central">new R = L ⊕ F(R,K_i)</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">AES — Advanced Encryption Standard (2001)</div>
+  <div class="cname">The Global Standard — Rijndael's Four Transformations</div>
+  <div class="cbody">
+    <p>AES operates on 128-bit blocks (arranged as a 4×4 byte matrix called the "state") with key sizes of 128, 192, or 256 bits, using 10, 12, or 14 rounds respectively. Unlike DES, AES uses a <strong>Substitution-Permutation Network (SPN)</strong> rather than a Feistel structure — the entire block is transformed each round.</p>
+    <p>Each round applies four transformations in sequence:</p>
+    <p><strong>SubBytes:</strong> A non-linear byte substitution using a fixed 8-bit S-box (substitution table) derived from the multiplicative inverse in GF(2^8). Provides confusion. Each of 16 bytes is replaced by a value from the S-box.</p>
+    <p><strong>ShiftRows:</strong> Each row of the 4×4 state matrix is cyclically shifted left by its row number (row 0 not shifted, row 1 shifted by 1, etc.). Provides diffusion across columns.</p>
+    <p><strong>MixColumns:</strong> Each column is treated as a polynomial over GF(2^8) and multiplied by a fixed matrix. Provides diffusion across rows — each output byte depends on all four input bytes of the column. This is the most mathematically complex step.</p>
+    <p><strong>AddRoundKey:</strong> XOR the state with the round key (derived from the original key via the key schedule). The only step that involves the key.</p>
+    <p>AES-256 with a properly random key and proper implementation is considered computationally secure against all known classical attacks. The best known attack (the biclique attack) reduces the effective key strength by about 2 bits — still requiring 2^254 operations. No practical attack exists.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Other Block Ciphers</div>
+  <div class="cname">Blowfish, Twofish, Camellia, ARIA</div>
+  <div class="cbody">
+    <p><strong>Blowfish (1993):</strong> Bruce Schneier's Feistel cipher with variable key length (32–448 bits), 64-bit blocks, 16 rounds. Fast in software, intentionally slow key setup (making brute force harder). Widely used but 64-bit blocks are vulnerable to birthday attacks in long sessions (SWEET32 attack). Superseded by its successor Twofish.</p>
+    <p><strong>Twofish (1998):</strong> An AES finalist by Schneier et al. 128-bit blocks, 128/192/256-bit keys, 16 rounds. Uses a complex key-dependent S-box and MDS matrix. No known practical attacks. Still used in some applications (VeraCrypt).</p>
+    <p><strong>Camellia (2000):</strong> Jointly developed by NTT and Mitsubishi Electric. 128-bit blocks, 128/192/256-bit keys. ISO standard, approved for use in TLS and IPsec. Considered security-equivalent to AES, widely used in Japan and Europe.</p>
+    <p><strong>ARIA (2003):</strong> South Korean national standard. 128-bit blocks, 128/192/256-bit keys. AES-like SPN structure.</p>
+  </div>
+</div>
+
+<div class="pb"><div class="pl">Stream Ciphers</div><div class="pt">RC4, Salsa20, ChaCha20 — Encrypting Bit by Bit</div><div class="pd">Stream ciphers generate a pseudorandom keystream and XOR it with the plaintext, one bit or byte at a time. Extremely fast — ideal for real-time applications and hardware implementation.</div></div>
+
+<div class="cb">
+  <div class="cn">Stream Cipher Architecture</div>
+  <div class="cname">How Stream Ciphers Work</div>
+  <div class="cbody">
+    <p>A stream cipher takes a key (and typically an IV/nonce) as input and generates a pseudorandom keystream of arbitrary length. The keystream is XORed with the plaintext:</p>
+    <div class="codebox">C_i = P_i ⊕ K_i    (XOR each bit/byte of plaintext with keystream)</div>
+    <p>Security depends entirely on the keystream being indistinguishable from random. <strong>The cardinal rule: never reuse a key-nonce pair.</strong> If C1 = P1 ⊕ K and C2 = P2 ⊕ K, then C1 ⊕ C2 = P1 ⊕ P2 — the XOR of the two plaintexts. With enough ciphertext pairs using the same key, frequency analysis recovers both plaintexts.</p>
+    <p><strong>RC4 (1987):</strong> Ron Rivest's stream cipher. Used in SSL/TLS, WEP, WPA, and PDF encryption for decades. Has serious biases in the first few bytes of output and statistical weaknesses discovered over time. Now completely deprecated — all uses of RC4 in TLS are prohibited by RFC 7465 (2015).</p>
+    <p><strong>Salsa20 / ChaCha20 (2005/2008):</strong> Daniel Bernstein's stream ciphers. Based on a 512-bit state updated with 20 rounds of ARX operations (Add, Rotate, XOR) — no S-boxes, purely 32-bit operations. Fast in software with no timing side channels (constant-time by design). ChaCha20 is the variant used in TLS 1.3, QUIC, and mobile devices. Combined with Poly1305 MAC as ChaCha20-Poly1305 AEAD, it is one of the most trusted cipher suites currently in use.</p>
+  </div>
+</div>
+</div>
+
+<!-- BLOCK CIPHER MODES -->
+<div id="modes" class="panel">
+<div class="ib"><p>A block cipher alone encrypts a single fixed-size block. To encrypt messages of arbitrary length — and to provide the security properties needed in practice — block ciphers must be used in a mode of operation. The choice of mode is as important as the choice of cipher itself.</p></div>
+
+<div class="cb">
+  <div class="cn">Why Modes Matter</div>
+  <div class="cname">The Problem With ECB — The Penguin Attack</div>
+  <div class="cbody">
+    <p>The simplest mode — <strong>ECB (Electronic Codebook)</strong> — encrypts each block independently with the same key. This is catastrophically insecure for structured data: identical plaintext blocks produce identical ciphertext blocks. Encrypt a bitmap image in ECB mode and the outline of the original image remains visible in the ciphertext — the famous "ECB penguin" demonstrates this. Block patterns, repetitions, and structural features of the plaintext survive into the ciphertext.</p>
+    <p>The fundamental requirement for a secure mode: identical plaintext blocks should produce different ciphertext blocks. All secure modes achieve this through some form of feedback from previous blocks or from a counter.</p>
+  </div>
+</div>
+
+<!-- CBC Mode SVG Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">CBC Mode (Cipher Block Chaining) — Encryption</div>
+<svg width="100%" viewBox="0 0 680 200" role="img">
+  <title>CBC mode encryption: each plaintext block is XORed with the previous ciphertext block before encryption; first block uses an IV</title>
+  <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- IV -->
+  <rect x="18" y="14" width="80" height="32" rx="4" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d4a030" x="58" y="30" text-anchor="middle" dominant-baseline="central">IV (nonce)</text>
+  <!-- Block 1 -->
+  <!-- P1 -->
+  <rect x="108" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="30" text-anchor="middle" dominant-baseline="central">P₁</text>
+  <!-- XOR 1 -->
+  <line x1="98" y1="30" x2="104" y2="30" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <line x1="188" y1="30" x2="198" y2="30" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="188" y1="30" x2="226" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="148" y1="46" x2="148" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="58" y1="46" x2="58" y2="68" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="58" y1="68" x2="130" y2="68" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <circle cx="148" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="148" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <!-- Enc 1 -->
+  <line x1="148" y1="80" x2="148" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="108" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <!-- C1 -->
+  <line x1="148" y1="128" x2="148" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="108" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="160" text-anchor="middle" dominant-baseline="central">C₁</text>
+
+  <!-- Block 2 -->
+  <rect x="288" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="30" text-anchor="middle" dominant-baseline="central">P₂</text>
+  <line x1="188" y1="160" x2="310" y2="68" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="328" y1="46" x2="328" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <circle cx="328" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="328" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <line x1="328" y1="80" x2="328" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="288" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <line x1="328" y1="128" x2="328" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="288" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="160" text-anchor="middle" dominant-baseline="central">C₂</text>
+
+  <!-- Block 3 -->
+  <rect x="468" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="30" text-anchor="middle" dominant-baseline="central">P₃</text>
+  <line x1="368" y1="160" x2="490" y2="68" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="508" y1="46" x2="508" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <circle cx="508" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="508" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <line x1="508" y1="80" x2="508" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="468" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <line x1="508" y1="128" x2="508" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="468" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="160" text-anchor="middle" dominant-baseline="central">C₃</text>
+  <!-- dotdot -->
+  <text font-family="'Cormorant Garamond',serif" font-size="20" fill="#1a3848" x="634" y="112" text-anchor="middle">···</text>
+  <!-- Key -->
+  <rect x="580" y="96" width="44" height="32" rx="3" fill="#040c14" stroke="#b88020" stroke-width="0.7"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#d4a030" x="602" y="112" text-anchor="middle" dominant-baseline="central">Key K</text>
+  <line x1="580" y1="112" x2="548" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2" marker-end="url(#ar2)"/>
+  <line x1="580" y1="112" x2="368" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2"/>
+  <line x1="580" y1="112" x2="188" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2"/>
+  <line x1="188" y1="112" x2="188" y2="112" stroke="#b88020" stroke-width="0.6"/>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">All Six Standard Modes</div>
+  <div class="cname">ECB, CBC, CFB, OFB, CTR, GCM — Properties and Use Cases</div>
+  <div class="cbody">
+    <p><strong>ECB (Electronic Codebook):</strong> Each block encrypted independently. Identical blocks produce identical ciphertext. <em>Never use for structured or repetitive data.</em> Only acceptable for single-block encryption of random data (like key wrapping).</p>
+    <p><strong>CBC (Cipher Block Chaining):</strong> Each plaintext block XORed with previous ciphertext before encryption. Requires an IV (must be random and unpredictable). Sequential — cannot be parallelised for encryption. Padding required. Vulnerable to padding oracle attacks (e.g., POODLE). Errors in one ciphertext block corrupt exactly two decrypted blocks.</p>
+    <p><strong>CFB (Cipher Feedback):</strong> Converts block cipher into a stream cipher. Encrypts the previous ciphertext, XORs with plaintext. No padding needed. Self-synchronising — after error recovery, only two blocks are corrupted. Can be parallelised for decryption.</p>
+    <p><strong>OFB (Output Feedback):</strong> Generates keystream by repeatedly encrypting the IV. XOR with plaintext. Keystream independent of plaintext — can be precomputed. Any bit error in ciphertext corrupts only the corresponding plaintext bit (no error propagation). Cannot tolerate IV reuse.</p>
+    <p><strong>CTR (Counter Mode):</strong> Encrypts successive counter values (nonce||counter) to generate keystream. Fully parallelisable for both encryption and decryption. Random access to any block. No padding. Must never reuse a nonce with the same key. Now the standard mode for high-performance encryption.</p>
+    <p><strong>GCM (Galois/Counter Mode):</strong> CTR mode encryption combined with a Galois field MAC (GHASH) for authentication. Provides both confidentiality and integrity in a single pass — Authenticated Encryption with Associated Data (AEAD). The most widely used mode today: AES-128-GCM is the default cipher in TLS 1.3. Catastrophic nonce reuse: if a (key, nonce) pair is reused with different plaintexts, both the authentication key and the plaintexts can be recovered.</p>
+  </div>
+</div>
+
+<table class="ctable">
+  <tr><th>Mode</th><th>Parallelise?</th><th>Padding?</th><th>Auth?</th><th>Main Vulnerability</th><th>Best Use</th></tr>
+  <tr><td>ECB</td><td>Yes / Yes</td><td>Yes</td><td>No</td><td>Identical blocks visible</td><td>Never for real data</td></tr>
+  <tr><td>CBC</td><td>No / Yes</td><td>Yes</td><td>No</td><td>Padding oracle attacks</td><td>Legacy systems</td></tr>
+  <tr><td>CFB</td><td>No / Yes</td><td>No</td><td>No</td><td>IV reuse</td><td>Self-syncing streams</td></tr>
+  <tr><td>OFB</td><td>Precomp</td><td>No</td><td>No</td><td>Nonce reuse, malleability</td><td>Noise channels</td></tr>
+  <tr><td>CTR</td><td>Yes / Yes</td><td>No</td><td>No</td><td>Nonce reuse, malleability</td><td>Fast bulk encryption</td></tr>
+  <tr><td>GCM</td><td>Yes / Yes</td><td>No</td><td>Yes (GHASH)</td><td>Catastrophic nonce reuse</td><td>TLS 1.3, modern apps</td></tr>
+</table>
+</div>
+
+<!-- ASYMMETRIC -->
+<div id="asymmetric" class="panel">
+<div class="ib"><p>Public-key cryptography was the most important cryptographic breakthrough of the 20th century. It transformed cryptography from a tool of governments and militaries into the foundation of the global internet — enabling strangers to communicate securely without ever having met.</p></div>
+
+<div class="cb">
+  <div class="cn">The Core Idea</div>
+  <div class="cname">Trapdoor Functions — Easy One Way, Hard the Other</div>
+  <div class="cbody">
+    <p>Asymmetric cryptography relies on <strong>trapdoor one-way functions</strong>: mathematical operations that are easy to perform in one direction and computationally infeasible to reverse without special knowledge (the "trapdoor" — the private key). Three mathematical problems underlie all widely deployed asymmetric systems:</p>
+    <p><strong>Integer factorisation:</strong> Multiplying two large primes p and q to produce n = p·q takes microseconds. Factoring n to recover p and q when n has ~2048 bits takes longer than the age of the universe with classical computers. Basis of RSA.</p>
+    <p><strong>Discrete logarithm problem (DLP):</strong> Computing g^x mod p (modular exponentiation) is fast. Finding x given g, g^x, and p is hard. Basis of Diffie-Hellman and ElGamal. ECDLP (elliptic curve discrete log) is a harder variant enabling smaller keys.</p>
+    <p><strong>Elliptic curve discrete logarithm (ECDLP):</strong> Finding k given point P and kP on an elliptic curve. Believed harder than DLP — a 256-bit ECC key provides security equivalent to a 3072-bit RSA key.</p>
+  </div>
+</div>
+
+<!-- Diffie-Hellman Color Analogy Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Diffie-Hellman Key Exchange — The Color Analogy</div>
+<svg width="100%" viewBox="0 0 680 220" role="img">
+  <title>Diffie-Hellman explained via color mixing: Alice and Bob each mix their private color with a shared public color; they exchange the mixtures; each mixes the received color with their own private color, arriving at the same final color</title>
+  <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Shared public color (yellow) -->
+  <rect x="270" y="14" width="140" height="36" rx="5" fill="#c8a010" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#040c14" x="340" y="32" text-anchor="middle" dominant-baseline="central">Shared Public Color (g, p)</text>
+  <!-- Alice private -->
+  <rect x="30" y="14" width="120" height="36" rx="5" fill="#1a3498" stroke="#0030c8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d0d8ff" x="90" y="32" text-anchor="middle" dominant-baseline="central">Alice: private (blue)</text>
+  <!-- Bob private -->
+  <rect x="530" y="14" width="120" height="36" rx="5" fill="#7a1a1a" stroke="#c82020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#ffd0d0" x="590" y="32" text-anchor="middle" dominant-baseline="central">Bob: private (red)</text>
+  <!-- Mix arrows down -->
+  <line x1="90" y1="50" x2="90" y2="80" stroke="#1a3498" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <line x1="340" y1="50" x2="218" y2="80" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="340" y1="50" x2="462" y2="80" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="590" y1="50" x2="590" y2="80" stroke="#7a1a1a" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <!-- Mix 1 Alice: blue+yellow = blue-green -->
+  <rect x="30" y="80" width="120" height="36" rx="5" fill="#106860" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#a0e8e0" x="90" y="98" text-anchor="middle" dominant-baseline="central">Alice sends: A = gᵃ mod p</text>
+  <!-- Mix 1 Bob: red+yellow = orange -->
+  <rect x="530" y="80" width="120" height="36" rx="5" fill="#985010" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#ffd090" x="590" y="98" text-anchor="middle" dominant-baseline="central">Bob sends: B = gᵇ mod p</text>
+  <!-- Exchange arrows -->
+  <line x1="150" y1="98" x2="528" y2="98" stroke="#40c8e0" stroke-width="1" stroke-dasharray="6 3" marker-end="url(#ar3)"/>
+  <line x1="530" y1="108" x2="152" y2="108" stroke="#40c8e0" stroke-width="1" stroke-dasharray="6 3" marker-end="url(#ar3)"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#00a0b8" x="340" y="92" text-anchor="middle">PUBLIC exchange over insecure channel</text>
+  <!-- Mix 2 -->
+  <line x1="90" y1="116" x2="90" y2="146" stroke="#106860" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <line x1="590" y1="116" x2="590" y2="146" stroke="#985010" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <!-- Shared secret (same brown/olive color both sides) -->
+  <rect x="30" y="146" width="120" height="44" rx="5" fill="#4a4010" stroke="#b88020" stroke-width="1.2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#d4c060" x="90" y="163" text-anchor="middle" dominant-baseline="central">Alice: Bᵃ mod p</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#a09040" x="90" y="180" text-anchor="middle">= gᵃᵇ mod p ✓</text>
+  <rect x="530" y="146" width="120" height="44" rx="5" fill="#4a4010" stroke="#b88020" stroke-width="1.2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#d4c060" x="590" y="163" text-anchor="middle" dominant-baseline="central">Bob: Aᵇ mod p</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#a09040" x="590" y="180" text-anchor="middle">= gᵃᵇ mod p ✓</text>
+  <!-- Equal label -->
+  <text font-family="'IM Fell English',serif" font-size="13" fill="#40c8e0" x="340" y="174" text-anchor="middle">Same Shared Secret!</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="340" y="192" text-anchor="middle">Eve sees g, p, gᵃ mod p, gᵇ mod p — but computing gᵃᵇ requires solving the DLP</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">RSA — Rivest-Shamir-Adleman (1977)</div>
+  <div class="cname">The Mathematics of RSA Key Generation, Encryption, and Decryption</div>
+  <div class="cbody">
+    <p>RSA is based on the difficulty of factoring the product of two large prime numbers. Key generation:</p>
+    <div class="mathbox">1. Choose two large primes p, q  (each ≥ 1024 bits)
+2. Compute n = p·q  (the modulus, public)
+3. Compute φ(n) = (p-1)(q-1)  (Euler's totient, kept secret)
+4. Choose e: 1 &lt; e &lt; φ(n), gcd(e, φ(n)) = 1  (public exponent, typically 65537)
+5. Compute d: e·d ≡ 1 (mod φ(n))  (private exponent, from Extended Euclidean Algorithm)
+
+Public key:  (n, e)
+Private key: (n, d)  [or equivalently: (p, q, d, dp, dq, qp)]</div>
+    <p><strong>Encryption:</strong> C = M^e mod n</p>
+    <p><strong>Decryption:</strong> M = C^d mod n</p>
+    <p>This works because: C^d = (M^e)^d = M^(ed) = M^(1 + k·φ(n)) = M · (M^φ(n))^k = M · 1^k = M (by Euler's theorem).</p>
+    <p><strong>RSA in practice:</strong> Raw RSA is deterministic and malleable — the same plaintext always produces the same ciphertext, and ciphertexts can be manipulated algebraically. Modern RSA uses <strong>OAEP padding</strong> (Optimal Asymmetric Encryption Padding) to randomise encryption and add integrity checking. RSA-2048 provides approximately 112 bits of security. RSA-4096 provides approximately 140 bits.</p>
+    <p><strong>RSA signatures:</strong> Sign: S = H(M)^d mod n. Verify: H(M) = S^e mod n. The signer uses their private key; anyone can verify with the public key. PSS padding (Probabilistic Signature Scheme) is required for secure RSA signatures.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">ECC — Elliptic Curve Cryptography</div>
+  <div class="cname">Smaller Keys, Stronger Security — The Geometry of Groups</div>
+  <div class="cbody">
+    <p>ECC operates over points on an elliptic curve defined over a finite field. The curve equation is y² = x³ + ax + b (mod p) for prime fields. A group operation (point addition) is defined geometrically: adding two points P and Q produces a third point R on the curve. Scalar multiplication kP (adding P to itself k times) is easy; finding k given P and kP (the ECDLP) is believed to be computationally hard.</p>
+    <p><strong>ECDH (Elliptic Curve Diffie-Hellman):</strong> Alice generates private key a, public key A = aG. Bob generates private key b, public key B = bG (G is a base point on the curve). Shared secret: a·B = a·bG = b·aG = b·A. Security based on ECDLP.</p>
+    <p><strong>ECDSA (Elliptic Curve Digital Signature Algorithm):</strong> Sign with private key, verify with public key. Used in Bitcoin, TLS, code signing. Critically depends on a random, secret nonce k per signature — reusing k for two different signatures leaks the private key (the PS3 was broken this way in 2010 by Sony using a constant k).</p>
+    <p><strong>Ed25519 (EdDSA on Curve25519):</strong> Daniel Bernstein's signature scheme on the Edwards curve. Deterministic (no random nonce needed — k derived from message and private key), fast, side-channel resistant, and immune to the nonce-reuse vulnerability of ECDSA. The preferred signature algorithm for modern systems.</p>
+    <p><strong>Key size comparison:</strong> 256-bit ECC ≈ 3072-bit RSA ≈ 128-bit symmetric security. 521-bit ECC ≈ 15360-bit RSA ≈ 256-bit symmetric security. ECC's advantage is dramatic efficiency — critical for embedded systems, smart cards, and TLS handshake performance.</p>
+  </div>
+</div>
+</div>
+
+<!-- HASH FUNCTIONS -->
+<div id="hash" class="panel">
+<div class="ib"><p>Cryptographic hash functions are the workhorses of modern security infrastructure. One-way, fixed-output, collision-resistant — they appear in digital signatures, password storage, message authentication, blockchain, and certificate systems. A broken hash function breaks everything built on it.</p></div>
+
+<div class="cb">
+  <div class="cn">The Three Essential Properties</div>
+  <div class="cname">Preimage, Second Preimage, and Collision Resistance</div>
+  <div class="cbody">
+    <p>A cryptographic hash function H maps inputs of arbitrary length to a fixed-size output (digest). Three security properties are required:</p>
+    <p><strong>Preimage resistance (one-way):</strong> Given a hash value h, it should be computationally infeasible to find any input m such that H(m) = h. This is what makes hash functions useful for password storage — the database stores H(password), and even if stolen, the attacker cannot recover the password.</p>
+    <p><strong>Second preimage resistance:</strong> Given an input m₁, it should be infeasible to find a different m₂ ≠ m₁ such that H(m₁) = H(m₂). This protects document integrity — an attacker cannot replace a signed document with a different one that has the same hash.</p>
+    <p><strong>Collision resistance:</strong> It should be infeasible to find any two inputs m₁ ≠ m₂ such that H(m₁) = H(m₂). Harder to achieve than second preimage resistance. By the <strong>birthday paradox</strong>, an n-bit hash provides only n/2 bits of collision security — a 128-bit hash (MD5) provides only 64-bit collision security, meaning collisions can be found with ≈2^64 work.</p>
+    <div class="kbox">
+      <div class="kl">The Avalanche Effect in Hash Functions</div>
+      <p>SHA-256("abc") = ba7816bf8f01cfea414140de5dae2ec73b00361bbef0469348423f656b6031f<br>
+SHA-256("abd") = a44f9f4d0bb3c1e9f17e4dc24a2fb3e069f4ce1eb36aa70ad66e83c7e1e80b7<br>
+Change ONE character → completely different hash. This is the avalanche effect — any input change should alter approximately half of all output bits.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Hash Function Zoo</div>
+  <div class="cname">MD5, SHA-1, SHA-2, SHA-3 — Status and Security</div>
+  <div class="cbody">
+    <p><strong>MD5 (1992):</strong> 128-bit output. Completely broken for collision resistance — collisions can be found in seconds on a laptop. Two different executable files can be crafted with the same MD5 hash. Still appears in legacy systems and file checksums (where collision resistance is not required), but must never be used for security purposes.</p>
+    <p><strong>SHA-1 (1995):</strong> 160-bit output. Theoretically broken for years (Wang et al., 2005 showed 2^63 attacks). The SHAttered attack (2017, Google/CWI) produced the first practical SHA-1 collision — two different PDF files with the same SHA-1. Deprecated for all security uses. Certificate authorities stopped issuing SHA-1 certificates in 2017.</p>
+    <p><strong>SHA-2 family (2001):</strong> SHA-224, SHA-256, SHA-384, SHA-512. Currently secure. SHA-256 is the most widely deployed hash function in the world (Bitcoin, TLS, code signing, GPG). Based on the Merkle-Damgård construction with Davies-Meyer compression function. No practical attacks known.</p>
+    <p><strong>SHA-3 / Keccak (2015):</strong> Completely different design from SHA-2 — uses a <strong>sponge construction</strong> rather than Merkle-Damgård. Absorbs input in blocks, squeezes output of desired length. Provides resistance against length-extension attacks (a vulnerability of Merkle-Damgård hash functions). SHA3-256, SHA3-512, SHAKE128, SHAKE256 (extendable output functions).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Message Authentication</div>
+  <div class="cname">HMAC — Hash-Based Message Authentication Codes</div>
+  <div class="cbody">
+    <p>A MAC (Message Authentication Code) proves both integrity (message not altered) and authenticity (message came from key holder). HMAC constructs a MAC from any hash function:</p>
+    <div class="mathbox">HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))
+
+where opad = 0x5c5c5c..., ipad = 0x363636...  (different padding constants)
+</div>
+    <p>The double-hash construction defeats length-extension attacks and provides security proofs based on the PRF properties of the underlying hash. HMAC-SHA256 is ubiquitous — used in TLS, JWT tokens, AWS API authentication, and virtually every authenticated protocol.</p>
+    <p><strong>Why not just prepend the key?</strong> H(K||M) is vulnerable to length-extension attacks: given H(K||M), an attacker can compute H(K||M||extra) for any extra data without knowing K. The HMAC construction specifically prevents this.</p>
+    <p><strong>Poly1305:</strong> A Carter-Wegman MAC that is faster than HMAC and provides stronger provable security guarantees. Used in ChaCha20-Poly1305 (TLS 1.3) and WireGuard.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Password Hashing</div>
+  <div class="cname">bcrypt, scrypt, Argon2 — Why Regular Hash Functions Are Dangerous for Passwords</div>
+  <div class="cbody">
+    <p>Regular hash functions (SHA-256, etc.) are designed to be fast. This is catastrophic for password storage: modern GPUs can compute billions of SHA-256 hashes per second, making offline dictionary attacks devastating. A dedicated password hashing function must be deliberately slow and memory-hard.</p>
+    <p><strong>bcrypt (1999):</strong> Based on the Blowfish cipher's expensive key schedule. A cost parameter (work factor) controls computational expense — doubling the cost factor doubles the time. 72-character input limit (historical Blowfish limitation). Still widely used and considered secure, though not memory-hard.</p>
+    <p><strong>scrypt (2009):</strong> Colin Percival's memory-hard function. Uses large amounts of memory in a sequential access pattern that is difficult to parallelise in hardware ASICs or GPUs. Parameters: N (CPU/memory cost), r (block size), p (parallelisation). Used in Litecoin.</p>
+    <p><strong>Argon2 (2015):</strong> Winner of the Password Hashing Competition. Three variants: Argon2d (data-dependent, faster, vulnerable to side-channel in some contexts), Argon2i (data-independent, side-channel resistant), Argon2id (hybrid, recommended). Configurable time cost, memory cost, and parallelism. Current recommendation for all new password storage systems. Never use plain MD5, SHA-1, or SHA-256 for password hashing.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Merkle Trees</div>
+  <div class="cname">Hash Trees — The Data Structure Beneath Blockchain and Certificate Transparency</div>
+  <div class="cbody">
+    <p>A Merkle tree is a binary tree of hash values. Each leaf node contains the hash of a data block. Each non-leaf node contains the hash of its two children. The root hash (Merkle root) summarises all the data — any change to any leaf changes all nodes on its path to the root.</p>
+    <p>Key property: <strong>Merkle proofs</strong>. To prove that a specific transaction (leaf) is included in a tree with a known root, you only need to provide the sibling hashes along the path from the leaf to the root — O(log n) hashes instead of all n data blocks. Bitcoin uses Merkle trees to efficiently prove transaction inclusion. Certificate Transparency logs use Merkle trees to provide auditable, tamper-evident logs of all TLS certificates issued.</p>
+  </div>
+</div>
+</div>
+
+<!-- PROTOCOLS -->
+<div id="protocols" class="panel">
+<div class="ib"><p>Cryptographic protocols combine primitives — symmetric ciphers, public-key algorithms, hash functions, MACs — into complete systems providing secure communication. Understanding protocols means understanding not just their components but how they interact, what attacks they prevent, and what assumptions they make.</p></div>
+
+<div class="cb">
+  <div class="cn">TLS — Transport Layer Security</div>
+  <div class="cname">The Protocol That Secures the Internet — How HTTPS Works</div>
+  <div class="cbody">
+    <p>TLS (Transport Layer Security, successor to SSL) is the protocol that provides the "S" in HTTPS. It establishes a secure channel over an insecure network, providing confidentiality, integrity, and authentication. TLS 1.3 (RFC 8446, 2018) is the current standard.</p>
+    <p><strong>TLS 1.3 Handshake (simplified):</strong></p>
+    <div class="mathbox">1. Client → Server: ClientHello (supported cipher suites, key_share gˣ)
+2. Server → Client: ServerHello (chosen cipher suite, key_share gʸ)
+                    Certificate (server's X.509 certificate)
+                    CertificateVerify (signature over handshake with private key)
+                    Finished (HMAC over handshake transcript)
+3. Client → Server: Finished (HMAC over handshake transcript)
+4. Both: Derive session keys from gˣʸ (ECDH shared secret)
+   → Application data encrypted with AES-128-GCM or ChaCha20-Poly1305</div>
+    <p><strong>1-RTT vs 0-RTT:</strong> TLS 1.3 completes the handshake in one round trip (vs two in TLS 1.2). TLS 1.3 also supports 0-RTT ("early data") for resuming sessions — the client sends encrypted data with its first message, without waiting for the server's response. 0-RTT has reduced security guarantees (no replay protection) and should only be used for idempotent requests.</p>
+    <p><strong>Perfect Forward Secrecy (PFS):</strong> TLS 1.3 mandates ephemeral key exchange (ECDHE) — a new DH key pair is generated for each session. If the server's long-term private key is later compromised, past session recordings remain private. TLS 1.2 without PFS (using RSA key exchange) allows an attacker who later obtains the private key to decrypt all previously recorded sessions.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">SSH — Secure Shell</div>
+  <div class="cname">Encrypted Remote Access — How SSH Works</div>
+  <div class="cbody">
+    <p>SSH provides secure remote command-line access, file transfer (SCP, SFTP), and port forwarding. It consists of three layers: Transport (key exchange, encryption), Authentication (user identity verification), and Connection (multiplexing of logical channels).</p>
+    <p><strong>Key exchange:</strong> Diffie-Hellman or ECDH to establish session keys. Server identity verified by host key (RSA or Ed25519 public key stored in ~/.ssh/known_hosts). Man-in-the-middle on first connection ("trust-on-first-use" / TOFU model) is a vulnerability — mitigated by certificate-based or DANE-based host key verification.</p>
+    <p><strong>Authentication methods:</strong> Password (encrypted, but weak against brute force), public key (Ed25519 or RSA keypair — vastly preferred; private key never leaves the client), certificate-based (CA-signed SSH certificates for large deployments), FIDO2/hardware key (most secure).</p>
+    <p><strong>Port forwarding:</strong> SSH tunnels encrypt connections from local to remote ports. Local forwarding: access a remote service as if it were local. Remote forwarding: expose a local service through the remote server. Dynamic forwarding: SOCKS proxy through the SSH connection.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">PGP/GPG</div>
+  <div class="cname">Pretty Good Privacy — Email Encryption and the Web of Trust</div>
+  <div class="cbody">
+    <p>PGP (Pretty Good Privacy) and its open-source implementation GPG use hybrid encryption: a random session key encrypts the message with a symmetric cipher, and the session key is encrypted with the recipient's RSA or ECC public key.</p>
+    <p><strong>Digital signatures in PGP:</strong> The sender hashes the message and encrypts the hash with their private key. The recipient decrypts with the sender's public key and verifies the hash matches. Provides non-repudiation.</p>
+    <p><strong>Web of Trust:</strong> Unlike TLS which relies on CAs, PGP uses a decentralised web of trust. Users sign each other's public keys, creating a network where trust propagates transitively. Difficult to manage at scale and the reason PGP adoption has been limited outside technical communities.</p>
+    <p>The PKI (Public Key Infrastructure) model — used in TLS — provides a hierarchical trust model: Certificate Authorities (CAs) sign end-entity certificates, browsers maintain a list of trusted root CAs. Vulnerable to rogue CAs issuing fraudulent certificates (the DigiNotar compromise, 2011, demonstrated this catastrophically).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Signal Protocol</div>
+  <div class="cname">The Double Ratchet — State of the Art in Messaging Security</div>
+  <div class="cbody">
+    <p>The Signal Protocol (used in Signal, WhatsApp, and others) provides end-to-end encrypted messaging with forward secrecy and <strong>break-in recovery</strong> — if an attacker learns your keys at one moment, they cannot decrypt past or future messages.</p>
+    <p><strong>X3DH (Extended Triple Diffie-Hellman):</strong> Initial key agreement combining long-term, medium-term, and one-time Diffie-Hellman keys. Provides forward secrecy and deniability (no signature proves who sent the message).</p>
+    <p><strong>Double Ratchet Algorithm:</strong> Two ratchets advance simultaneously. The <em>Diffie-Hellman ratchet</em> runs whenever a new DH key is sent — provides break-in recovery. The <em>symmetric-key ratchet</em> runs for every message — provides per-message forward secrecy. Both use a KDF (key derivation function) to advance the state. The result: every message uses a unique key, and compromise of any key reveals only that one message.</p>
+    <p>Signal also uses <strong>Sealed Sender</strong> (hiding sender identity even from the Signal server), <strong>Private Contact Discovery</strong> (finding contacts without revealing your contacts to the server), and <strong>SGX-based attestation</strong> for server-side privacy.</p>
+  </div>
+</div>
+</div>
+
+<!-- CRYPTANALYSIS -->
+<div id="attacks" class="panel">
+<div class="ib"><p>Cryptanalysis — the science of breaking ciphers — has driven the evolution of cryptography throughout history. Every advance in cryptographic design has been provoked by a new attack. Understanding how ciphers fail is essential to understanding why strong ciphers are designed the way they are.</p></div>
+
+<div class="sl">Attack Taxonomy</div>
+<div class="st">Categories of Attack — From Passive to Active</div>
+
+<div class="cb">
+  <div class="cn">By Attacker Model</div>
+  <div class="cname">What the Adversary Can Observe and Control</div>
+  <div class="cbody">
+    <p><strong>Ciphertext-only attack (COA):</strong> The attacker has only ciphertext. The weakest model. Classical frequency analysis is a COA. Modern ciphers must resist this trivially.</p>
+    <p><strong>Known-plaintext attack (KPA):</strong> The attacker has pairs of (plaintext, ciphertext). Common in practice — HTTP headers, file headers, and known message formats provide known plaintext. Broke many WWII ciphers.</p>
+    <p><strong>Chosen-plaintext attack (CPA):</strong> The attacker can encrypt any plaintext of their choice and observe the ciphertext. Realistic for public-key systems (public key is known). A cipher secure under CPA is the minimum standard for modern symmetric encryption.</p>
+    <p><strong>Chosen-ciphertext attack (CCA):</strong> The attacker can decrypt any ciphertext of their choice (except the challenge). Covers scenarios where an attacker can interact with a decryption oracle. Padding oracle attacks are CCA attacks. IND-CCA2 security (adaptive CCA) is the gold standard.</p>
+    <p><strong>Related-key attack:</strong> The attacker has access to encryptions under multiple keys that have a known mathematical relationship. DES was vulnerable; AES was designed to resist these.</p>
+    <p><strong>Side-channel attack:</strong> The attacker observes physical characteristics of the implementation (timing, power consumption, electromagnetic emissions, sound, cache behaviour) rather than the algorithm itself.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Mathematical Attacks</div>
+  <div class="cname">Differential and Linear Cryptanalysis</div>
+  <div class="cbody">
+    <p><strong>Differential cryptanalysis (Biham and Shamir, 1990):</strong> Studies how differences in plaintext pairs propagate through cipher rounds. By choosing plaintext pairs with specific XOR differences and observing the resulting ciphertext differences, properties of the round function and subkeys can be inferred. DES was designed to resist differential cryptanalysis (the IBM designers knew of the attack in 1974 but were asked by the NSA not to publish it). Effective against many ciphers with too few rounds or weak S-boxes.</p>
+    <p><strong>Linear cryptanalysis (Matsui, 1993):</strong> Approximates the cipher's behaviour with linear (XOR) equations connecting plaintext bits, ciphertext bits, and key bits. Statistical analysis of many plaintext-ciphertext pairs recovers key bits. Broke DES with 2^43 known plaintexts. Modern ciphers are designed so that no linear approximation holds with probability significantly different from 1/2.</p>
+    <p><strong>Algebraic attacks:</strong> Express the cipher as a system of equations over a finite field and solve with algebraic methods. Theoretically threatening but practically limited — the systems produced by modern ciphers are highly overdetermined and resistant to known equation-solving techniques.</p>
+    <p><strong>Slide attacks, boomerang attacks, impossible differential attacks:</strong> Families of techniques that exploit structural weaknesses in cipher design. A well-designed modern cipher (AES, ChaCha20) resists all of these with significant security margin.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Birthday Attack</div>
+  <div class="cname">Why Hash Output Size Must Be Double the Security Level</div>
+  <div class="cbody">
+    <p>The birthday paradox: in a group of 23 people, there is a >50% probability that two share a birthday. Generalised: to find any collision among n equally likely outputs, you need only ≈√n trials. For an n-bit hash function, collisions can be found in ≈2^(n/2) computations — not 2^n.</p>
+    <p>This is why SHA-256 provides 128 bits of collision security (not 256). A 128-bit hash (MD5) provides only 64-bit collision security — feasible to break with modern hardware. For a hash function to provide k bits of collision security, it needs 2k bits of output. To provide 128-bit security against collision attacks, you need SHA-256 or better.</p>
+    <p>Birthday attacks also apply to block cipher modes: CTR mode with a random nonce has a birthday problem — after 2^(n/2) blocks encrypted with the same key, collisions in the keystream become likely, leaking plaintext relationships. This is why 64-bit block ciphers (DES, 3DES, Blowfish) have a practical security limit of ≈32GB per key (2^32 × 8 bytes) — the SWEET32 attack exploits this.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Implementation Attacks</div>
+  <div class="cname">Side-Channels, Padding Oracles, and Fault Attacks</div>
+  <div class="cbody">
+    <p><strong>Timing attacks:</strong> If decryption time depends on the key or plaintext, measuring timing reveals secrets. RSA decryption (using the Chinese Remainder Theorem) has timing variations that leak the private key if not carefully implemented with constant-time code. Kocher (1996) demonstrated this on real implementations. ChaCha20 and Ed25519 are designed to be inherently constant-time.</p>
+    <p><strong>Power analysis:</strong> Simple Power Analysis (SPA) reads the key from a single power trace; Differential Power Analysis (DPA) uses statistical analysis of many traces. Critical for smart card security — the power consumed by XOR, AND, and branch instructions varies with bit values, leaking key material. Countermeasures: masking (adding random values), shuffling (randomising operation order), balanced hardware.</p>
+    <p><strong>Padding oracle attacks:</strong> CBC mode decryption with server-side error messages about invalid padding. An attacker who can submit ciphertexts and observe whether decryption produces valid padding (even just a timing difference) can decrypt any ciphertext byte by byte in O(256×n) queries. POODLE (2014) exploited this against SSL 3.0. Fix: authenticated encryption (GCM, ChaCha20-Poly1305) — the authentication check happens before padding is validated.</p>
+    <p><strong>Fault attacks:</strong> Inducing hardware errors (voltage glitches, clock manipulation, laser injection) during cryptographic computation. A single bit flip during RSA-CRT signing reveals the private key through Bellcore attack. Countermeasures: signature verification before output, redundant computation, error detection codes.</p>
+    <p><strong>Cache timing attacks (Spectre/Meltdown-class):</strong> Memory access patterns — specifically which cache lines are accessed — leak information. AES table-based implementations leak key bits through cache timing. AES-NI hardware instructions eliminate this entirely. Spectre (2018) showed that speculative execution can leak secrets across security boundaries through shared cache state.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Protocol Attacks</div>
+  <div class="cname">BEAST, CRIME, POODLE, Heartbleed — When Good Primitives Go Wrong</div>
+  <div class="cbody">
+    <p><strong>BEAST (2011):</strong> Chosen-plaintext attack on CBC mode in TLS 1.0 — the IV for each record was the last ciphertext block of the previous record, making it predictable. Fix: TLS 1.1 (random IVs) or RC4 (ironically, now known to be worse). Fully fixed in TLS 1.2/1.3.</p>
+    <p><strong>CRIME (2012):</strong> If TLS compression is enabled and an attacker can inject chosen plaintext alongside secret data (like session cookies), they can learn the secret by observing compressed ciphertext length. Compression leaks information about repeated substrings. Fix: disable TLS compression entirely.</p>
+    <p><strong>POODLE (2014):</strong> Padding oracle attack on SSL 3.0 (and later some TLS implementations with SSLv3 fallback). Fix: disable SSL 3.0.</p>
+    <p><strong>Heartbleed (2014):</strong> Not a cryptographic attack but an implementation bug in OpenSSL's heartbeat extension. The server echoed back more memory than requested, leaking private keys, session tokens, and user data. Demonstrated that a single memory corruption bug in a widely deployed library can compromise the entire cryptographic infrastructure built on it. Over 500,000 servers were affected.</p>
+    <p><strong>Man-in-the-Middle (MITM):</strong> An attacker intercepts communication between two parties, establishing separate encrypted sessions with each, transparently relaying messages. Defeated by proper certificate validation in TLS — the server's certificate is signed by a CA the client trusts. Certificate pinning (HPKP) was an additional defence, now largely abandoned due to deployment complexity.</p>
+  </div>
+</div>
+</div>
+
+<!-- QUANTUM -->
+<div id="quantum" class="panel">
+<div class="ib"><p>Quantum computers represent the most significant existential threat to current cryptographic infrastructure. Shor's algorithm, running on a sufficiently large quantum computer, would break RSA, Diffie-Hellman, and elliptic curve cryptography — the three algorithms that underpin virtually all asymmetric security deployed today. The race to quantum-resistant cryptography is already underway.</p></div>
+
+<div class="cb">
+  <div class="cn">Quantum Computing Basics</div>
+  <div class="cname">Qubits, Superposition, Entanglement, and Interference</div>
+  <div class="cbody">
+    <p>A classical bit is 0 or 1. A <strong>qubit</strong> can be in a <strong>superposition</strong> of 0 and 1 simultaneously — not "both at once" in a naive sense, but in a quantum state |ψ⟩ = α|0⟩ + β|1⟩ where |α|² and |β|² are the probabilities of measuring 0 and 1. A register of n qubits can represent a superposition of all 2^n classical states simultaneously.</p>
+    <p><strong>Entanglement:</strong> Two qubits can be correlated such that measuring one instantly determines the other's state, regardless of distance. Used in quantum key distribution and some quantum algorithms.</p>
+    <p><strong>Quantum interference:</strong> Quantum algorithms work by constructing interference patterns that amplify probability amplitudes of correct answers and cancel amplitudes of incorrect ones. This is how quantum algorithms achieve speedups — they are not brute-force search, but carefully engineered interference patterns.</p>
+    <p><strong>Decoherence:</strong> The primary engineering challenge. Qubits are extremely fragile — any interaction with the environment collapses the superposition. Current quantum computers (2024) have ~1000-4000 physical qubits but require significant error correction overhead — a large-scale fault-tolerant quantum computer capable of running Shor's algorithm on 2048-bit RSA might require millions of physical qubits.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Shor's Algorithm (1994)</div>
+  <div class="cname">The Quantum Algorithm That Breaks RSA, DH, and ECC</div>
+  <div class="cbody">
+    <p>Peter Shor's algorithm solves the integer factorisation problem (and discrete logarithm problem) in <strong>polynomial time</strong> on a quantum computer — specifically O((log n)^3) operations. Classical algorithms require sub-exponential time O(exp(n^(1/3) (log n)^(2/3))) (general number field sieve). On a large enough quantum computer, RSA-2048 could be broken in hours.</p>
+    <p>The algorithm works by: (1) reducing factorisation to finding the period of a modular exponential function; (2) using the <strong>Quantum Fourier Transform</strong> to find the period in quantum superposition; (3) using the period to find prime factors classically. The QFT is the heart of the speedup — it finds periodicity exponentially faster than the classical Discrete Fourier Transform.</p>
+    <p>Impact: RSA, all Diffie-Hellman variants (DH, ECDH), ElGamal, DSA, and ECDSA would all be broken. Key sizes provide no refuge — doubling the key size gives polynomial rather than exponential resistance.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Grover's Algorithm (1996)</div>
+  <div class="cname">The Quantum Algorithm That Weakens Symmetric Cryptography</div>
+  <div class="cbody">
+    <p>Grover's algorithm provides a quadratic speedup for unstructured search: searching a space of N items requires only O(√N) quantum operations instead of O(N) classical. Applied to cryptography: brute-forcing an n-bit key requires 2^n classical operations but only 2^(n/2) quantum operations.</p>
+    <p>Impact on symmetric cryptography: AES-128 provides 64-bit quantum security (not 128-bit). AES-256 provides 128-bit quantum security. The defence is simple: <strong>double the key size</strong>. AES-256 and SHA-256 are considered quantum-safe (128-bit post-quantum security). This is why NIST recommends AES-256 for post-quantum security.</p>
+    <p>Grover does not break hash functions catastrophically — second preimage resistance halves (SHA-256 provides 128-bit quantum preimage resistance), but collision resistance drops by one third (SHA-256 provides 85 bits of quantum collision security by BHT algorithm). Recommendation: use SHA-256 minimum (provides adequate quantum collision resistance); use SHA-384 for high-security applications.</p>
+  </div>
+</div>
+
+<!-- BB84 Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">BB84 Quantum Key Distribution Protocol</div>
+<svg width="100%" viewBox="0 0 680 260" role="img">
+  <title>BB84 QKD protocol: Alice sends polarised photons in two random bases; Bob measures in random bases; they compare bases over classical channel and keep only bits where bases matched</title>
+  <defs><marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Alice -->
+  <rect x="10" y="10" width="100" height="240" rx="6" fill="#040c14" stroke="#006878" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="60" y="32" text-anchor="middle">Alice</text>
+  <!-- Bob -->
+  <rect x="570" y="10" width="100" height="240" rx="6" fill="#040c14" stroke="#006878" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="620" y="32" text-anchor="middle">Bob</text>
+  <!-- Step labels -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="56">1. Random bits:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="10" y="72">0 1 1 0 1 0 0 1</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="96">2. Random bases:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#b88020" x="10" y="112">+ × + × + × × +</text>
+  <!-- Quantum channel -->
+  <rect x="120" y="120" width="440" height="36" rx="4" fill="#040c14" stroke="#40c8e0" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="340" y="138" text-anchor="middle" dominant-baseline="central">Quantum Channel (photon polarisations)</text>
+  <line x1="110" y1="138" x2="118" y2="138" stroke="#40c8e0" stroke-width="1" marker-end="url(#ar4)"/>
+  <!-- Photon symbols -->
+  <text font-family="'Cormorant Garamond',serif" font-size="16" fill="#d4a030" x="170" y="118" text-anchor="middle">↕ ↗ ↕ ↗ ↕ ↔ ↔ ↕</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#1a3848" x="340" y="115" text-anchor="middle">polarised photons</text>
+  <!-- Bob measurement -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="56">3. Random bases:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#b88020" x="570" y="72">+ + × × + × + +</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="96">4. Bob measures:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="570" y="112">0 ? 1 0 1 0 ? 1</text>
+  <!-- Classical channel for basis comparison -->
+  <rect x="120" y="168" width="440" height="36" rx="4" fill="#040c14" stroke="#b88020" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d4a030" x="340" y="186" text-anchor="middle" dominant-baseline="central">Classical Channel — Compare bases publicly</text>
+  <line x1="570" y1="186" x2="562" y2="186" stroke="#b88020" stroke-width="1" marker-end="url(#ar4)"/>
+  <line x1="110" y1="186" x2="118" y2="186" stroke="#b88020" stroke-width="1" marker-end="url(#ar4)"/>
+  <!-- Matching result -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="220">Bases match?</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#2a8a5a" x="10" y="236">✓ . . ✓ ✓ ✓ . ✓</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="252">Key bits:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="70" y="252">0 0 1 0 1</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="220">Keep matching:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="570" y="236">0 0 1 0 1 ✓</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#7a1010" x="340" y="252" text-anchor="middle">Eve's eavesdropping disturbs photon states → detectable as elevated error rate in key reconciliation</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">Post-Quantum Cryptography (PQC)</div>
+  <div class="cname">NIST Standards 2024 — The Algorithms That Replace RSA and ECC</div>
+  <div class="cbody">
+    <p>Post-quantum cryptography (not to be confused with quantum cryptography) refers to classical algorithms — running on conventional computers — that are believed to resist attacks from both classical and quantum computers. NIST standardised the first four algorithms in 2024 after an eight-year competition.</p>
+    <p><strong>CRYSTALS-Kyber (ML-KEM, FIPS 203):</strong> Key Encapsulation Mechanism (KEM) for key exchange. Based on the Module Learning With Errors (MLWE) problem — a lattice-based hard problem. Kyber-768 provides approximately 180 bits of classical security and 164 bits of quantum security. Fast and compact. Already deployed in Chrome, Cloudflare, and Signal.</p>
+    <p><strong>CRYSTALS-Dilithium (ML-DSA, FIPS 204):</strong> Digital signature algorithm. Also lattice-based (Module Learning With Errors and Short Integer Solution). Fast signature generation and verification. Dilithium3 is the recommended security level.</p>
+    <p><strong>FALCON (FN-DSA, FIPS 206):</strong> Lattice-based signature algorithm based on NTRU lattices. More compact signatures than Dilithium but more complex implementation (requires careful floating-point arithmetic). Recommended where signature size matters.</p>
+    <p><strong>SPHINCS+ (SLH-DSA, FIPS 205):</strong> Hash-based signature scheme. Security relies only on the security of the underlying hash function — no lattice assumptions. More conservative security guarantee but much larger signatures (8-50KB). Preferred for high-security, low-frequency signing (certificate authorities, code signing).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Lattice Cryptography</div>
+  <div class="cname">The Mathematical Foundation of Post-Quantum Security</div>
+  <div class="cbody">
+    <p>Lattice-based cryptography is built on the hardness of problems in high-dimensional integer lattices. The two foundational problems:</p>
+    <p><strong>Shortest Vector Problem (SVP):</strong> Given a lattice basis, find the shortest non-zero vector. Believed hard for classical and quantum computers when the lattice dimension is large enough (≥500 dimensions).</p>
+    <p><strong>Learning With Errors (LWE):</strong> Given pairs (a_i, b_i = a_i·s + e_i mod q) where s is a secret vector and e_i are small random errors, find s. The errors make the system hard to solve — without them, it would be a simple linear algebra problem. Regev (2005) showed that solving LWE is as hard as solving worst-case lattice problems.</p>
+    <p>Lattice-based cryptography has an extraordinary additional property: it supports <strong>fully homomorphic encryption</strong> (FHE) — computing arbitrary functions on encrypted data. This is why lattice crypto is considered the most promising foundation for the future of applied cryptography.</p>
+  </div>
+</div>
+</div>
+
+<!-- ADVANCED -->
+<div id="advanced" class="panel">
+<div class="ib"><p>Beyond encryption and signatures lies a universe of advanced cryptographic techniques that solve problems once thought impossible: proving knowledge without revealing it, computing on encrypted data without decrypting it, splitting secrets so no single party holds them. These are the frontiers of modern applied cryptography.</p></div>
+
+<div class="cb">
+  <div class="cn">Zero-Knowledge Proofs (ZKP)</div>
+  <div class="cname">Proving You Know Something Without Revealing What You Know</div>
+  <div class="cbody">
+    <p>A zero-knowledge proof allows a <em>prover</em> to convince a <em>verifier</em> that a statement is true without revealing any information beyond the fact of its truth. Three properties are required: <strong>Completeness</strong> (honest prover always convinces honest verifier), <strong>Soundness</strong> (dishonest prover cannot convince verifier of a false statement), <strong>Zero-knowledge</strong> (verifier learns nothing except that the statement is true).</p>
+    <p><strong>Classic example (Ali Baba cave):</strong> Prover wants to prove they know the cave's magic word (which opens a secret door) without revealing the word. The cave has two paths meeting at the door. Prover enters one path; verifier asks them to exit from a specified path. Prover can only comply if they know the magic word. After many repetitions, verifier is convinced. No information about the word was transmitted.</p>
+    <p><strong>Schnorr protocol:</strong> Prove knowledge of a discrete logarithm (private key x such that y = g^x) without revealing x. Basis of many practical ZKP systems and the Fiat-Shamir transform (converting interactive proofs to non-interactive).</p>
+    <p><strong>zk-SNARKs (Succinct Non-interactive Arguments of Knowledge):</strong> Non-interactive zero-knowledge proofs that are both succinct (constant-size proof regardless of computation size) and fast to verify. Used in Zcash (anonymous cryptocurrency) and Ethereum smart contracts. Require a trusted setup — the "toxic waste" problem where a trusted party generates public parameters; if the randomness used is ever revealed, counterfeits can be created.</p>
+    <p><strong>zk-STARKs (Scalable Transparent ARguments of Knowledge):</strong> Remove the trusted setup requirement. Larger proofs than SNARKs but quantum-resistant and transparent. Used in StarkWare's Ethereum Layer 2 scaling solutions. Based on hash functions and error-correcting codes.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Homomorphic Encryption (HE/FHE)</div>
+  <div class="cname">Computing on Encrypted Data — The Holy Grail of Privacy-Preserving Computation</div>
+  <div class="cbody">
+    <p>Homomorphic encryption allows computation on encrypted data: E(a) ⊕ E(b) = E(a+b), E(a) ⊗ E(b) = E(a×b). Cloud servers can compute on encrypted data and return encrypted results — without ever learning the data.</p>
+    <p><strong>Partial HE:</strong> Supports either addition or multiplication but not both. RSA is multiplicatively homomorphic: Enc(m₁)·Enc(m₂) = Enc(m₁·m₂). Paillier is additively homomorphic.</p>
+    <p><strong>Somewhat HE (SHE):</strong> Supports limited numbers of both operations before noise accumulates and destroys correctness. Gentry's original 2009 construction.</p>
+    <p><strong>Fully Homomorphic Encryption (FHE):</strong> Supports arbitrary depth circuits of additions and multiplications. Craig Gentry's 2009 breakthrough used lattice-based cryptography with a "bootstrapping" technique to refresh the ciphertext and reduce accumulated noise. Modern schemes: TFHE (fast bootstrapping, ~1ms per gate), CKKS (approximate arithmetic, ideal for machine learning), BFV/BGV (exact arithmetic for integers).</p>
+    <p>Applications: privacy-preserving machine learning (training on encrypted medical data), private database queries, secure voting systems, private information retrieval. Currently 1000-10000× slower than unencrypted computation — improving rapidly but not yet practical for most applications.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Secure Multi-Party Computation (MPC)</div>
+  <div class="cname">Computing Joint Functions Without Revealing Individual Inputs</div>
+  <div class="cbody">
+    <p>Multi-party computation (MPC) allows n parties to jointly compute a function f(x₁, x₂, ..., xn) where each party i contributes their private input xᵢ and learns only the output — nothing about others' inputs beyond what the output reveals.</p>
+    <p><strong>Classic problem (Yao's Millionaires, 1982):</strong> Two millionaires want to know who is richer without revealing their wealth. Yao's garbled circuit construction was the first general solution.</p>
+    <p><strong>Garbled circuits:</strong> Yao's protocol encodes a boolean circuit as a "garbled" version where gate truth tables are encrypted. One party garbles the circuit; the other evaluates it. Each party learns only the output. Two parties, semi-honest model. O(|circuit|) communication.</p>
+    <p><strong>Secret sharing-based MPC (BGW, SPDZ):</strong> Inputs are secret-shared among parties. Computation proceeds share by share. SPDZ (pronounced "speedz") is a practical protocol for dishonest majority — remains secure even if all but one party is corrupted. Used in production by companies doing privacy-preserving analytics.</p>
+    <p>Applications: private auctions (bidders commit without revealing bids), private set intersection (determining which contacts are mutual without revealing contact lists — used by Signal), threshold signatures (requiring k of n parties to sign — used in cryptocurrency custody), privacy-preserving machine learning.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Secret Sharing</div>
+  <div class="cname">Shamir's Secret Sharing — Splitting a Secret Among N Parties</div>
+  <div class="cbody">
+    <p>Shamir's Secret Sharing (1979) allows a secret S to be split into n shares such that any k shares can reconstruct S but any k-1 shares reveal nothing about S. This is a (k, n) threshold scheme.</p>
+    <p><strong>Construction:</strong> Choose a random polynomial f(x) of degree k-1 over a prime field with f(0) = S. Give each party i the share (i, f(i)). Any k shares allow Lagrange interpolation to recover f(0) = S. Fewer than k shares provide zero information — perfect information-theoretic security.</p>
+    <div class="mathbox">f(x) = S + a₁x + a₂x² + ... + a_{k-1}x^{k-1}  (mod prime p)
+Share_i = f(i)  for i = 1, 2, ..., n
+
+Recovery: Lagrange interpolation from any k shares → f(0) = S</div>
+    <p>Applications: distributed key management (HSMs), cryptocurrency wallet recovery, private CA key protection, nuclear launch authentication (the inspiration for n-of-m codes), password managers. Verifiable Secret Sharing (VSS) adds the ability to verify share correctness without revealing the secret.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Blockchain Cryptography</div>
+  <div class="cname">How Cryptography Powers Decentralised Trust</div>
+  <div class="cbody">
+    <p>Blockchain systems use a combination of cryptographic primitives to create immutable, decentralised ledgers:</p>
+    <p><strong>Hash chaining:</strong> Each block includes the hash of the previous block's header. Changing any block requires recomputing all subsequent blocks' hashes. With proof-of-work, each recomputation requires enormous energy — making history tamper-evident in practice.</p>
+    <p><strong>Merkle trees:</strong> Transaction data in each block is organised as a Merkle tree. The Merkle root in the block header summarises all transactions. SPV (Simple Payment Verification) clients can verify a transaction's inclusion with O(log n) hashes.</p>
+    <p><strong>Digital signatures:</strong> ECDSA (secp256k1) in Bitcoin; Ed25519 in many others. Authorise transactions — only the private key holder can spend funds associated with the corresponding public key/address.</p>
+    <p><strong>Proof of Work:</strong> Bitcoin requires miners to find a nonce such that SHA256(SHA256(block_header)) ≤ target. Adjustable difficulty. Requires computing ~10^22 hashes for a single block at current difficulty. Provides probabilistic finality — rewriting history requires redoing all PoW since the target block.</p>
+    <p><strong>Zero-knowledge proofs in crypto:</strong> Zcash uses zk-SNARKs to shield transaction amounts and addresses while proving validity. Tornado Cash used ZKPs for anonymous ETH mixing. Layer 2 rollups (StarkNet, zkSync) use ZKPs to prove the correctness of batched off-chain transactions.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Steganography</div>
+  <div class="cname">Hiding the Existence of the Message — Not Just Its Content</div>
+  <div class="cbody">
+    <p>Steganography conceals the existence of a communication; cryptography conceals its content. The two are complementary: encrypted steganographic messages provide both. Modern digital steganography hides data in the least significant bits (LSBs) of image, audio, or video files — imperceptible to human senses but detectable by statistical analysis (steganalysis).</p>
+    <p>In practice, modern steganography tools use spread-spectrum techniques and frequency-domain embedding (DCT coefficient modification in JPEG files) to evade detection. State actors use steganography in malware command-and-control communications (hiding commands in social media images) and for intelligence communication in contested environments.</p>
+  </div>
+</div>
+</div>
+
+<!-- APPLICATIONS -->
+<div id="applications" class="panel">
+<div class="ib"><p>Cryptography is everywhere — not as an abstract mathematical discipline but as the invisible infrastructure that makes digital life possible. Every HTTPS connection, every bank transfer, every encrypted message, every software update, every password database, every cryptocurrency transaction depends on specific cryptographic choices made by engineers and standardised by researchers.</p></div>
+
+<div class="cb">
+  <div class="cn">Web Security — HTTPS and PKI</div>
+  <div class="cname">How the Public Key Infrastructure Secures the Web</div>
+  <div class="cbody">
+    <p>Every HTTPS connection uses TLS, which uses the Web PKI (Public Key Infrastructure) for authentication. The trust chain: browser vendors (Chrome, Firefox, Safari) maintain lists of trusted root Certificate Authorities (CAs). CAs issue intermediate certificates. Intermediates issue end-entity certificates to website operators. When you visit https://example.com, the server presents its certificate, your browser validates the chain to a trusted root, and TLS uses the certificate's public key for authentication.</p>
+    <p><strong>Certificate Transparency (CT):</strong> CAs are required to log all issued certificates to public, append-only logs verified by Merkle trees. This prevents silent issuance of rogue certificates. Browsers require certificates to appear in CT logs.</p>
+    <p><strong>HSTS (HTTP Strict Transport Security):</strong> Instructs browsers to always use HTTPS for a domain. HSTS Preload lists these domains in browsers themselves — no initial HTTP request needed.</p>
+    <p><strong>HPKP (HTTP Public Key Pinning):</strong> Was deprecated — too many sites misconfigured it and locked themselves out.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">End-to-End Encryption</div>
+  <div class="cname">Signal, WhatsApp, iMessage — How Modern Messaging Is Secured</div>
+  <div class="cbody">
+    <p>End-to-end encryption (E2EE) ensures that only the communicating users can read the messages — not the service provider, not the network, not governments (unless they can access an endpoint). Signal Protocol (Signal, WhatsApp) uses X3DH initial key agreement + Double Ratchet for ongoing messages. iMessage uses encryption keys associated with Apple IDs — Apple cannot read iMessages between devices with iMessage enabled, but iCloud backup of iMessages was (until recently) unencrypted.</p>
+    <p>Key challenges: <strong>Key verification</strong> — how do users confirm they are talking to the right person and not an attacker who has compromised the server's key distribution? Signal, WhatsApp provide "Safety Numbers" / "Security Codes" for manual key verification. <strong>Multi-device support</strong> — supporting multiple devices (phone + laptop) requires careful key management to maintain E2EE properties. <strong>Metadata</strong> — even with E2EE, who is communicating with whom and when is often visible to the service provider.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Password Storage</div>
+  <div class="cname">The Right Way and the Wrong Way to Store Passwords</div>
+  <div class="cbody">
+    <p>Passwords must never be stored in plaintext or reversibly encrypted. The correct approach: store a slow, salted hash.</p>
+    <div class="ddgrid">
+      <div class="sbox"><strong>✓ Correct</strong>Argon2id(password, random_salt, cost_params). Unique salt per user. Argon2id parameters tuned for ~100-300ms verification time. Full hash stored. Can verify but cannot reverse.</div>
+      <div class="rbox"><strong>✗ Wrong</strong>Plain text. MD5(password). SHA-1(password). Even SHA-256(password) without salt. Unsalted hashes enable rainbow table attacks. Fast hashes enable billions of guesses per second on GPU clusters.</div>
+    </div>
+    <p>Real-world breaches: LinkedIn (2012) — 117M SHA-1 hashes without salt, most cracked in days. Adobe (2013) — 153M passwords stored with reversible encryption (3DES ECB!), hint in plaintext. RockYou (2009) — 32M passwords in plaintext. These breaches illustrate that the specification of the correct algorithm is not sufficient — it must be correctly implemented and properly configured.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Full-Disk Encryption</div>
+  <div class="cname">BitLocker, FileVault, LUKS — Protecting Data at Rest</div>
+  <div class="cbody">
+    <p>Full-disk encryption (FDE) protects data when a device is powered off. AES-XTS (XEX-based Tweaked-codebook mode with ciphertext Stealing) is the standard mode for disk encryption — each 512-byte sector is encrypted with AES using the sector number as an additional "tweak" to prevent cross-sector copying attacks. AES-XTS is not authenticated (no integrity) but provides confidentiality.</p>
+    <p><strong>Key derivation:</strong> The user's passphrase is run through a KDF (PBKDF2 in BitLocker, Argon2 in modern LUKS) to derive the encryption key, which encrypts the actual volume master key (VMK). This allows password changes without re-encrypting the entire volume. TPM integration (BitLocker) ties the VMK to specific hardware state, preventing cold-boot attacks.</p>
+    <p><strong>VeraCrypt:</strong> Open-source FDE supporting plausible deniability — a single encrypted container can hold two volumes, each accessible with different passwords. Neither volume's existence can be proven to the other's holder.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Cryptocurrency Security</div>
+  <div class="cname">How Bitcoin Addresses and Private Keys Work</div>
+  <div class="cbody">
+    <p>A Bitcoin "wallet" is a collection of ECDSA (secp256k1) private keys. A private key is a 256-bit random number. The corresponding public key is the elliptic curve point k·G. The Bitcoin address is Base58Check(RIPEMD160(SHA256(public_key))) — a double-hash of the public key, providing quantum resistance (public key is not exposed until spending). BIP39 mnemonics encode the master seed as 12-24 English words.</p>
+    <p>Transactions are signed with the private key — the signature proves ownership without revealing the key. Once a transaction is broadcast and mined, the public key is revealed; Bitcoin addresses should generally not be reused (the initial hash provides quantum resistance, but once spent the public key is exposed). HD wallets (BIP32) derive all keys from a single master seed, enabling backup with one mnemonic.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Code Signing and Software Supply Chain</div>
+  <div class="cname">Trusting Software in a World of Compromised Packages</div>
+  <div class="cbody">
+    <p>Code signing uses RSA or ECC digital signatures to prove that software came from a specific publisher and has not been modified. Operating systems verify these signatures before execution (Windows Authenticode, macOS Gatekeeper, iOS/Android app stores). Certificate-based signing ties identity to cryptographic keys through CAs.</p>
+    <p>The SolarWinds attack (2020) demonstrated the catastrophic consequences of supply chain compromise: attackers injected malicious code into the software build process, which was then signed with SolarWinds' legitimate certificate and distributed as an official update to ~18,000 organisations including US government agencies. Cryptographic signatures only prove the build was signed — not that the build was uncompromised.</p>
+    <p><strong>Sigstore / SLSA:</strong> Modern supply chain security frameworks combining signed software artifacts, transparency logs (similar to Certificate Transparency), and build provenance attestations. Increasingly required by major package managers.</p>
+  </div>
+</div>
+</div>
+
+<!-- QUOTES -->
+<div id="quotes" class="panel">
+<div class="qs" style="margin:0 -2rem; padding:2rem 2rem;">
+  <div class="sl" style="color:#1a3848;margin-top:0;">The Voices of the Field</div>
+  <div class="st" style="color:var(--teal-b);border-bottom-color:#081828;">Principles, Maxims, and Fundamental Laws of Cryptography</div>
+
+  <div class="qi"><div class="qt">"The enemy knows the system. One ought to design systems under the assumption that the enemy will immediately gain full familiarity with them."</div><div class="qr">Claude Shannon · Shannon's Maxim · 1949</div></div>
+  <div class="qi"><div class="qt">"A cryptosystem should be secure even if everything about the system, except the key, is public knowledge."</div><div class="qr">Auguste Kerckhoffs · Kerckhoffs's Principle · 1883</div></div>
+  <div class="qi"><div class="qt">"Cryptography is not the solution to your security problem. Cryptography is one part of the solution to part of your security problem."</div><div class="qr">Bruce Schneier · Secrets and Lies · 2000</div></div>
+  <div class="qi"><div class="qt">"Anyone can invent an encryption algorithm they themselves cannot break. It doesn't mean it's secure."</div><div class="qr">Bruce Schneier</div></div>
+  <div class="qi"><div class="qt">"There are two kinds of cryptography in this world: cryptography that will stop your kid sister from reading your files, and cryptography that will stop major governments from reading your files."</div><div class="qr">Bruce Schneier · Applied Cryptography · 1996</div></div>
+  <div class="qi"><div class="qt">"The best we can do is slow down the inevitable compromise of our systems. The goal is to make the cost of attack greater than the value of the information."</div><div class="qr">Cryptographic Design Principle</div></div>
+  <div class="qi"><div class="qt">"Perfect forward secrecy is not a luxury. It is a requirement for any system where the long-term compromise of a single key must not compromise past sessions."</div><div class="qr">Modern TLS Design Philosophy</div></div>
+  <div class="qi"><div class="qt">"Don't roll your own crypto. This is the most important rule in applied cryptography."</div><div class="qr">Universal Principle of Cryptographic Engineering</div></div>
+  <div class="qi"><div class="qt">"Cryptography can protect you from a passive eavesdropper. It cannot protect you from someone who has compromised your endpoint."</div><div class="qr">Security Engineering Principle</div></div>
+  <div class="qi"><div class="qt">"A key that has never been used is perfectly secure. A key that has been used once with a one-time pad is still perfectly secure. A key that has been used twice with a one-time pad is completely broken."</div><div class="qr">The Two-Time Pad Maxim</div></div>
+  <div class="qi"><div class="qt">"Complexity is the enemy of security."</div><div class="qr">Bruce Schneier</div></div>
+  <div class="qi"><div class="qt">"We stand today on the brink of a revolution in cryptography... Public-key cryptosystems are perhaps the most significant new development in cryptography in the last 300 years."</div><div class="qr">Whitfield Diffie and Martin Hellman · 1976</div></div>
+  <div class="qi"><div class="qt">"The value of a problem is not the solution. The value is in getting there; it is in understanding the problem, seeing what can be done, and extending the frontier of the science."</div><div class="qr">Richard Feynman · Applicable to all of cryptographic research</div></div>
+  <div class="qi"><div class="qt">"In cryptography, attacks only get better. They never get worse."</div><div class="qr">Cryptographic Community Principle</div></div>
+  <div class="qi"><div class="qt">"A computer lets you make more mistakes faster than any invention in human history, with the possible exceptions of handguns and tequila."</div><div class="qr">Mitch Ratcliffe · Applied to: never implement crypto from scratch</div></div>
+  <div class="qi"><div class="qt">"Amateurs hack systems. Professionals hack people."</div><div class="qr">Bruce Schneier · On social engineering vs. cryptographic attack</div></div>
+  <div class="qi"><div class="qt">"Cryptographic protocols have a way of failing in ways their designers didn't predict. The more complex the protocol, the more ways it can fail."</div><div class="qr">Applied Cryptography Design Principle</div></div>
+  <div class="qi"><div class="qt">"The most dangerous phrase in cryptography is: 'we should be fine if we just change this one thing.'"</div><div class="qr">Cryptographic Engineering Wisdom</div></div>
+  <div class="qi"><div class="qt">"Using cryptography without understanding it is like writing secure code in a language you don't speak."</div><div class="qr">Cryptographic Engineering Principle</div></div>
+  <div class="qi"><div class="qt">"Harvest now, decrypt later. The quantum threat is not tomorrow — it is the data being stolen today that will be decrypted when quantum computers mature."</div><div class="qr">Post-Quantum Security Urgency</div></div>
+</div>
+</div>
+
+</div><!-- end content-area -->
+
+<div class="verdict">
+  <p>"Cryptography is the most consequential application of mathematics in human history — the invisible architecture of trust in a world built on computation. Every encrypted message, every authenticated certificate, every private transaction rests on the intractability of mathematical problems whose difficulty we believe in but cannot prove. That uncertainty — the gap between assumed and proven security — is what drives the field forward, what makes cryptanalysis necessary, and what makes the work never finished."</p>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+function show(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
