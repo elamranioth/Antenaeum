@@ -1,8 +1,13 @@
-import { copyFile, mkdir, readdir } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 await copyFile("dist/src/index.html", "dist/index.html");
-await copyFile("dist/index.html", "index.html");
+
+const builtIndex = await readFile("dist/index.html", "utf8");
+const portableIndex = builtIndex.replaceAll("/Antenaeum/assets/", "assets/");
+
+await writeFile("dist/index.html", portableIndex);
+await writeFile("index.html", portableIndex);
 
 await mkdir("assets", { recursive: true });
 
