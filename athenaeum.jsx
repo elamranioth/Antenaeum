@@ -668,10 +668,6 @@ const GlobalStyles = () => (
       .reader-workbench {
         grid-template-columns: 1fr;
       }
-      .reader-side-rail {
-        position: static;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
     }
     @media (max-width: 820px) {
       .archive-list__header {
@@ -697,9 +693,6 @@ const GlobalStyles = () => (
         top: 72px;
         flex-direction: column;
         align-items: stretch;
-      }
-      .reader-side-rail {
-        grid-template-columns: 1fr;
       }
     }
     @media (max-width: 760px) {
@@ -982,86 +975,12 @@ const GlobalStyles = () => (
     }
     .reader-workbench {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 250px;
-      gap: clamp(1rem, 2vw, 1.5rem);
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
       align-items: start;
     }
     .reader-primary {
       min-width: 0;
-    }
-    .reader-side-rail {
-      position: sticky;
-      top: 150px;
-      display: grid;
-      gap: 1rem;
-    }
-    .reader-rail-panel {
-      background: var(--cream-3);
-      border: 1.5px solid var(--rule);
-      border-radius: 8px;
-      padding: 1rem;
-    }
-    .reader-rail-label {
-      color: var(--gold-deep);
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      font-weight: 700;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      margin-bottom: 0.7rem;
-    }
-    .reader-rail-list {
-      display: grid;
-      gap: 0.55rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    .reader-rail-list li {
-      display: grid;
-      grid-template-columns: 24px minmax(0, 1fr);
-      gap: 0.55rem;
-      align-items: start;
-      color: var(--ink-2);
-      font-size: 0.82rem;
-      line-height: 1.35;
-    }
-    .reader-rail-list b {
-      color: var(--gold-deep);
-      font-family: 'DM Mono', monospace;
-      font-size: 8px;
-      letter-spacing: 0.12em;
-      padding-top: 0.18rem;
-    }
-    .reader-note-stack {
-      display: grid;
-      gap: 0.65rem;
-    }
-    .reader-note-stat {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.8rem;
-      border-top: 1px solid var(--rule);
-      padding-top: 0.65rem;
-      color: var(--ink-2);
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-    .reader-note-stat:first-child {
-      border-top: 0;
-      padding-top: 0;
-    }
-    .reader-note-stat strong {
-      color: var(--ink);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-style: italic;
-      letter-spacing: 0;
-      line-height: 1;
     }
     .reader-metadata-strip {
       margin-top: 1.25rem;
@@ -1274,9 +1193,6 @@ const GlobalStyles = () => (
     .ink-mode-shell .reader-rich-article,
     .ink-mode-shell .reader-standard-article,
     .ink-mode-shell .reader-frame,
-    .ink-mode-shell .reader-rail-panel,
-    .ink-mode-shell .reader-side-rail,
-    .ink-mode-shell .reader-note-stat,
     .ink-mode-shell .reader-snippet,
     .ink-mode-shell .reader-metadata-strip,
     .ink-mode-shell .archive-list,
@@ -1346,8 +1262,7 @@ const GlobalStyles = () => (
     }
     .ink-mode-shell .tag,
     .ink-mode-shell .archive-list__header,
-    .ink-mode-shell .shelf-stat,
-    .ink-mode-shell .reader-rail-panel {
+    .ink-mode-shell .shelf-stat {
       border-color: #000000 !important;
     }
     .ink-mode-shell img,
@@ -11289,7 +11204,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
   }
 
   /* Panels get breathing room without wasted gutters */
-  .panel { padding: 1.5rem 0 2rem !important; margin: 0 !important; }
+  .panel { padding: 1.5rem 0 0.75rem !important; margin: 0 !important; }
 
   /* Tip blocks, theme cards, quote items: keep left accent, no horizontal margin */
   .tip-block {
@@ -11345,7 +11260,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
   /* Larger tablet: more breathing room inside content-area, still full width */
   @media (min-width: 768px) {
     .content-area, .ca { padding-left: 2.25rem !important; padding-right: 2.25rem !important; }
-    .panel { padding: 2rem 0 2.5rem !important; }
+    .panel { padding: 2rem 0 1rem !important; }
   }
 
   @media (max-width: 700px) {
@@ -11568,76 +11483,6 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
   return out;
 }
 
-function getReaderToc(article) {
-  if (!article) return [];
-  if (article.richHtml && typeof DOMParser !== "undefined") {
-    try {
-      const doc = new DOMParser().parseFromString(article.richHtml, "text/html");
-      const candidates = Array.from(doc.querySelectorAll(".tab, .section-title, h2, h3"));
-      const labels = [];
-      candidates.forEach(node => {
-        const text = (node.textContent || "").replace(/\s+/g, " ").trim();
-        if (!text || text.length > 48 || labels.includes(text)) return;
-        labels.push(text);
-      });
-      if (labels.length) return labels.slice(0, 10);
-    } catch {}
-  }
-  if (article.body?.length > 6) return ["Opening", "Core argument", "Second movement", "Close"];
-  return ["Opening", "Reading body", "End"];
-}
-
-function ReaderSideRail({ article, toc, highlights, quotes, progress }) {
-  const progressPct = Math.round(progress || 0);
-  return (
-    <aside className="reader-side-rail" aria-label="Reader tools">
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Contents</div>
-        <ul className="reader-rail-list">
-          {toc.map((item, index) => (
-            <li key={`${item}-${index}`}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Reader Notes</div>
-        <div className="reader-note-stack">
-          <div className="reader-note-stat">
-            <span>Progress</span>
-            <strong>{progressPct}%</strong>
-          </div>
-          <div className="reader-note-stat">
-            <span>Highlights</span>
-            <strong>{String(highlights.length).padStart(2, "0")}</strong>
-          </div>
-          <div className="reader-note-stat">
-            <span>Quotes</span>
-            <strong>{String(quotes.length).padStart(2, "0")}</strong>
-          </div>
-        </div>
-        <p className="shelf-panel__copy" style={{ marginTop: "0.85rem", marginBottom: 0 }}>
-          Select text in the article to save highlights, quotes, or vocabulary.
-        </p>
-        {(highlights[0] || quotes[0]) && (
-          <div className="reader-snippet">
-            {quotes[0]?.text || highlights[0]?.text}
-          </div>
-        )}
-      </section>
-
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Archive Slip</div>
-        <h3 className="shelf-mini-card__title">{article.title}</h3>
-        <div className="shelf-mini-card__detail">{article.readTime} / {article.date}</div>
-      </section>
-    </aside>
-  );
-}
-
 function ReaderView({
   article: a,
   onBack,
@@ -11650,8 +11495,7 @@ function ReaderView({
   booxPlain = false,
 }) {
   const iframeRef = useRef(null);
-  const [iframeHeight, setIframeHeight] = useState(2400);
-  const [showRail, setShowRail] = useState(true);
+  const [iframeHeight, setIframeHeight] = useState(900);
   const initialReadSections = useMemo(
     () => (library?.reading?.[a?.id]?.readSections || []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -11668,7 +11512,6 @@ function ReaderView({
     () => (library?.quotes || []).filter(item => item.articleId === a?.id),
     [library?.quotes, a?.id]
   );
-  const toc = useMemo(() => getReaderToc(a), [a]);
 
   // Build the e-ink-styled iframe HTML with current font scale.
   // Re-runs when article or fontPx changes, causing the iframe to reload.
@@ -11685,20 +11528,36 @@ function ReaderView({
   // Auto-size iframe to its content
   useEffect(() => {
     if (!a?.richHtml) return;
-    setIframeHeight(2400); // reset on article/font change so we re-measure
+    setIframeHeight(900);
+    let raf = 0;
     const tick = () => {
       const f = iframeRef.current;
       if (!f) return;
       try {
         const doc = f.contentDocument;
         if (doc?.body) {
-          const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-          if (h && Math.abs(h - iframeHeight) > 4) setIframeHeight(h + 32);
+          const body = doc.body;
+          const bottom = Array.from(body.children).reduce((max, element) => {
+            const rect = element.getBoundingClientRect();
+            return Math.max(max, rect.bottom + (doc.defaultView?.scrollY || 0));
+          }, 0);
+          const measured = bottom || body.scrollHeight || body.offsetHeight;
+          const nextHeight = Math.max(420, Math.ceil(measured) + 6);
+          setIframeHeight(current => (
+            Math.abs(current - nextHeight) > 4 ? nextHeight : current
+          ));
         }
       } catch {}
     };
+    raf = requestAnimationFrame(tick);
+    const frame = iframeRef.current;
+    frame?.addEventListener("load", tick);
     const iv = setInterval(tick, 400);
-    return () => clearInterval(iv);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(iv);
+      frame?.removeEventListener("load", tick);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [a?.id, fontPx, booxPlain]);
 
@@ -11719,16 +11578,13 @@ function ReaderView({
         <span>/</span>
         <span>{articleQuotes.length} Quotes</span>
       </div>
-      <div className="reader-control-group">
-        <button type="button" className="reader-mode-btn" data-active={showRail} aria-pressed={showRail} onClick={() => setShowRail(v => !v)}>
-          <Bookmark size={14}/> Notes
-        </button>
-        {a.custom && onEdit && (
+      {a.custom && onEdit && (
+        <div className="reader-control-group">
           <button type="button" onClick={onEdit} className="reader-mode-btn">
             Edit
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 
@@ -11767,16 +11623,6 @@ function ReaderView({
           By {a.author} · {a.readTime} · {a.date}
         </div>
           </div>
-
-          {showRail && (
-            <ReaderSideRail
-              article={a}
-              toc={toc}
-              highlights={articleHighlights}
-              quotes={articleQuotes}
-              progress={readPct}
-            />
-          )}
         </div>
       </article>
       </>
@@ -11872,16 +11718,6 @@ function ReaderView({
         <div className="ui text-[10px] tracking-[0.3em] uppercase mt-2" style={{ color: "var(--ink-3)" }}>End</div>
       </div>
         </div>
-
-        {showRail && (
-          <ReaderSideRail
-            article={a}
-            toc={toc}
-            highlights={articleHighlights}
-            quotes={articleQuotes}
-            progress={readPct}
-          />
-        )}
       </div>
     </article>
     </>
