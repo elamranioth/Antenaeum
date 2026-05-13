@@ -1,0 +1,34 @@
+{
+  "id": "./",
+  "name": "Athenaeum",
+  "short_name": "Athenaeum",
+  "description": "A scholarly e-ink library for reading, highlights, quotes, and vocabulary.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A0A0A",
+  "orientation": "any",
+  "categories": ["books", "education", "productivity"],
+  "icons": [
+    {
+      "src": "icons/athenaeum-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/athenaeum-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/athenaeum-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

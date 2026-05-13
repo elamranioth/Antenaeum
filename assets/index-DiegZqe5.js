@@ -1,18 +1,1282 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import {
-  Scale, TrendingUp, Lightbulb, BookOpen, Quote, BookMarked,
-  Plus, Menu, Search, Highlighter, Languages, X, Trash2, Volume2,
-  ArrowLeft, Save, Type, ChevronDown, Bookmark, Sparkles, Cpu,
-  LogIn, LogOut, Download, Smartphone
-} from "lucide-react";
-import CRYPTOGRAPHY_COMPLETE_DEEP_RESEARCH_HTML from "./content/cryptography_complete_deep_research.html?raw";
+(function(){const x=document.createElement("link").relList;if(x&&x.supports&&x.supports("modulepreload"))return;for(const T of document.querySelectorAll('link[rel="modulepreload"]'))d(T);new MutationObserver(T=>{for(const C of T)if(C.type==="childList")for(const z of C.addedNodes)z.tagName==="LINK"&&z.rel==="modulepreload"&&d(z)}).observe(document,{childList:!0,subtree:!0});function b(T){const C={};return T.integrity&&(C.integrity=T.integrity),T.referrerPolicy&&(C.referrerPolicy=T.referrerPolicy),T.crossOrigin==="use-credentials"?C.credentials="include":T.crossOrigin==="anonymous"?C.credentials="omit":C.credentials="same-origin",C}function d(T){if(T.ep)return;T.ep=!0;const C=b(T);fetch(T.href,C)}})();function bv(c){return c&&c.__esModule&&Object.prototype.hasOwnProperty.call(c,"default")?c.default:c}var yl={exports:{}},Ds={};var Cu;function wv(){if(Cu)return Ds;Cu=1;var c=Symbol.for("react.transitional.element"),x=Symbol.for("react.fragment");function b(d,T,C){var z=null;if(C!==void 0&&(z=""+C),T.key!==void 0&&(z=""+T.key),"key"in T){C={};for(var F in T)F!=="key"&&(C[F]=T[F])}else C=T;return T=C.ref,{$$typeof:c,type:d,key:z,ref:T!==void 0?T:null,props:C}}return Ds.Fragment=x,Ds.jsx=b,Ds.jsxs=b,Ds}var ju;function xv(){return ju||(ju=1,yl.exports=wv()),yl.exports}var r=xv(),bl={exports:{}},X={};var Mu;function kv(){if(Mu)return X;Mu=1;var c=Symbol.for("react.transitional.element"),x=Symbol.for("react.portal"),b=Symbol.for("react.fragment"),d=Symbol.for("react.strict_mode"),T=Symbol.for("react.profiler"),C=Symbol.for("react.consumer"),z=Symbol.for("react.context"),F=Symbol.for("react.forward_ref"),M=Symbol.for("react.suspense"),g=Symbol.for("react.memo"),D=Symbol.for("react.lazy"),O=Symbol.for("react.activity"),B=Symbol.iterator;function Y(p){return p===null||typeof p!="object"?null:(p=B&&p[B]||p["@@iterator"],typeof p=="function"?p:null)}var re={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},le=Object.assign,ce={};function V(p,E,I){this.props=p,this.context=E,this.refs=ce,this.updater=I||re}V.prototype.isReactComponent={},V.prototype.setState=function(p,E){if(typeof p!="object"&&typeof p!="function"&&p!=null)throw Error("takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,p,E,"setState")},V.prototype.forceUpdate=function(p){this.updater.enqueueForceUpdate(this,p,"forceUpdate")};function at(){}at.prototype=V.prototype;function Ne(p,E,I){this.props=p,this.context=E,this.refs=ce,this.updater=I||re}var Pe=Ne.prototype=new at;Pe.constructor=Ne,le(Pe,V.prototype),Pe.isPureReactComponent=!0;var st=Array.isArray;function Ce(){}var U={H:null,A:null,T:null,S:null},je=Object.prototype.hasOwnProperty;function _e(p,E,I){var H=I.ref;return{$$typeof:c,type:p,key:E,ref:H!==void 0?H:null,props:I}}function xt(p,E){return _e(p.type,E,p.props)}function Ye(p){return typeof p=="object"&&p!==null&&p.$$typeof===c}function $e(p){var E={"=":"=0",":":"=2"};return"$"+p.replace(/[=:]/g,function(I){return E[I]})}var Bt=/\/+/g;function kt(p,E){return typeof p=="object"&&p!==null&&p.key!=null?$e(""+p.key):E.toString(36)}function et(p){switch(p.status){case"fulfilled":return p.value;case"rejected":throw p.reason;default:switch(typeof p.status=="string"?p.then(Ce,Ce):(p.status="pending",p.then(function(E){p.status==="pending"&&(p.status="fulfilled",p.value=E)},function(E){p.status==="pending"&&(p.status="rejected",p.reason=E)})),p.status){case"fulfilled":return p.value;case"rejected":throw p.reason}}throw p}function q(p,E,I,H,Q){var ee=typeof p;(ee==="undefined"||ee==="boolean")&&(p=null);var de=!1;if(p===null)de=!0;else switch(ee){case"bigint":case"string":case"number":de=!0;break;case"object":switch(p.$$typeof){case c:case x:de=!0;break;case D:return de=p._init,q(de(p._payload),E,I,H,Q)}}if(de)return Q=Q(p),de=H===""?"."+kt(p,0):H,st(Q)?(I="",de!=null&&(I=de.replace(Bt,"$&/")+"/"),q(Q,E,I,"",function(Oi){return Oi})):Q!=null&&(Ye(Q)&&(Q=xt(Q,I+(Q.key==null||p&&p.key===Q.key?"":(""+Q.key).replace(Bt,"$&/")+"/")+de)),E.push(Q)),1;de=0;var Ve=H===""?".":H+":";if(st(p))for(var Me=0;Me<p.length;Me++)H=p[Me],ee=Ve+kt(H,Me),de+=q(H,E,I,ee,Q);else if(Me=Y(p),typeof Me=="function")for(p=Me.call(p),Me=0;!(H=p.next()).done;)H=H.value,ee=Ve+kt(H,Me++),de+=q(H,E,I,ee,Q);else if(ee==="object"){if(typeof p.then=="function")return q(et(p),E,I,H,Q);throw E=String(p),Error("Objects are not valid as a React child (found: "+(E==="[object Object]"?"object with keys {"+Object.keys(p).join(", ")+"}":E)+"). If you meant to render a collection of children, use an array instead.")}return de}function N(p,E,I){if(p==null)return p;var H=[],Q=0;return q(p,H,"","",function(ee){return E.call(I,ee,Q++)}),H}function W(p){if(p._status===-1){var E=p._result;E=E(),E.then(function(I){(p._status===0||p._status===-1)&&(p._status=1,p._result=I)},function(I){(p._status===0||p._status===-1)&&(p._status=2,p._result=I)}),p._status===-1&&(p._status=0,p._result=E)}if(p._status===1)return p._result.default;throw p._result}var me=typeof reportError=="function"?reportError:function(p){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var E=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof p=="object"&&p!==null&&typeof p.message=="string"?String(p.message):String(p),error:p});if(!window.dispatchEvent(E))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",p);return}console.error(p)},ne={map:N,forEach:function(p,E,I){N(p,function(){E.apply(this,arguments)},I)},count:function(p){var E=0;return N(p,function(){E++}),E},toArray:function(p){return N(p,function(E){return E})||[]},only:function(p){if(!Ye(p))throw Error("React.Children.only expected to receive a single React element child.");return p}};return X.Activity=O,X.Children=ne,X.Component=V,X.Fragment=b,X.Profiler=T,X.PureComponent=Ne,X.StrictMode=d,X.Suspense=M,X.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=U,X.__COMPILER_RUNTIME={__proto__:null,c:function(p){return U.H.useMemoCache(p)}},X.cache=function(p){return function(){return p.apply(null,arguments)}},X.cacheSignal=function(){return null},X.cloneElement=function(p,E,I){if(p==null)throw Error("The argument must be a React element, but you passed "+p+".");var H=le({},p.props),Q=p.key;if(E!=null)for(ee in E.key!==void 0&&(Q=""+E.key),E)!je.call(E,ee)||ee==="key"||ee==="__self"||ee==="__source"||ee==="ref"&&E.ref===void 0||(H[ee]=E[ee]);var ee=arguments.length-2;if(ee===1)H.children=I;else if(1<ee){for(var de=Array(ee),Ve=0;Ve<ee;Ve++)de[Ve]=arguments[Ve+2];H.children=de}return _e(p.type,Q,H)},X.createContext=function(p){return p={$$typeof:z,_currentValue:p,_currentValue2:p,_threadCount:0,Provider:null,Consumer:null},p.Provider=p,p.Consumer={$$typeof:C,_context:p},p},X.createElement=function(p,E,I){var H,Q={},ee=null;if(E!=null)for(H in E.key!==void 0&&(ee=""+E.key),E)je.call(E,H)&&H!=="key"&&H!=="__self"&&H!=="__source"&&(Q[H]=E[H]);var de=arguments.length-2;if(de===1)Q.children=I;else if(1<de){for(var Ve=Array(de),Me=0;Me<de;Me++)Ve[Me]=arguments[Me+2];Q.children=Ve}if(p&&p.defaultProps)for(H in de=p.defaultProps,de)Q[H]===void 0&&(Q[H]=de[H]);return _e(p,ee,Q)},X.createRef=function(){return{current:null}},X.forwardRef=function(p){return{$$typeof:F,render:p}},X.isValidElement=Ye,X.lazy=function(p){return{$$typeof:D,_payload:{_status:-1,_result:p},_init:W}},X.memo=function(p,E){return{$$typeof:g,type:p,compare:E===void 0?null:E}},X.startTransition=function(p){var E=U.T,I={};U.T=I;try{var H=p(),Q=U.S;Q!==null&&Q(I,H),typeof H=="object"&&H!==null&&typeof H.then=="function"&&H.then(Ce,me)}catch(ee){me(ee)}finally{E!==null&&I.types!==null&&(E.types=I.types),U.T=E}},X.unstable_useCacheRefresh=function(){return U.H.useCacheRefresh()},X.use=function(p){return U.H.use(p)},X.useActionState=function(p,E,I){return U.H.useActionState(p,E,I)},X.useCallback=function(p,E){return U.H.useCallback(p,E)},X.useContext=function(p){return U.H.useContext(p)},X.useDebugValue=function(){},X.useDeferredValue=function(p,E){return U.H.useDeferredValue(p,E)},X.useEffect=function(p,E){return U.H.useEffect(p,E)},X.useEffectEvent=function(p){return U.H.useEffectEvent(p)},X.useId=function(){return U.H.useId()},X.useImperativeHandle=function(p,E,I){return U.H.useImperativeHandle(p,E,I)},X.useInsertionEffect=function(p,E){return U.H.useInsertionEffect(p,E)},X.useLayoutEffect=function(p,E){return U.H.useLayoutEffect(p,E)},X.useMemo=function(p,E){return U.H.useMemo(p,E)},X.useOptimistic=function(p,E){return U.H.useOptimistic(p,E)},X.useReducer=function(p,E,I){return U.H.useReducer(p,E,I)},X.useRef=function(p){return U.H.useRef(p)},X.useState=function(p){return U.H.useState(p)},X.useSyncExternalStore=function(p,E,I){return U.H.useSyncExternalStore(p,E,I)},X.useTransition=function(){return U.H.useTransition()},X.version="19.2.6",X}var zu;function El(){return zu||(zu=1,bl.exports=kv()),bl.exports}var _=El();const Tv=bv(_);var wl={exports:{}},Os={},xl={exports:{}},kl={};var Nu;function qv(){return Nu||(Nu=1,(function(c){function x(q,N){var W=q.length;q.push(N);e:for(;0<W;){var me=W-1>>>1,ne=q[me];if(0<T(ne,N))q[me]=N,q[W]=ne,W=me;else break e}}function b(q){return q.length===0?null:q[0]}function d(q){if(q.length===0)return null;var N=q[0],W=q.pop();if(W!==N){q[0]=W;e:for(var me=0,ne=q.length,p=ne>>>1;me<p;){var E=2*(me+1)-1,I=q[E],H=E+1,Q=q[H];if(0>T(I,W))H<ne&&0>T(Q,I)?(q[me]=Q,q[H]=W,me=H):(q[me]=I,q[E]=W,me=E);else if(H<ne&&0>T(Q,W))q[me]=Q,q[H]=W,me=H;else break e}}return N}function T(q,N){var W=q.sortIndex-N.sortIndex;return W!==0?W:q.id-N.id}if(c.unstable_now=void 0,typeof performance=="object"&&typeof performance.now=="function"){var C=performance;c.unstable_now=function(){return C.now()}}else{var z=Date,F=z.now();c.unstable_now=function(){return z.now()-F}}var M=[],g=[],D=1,O=null,B=3,Y=!1,re=!1,le=!1,ce=!1,V=typeof setTimeout=="function"?setTimeout:null,at=typeof clearTimeout=="function"?clearTimeout:null,Ne=typeof setImmediate<"u"?setImmediate:null;function Pe(q){for(var N=b(g);N!==null;){if(N.callback===null)d(g);else if(N.startTime<=q)d(g),N.sortIndex=N.expirationTime,x(M,N);else break;N=b(g)}}function st(q){if(le=!1,Pe(q),!re)if(b(M)!==null)re=!0,Ce||(Ce=!0,$e());else{var N=b(g);N!==null&&et(st,N.startTime-q)}}var Ce=!1,U=-1,je=5,_e=-1;function xt(){return ce?!0:!(c.unstable_now()-_e<je)}function Ye(){if(ce=!1,Ce){var q=c.unstable_now();_e=q;var N=!0;try{e:{re=!1,le&&(le=!1,at(U),U=-1),Y=!0;var W=B;try{t:{for(Pe(q),O=b(M);O!==null&&!(O.expirationTime>q&&xt());){var me=O.callback;if(typeof me=="function"){O.callback=null,B=O.priorityLevel;var ne=me(O.expirationTime<=q);if(q=c.unstable_now(),typeof ne=="function"){O.callback=ne,Pe(q),N=!0;break t}O===b(M)&&d(M),Pe(q)}else d(M);O=b(M)}if(O!==null)N=!0;else{var p=b(g);p!==null&&et(st,p.startTime-q),N=!1}}break e}finally{O=null,B=W,Y=!1}N=void 0}}finally{N?$e():Ce=!1}}}var $e;if(typeof Ne=="function")$e=function(){Ne(Ye)};else if(typeof MessageChannel<"u"){var Bt=new MessageChannel,kt=Bt.port2;Bt.port1.onmessage=Ye,$e=function(){kt.postMessage(null)}}else $e=function(){V(Ye,0)};function et(q,N){U=V(function(){q(c.unstable_now())},N)}c.unstable_IdlePriority=5,c.unstable_ImmediatePriority=1,c.unstable_LowPriority=4,c.unstable_NormalPriority=3,c.unstable_Profiling=null,c.unstable_UserBlockingPriority=2,c.unstable_cancelCallback=function(q){q.callback=null},c.unstable_forceFrameRate=function(q){0>q||125<q?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):je=0<q?Math.floor(1e3/q):5},c.unstable_getCurrentPriorityLevel=function(){return B},c.unstable_next=function(q){switch(B){case 1:case 2:case 3:var N=3;break;default:N=B}var W=B;B=N;try{return q()}finally{B=W}},c.unstable_requestPaint=function(){ce=!0},c.unstable_runWithPriority=function(q,N){switch(q){case 1:case 2:case 3:case 4:case 5:break;default:q=3}var W=B;B=q;try{return N()}finally{B=W}},c.unstable_scheduleCallback=function(q,N,W){var me=c.unstable_now();switch(typeof W=="object"&&W!==null?(W=W.delay,W=typeof W=="number"&&0<W?me+W:me):W=me,q){case 1:var ne=-1;break;case 2:ne=250;break;case 5:ne=1073741823;break;case 4:ne=1e4;break;default:ne=5e3}return ne=W+ne,q={id:D++,callback:N,priorityLevel:q,startTime:W,expirationTime:ne,sortIndex:-1},W>me?(q.sortIndex=W,x(g,q),b(M)===null&&q===b(g)&&(le?(at(U),U=-1):le=!0,et(st,W-me))):(q.sortIndex=ne,x(M,q),re||Y||(re=!0,Ce||(Ce=!0,$e()))),q},c.unstable_shouldYield=xt,c.unstable_wrapCallback=function(q){var N=B;return function(){var W=B;B=N;try{return q.apply(this,arguments)}finally{B=W}}}})(kl)),kl}var Iu;function Sv(){return Iu||(Iu=1,xl.exports=qv()),xl.exports}var Tl={exports:{}},tt={};var Du;function Av(){if(Du)return tt;Du=1;var c=El();function x(M){var g="https://react.dev/errors/"+M;if(1<arguments.length){g+="?args[]="+encodeURIComponent(arguments[1]);for(var D=2;D<arguments.length;D++)g+="&args[]="+encodeURIComponent(arguments[D])}return"Minified React error #"+M+"; visit "+g+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function b(){}var d={d:{f:b,r:function(){throw Error(x(522))},D:b,C:b,L:b,m:b,X:b,S:b,M:b},p:0,findDOMNode:null},T=Symbol.for("react.portal");function C(M,g,D){var O=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:T,key:O==null?null:""+O,children:M,containerInfo:g,implementation:D}}var z=c.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;function F(M,g){if(M==="font")return"";if(typeof g=="string")return g==="use-credentials"?g:""}return tt.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=d,tt.createPortal=function(M,g){var D=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!g||g.nodeType!==1&&g.nodeType!==9&&g.nodeType!==11)throw Error(x(299));return C(M,g,null,D)},tt.flushSync=function(M){var g=z.T,D=d.p;try{if(z.T=null,d.p=2,M)return M()}finally{z.T=g,d.p=D,d.d.f()}},tt.preconnect=function(M,g){typeof M=="string"&&(g?(g=g.crossOrigin,g=typeof g=="string"?g==="use-credentials"?g:"":void 0):g=null,d.d.C(M,g))},tt.prefetchDNS=function(M){typeof M=="string"&&d.d.D(M)},tt.preinit=function(M,g){if(typeof M=="string"&&g&&typeof g.as=="string"){var D=g.as,O=F(D,g.crossOrigin),B=typeof g.integrity=="string"?g.integrity:void 0,Y=typeof g.fetchPriority=="string"?g.fetchPriority:void 0;D==="style"?d.d.S(M,typeof g.precedence=="string"?g.precedence:void 0,{crossOrigin:O,integrity:B,fetchPriority:Y}):D==="script"&&d.d.X(M,{crossOrigin:O,integrity:B,fetchPriority:Y,nonce:typeof g.nonce=="string"?g.nonce:void 0})}},tt.preinitModule=function(M,g){if(typeof M=="string")if(typeof g=="object"&&g!==null){if(g.as==null||g.as==="script"){var D=F(g.as,g.crossOrigin);d.d.M(M,{crossOrigin:D,integrity:typeof g.integrity=="string"?g.integrity:void 0,nonce:typeof g.nonce=="string"?g.nonce:void 0})}}else g==null&&d.d.M(M)},tt.preload=function(M,g){if(typeof M=="string"&&typeof g=="object"&&g!==null&&typeof g.as=="string"){var D=g.as,O=F(D,g.crossOrigin);d.d.L(M,D,{crossOrigin:O,integrity:typeof g.integrity=="string"?g.integrity:void 0,nonce:typeof g.nonce=="string"?g.nonce:void 0,type:typeof g.type=="string"?g.type:void 0,fetchPriority:typeof g.fetchPriority=="string"?g.fetchPriority:void 0,referrerPolicy:typeof g.referrerPolicy=="string"?g.referrerPolicy:void 0,imageSrcSet:typeof g.imageSrcSet=="string"?g.imageSrcSet:void 0,imageSizes:typeof g.imageSizes=="string"?g.imageSizes:void 0,media:typeof g.media=="string"?g.media:void 0})}},tt.preloadModule=function(M,g){if(typeof M=="string")if(g){var D=F(g.as,g.crossOrigin);d.d.m(M,{as:typeof g.as=="string"&&g.as!=="script"?g.as:void 0,crossOrigin:D,integrity:typeof g.integrity=="string"?g.integrity:void 0})}else d.d.m(M)},tt.requestFormReset=function(M){d.d.r(M)},tt.unstable_batchedUpdates=function(M,g){return M(g)},tt.useFormState=function(M,g,D){return z.H.useFormState(M,g,D)},tt.useFormStatus=function(){return z.H.useHostTransitionStatus()},tt.version="19.2.6",tt}var Ou;function Ev(){if(Ou)return Tl.exports;Ou=1;function c(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(c)}catch(x){console.error(x)}}return c(),Tl.exports=Av(),Tl.exports}var Ru;function Cv(){if(Ru)return Os;Ru=1;var c=Sv(),x=El(),b=Ev();function d(e){var t="https://react.dev/errors/"+e;if(1<arguments.length){t+="?args[]="+encodeURIComponent(arguments[1]);for(var i=2;i<arguments.length;i++)t+="&args[]="+encodeURIComponent(arguments[i])}return"Minified React error #"+e+"; visit "+t+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function T(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function C(e){var t=e,i=e;if(e.alternate)for(;t.return;)t=t.return;else{e=t;do t=e,(t.flags&4098)!==0&&(i=t.return),e=t.return;while(e)}return t.tag===3?i:null}function z(e){if(e.tag===13){var t=e.memoizedState;if(t===null&&(e=e.alternate,e!==null&&(t=e.memoizedState)),t!==null)return t.dehydrated}return null}function F(e){if(e.tag===31){var t=e.memoizedState;if(t===null&&(e=e.alternate,e!==null&&(t=e.memoizedState)),t!==null)return t.dehydrated}return null}function M(e){if(C(e)!==e)throw Error(d(188))}function g(e){var t=e.alternate;if(!t){if(t=C(e),t===null)throw Error(d(188));return t!==e?null:e}for(var i=e,a=t;;){var s=i.return;if(s===null)break;var n=s.alternate;if(n===null){if(a=s.return,a!==null){i=a;continue}break}if(s.child===n.child){for(n=s.child;n;){if(n===i)return M(s),e;if(n===a)return M(s),t;n=n.sibling}throw Error(d(188))}if(i.return!==a.return)i=s,a=n;else{for(var o=!1,l=s.child;l;){if(l===i){o=!0,i=s,a=n;break}if(l===a){o=!0,a=s,i=n;break}l=l.sibling}if(!o){for(l=n.child;l;){if(l===i){o=!0,i=n,a=s;break}if(l===a){o=!0,a=n,i=s;break}l=l.sibling}if(!o)throw Error(d(189))}}if(i.alternate!==a)throw Error(d(190))}if(i.tag!==3)throw Error(d(188));return i.stateNode.current===i?e:t}function D(e){var t=e.tag;if(t===5||t===26||t===27||t===6)return e;for(e=e.child;e!==null;){if(t=D(e),t!==null)return t;e=e.sibling}return null}var O=Object.assign,B=Symbol.for("react.element"),Y=Symbol.for("react.transitional.element"),re=Symbol.for("react.portal"),le=Symbol.for("react.fragment"),ce=Symbol.for("react.strict_mode"),V=Symbol.for("react.profiler"),at=Symbol.for("react.consumer"),Ne=Symbol.for("react.context"),Pe=Symbol.for("react.forward_ref"),st=Symbol.for("react.suspense"),Ce=Symbol.for("react.suspense_list"),U=Symbol.for("react.memo"),je=Symbol.for("react.lazy"),_e=Symbol.for("react.activity"),xt=Symbol.for("react.memo_cache_sentinel"),Ye=Symbol.iterator;function $e(e){return e===null||typeof e!="object"?null:(e=Ye&&e[Ye]||e["@@iterator"],typeof e=="function"?e:null)}var Bt=Symbol.for("react.client.reference");function kt(e){if(e==null)return null;if(typeof e=="function")return e.$$typeof===Bt?null:e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case le:return"Fragment";case V:return"Profiler";case ce:return"StrictMode";case st:return"Suspense";case Ce:return"SuspenseList";case _e:return"Activity"}if(typeof e=="object")switch(e.$$typeof){case re:return"Portal";case Ne:return e.displayName||"Context";case at:return(e._context.displayName||"Context")+".Consumer";case Pe:var t=e.render;return e=e.displayName,e||(e=t.displayName||t.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case U:return t=e.displayName||null,t!==null?t:kt(e.type)||"Memo";case je:t=e._payload,e=e._init;try{return kt(e(t))}catch{}}return null}var et=Array.isArray,q=x.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,N=b.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,W={pending:!1,data:null,method:null,action:null},me=[],ne=-1;function p(e){return{current:e}}function E(e){0>ne||(e.current=me[ne],me[ne]=null,ne--)}function I(e,t){ne++,me[ne]=e.current,e.current=t}var H=p(null),Q=p(null),ee=p(null),de=p(null);function Ve(e,t){switch(I(ee,t),I(Q,e),I(H,null),t.nodeType){case 9:case 11:e=(e=t.documentElement)&&(e=e.namespaceURI)?Jh(e):0;break;default:if(e=t.tagName,t=t.namespaceURI)t=Jh(t),e=Zh(t,e);else switch(e){case"svg":e=1;break;case"math":e=2;break;default:e=0}}E(H),I(H,e)}function Me(){E(H),E(Q),E(ee)}function Oi(e){e.memoizedState!==null&&I(de,e);var t=H.current,i=Zh(t,e.type);t!==i&&(I(Q,e),I(H,i))}function Ri(e){Q.current===e&&(E(H),E(Q)),de.current===e&&(E(de),Ms._currentValue=W)}var Fa,Gs;function Tt(e){if(Fa===void 0)try{throw Error()}catch(i){var t=i.stack.trim().match(/\n( *(at )?)/);Fa=t&&t[1]||"",Gs=-1<i.stack.indexOf(`
+    at`)?" (<anonymous>)":-1<i.stack.indexOf("@")?"@unknown:0:0":""}return`
+`+Fa+e+Gs}var li=!1;function j(e,t){if(!e||li)return"";li=!0;var i=Error.prepareStackTrace;Error.prepareStackTrace=void 0;try{var a={DetermineComponentFrameRoot:function(){try{if(t){var A=function(){throw Error()};if(Object.defineProperty(A.prototype,"props",{set:function(){throw Error()}}),typeof Reflect=="object"&&Reflect.construct){try{Reflect.construct(A,[])}catch(w){var y=w}Reflect.construct(e,[],A)}else{try{A.call()}catch(w){y=w}e.call(A.prototype)}}else{try{throw Error()}catch(w){y=w}(A=e())&&typeof A.catch=="function"&&A.catch(function(){})}}catch(w){if(w&&y&&typeof w.stack=="string")return[w.stack,y.stack]}return[null,null]}};a.DetermineComponentFrameRoot.displayName="DetermineComponentFrameRoot";var s=Object.getOwnPropertyDescriptor(a.DetermineComponentFrameRoot,"name");s&&s.configurable&&Object.defineProperty(a.DetermineComponentFrameRoot,"name",{value:"DetermineComponentFrameRoot"});var n=a.DetermineComponentFrameRoot(),o=n[0],l=n[1];if(o&&l){var h=o.split(`
+`),f=l.split(`
+`);for(s=a=0;a<h.length&&!h[a].includes("DetermineComponentFrameRoot");)a++;for(;s<f.length&&!f[s].includes("DetermineComponentFrameRoot");)s++;if(a===h.length||s===f.length)for(a=h.length-1,s=f.length-1;1<=a&&0<=s&&h[a]!==f[s];)s--;for(;1<=a&&0<=s;a--,s--)if(h[a]!==f[s]){if(a!==1||s!==1)do if(a--,s--,0>s||h[a]!==f[s]){var k=`
+`+h[a].replace(" at new "," at ");return e.displayName&&k.includes("<anonymous>")&&(k=k.replace("<anonymous>",e.displayName)),k}while(1<=a&&0<=s);break}}}finally{li=!1,Error.prepareStackTrace=i}return(i=e?e.displayName||e.name:"")?Tt(i):""}function Z(e,t){switch(e.tag){case 26:case 27:case 5:return Tt(e.type);case 16:return Tt("Lazy");case 13:return e.child!==t&&t!==null?Tt("Suspense Fallback"):Tt("Suspense");case 19:return Tt("SuspenseList");case 0:case 15:return j(e.type,!1);case 11:return j(e.type.render,!1);case 1:return j(e.type,!0);case 31:return Tt("Activity");default:return""}}function K(e){try{var t="",i=null;do t+=Z(e,i),i=e,e=e.return;while(e);return t}catch(a){return`
+Error generating stack: `+a.message+`
+`+a.stack}}var ke=Object.prototype.hasOwnProperty,ge=c.unstable_scheduleCallback,qt=c.unstable_cancelCallback,Ot=c.unstable_shouldYield,Ae=c.unstable_requestPaint,ze=c.unstable_now,$u=c.unstable_getCurrentPriorityLevel,jl=c.unstable_ImmediatePriority,Ml=c.unstable_UserBlockingPriority,Bs=c.unstable_NormalPriority,ep=c.unstable_LowPriority,zl=c.unstable_IdlePriority,tp=c.log,ip=c.unstable_setDisableYieldValue,_a=null,ut=null;function ci(e){if(typeof tp=="function"&&ip(e),ut&&typeof ut.setStrictMode=="function")try{ut.setStrictMode(_a,e)}catch{}}var pt=Math.clz32?Math.clz32:np,ap=Math.log,sp=Math.LN2;function np(e){return e>>>=0,e===0?32:31-(ap(e)/sp|0)|0}var Ls=256,Fs=262144,_s=4194304;function Hi(e){var t=e&42;if(t!==0)return t;switch(e&-e){case 1:return 1;case 2:return 2;case 4:return 4;case 8:return 8;case 16:return 16;case 32:return 32;case 64:return 64;case 128:return 128;case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:return e&261888;case 262144:case 524288:case 1048576:case 2097152:return e&3932160;case 4194304:case 8388608:case 16777216:case 33554432:return e&62914560;case 67108864:return 67108864;case 134217728:return 134217728;case 268435456:return 268435456;case 536870912:return 536870912;case 1073741824:return 0;default:return e}}function Ws(e,t,i){var a=e.pendingLanes;if(a===0)return 0;var s=0,n=e.suspendedLanes,o=e.pingedLanes;e=e.warmLanes;var l=a&134217727;return l!==0?(a=l&~n,a!==0?s=Hi(a):(o&=l,o!==0?s=Hi(o):i||(i=l&~e,i!==0&&(s=Hi(i))))):(l=a&~n,l!==0?s=Hi(l):o!==0?s=Hi(o):i||(i=a&~e,i!==0&&(s=Hi(i)))),s===0?0:t!==0&&t!==s&&(t&n)===0&&(n=s&-s,i=t&-t,n>=i||n===32&&(i&4194048)!==0)?t:s}function Wa(e,t){return(e.pendingLanes&~(e.suspendedLanes&~e.pingedLanes)&t)===0}function op(e,t){switch(e){case 1:case 2:case 4:case 8:case 64:return t+250;case 16:case 32:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:return t+5e3;case 4194304:case 8388608:case 16777216:case 33554432:return-1;case 67108864:case 134217728:case 268435456:case 536870912:case 1073741824:return-1;default:return-1}}function Nl(){var e=_s;return _s<<=1,(_s&62914560)===0&&(_s=4194304),e}function no(e){for(var t=[],i=0;31>i;i++)t.push(e);return t}function Ua(e,t){e.pendingLanes|=t,t!==268435456&&(e.suspendedLanes=0,e.pingedLanes=0,e.warmLanes=0)}function rp(e,t,i,a,s,n){var o=e.pendingLanes;e.pendingLanes=i,e.suspendedLanes=0,e.pingedLanes=0,e.warmLanes=0,e.expiredLanes&=i,e.entangledLanes&=i,e.errorRecoveryDisabledLanes&=i,e.shellSuspendCounter=0;var l=e.entanglements,h=e.expirationTimes,f=e.hiddenUpdates;for(i=o&~i;0<i;){var k=31-pt(i),A=1<<k;l[k]=0,h[k]=-1;var y=f[k];if(y!==null)for(f[k]=null,k=0;k<y.length;k++){var w=y[k];w!==null&&(w.lane&=-536870913)}i&=~A}a!==0&&Il(e,a,0),n!==0&&s===0&&e.tag!==0&&(e.suspendedLanes|=n&~(o&~t))}function Il(e,t,i){e.pendingLanes|=t,e.suspendedLanes&=~t;var a=31-pt(t);e.entangledLanes|=t,e.entanglements[a]=e.entanglements[a]|1073741824|i&261930}function Dl(e,t){var i=e.entangledLanes|=t;for(e=e.entanglements;i;){var a=31-pt(i),s=1<<a;s&t|e[a]&t&&(e[a]|=t),i&=~s}}function Ol(e,t){var i=t&-t;return i=(i&42)!==0?1:oo(i),(i&(e.suspendedLanes|t))!==0?0:i}function oo(e){switch(e){case 2:e=1;break;case 8:e=4;break;case 32:e=16;break;case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:case 4194304:case 8388608:case 16777216:case 33554432:e=128;break;case 268435456:e=134217728;break;default:e=0}return e}function ro(e){return e&=-e,2<e?8<e?(e&134217727)!==0?32:268435456:8:2}function Rl(){var e=N.p;return e!==0?e:(e=window.event,e===void 0?32:xu(e.type))}function Hl(e,t){var i=N.p;try{return N.p=e,t()}finally{N.p=i}}var di=Math.random().toString(36).slice(2),Ke="__reactFiber$"+di,nt="__reactProps$"+di,ia="__reactContainer$"+di,lo="__reactEvents$"+di,lp="__reactListeners$"+di,cp="__reactHandles$"+di,Gl="__reactResources$"+di,Pa="__reactMarker$"+di;function co(e){delete e[Ke],delete e[nt],delete e[lo],delete e[lp],delete e[cp]}function aa(e){var t=e[Ke];if(t)return t;for(var i=e.parentNode;i;){if(t=i[ia]||i[Ke]){if(i=t.alternate,t.child!==null||i!==null&&i.child!==null)for(e=nu(e);e!==null;){if(i=e[Ke])return i;e=nu(e)}return t}e=i,i=e.parentNode}return null}function sa(e){if(e=e[Ke]||e[ia]){var t=e.tag;if(t===5||t===6||t===13||t===31||t===26||t===27||t===3)return e}return null}function Ya(e){var t=e.tag;if(t===5||t===26||t===27||t===6)return e.stateNode;throw Error(d(33))}function na(e){var t=e[Gl];return t||(t=e[Gl]={hoistableStyles:new Map,hoistableScripts:new Map}),t}function We(e){e[Pa]=!0}var Bl=new Set,Ll={};function Gi(e,t){oa(e,t),oa(e+"Capture",t)}function oa(e,t){for(Ll[e]=t,e=0;e<t.length;e++)Bl.add(t[e])}var dp=RegExp("^[:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$"),Fl={},_l={};function hp(e){return ke.call(_l,e)?!0:ke.call(Fl,e)?!1:dp.test(e)?_l[e]=!0:(Fl[e]=!0,!1)}function Us(e,t,i){if(hp(t))if(i===null)e.removeAttribute(t);else{switch(typeof i){case"undefined":case"function":case"symbol":e.removeAttribute(t);return;case"boolean":var a=t.toLowerCase().slice(0,5);if(a!=="data-"&&a!=="aria-"){e.removeAttribute(t);return}}e.setAttribute(t,""+i)}}function Ps(e,t,i){if(i===null)e.removeAttribute(t);else{switch(typeof i){case"undefined":case"function":case"symbol":case"boolean":e.removeAttribute(t);return}e.setAttribute(t,""+i)}}function Ut(e,t,i,a){if(a===null)e.removeAttribute(i);else{switch(typeof a){case"undefined":case"function":case"symbol":case"boolean":e.removeAttribute(i);return}e.setAttributeNS(t,i,""+a)}}function St(e){switch(typeof e){case"bigint":case"boolean":case"number":case"string":case"undefined":return e;case"object":return e;default:return""}}function Wl(e){var t=e.type;return(e=e.nodeName)&&e.toLowerCase()==="input"&&(t==="checkbox"||t==="radio")}function up(e,t,i){var a=Object.getOwnPropertyDescriptor(e.constructor.prototype,t);if(!e.hasOwnProperty(t)&&typeof a<"u"&&typeof a.get=="function"&&typeof a.set=="function"){var s=a.get,n=a.set;return Object.defineProperty(e,t,{configurable:!0,get:function(){return s.call(this)},set:function(o){i=""+o,n.call(this,o)}}),Object.defineProperty(e,t,{enumerable:a.enumerable}),{getValue:function(){return i},setValue:function(o){i=""+o},stopTracking:function(){e._valueTracker=null,delete e[t]}}}}function ho(e){if(!e._valueTracker){var t=Wl(e)?"checked":"value";e._valueTracker=up(e,t,""+e[t])}}function Ul(e){if(!e)return!1;var t=e._valueTracker;if(!t)return!0;var i=t.getValue(),a="";return e&&(a=Wl(e)?e.checked?"true":"false":e.value),e=a,e!==i?(t.setValue(e),!0):!1}function Ys(e){if(e=e||(typeof document<"u"?document:void 0),typeof e>"u")return null;try{return e.activeElement||e.body}catch{return e.body}}var pp=/[\n"\\]/g;function At(e){return e.replace(pp,function(t){return"\\"+t.charCodeAt(0).toString(16)+" "})}function uo(e,t,i,a,s,n,o,l){e.name="",o!=null&&typeof o!="function"&&typeof o!="symbol"&&typeof o!="boolean"?e.type=o:e.removeAttribute("type"),t!=null?o==="number"?(t===0&&e.value===""||e.value!=t)&&(e.value=""+St(t)):e.value!==""+St(t)&&(e.value=""+St(t)):o!=="submit"&&o!=="reset"||e.removeAttribute("value"),t!=null?po(e,o,St(t)):i!=null?po(e,o,St(i)):a!=null&&e.removeAttribute("value"),s==null&&n!=null&&(e.defaultChecked=!!n),s!=null&&(e.checked=s&&typeof s!="function"&&typeof s!="symbol"),l!=null&&typeof l!="function"&&typeof l!="symbol"&&typeof l!="boolean"?e.name=""+St(l):e.removeAttribute("name")}function Pl(e,t,i,a,s,n,o,l){if(n!=null&&typeof n!="function"&&typeof n!="symbol"&&typeof n!="boolean"&&(e.type=n),t!=null||i!=null){if(!(n!=="submit"&&n!=="reset"||t!=null)){ho(e);return}i=i!=null?""+St(i):"",t=t!=null?""+St(t):i,l||t===e.value||(e.value=t),e.defaultValue=t}a=a??s,a=typeof a!="function"&&typeof a!="symbol"&&!!a,e.checked=l?e.checked:!!a,e.defaultChecked=!!a,o!=null&&typeof o!="function"&&typeof o!="symbol"&&typeof o!="boolean"&&(e.name=o),ho(e)}function po(e,t,i){t==="number"&&Ys(e.ownerDocument)===e||e.defaultValue===""+i||(e.defaultValue=""+i)}function ra(e,t,i,a){if(e=e.options,t){t={};for(var s=0;s<i.length;s++)t["$"+i[s]]=!0;for(i=0;i<e.length;i++)s=t.hasOwnProperty("$"+e[i].value),e[i].selected!==s&&(e[i].selected=s),s&&a&&(e[i].defaultSelected=!0)}else{for(i=""+St(i),t=null,s=0;s<e.length;s++){if(e[s].value===i){e[s].selected=!0,a&&(e[s].defaultSelected=!0);return}t!==null||e[s].disabled||(t=e[s])}t!==null&&(t.selected=!0)}}function Yl(e,t,i){if(t!=null&&(t=""+St(t),t!==e.value&&(e.value=t),i==null)){e.defaultValue!==t&&(e.defaultValue=t);return}e.defaultValue=i!=null?""+St(i):""}function Vl(e,t,i,a){if(t==null){if(a!=null){if(i!=null)throw Error(d(92));if(et(a)){if(1<a.length)throw Error(d(93));a=a[0]}i=a}i==null&&(i=""),t=i}i=St(t),e.defaultValue=i,a=e.textContent,a===i&&a!==""&&a!==null&&(e.value=a),ho(e)}function la(e,t){if(t){var i=e.firstChild;if(i&&i===e.lastChild&&i.nodeType===3){i.nodeValue=t;return}}e.textContent=t}var mp=new Set("animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(" "));function Kl(e,t,i){var a=t.indexOf("--")===0;i==null||typeof i=="boolean"||i===""?a?e.setProperty(t,""):t==="float"?e.cssFloat="":e[t]="":a?e.setProperty(t,i):typeof i!="number"||i===0||mp.has(t)?t==="float"?e.cssFloat=i:e[t]=(""+i).trim():e[t]=i+"px"}function Ql(e,t,i){if(t!=null&&typeof t!="object")throw Error(d(62));if(e=e.style,i!=null){for(var a in i)!i.hasOwnProperty(a)||t!=null&&t.hasOwnProperty(a)||(a.indexOf("--")===0?e.setProperty(a,""):a==="float"?e.cssFloat="":e[a]="");for(var s in t)a=t[s],t.hasOwnProperty(s)&&i[s]!==a&&Kl(e,s,a)}else for(var n in t)t.hasOwnProperty(n)&&Kl(e,n,t[n])}function mo(e){if(e.indexOf("-")===-1)return!1;switch(e){case"annotation-xml":case"color-profile":case"font-face":case"font-face-src":case"font-face-uri":case"font-face-format":case"font-face-name":case"missing-glyph":return!1;default:return!0}}var vp=new Map([["acceptCharset","accept-charset"],["htmlFor","for"],["httpEquiv","http-equiv"],["crossOrigin","crossorigin"],["accentHeight","accent-height"],["alignmentBaseline","alignment-baseline"],["arabicForm","arabic-form"],["baselineShift","baseline-shift"],["capHeight","cap-height"],["clipPath","clip-path"],["clipRule","clip-rule"],["colorInterpolation","color-interpolation"],["colorInterpolationFilters","color-interpolation-filters"],["colorProfile","color-profile"],["colorRendering","color-rendering"],["dominantBaseline","dominant-baseline"],["enableBackground","enable-background"],["fillOpacity","fill-opacity"],["fillRule","fill-rule"],["floodColor","flood-color"],["floodOpacity","flood-opacity"],["fontFamily","font-family"],["fontSize","font-size"],["fontSizeAdjust","font-size-adjust"],["fontStretch","font-stretch"],["fontStyle","font-style"],["fontVariant","font-variant"],["fontWeight","font-weight"],["glyphName","glyph-name"],["glyphOrientationHorizontal","glyph-orientation-horizontal"],["glyphOrientationVertical","glyph-orientation-vertical"],["horizAdvX","horiz-adv-x"],["horizOriginX","horiz-origin-x"],["imageRendering","image-rendering"],["letterSpacing","letter-spacing"],["lightingColor","lighting-color"],["markerEnd","marker-end"],["markerMid","marker-mid"],["markerStart","marker-start"],["overlinePosition","overline-position"],["overlineThickness","overline-thickness"],["paintOrder","paint-order"],["panose-1","panose-1"],["pointerEvents","pointer-events"],["renderingIntent","rendering-intent"],["shapeRendering","shape-rendering"],["stopColor","stop-color"],["stopOpacity","stop-opacity"],["strikethroughPosition","strikethrough-position"],["strikethroughThickness","strikethrough-thickness"],["strokeDasharray","stroke-dasharray"],["strokeDashoffset","stroke-dashoffset"],["strokeLinecap","stroke-linecap"],["strokeLinejoin","stroke-linejoin"],["strokeMiterlimit","stroke-miterlimit"],["strokeOpacity","stroke-opacity"],["strokeWidth","stroke-width"],["textAnchor","text-anchor"],["textDecoration","text-decoration"],["textRendering","text-rendering"],["transformOrigin","transform-origin"],["underlinePosition","underline-position"],["underlineThickness","underline-thickness"],["unicodeBidi","unicode-bidi"],["unicodeRange","unicode-range"],["unitsPerEm","units-per-em"],["vAlphabetic","v-alphabetic"],["vHanging","v-hanging"],["vIdeographic","v-ideographic"],["vMathematical","v-mathematical"],["vectorEffect","vector-effect"],["vertAdvY","vert-adv-y"],["vertOriginX","vert-origin-x"],["vertOriginY","vert-origin-y"],["wordSpacing","word-spacing"],["writingMode","writing-mode"],["xmlnsXlink","xmlns:xlink"],["xHeight","x-height"]]),fp=/^[\u0000-\u001F ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*:/i;function Vs(e){return fp.test(""+e)?"javascript:throw new Error('React has blocked a javascript: URL as a security precaution.')":e}function Pt(){}var vo=null;function fo(e){return e=e.target||e.srcElement||window,e.correspondingUseElement&&(e=e.correspondingUseElement),e.nodeType===3?e.parentNode:e}var ca=null,da=null;function Xl(e){var t=sa(e);if(t&&(e=t.stateNode)){var i=e[nt]||null;e:switch(e=t.stateNode,t.type){case"input":if(uo(e,i.value,i.defaultValue,i.defaultValue,i.checked,i.defaultChecked,i.type,i.name),t=i.name,i.type==="radio"&&t!=null){for(i=e;i.parentNode;)i=i.parentNode;for(i=i.querySelectorAll('input[name="'+At(""+t)+'"][type="radio"]'),t=0;t<i.length;t++){var a=i[t];if(a!==e&&a.form===e.form){var s=a[nt]||null;if(!s)throw Error(d(90));uo(a,s.value,s.defaultValue,s.defaultValue,s.checked,s.defaultChecked,s.type,s.name)}}for(t=0;t<i.length;t++)a=i[t],a.form===e.form&&Ul(a)}break e;case"textarea":Yl(e,i.value,i.defaultValue);break e;case"select":t=i.value,t!=null&&ra(e,!!i.multiple,t,!1)}}}var go=!1;function Jl(e,t,i){if(go)return e(t,i);go=!0;try{var a=e(t);return a}finally{if(go=!1,(ca!==null||da!==null)&&(On(),ca&&(t=ca,e=da,da=ca=null,Xl(t),e)))for(t=0;t<e.length;t++)Xl(e[t])}}function Va(e,t){var i=e.stateNode;if(i===null)return null;var a=i[nt]||null;if(a===null)return null;i=a[t];e:switch(t){case"onClick":case"onClickCapture":case"onDoubleClick":case"onDoubleClickCapture":case"onMouseDown":case"onMouseDownCapture":case"onMouseMove":case"onMouseMoveCapture":case"onMouseUp":case"onMouseUpCapture":case"onMouseEnter":(a=!a.disabled)||(e=e.type,a=!(e==="button"||e==="input"||e==="select"||e==="textarea")),e=!a;break e;default:e=!1}if(e)return null;if(i&&typeof i!="function")throw Error(d(231,t,typeof i));return i}var Yt=!(typeof window>"u"||typeof window.document>"u"||typeof window.document.createElement>"u"),yo=!1;if(Yt)try{var Ka={};Object.defineProperty(Ka,"passive",{get:function(){yo=!0}}),window.addEventListener("test",Ka,Ka),window.removeEventListener("test",Ka,Ka)}catch{yo=!1}var hi=null,bo=null,Ks=null;function Zl(){if(Ks)return Ks;var e,t=bo,i=t.length,a,s="value"in hi?hi.value:hi.textContent,n=s.length;for(e=0;e<i&&t[e]===s[e];e++);var o=i-e;for(a=1;a<=o&&t[i-a]===s[n-a];a++);return Ks=s.slice(e,1<a?1-a:void 0)}function Qs(e){var t=e.keyCode;return"charCode"in e?(e=e.charCode,e===0&&t===13&&(e=13)):e=t,e===10&&(e=13),32<=e||e===13?e:0}function Xs(){return!0}function $l(){return!1}function ot(e){function t(i,a,s,n,o){this._reactName=i,this._targetInst=s,this.type=a,this.nativeEvent=n,this.target=o,this.currentTarget=null;for(var l in e)e.hasOwnProperty(l)&&(i=e[l],this[l]=i?i(n):n[l]);return this.isDefaultPrevented=(n.defaultPrevented!=null?n.defaultPrevented:n.returnValue===!1)?Xs:$l,this.isPropagationStopped=$l,this}return O(t.prototype,{preventDefault:function(){this.defaultPrevented=!0;var i=this.nativeEvent;i&&(i.preventDefault?i.preventDefault():typeof i.returnValue!="unknown"&&(i.returnValue=!1),this.isDefaultPrevented=Xs)},stopPropagation:function(){var i=this.nativeEvent;i&&(i.stopPropagation?i.stopPropagation():typeof i.cancelBubble!="unknown"&&(i.cancelBubble=!0),this.isPropagationStopped=Xs)},persist:function(){},isPersistent:Xs}),t}var Bi={eventPhase:0,bubbles:0,cancelable:0,timeStamp:function(e){return e.timeStamp||Date.now()},defaultPrevented:0,isTrusted:0},Js=ot(Bi),Qa=O({},Bi,{view:0,detail:0}),gp=ot(Qa),wo,xo,Xa,Zs=O({},Qa,{screenX:0,screenY:0,clientX:0,clientY:0,pageX:0,pageY:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,getModifierState:To,button:0,buttons:0,relatedTarget:function(e){return e.relatedTarget===void 0?e.fromElement===e.srcElement?e.toElement:e.fromElement:e.relatedTarget},movementX:function(e){return"movementX"in e?e.movementX:(e!==Xa&&(Xa&&e.type==="mousemove"?(wo=e.screenX-Xa.screenX,xo=e.screenY-Xa.screenY):xo=wo=0,Xa=e),wo)},movementY:function(e){return"movementY"in e?e.movementY:xo}}),ec=ot(Zs),yp=O({},Zs,{dataTransfer:0}),bp=ot(yp),wp=O({},Qa,{relatedTarget:0}),ko=ot(wp),xp=O({},Bi,{animationName:0,elapsedTime:0,pseudoElement:0}),kp=ot(xp),Tp=O({},Bi,{clipboardData:function(e){return"clipboardData"in e?e.clipboardData:window.clipboardData}}),qp=ot(Tp),Sp=O({},Bi,{data:0}),tc=ot(Sp),Ap={Esc:"Escape",Spacebar:" ",Left:"ArrowLeft",Up:"ArrowUp",Right:"ArrowRight",Down:"ArrowDown",Del:"Delete",Win:"OS",Menu:"ContextMenu",Apps:"ContextMenu",Scroll:"ScrollLock",MozPrintableKey:"Unidentified"},Ep={8:"Backspace",9:"Tab",12:"Clear",13:"Enter",16:"Shift",17:"Control",18:"Alt",19:"Pause",20:"CapsLock",27:"Escape",32:" ",33:"PageUp",34:"PageDown",35:"End",36:"Home",37:"ArrowLeft",38:"ArrowUp",39:"ArrowRight",40:"ArrowDown",45:"Insert",46:"Delete",112:"F1",113:"F2",114:"F3",115:"F4",116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"NumLock",145:"ScrollLock",224:"Meta"},Cp={Alt:"altKey",Control:"ctrlKey",Meta:"metaKey",Shift:"shiftKey"};function jp(e){var t=this.nativeEvent;return t.getModifierState?t.getModifierState(e):(e=Cp[e])?!!t[e]:!1}function To(){return jp}var Mp=O({},Qa,{key:function(e){if(e.key){var t=Ap[e.key]||e.key;if(t!=="Unidentified")return t}return e.type==="keypress"?(e=Qs(e),e===13?"Enter":String.fromCharCode(e)):e.type==="keydown"||e.type==="keyup"?Ep[e.keyCode]||"Unidentified":""},code:0,location:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,repeat:0,locale:0,getModifierState:To,charCode:function(e){return e.type==="keypress"?Qs(e):0},keyCode:function(e){return e.type==="keydown"||e.type==="keyup"?e.keyCode:0},which:function(e){return e.type==="keypress"?Qs(e):e.type==="keydown"||e.type==="keyup"?e.keyCode:0}}),zp=ot(Mp),Np=O({},Zs,{pointerId:0,width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),ic=ot(Np),Ip=O({},Qa,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shiftKey:0,getModifierState:To}),Dp=ot(Ip),Op=O({},Bi,{propertyName:0,elapsedTime:0,pseudoElement:0}),Rp=ot(Op),Hp=O({},Zs,{deltaX:function(e){return"deltaX"in e?e.deltaX:"wheelDeltaX"in e?-e.wheelDeltaX:0},deltaY:function(e){return"deltaY"in e?e.deltaY:"wheelDeltaY"in e?-e.wheelDeltaY:"wheelDelta"in e?-e.wheelDelta:0},deltaZ:0,deltaMode:0}),Gp=ot(Hp),Bp=O({},Bi,{newState:0,oldState:0}),Lp=ot(Bp),Fp=[9,13,27,32],qo=Yt&&"CompositionEvent"in window,Ja=null;Yt&&"documentMode"in document&&(Ja=document.documentMode);var _p=Yt&&"TextEvent"in window&&!Ja,ac=Yt&&(!qo||Ja&&8<Ja&&11>=Ja),sc=" ",nc=!1;function oc(e,t){switch(e){case"keyup":return Fp.indexOf(t.keyCode)!==-1;case"keydown":return t.keyCode!==229;case"keypress":case"mousedown":case"focusout":return!0;default:return!1}}function rc(e){return e=e.detail,typeof e=="object"&&"data"in e?e.data:null}var ha=!1;function Wp(e,t){switch(e){case"compositionend":return rc(t);case"keypress":return t.which!==32?null:(nc=!0,sc);case"textInput":return e=t.data,e===sc&&nc?null:e;default:return null}}function Up(e,t){if(ha)return e==="compositionend"||!qo&&oc(e,t)?(e=Zl(),Ks=bo=hi=null,ha=!1,e):null;switch(e){case"paste":return null;case"keypress":if(!(t.ctrlKey||t.altKey||t.metaKey)||t.ctrlKey&&t.altKey){if(t.char&&1<t.char.length)return t.char;if(t.which)return String.fromCharCode(t.which)}return null;case"compositionend":return ac&&t.locale!=="ko"?null:t.data;default:return null}}var Pp={color:!0,date:!0,datetime:!0,"datetime-local":!0,email:!0,month:!0,number:!0,password:!0,range:!0,search:!0,tel:!0,text:!0,time:!0,url:!0,week:!0};function lc(e){var t=e&&e.nodeName&&e.nodeName.toLowerCase();return t==="input"?!!Pp[e.type]:t==="textarea"}function cc(e,t,i,a){ca?da?da.push(a):da=[a]:ca=a,t=_n(t,"onChange"),0<t.length&&(i=new Js("onChange","change",null,i,a),e.push({event:i,listeners:t}))}var Za=null,$a=null;function Yp(e){Ph(e,0)}function $s(e){var t=Ya(e);if(Ul(t))return e}function dc(e,t){if(e==="change")return t}var hc=!1;if(Yt){var So;if(Yt){var Ao="oninput"in document;if(!Ao){var uc=document.createElement("div");uc.setAttribute("oninput","return;"),Ao=typeof uc.oninput=="function"}So=Ao}else So=!1;hc=So&&(!document.documentMode||9<document.documentMode)}function pc(){Za&&(Za.detachEvent("onpropertychange",mc),$a=Za=null)}function mc(e){if(e.propertyName==="value"&&$s($a)){var t=[];cc(t,$a,e,fo(e)),Jl(Yp,t)}}function Vp(e,t,i){e==="focusin"?(pc(),Za=t,$a=i,Za.attachEvent("onpropertychange",mc)):e==="focusout"&&pc()}function Kp(e){if(e==="selectionchange"||e==="keyup"||e==="keydown")return $s($a)}function Qp(e,t){if(e==="click")return $s(t)}function Xp(e,t){if(e==="input"||e==="change")return $s(t)}function Jp(e,t){return e===t&&(e!==0||1/e===1/t)||e!==e&&t!==t}var mt=typeof Object.is=="function"?Object.is:Jp;function es(e,t){if(mt(e,t))return!0;if(typeof e!="object"||e===null||typeof t!="object"||t===null)return!1;var i=Object.keys(e),a=Object.keys(t);if(i.length!==a.length)return!1;for(a=0;a<i.length;a++){var s=i[a];if(!ke.call(t,s)||!mt(e[s],t[s]))return!1}return!0}function vc(e){for(;e&&e.firstChild;)e=e.firstChild;return e}function fc(e,t){var i=vc(e);e=0;for(var a;i;){if(i.nodeType===3){if(a=e+i.textContent.length,e<=t&&a>=t)return{node:i,offset:t-e};e=a}e:{for(;i;){if(i.nextSibling){i=i.nextSibling;break e}i=i.parentNode}i=void 0}i=vc(i)}}function gc(e,t){return e&&t?e===t?!0:e&&e.nodeType===3?!1:t&&t.nodeType===3?gc(e,t.parentNode):"contains"in e?e.contains(t):e.compareDocumentPosition?!!(e.compareDocumentPosition(t)&16):!1:!1}function yc(e){e=e!=null&&e.ownerDocument!=null&&e.ownerDocument.defaultView!=null?e.ownerDocument.defaultView:window;for(var t=Ys(e.document);t instanceof e.HTMLIFrameElement;){try{var i=typeof t.contentWindow.location.href=="string"}catch{i=!1}if(i)e=t.contentWindow;else break;t=Ys(e.document)}return t}function Eo(e){var t=e&&e.nodeName&&e.nodeName.toLowerCase();return t&&(t==="input"&&(e.type==="text"||e.type==="search"||e.type==="tel"||e.type==="url"||e.type==="password")||t==="textarea"||e.contentEditable==="true")}var Zp=Yt&&"documentMode"in document&&11>=document.documentMode,ua=null,Co=null,ts=null,jo=!1;function bc(e,t,i){var a=i.window===i?i.document:i.nodeType===9?i:i.ownerDocument;jo||ua==null||ua!==Ys(a)||(a=ua,"selectionStart"in a&&Eo(a)?a={start:a.selectionStart,end:a.selectionEnd}:(a=(a.ownerDocument&&a.ownerDocument.defaultView||window).getSelection(),a={anchorNode:a.anchorNode,anchorOffset:a.anchorOffset,focusNode:a.focusNode,focusOffset:a.focusOffset}),ts&&es(ts,a)||(ts=a,a=_n(Co,"onSelect"),0<a.length&&(t=new Js("onSelect","select",null,t,i),e.push({event:t,listeners:a}),t.target=ua)))}function Li(e,t){var i={};return i[e.toLowerCase()]=t.toLowerCase(),i["Webkit"+e]="webkit"+t,i["Moz"+e]="moz"+t,i}var pa={animationend:Li("Animation","AnimationEnd"),animationiteration:Li("Animation","AnimationIteration"),animationstart:Li("Animation","AnimationStart"),transitionrun:Li("Transition","TransitionRun"),transitionstart:Li("Transition","TransitionStart"),transitioncancel:Li("Transition","TransitionCancel"),transitionend:Li("Transition","TransitionEnd")},Mo={},wc={};Yt&&(wc=document.createElement("div").style,"AnimationEvent"in window||(delete pa.animationend.animation,delete pa.animationiteration.animation,delete pa.animationstart.animation),"TransitionEvent"in window||delete pa.transitionend.transition);function Fi(e){if(Mo[e])return Mo[e];if(!pa[e])return e;var t=pa[e],i;for(i in t)if(t.hasOwnProperty(i)&&i in wc)return Mo[e]=t[i];return e}var xc=Fi("animationend"),kc=Fi("animationiteration"),Tc=Fi("animationstart"),$p=Fi("transitionrun"),em=Fi("transitionstart"),tm=Fi("transitioncancel"),qc=Fi("transitionend"),Sc=new Map,zo="abort auxClick beforeToggle cancel canPlay canPlayThrough click close contextMenu copy cut drag dragEnd dragEnter dragExit dragLeave dragOver dragStart drop durationChange emptied encrypted ended error gotPointerCapture input invalid keyDown keyPress keyUp load loadedData loadedMetadata loadStart lostPointerCapture mouseDown mouseMove mouseOut mouseOver mouseUp paste pause play playing pointerCancel pointerDown pointerMove pointerOut pointerOver pointerUp progress rateChange reset resize seeked seeking stalled submit suspend timeUpdate touchCancel touchEnd touchStart volumeChange scroll toggle touchMove waiting wheel".split(" ");zo.push("scrollEnd");function Rt(e,t){Sc.set(e,t),Gi(t,[e])}var en=typeof reportError=="function"?reportError:function(e){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var t=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof e=="object"&&e!==null&&typeof e.message=="string"?String(e.message):String(e),error:e});if(!window.dispatchEvent(t))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",e);return}console.error(e)},Et=[],ma=0,No=0;function tn(){for(var e=ma,t=No=ma=0;t<e;){var i=Et[t];Et[t++]=null;var a=Et[t];Et[t++]=null;var s=Et[t];Et[t++]=null;var n=Et[t];if(Et[t++]=null,a!==null&&s!==null){var o=a.pending;o===null?s.next=s:(s.next=o.next,o.next=s),a.pending=s}n!==0&&Ac(i,s,n)}}function an(e,t,i,a){Et[ma++]=e,Et[ma++]=t,Et[ma++]=i,Et[ma++]=a,No|=a,e.lanes|=a,e=e.alternate,e!==null&&(e.lanes|=a)}function Io(e,t,i,a){return an(e,t,i,a),sn(e)}function _i(e,t){return an(e,null,null,t),sn(e)}function Ac(e,t,i){e.lanes|=i;var a=e.alternate;a!==null&&(a.lanes|=i);for(var s=!1,n=e.return;n!==null;)n.childLanes|=i,a=n.alternate,a!==null&&(a.childLanes|=i),n.tag===22&&(e=n.stateNode,e===null||e._visibility&1||(s=!0)),e=n,n=n.return;return e.tag===3?(n=e.stateNode,s&&t!==null&&(s=31-pt(i),e=n.hiddenUpdates,a=e[s],a===null?e[s]=[t]:a.push(t),t.lane=i|536870912),n):null}function sn(e){if(50<Ts)throw Ts=0,_r=null,Error(d(185));for(var t=e.return;t!==null;)e=t,t=e.return;return e.tag===3?e.stateNode:null}var va={};function im(e,t,i,a){this.tag=e,this.key=i,this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null,this.index=0,this.refCleanup=this.ref=null,this.pendingProps=t,this.dependencies=this.memoizedState=this.updateQueue=this.memoizedProps=null,this.mode=a,this.subtreeFlags=this.flags=0,this.deletions=null,this.childLanes=this.lanes=0,this.alternate=null}function vt(e,t,i,a){return new im(e,t,i,a)}function Do(e){return e=e.prototype,!(!e||!e.isReactComponent)}function Vt(e,t){var i=e.alternate;return i===null?(i=vt(e.tag,t,e.key,e.mode),i.elementType=e.elementType,i.type=e.type,i.stateNode=e.stateNode,i.alternate=e,e.alternate=i):(i.pendingProps=t,i.type=e.type,i.flags=0,i.subtreeFlags=0,i.deletions=null),i.flags=e.flags&65011712,i.childLanes=e.childLanes,i.lanes=e.lanes,i.child=e.child,i.memoizedProps=e.memoizedProps,i.memoizedState=e.memoizedState,i.updateQueue=e.updateQueue,t=e.dependencies,i.dependencies=t===null?null:{lanes:t.lanes,firstContext:t.firstContext},i.sibling=e.sibling,i.index=e.index,i.ref=e.ref,i.refCleanup=e.refCleanup,i}function Ec(e,t){e.flags&=65011714;var i=e.alternate;return i===null?(e.childLanes=0,e.lanes=t,e.child=null,e.subtreeFlags=0,e.memoizedProps=null,e.memoizedState=null,e.updateQueue=null,e.dependencies=null,e.stateNode=null):(e.childLanes=i.childLanes,e.lanes=i.lanes,e.child=i.child,e.subtreeFlags=0,e.deletions=null,e.memoizedProps=i.memoizedProps,e.memoizedState=i.memoizedState,e.updateQueue=i.updateQueue,e.type=i.type,t=i.dependencies,e.dependencies=t===null?null:{lanes:t.lanes,firstContext:t.firstContext}),e}function nn(e,t,i,a,s,n){var o=0;if(a=e,typeof e=="function")Do(e)&&(o=1);else if(typeof e=="string")o=rv(e,i,H.current)?26:e==="html"||e==="head"||e==="body"?27:5;else e:switch(e){case _e:return e=vt(31,i,t,s),e.elementType=_e,e.lanes=n,e;case le:return Wi(i.children,s,n,t);case ce:o=8,s|=24;break;case V:return e=vt(12,i,t,s|2),e.elementType=V,e.lanes=n,e;case st:return e=vt(13,i,t,s),e.elementType=st,e.lanes=n,e;case Ce:return e=vt(19,i,t,s),e.elementType=Ce,e.lanes=n,e;default:if(typeof e=="object"&&e!==null)switch(e.$$typeof){case Ne:o=10;break e;case at:o=9;break e;case Pe:o=11;break e;case U:o=14;break e;case je:o=16,a=null;break e}o=29,i=Error(d(130,e===null?"null":typeof e,"")),a=null}return t=vt(o,i,t,s),t.elementType=e,t.type=a,t.lanes=n,t}function Wi(e,t,i,a){return e=vt(7,e,a,t),e.lanes=i,e}function Oo(e,t,i){return e=vt(6,e,null,t),e.lanes=i,e}function Cc(e){var t=vt(18,null,null,0);return t.stateNode=e,t}function Ro(e,t,i){return t=vt(4,e.children!==null?e.children:[],e.key,t),t.lanes=i,t.stateNode={containerInfo:e.containerInfo,pendingChildren:null,implementation:e.implementation},t}var jc=new WeakMap;function Ct(e,t){if(typeof e=="object"&&e!==null){var i=jc.get(e);return i!==void 0?i:(t={value:e,source:t,stack:K(t)},jc.set(e,t),t)}return{value:e,source:t,stack:K(t)}}var fa=[],ga=0,on=null,is=0,jt=[],Mt=0,ui=null,Lt=1,Ft="";function Kt(e,t){fa[ga++]=is,fa[ga++]=on,on=e,is=t}function Mc(e,t,i){jt[Mt++]=Lt,jt[Mt++]=Ft,jt[Mt++]=ui,ui=e;var a=Lt;e=Ft;var s=32-pt(a)-1;a&=~(1<<s),i+=1;var n=32-pt(t)+s;if(30<n){var o=s-s%5;n=(a&(1<<o)-1).toString(32),a>>=o,s-=o,Lt=1<<32-pt(t)+s|i<<s|a,Ft=n+e}else Lt=1<<n|i<<s|a,Ft=e}function Ho(e){e.return!==null&&(Kt(e,1),Mc(e,1,0))}function Go(e){for(;e===on;)on=fa[--ga],fa[ga]=null,is=fa[--ga],fa[ga]=null;for(;e===ui;)ui=jt[--Mt],jt[Mt]=null,Ft=jt[--Mt],jt[Mt]=null,Lt=jt[--Mt],jt[Mt]=null}function zc(e,t){jt[Mt++]=Lt,jt[Mt++]=Ft,jt[Mt++]=ui,Lt=t.id,Ft=t.overflow,ui=e}var Qe=null,Te=null,oe=!1,pi=null,zt=!1,Bo=Error(d(519));function mi(e){var t=Error(d(418,1<arguments.length&&arguments[1]!==void 0&&arguments[1]?"text":"HTML",""));throw as(Ct(t,e)),Bo}function Nc(e){var t=e.stateNode,i=e.type,a=e.memoizedProps;switch(t[Ke]=e,t[nt]=a,i){case"dialog":ie("cancel",t),ie("close",t);break;case"iframe":case"object":case"embed":ie("load",t);break;case"video":case"audio":for(i=0;i<Ss.length;i++)ie(Ss[i],t);break;case"source":ie("error",t);break;case"img":case"image":case"link":ie("error",t),ie("load",t);break;case"details":ie("toggle",t);break;case"input":ie("invalid",t),Pl(t,a.value,a.defaultValue,a.checked,a.defaultChecked,a.type,a.name,!0);break;case"select":ie("invalid",t);break;case"textarea":ie("invalid",t),Vl(t,a.value,a.defaultValue,a.children)}i=a.children,typeof i!="string"&&typeof i!="number"&&typeof i!="bigint"||t.textContent===""+i||a.suppressHydrationWarning===!0||Qh(t.textContent,i)?(a.popover!=null&&(ie("beforetoggle",t),ie("toggle",t)),a.onScroll!=null&&ie("scroll",t),a.onScrollEnd!=null&&ie("scrollend",t),a.onClick!=null&&(t.onclick=Pt),t=!0):t=!1,t||mi(e,!0)}function Ic(e){for(Qe=e.return;Qe;)switch(Qe.tag){case 5:case 31:case 13:zt=!1;return;case 27:case 3:zt=!0;return;default:Qe=Qe.return}}function ya(e){if(e!==Qe)return!1;if(!oe)return Ic(e),oe=!0,!1;var t=e.tag,i;if((i=t!==3&&t!==27)&&((i=t===5)&&(i=e.type,i=!(i!=="form"&&i!=="button")||al(e.type,e.memoizedProps)),i=!i),i&&Te&&mi(e),Ic(e),t===13){if(e=e.memoizedState,e=e!==null?e.dehydrated:null,!e)throw Error(d(317));Te=su(e)}else if(t===31){if(e=e.memoizedState,e=e!==null?e.dehydrated:null,!e)throw Error(d(317));Te=su(e)}else t===27?(t=Te,Ci(e.type)?(e=ll,ll=null,Te=e):Te=t):Te=Qe?It(e.stateNode.nextSibling):null;return!0}function Ui(){Te=Qe=null,oe=!1}function Lo(){var e=pi;return e!==null&&(dt===null?dt=e:dt.push.apply(dt,e),pi=null),e}function as(e){pi===null?pi=[e]:pi.push(e)}var Fo=p(null),Pi=null,Qt=null;function vi(e,t,i){I(Fo,t._currentValue),t._currentValue=i}function Xt(e){e._currentValue=Fo.current,E(Fo)}function _o(e,t,i){for(;e!==null;){var a=e.alternate;if((e.childLanes&t)!==t?(e.childLanes|=t,a!==null&&(a.childLanes|=t)):a!==null&&(a.childLanes&t)!==t&&(a.childLanes|=t),e===i)break;e=e.return}}function Wo(e,t,i,a){var s=e.child;for(s!==null&&(s.return=e);s!==null;){var n=s.dependencies;if(n!==null){var o=s.child;n=n.firstContext;e:for(;n!==null;){var l=n;n=s;for(var h=0;h<t.length;h++)if(l.context===t[h]){n.lanes|=i,l=n.alternate,l!==null&&(l.lanes|=i),_o(n.return,i,e),a||(o=null);break e}n=l.next}}else if(s.tag===18){if(o=s.return,o===null)throw Error(d(341));o.lanes|=i,n=o.alternate,n!==null&&(n.lanes|=i),_o(o,i,e),o=null}else o=s.child;if(o!==null)o.return=s;else for(o=s;o!==null;){if(o===e){o=null;break}if(s=o.sibling,s!==null){s.return=o.return,o=s;break}o=o.return}s=o}}function ba(e,t,i,a){e=null;for(var s=t,n=!1;s!==null;){if(!n){if((s.flags&524288)!==0)n=!0;else if((s.flags&262144)!==0)break}if(s.tag===10){var o=s.alternate;if(o===null)throw Error(d(387));if(o=o.memoizedProps,o!==null){var l=s.type;mt(s.pendingProps.value,o.value)||(e!==null?e.push(l):e=[l])}}else if(s===de.current){if(o=s.alternate,o===null)throw Error(d(387));o.memoizedState.memoizedState!==s.memoizedState.memoizedState&&(e!==null?e.push(Ms):e=[Ms])}s=s.return}e!==null&&Wo(t,e,i,a),t.flags|=262144}function rn(e){for(e=e.firstContext;e!==null;){if(!mt(e.context._currentValue,e.memoizedValue))return!0;e=e.next}return!1}function Yi(e){Pi=e,Qt=null,e=e.dependencies,e!==null&&(e.firstContext=null)}function Xe(e){return Dc(Pi,e)}function ln(e,t){return Pi===null&&Yi(e),Dc(e,t)}function Dc(e,t){var i=t._currentValue;if(t={context:t,memoizedValue:i,next:null},Qt===null){if(e===null)throw Error(d(308));Qt=t,e.dependencies={lanes:0,firstContext:t},e.flags|=524288}else Qt=Qt.next=t;return i}var am=typeof AbortController<"u"?AbortController:function(){var e=[],t=this.signal={aborted:!1,addEventListener:function(i,a){e.push(a)}};this.abort=function(){t.aborted=!0,e.forEach(function(i){return i()})}},sm=c.unstable_scheduleCallback,nm=c.unstable_NormalPriority,He={$$typeof:Ne,Consumer:null,Provider:null,_currentValue:null,_currentValue2:null,_threadCount:0};function Uo(){return{controller:new am,data:new Map,refCount:0}}function ss(e){e.refCount--,e.refCount===0&&sm(nm,function(){e.controller.abort()})}var ns=null,Po=0,wa=0,xa=null;function om(e,t){if(ns===null){var i=ns=[];Po=0,wa=Kr(),xa={status:"pending",value:void 0,then:function(a){i.push(a)}}}return Po++,t.then(Oc,Oc),t}function Oc(){if(--Po===0&&ns!==null){xa!==null&&(xa.status="fulfilled");var e=ns;ns=null,wa=0,xa=null;for(var t=0;t<e.length;t++)(0,e[t])()}}function rm(e,t){var i=[],a={status:"pending",value:null,reason:null,then:function(s){i.push(s)}};return e.then(function(){a.status="fulfilled",a.value=t;for(var s=0;s<i.length;s++)(0,i[s])(t)},function(s){for(a.status="rejected",a.reason=s,s=0;s<i.length;s++)(0,i[s])(void 0)}),a}var Rc=q.S;q.S=function(e,t){bh=ze(),typeof t=="object"&&t!==null&&typeof t.then=="function"&&om(e,t),Rc!==null&&Rc(e,t)};var Vi=p(null);function Yo(){var e=Vi.current;return e!==null?e:xe.pooledCache}function cn(e,t){t===null?I(Vi,Vi.current):I(Vi,t.pool)}function Hc(){var e=Yo();return e===null?null:{parent:He._currentValue,pool:e}}var ka=Error(d(460)),Vo=Error(d(474)),dn=Error(d(542)),hn={then:function(){}};function Gc(e){return e=e.status,e==="fulfilled"||e==="rejected"}function Bc(e,t,i){switch(i=e[i],i===void 0?e.push(t):i!==t&&(t.then(Pt,Pt),t=i),t.status){case"fulfilled":return t.value;case"rejected":throw e=t.reason,Fc(e),e;default:if(typeof t.status=="string")t.then(Pt,Pt);else{if(e=xe,e!==null&&100<e.shellSuspendCounter)throw Error(d(482));e=t,e.status="pending",e.then(function(a){if(t.status==="pending"){var s=t;s.status="fulfilled",s.value=a}},function(a){if(t.status==="pending"){var s=t;s.status="rejected",s.reason=a}})}switch(t.status){case"fulfilled":return t.value;case"rejected":throw e=t.reason,Fc(e),e}throw Qi=t,ka}}function Ki(e){try{var t=e._init;return t(e._payload)}catch(i){throw i!==null&&typeof i=="object"&&typeof i.then=="function"?(Qi=i,ka):i}}var Qi=null;function Lc(){if(Qi===null)throw Error(d(459));var e=Qi;return Qi=null,e}function Fc(e){if(e===ka||e===dn)throw Error(d(483))}var Ta=null,os=0;function un(e){var t=os;return os+=1,Ta===null&&(Ta=[]),Bc(Ta,e,t)}function rs(e,t){t=t.props.ref,e.ref=t!==void 0?t:null}function pn(e,t){throw t.$$typeof===B?Error(d(525)):(e=Object.prototype.toString.call(t),Error(d(31,e==="[object Object]"?"object with keys {"+Object.keys(t).join(", ")+"}":e)))}function _c(e){function t(m,u){if(e){var v=m.deletions;v===null?(m.deletions=[u],m.flags|=16):v.push(u)}}function i(m,u){if(!e)return null;for(;u!==null;)t(m,u),u=u.sibling;return null}function a(m){for(var u=new Map;m!==null;)m.key!==null?u.set(m.key,m):u.set(m.index,m),m=m.sibling;return u}function s(m,u){return m=Vt(m,u),m.index=0,m.sibling=null,m}function n(m,u,v){return m.index=v,e?(v=m.alternate,v!==null?(v=v.index,v<u?(m.flags|=67108866,u):v):(m.flags|=67108866,u)):(m.flags|=1048576,u)}function o(m){return e&&m.alternate===null&&(m.flags|=67108866),m}function l(m,u,v,S){return u===null||u.tag!==6?(u=Oo(v,m.mode,S),u.return=m,u):(u=s(u,v),u.return=m,u)}function h(m,u,v,S){var L=v.type;return L===le?k(m,u,v.props.children,S,v.key):u!==null&&(u.elementType===L||typeof L=="object"&&L!==null&&L.$$typeof===je&&Ki(L)===u.type)?(u=s(u,v.props),rs(u,v),u.return=m,u):(u=nn(v.type,v.key,v.props,null,m.mode,S),rs(u,v),u.return=m,u)}function f(m,u,v,S){return u===null||u.tag!==4||u.stateNode.containerInfo!==v.containerInfo||u.stateNode.implementation!==v.implementation?(u=Ro(v,m.mode,S),u.return=m,u):(u=s(u,v.children||[]),u.return=m,u)}function k(m,u,v,S,L){return u===null||u.tag!==7?(u=Wi(v,m.mode,S,L),u.return=m,u):(u=s(u,v),u.return=m,u)}function A(m,u,v){if(typeof u=="string"&&u!==""||typeof u=="number"||typeof u=="bigint")return u=Oo(""+u,m.mode,v),u.return=m,u;if(typeof u=="object"&&u!==null){switch(u.$$typeof){case Y:return v=nn(u.type,u.key,u.props,null,m.mode,v),rs(v,u),v.return=m,v;case re:return u=Ro(u,m.mode,v),u.return=m,u;case je:return u=Ki(u),A(m,u,v)}if(et(u)||$e(u))return u=Wi(u,m.mode,v,null),u.return=m,u;if(typeof u.then=="function")return A(m,un(u),v);if(u.$$typeof===Ne)return A(m,ln(m,u),v);pn(m,u)}return null}function y(m,u,v,S){var L=u!==null?u.key:null;if(typeof v=="string"&&v!==""||typeof v=="number"||typeof v=="bigint")return L!==null?null:l(m,u,""+v,S);if(typeof v=="object"&&v!==null){switch(v.$$typeof){case Y:return v.key===L?h(m,u,v,S):null;case re:return v.key===L?f(m,u,v,S):null;case je:return v=Ki(v),y(m,u,v,S)}if(et(v)||$e(v))return L!==null?null:k(m,u,v,S,null);if(typeof v.then=="function")return y(m,u,un(v),S);if(v.$$typeof===Ne)return y(m,u,ln(m,v),S);pn(m,v)}return null}function w(m,u,v,S,L){if(typeof S=="string"&&S!==""||typeof S=="number"||typeof S=="bigint")return m=m.get(v)||null,l(u,m,""+S,L);if(typeof S=="object"&&S!==null){switch(S.$$typeof){case Y:return m=m.get(S.key===null?v:S.key)||null,h(u,m,S,L);case re:return m=m.get(S.key===null?v:S.key)||null,f(u,m,S,L);case je:return S=Ki(S),w(m,u,v,S,L)}if(et(S)||$e(S))return m=m.get(v)||null,k(u,m,S,L,null);if(typeof S.then=="function")return w(m,u,v,un(S),L);if(S.$$typeof===Ne)return w(m,u,v,ln(u,S),L);pn(u,S)}return null}function R(m,u,v,S){for(var L=null,he=null,G=u,$=u=0,se=null;G!==null&&$<v.length;$++){G.index>$?(se=G,G=null):se=G.sibling;var ue=y(m,G,v[$],S);if(ue===null){G===null&&(G=se);break}e&&G&&ue.alternate===null&&t(m,G),u=n(ue,u,$),he===null?L=ue:he.sibling=ue,he=ue,G=se}if($===v.length)return i(m,G),oe&&Kt(m,$),L;if(G===null){for(;$<v.length;$++)G=A(m,v[$],S),G!==null&&(u=n(G,u,$),he===null?L=G:he.sibling=G,he=G);return oe&&Kt(m,$),L}for(G=a(G);$<v.length;$++)se=w(G,m,$,v[$],S),se!==null&&(e&&se.alternate!==null&&G.delete(se.key===null?$:se.key),u=n(se,u,$),he===null?L=se:he.sibling=se,he=se);return e&&G.forEach(function(Ii){return t(m,Ii)}),oe&&Kt(m,$),L}function P(m,u,v,S){if(v==null)throw Error(d(151));for(var L=null,he=null,G=u,$=u=0,se=null,ue=v.next();G!==null&&!ue.done;$++,ue=v.next()){G.index>$?(se=G,G=null):se=G.sibling;var Ii=y(m,G,ue.value,S);if(Ii===null){G===null&&(G=se);break}e&&G&&Ii.alternate===null&&t(m,G),u=n(Ii,u,$),he===null?L=Ii:he.sibling=Ii,he=Ii,G=se}if(ue.done)return i(m,G),oe&&Kt(m,$),L;if(G===null){for(;!ue.done;$++,ue=v.next())ue=A(m,ue.value,S),ue!==null&&(u=n(ue,u,$),he===null?L=ue:he.sibling=ue,he=ue);return oe&&Kt(m,$),L}for(G=a(G);!ue.done;$++,ue=v.next())ue=w(G,m,$,ue.value,S),ue!==null&&(e&&ue.alternate!==null&&G.delete(ue.key===null?$:ue.key),u=n(ue,u,$),he===null?L=ue:he.sibling=ue,he=ue);return e&&G.forEach(function(yv){return t(m,yv)}),oe&&Kt(m,$),L}function we(m,u,v,S){if(typeof v=="object"&&v!==null&&v.type===le&&v.key===null&&(v=v.props.children),typeof v=="object"&&v!==null){switch(v.$$typeof){case Y:e:{for(var L=v.key;u!==null;){if(u.key===L){if(L=v.type,L===le){if(u.tag===7){i(m,u.sibling),S=s(u,v.props.children),S.return=m,m=S;break e}}else if(u.elementType===L||typeof L=="object"&&L!==null&&L.$$typeof===je&&Ki(L)===u.type){i(m,u.sibling),S=s(u,v.props),rs(S,v),S.return=m,m=S;break e}i(m,u);break}else t(m,u);u=u.sibling}v.type===le?(S=Wi(v.props.children,m.mode,S,v.key),S.return=m,m=S):(S=nn(v.type,v.key,v.props,null,m.mode,S),rs(S,v),S.return=m,m=S)}return o(m);case re:e:{for(L=v.key;u!==null;){if(u.key===L)if(u.tag===4&&u.stateNode.containerInfo===v.containerInfo&&u.stateNode.implementation===v.implementation){i(m,u.sibling),S=s(u,v.children||[]),S.return=m,m=S;break e}else{i(m,u);break}else t(m,u);u=u.sibling}S=Ro(v,m.mode,S),S.return=m,m=S}return o(m);case je:return v=Ki(v),we(m,u,v,S)}if(et(v))return R(m,u,v,S);if($e(v)){if(L=$e(v),typeof L!="function")throw Error(d(150));return v=L.call(v),P(m,u,v,S)}if(typeof v.then=="function")return we(m,u,un(v),S);if(v.$$typeof===Ne)return we(m,u,ln(m,v),S);pn(m,v)}return typeof v=="string"&&v!==""||typeof v=="number"||typeof v=="bigint"?(v=""+v,u!==null&&u.tag===6?(i(m,u.sibling),S=s(u,v),S.return=m,m=S):(i(m,u),S=Oo(v,m.mode,S),S.return=m,m=S),o(m)):i(m,u)}return function(m,u,v,S){try{os=0;var L=we(m,u,v,S);return Ta=null,L}catch(G){if(G===ka||G===dn)throw G;var he=vt(29,G,null,m.mode);return he.lanes=S,he.return=m,he}}}var Xi=_c(!0),Wc=_c(!1),fi=!1;function Ko(e){e.updateQueue={baseState:e.memoizedState,firstBaseUpdate:null,lastBaseUpdate:null,shared:{pending:null,lanes:0,hiddenCallbacks:null},callbacks:null}}function Qo(e,t){e=e.updateQueue,t.updateQueue===e&&(t.updateQueue={baseState:e.baseState,firstBaseUpdate:e.firstBaseUpdate,lastBaseUpdate:e.lastBaseUpdate,shared:e.shared,callbacks:null})}function gi(e){return{lane:e,tag:0,payload:null,callback:null,next:null}}function yi(e,t,i){var a=e.updateQueue;if(a===null)return null;if(a=a.shared,(pe&2)!==0){var s=a.pending;return s===null?t.next=t:(t.next=s.next,s.next=t),a.pending=t,t=sn(e),Ac(e,null,i),t}return an(e,a,t,i),sn(e)}function ls(e,t,i){if(t=t.updateQueue,t!==null&&(t=t.shared,(i&4194048)!==0)){var a=t.lanes;a&=e.pendingLanes,i|=a,t.lanes=i,Dl(e,i)}}function Xo(e,t){var i=e.updateQueue,a=e.alternate;if(a!==null&&(a=a.updateQueue,i===a)){var s=null,n=null;if(i=i.firstBaseUpdate,i!==null){do{var o={lane:i.lane,tag:i.tag,payload:i.payload,callback:null,next:null};n===null?s=n=o:n=n.next=o,i=i.next}while(i!==null);n===null?s=n=t:n=n.next=t}else s=n=t;i={baseState:a.baseState,firstBaseUpdate:s,lastBaseUpdate:n,shared:a.shared,callbacks:a.callbacks},e.updateQueue=i;return}e=i.lastBaseUpdate,e===null?i.firstBaseUpdate=t:e.next=t,i.lastBaseUpdate=t}var Jo=!1;function cs(){if(Jo){var e=xa;if(e!==null)throw e}}function ds(e,t,i,a){Jo=!1;var s=e.updateQueue;fi=!1;var n=s.firstBaseUpdate,o=s.lastBaseUpdate,l=s.shared.pending;if(l!==null){s.shared.pending=null;var h=l,f=h.next;h.next=null,o===null?n=f:o.next=f,o=h;var k=e.alternate;k!==null&&(k=k.updateQueue,l=k.lastBaseUpdate,l!==o&&(l===null?k.firstBaseUpdate=f:l.next=f,k.lastBaseUpdate=h))}if(n!==null){var A=s.baseState;o=0,k=f=h=null,l=n;do{var y=l.lane&-536870913,w=y!==l.lane;if(w?(ae&y)===y:(a&y)===y){y!==0&&y===wa&&(Jo=!0),k!==null&&(k=k.next={lane:0,tag:l.tag,payload:l.payload,callback:null,next:null});e:{var R=e,P=l;y=t;var we=i;switch(P.tag){case 1:if(R=P.payload,typeof R=="function"){A=R.call(we,A,y);break e}A=R;break e;case 3:R.flags=R.flags&-65537|128;case 0:if(R=P.payload,y=typeof R=="function"?R.call(we,A,y):R,y==null)break e;A=O({},A,y);break e;case 2:fi=!0}}y=l.callback,y!==null&&(e.flags|=64,w&&(e.flags|=8192),w=s.callbacks,w===null?s.callbacks=[y]:w.push(y))}else w={lane:y,tag:l.tag,payload:l.payload,callback:l.callback,next:null},k===null?(f=k=w,h=A):k=k.next=w,o|=y;if(l=l.next,l===null){if(l=s.shared.pending,l===null)break;w=l,l=w.next,w.next=null,s.lastBaseUpdate=w,s.shared.pending=null}}while(!0);k===null&&(h=A),s.baseState=h,s.firstBaseUpdate=f,s.lastBaseUpdate=k,n===null&&(s.shared.lanes=0),Ti|=o,e.lanes=o,e.memoizedState=A}}function Uc(e,t){if(typeof e!="function")throw Error(d(191,e));e.call(t)}function Pc(e,t){var i=e.callbacks;if(i!==null)for(e.callbacks=null,e=0;e<i.length;e++)Uc(i[e],t)}var qa=p(null),mn=p(0);function Yc(e,t){e=ni,I(mn,e),I(qa,t),ni=e|t.baseLanes}function Zo(){I(mn,ni),I(qa,qa.current)}function $o(){ni=mn.current,E(qa),E(mn)}var ft=p(null),Nt=null;function bi(e){var t=e.alternate;I(Oe,Oe.current&1),I(ft,e),Nt===null&&(t===null||qa.current!==null||t.memoizedState!==null)&&(Nt=e)}function er(e){I(Oe,Oe.current),I(ft,e),Nt===null&&(Nt=e)}function Vc(e){e.tag===22?(I(Oe,Oe.current),I(ft,e),Nt===null&&(Nt=e)):wi()}function wi(){I(Oe,Oe.current),I(ft,ft.current)}function gt(e){E(ft),Nt===e&&(Nt=null),E(Oe)}var Oe=p(0);function vn(e){for(var t=e;t!==null;){if(t.tag===13){var i=t.memoizedState;if(i!==null&&(i=i.dehydrated,i===null||ol(i)||rl(i)))return t}else if(t.tag===19&&(t.memoizedProps.revealOrder==="forwards"||t.memoizedProps.revealOrder==="backwards"||t.memoizedProps.revealOrder==="unstable_legacy-backwards"||t.memoizedProps.revealOrder==="together")){if((t.flags&128)!==0)return t}else if(t.child!==null){t.child.return=t,t=t.child;continue}if(t===e)break;for(;t.sibling===null;){if(t.return===null||t.return===e)return null;t=t.return}t.sibling.return=t.return,t=t.sibling}return null}var Jt=0,J=null,ye=null,Ge=null,fn=!1,Sa=!1,Ji=!1,gn=0,hs=0,Aa=null,lm=0;function Ie(){throw Error(d(321))}function tr(e,t){if(t===null)return!1;for(var i=0;i<t.length&&i<e.length;i++)if(!mt(e[i],t[i]))return!1;return!0}function ir(e,t,i,a,s,n){return Jt=n,J=t,t.memoizedState=null,t.updateQueue=null,t.lanes=0,q.H=e===null||e.memoizedState===null?Md:gr,Ji=!1,n=i(a,s),Ji=!1,Sa&&(n=Qc(t,i,a,s)),Kc(e),n}function Kc(e){q.H=ms;var t=ye!==null&&ye.next!==null;if(Jt=0,Ge=ye=J=null,fn=!1,hs=0,Aa=null,t)throw Error(d(300));e===null||Be||(e=e.dependencies,e!==null&&rn(e)&&(Be=!0))}function Qc(e,t,i,a){J=e;var s=0;do{if(Sa&&(Aa=null),hs=0,Sa=!1,25<=s)throw Error(d(301));if(s+=1,Ge=ye=null,e.updateQueue!=null){var n=e.updateQueue;n.lastEffect=null,n.events=null,n.stores=null,n.memoCache!=null&&(n.memoCache.index=0)}q.H=zd,n=t(i,a)}while(Sa);return n}function cm(){var e=q.H,t=e.useState()[0];return t=typeof t.then=="function"?us(t):t,e=e.useState()[0],(ye!==null?ye.memoizedState:null)!==e&&(J.flags|=1024),t}function ar(){var e=gn!==0;return gn=0,e}function sr(e,t,i){t.updateQueue=e.updateQueue,t.flags&=-2053,e.lanes&=~i}function nr(e){if(fn){for(e=e.memoizedState;e!==null;){var t=e.queue;t!==null&&(t.pending=null),e=e.next}fn=!1}Jt=0,Ge=ye=J=null,Sa=!1,hs=gn=0,Aa=null}function it(){var e={memoizedState:null,baseState:null,baseQueue:null,queue:null,next:null};return Ge===null?J.memoizedState=Ge=e:Ge=Ge.next=e,Ge}function Re(){if(ye===null){var e=J.alternate;e=e!==null?e.memoizedState:null}else e=ye.next;var t=Ge===null?J.memoizedState:Ge.next;if(t!==null)Ge=t,ye=e;else{if(e===null)throw J.alternate===null?Error(d(467)):Error(d(310));ye=e,e={memoizedState:ye.memoizedState,baseState:ye.baseState,baseQueue:ye.baseQueue,queue:ye.queue,next:null},Ge===null?J.memoizedState=Ge=e:Ge=Ge.next=e}return Ge}function yn(){return{lastEffect:null,events:null,stores:null,memoCache:null}}function us(e){var t=hs;return hs+=1,Aa===null&&(Aa=[]),e=Bc(Aa,e,t),t=J,(Ge===null?t.memoizedState:Ge.next)===null&&(t=t.alternate,q.H=t===null||t.memoizedState===null?Md:gr),e}function bn(e){if(e!==null&&typeof e=="object"){if(typeof e.then=="function")return us(e);if(e.$$typeof===Ne)return Xe(e)}throw Error(d(438,String(e)))}function or(e){var t=null,i=J.updateQueue;if(i!==null&&(t=i.memoCache),t==null){var a=J.alternate;a!==null&&(a=a.updateQueue,a!==null&&(a=a.memoCache,a!=null&&(t={data:a.data.map(function(s){return s.slice()}),index:0})))}if(t==null&&(t={data:[],index:0}),i===null&&(i=yn(),J.updateQueue=i),i.memoCache=t,i=t.data[t.index],i===void 0)for(i=t.data[t.index]=Array(e),a=0;a<e;a++)i[a]=xt;return t.index++,i}function Zt(e,t){return typeof t=="function"?t(e):t}function wn(e){var t=Re();return rr(t,ye,e)}function rr(e,t,i){var a=e.queue;if(a===null)throw Error(d(311));a.lastRenderedReducer=i;var s=e.baseQueue,n=a.pending;if(n!==null){if(s!==null){var o=s.next;s.next=n.next,n.next=o}t.baseQueue=s=n,a.pending=null}if(n=e.baseState,s===null)e.memoizedState=n;else{t=s.next;var l=o=null,h=null,f=t,k=!1;do{var A=f.lane&-536870913;if(A!==f.lane?(ae&A)===A:(Jt&A)===A){var y=f.revertLane;if(y===0)h!==null&&(h=h.next={lane:0,revertLane:0,gesture:null,action:f.action,hasEagerState:f.hasEagerState,eagerState:f.eagerState,next:null}),A===wa&&(k=!0);else if((Jt&y)===y){f=f.next,y===wa&&(k=!0);continue}else A={lane:0,revertLane:f.revertLane,gesture:null,action:f.action,hasEagerState:f.hasEagerState,eagerState:f.eagerState,next:null},h===null?(l=h=A,o=n):h=h.next=A,J.lanes|=y,Ti|=y;A=f.action,Ji&&i(n,A),n=f.hasEagerState?f.eagerState:i(n,A)}else y={lane:A,revertLane:f.revertLane,gesture:f.gesture,action:f.action,hasEagerState:f.hasEagerState,eagerState:f.eagerState,next:null},h===null?(l=h=y,o=n):h=h.next=y,J.lanes|=A,Ti|=A;f=f.next}while(f!==null&&f!==t);if(h===null?o=n:h.next=l,!mt(n,e.memoizedState)&&(Be=!0,k&&(i=xa,i!==null)))throw i;e.memoizedState=n,e.baseState=o,e.baseQueue=h,a.lastRenderedState=n}return s===null&&(a.lanes=0),[e.memoizedState,a.dispatch]}function lr(e){var t=Re(),i=t.queue;if(i===null)throw Error(d(311));i.lastRenderedReducer=e;var a=i.dispatch,s=i.pending,n=t.memoizedState;if(s!==null){i.pending=null;var o=s=s.next;do n=e(n,o.action),o=o.next;while(o!==s);mt(n,t.memoizedState)||(Be=!0),t.memoizedState=n,t.baseQueue===null&&(t.baseState=n),i.lastRenderedState=n}return[n,a]}function Xc(e,t,i){var a=J,s=Re(),n=oe;if(n){if(i===void 0)throw Error(d(407));i=i()}else i=t();var o=!mt((ye||s).memoizedState,i);if(o&&(s.memoizedState=i,Be=!0),s=s.queue,hr($c.bind(null,a,s,e),[e]),s.getSnapshot!==t||o||Ge!==null&&Ge.memoizedState.tag&1){if(a.flags|=2048,Ea(9,{destroy:void 0},Zc.bind(null,a,s,i,t),null),xe===null)throw Error(d(349));n||(Jt&127)!==0||Jc(a,t,i)}return i}function Jc(e,t,i){e.flags|=16384,e={getSnapshot:t,value:i},t=J.updateQueue,t===null?(t=yn(),J.updateQueue=t,t.stores=[e]):(i=t.stores,i===null?t.stores=[e]:i.push(e))}function Zc(e,t,i,a){t.value=i,t.getSnapshot=a,ed(t)&&td(e)}function $c(e,t,i){return i(function(){ed(t)&&td(e)})}function ed(e){var t=e.getSnapshot;e=e.value;try{var i=t();return!mt(e,i)}catch{return!0}}function td(e){var t=_i(e,2);t!==null&&ht(t,e,2)}function cr(e){var t=it();if(typeof e=="function"){var i=e;if(e=i(),Ji){ci(!0);try{i()}finally{ci(!1)}}}return t.memoizedState=t.baseState=e,t.queue={pending:null,lanes:0,dispatch:null,lastRenderedReducer:Zt,lastRenderedState:e},t}function id(e,t,i,a){return e.baseState=i,rr(e,ye,typeof a=="function"?a:Zt)}function dm(e,t,i,a,s){if(Tn(e))throw Error(d(485));if(e=t.action,e!==null){var n={payload:s,action:e,next:null,isTransition:!0,status:"pending",value:null,reason:null,listeners:[],then:function(o){n.listeners.push(o)}};q.T!==null?i(!0):n.isTransition=!1,a(n),i=t.pending,i===null?(n.next=t.pending=n,ad(t,n)):(n.next=i.next,t.pending=i.next=n)}}function ad(e,t){var i=t.action,a=t.payload,s=e.state;if(t.isTransition){var n=q.T,o={};q.T=o;try{var l=i(s,a),h=q.S;h!==null&&h(o,l),sd(e,t,l)}catch(f){dr(e,t,f)}finally{n!==null&&o.types!==null&&(n.types=o.types),q.T=n}}else try{n=i(s,a),sd(e,t,n)}catch(f){dr(e,t,f)}}function sd(e,t,i){i!==null&&typeof i=="object"&&typeof i.then=="function"?i.then(function(a){nd(e,t,a)},function(a){return dr(e,t,a)}):nd(e,t,i)}function nd(e,t,i){t.status="fulfilled",t.value=i,od(t),e.state=i,t=e.pending,t!==null&&(i=t.next,i===t?e.pending=null:(i=i.next,t.next=i,ad(e,i)))}function dr(e,t,i){var a=e.pending;if(e.pending=null,a!==null){a=a.next;do t.status="rejected",t.reason=i,od(t),t=t.next;while(t!==a)}e.action=null}function od(e){e=e.listeners;for(var t=0;t<e.length;t++)(0,e[t])()}function rd(e,t){return t}function ld(e,t){if(oe){var i=xe.formState;if(i!==null){e:{var a=J;if(oe){if(Te){t:{for(var s=Te,n=zt;s.nodeType!==8;){if(!n){s=null;break t}if(s=It(s.nextSibling),s===null){s=null;break t}}n=s.data,s=n==="F!"||n==="F"?s:null}if(s){Te=It(s.nextSibling),a=s.data==="F!";break e}}mi(a)}a=!1}a&&(t=i[0])}}return i=it(),i.memoizedState=i.baseState=t,a={pending:null,lanes:0,dispatch:null,lastRenderedReducer:rd,lastRenderedState:t},i.queue=a,i=Ed.bind(null,J,a),a.dispatch=i,a=cr(!1),n=fr.bind(null,J,!1,a.queue),a=it(),s={state:t,dispatch:null,action:e,pending:null},a.queue=s,i=dm.bind(null,J,s,n,i),s.dispatch=i,a.memoizedState=e,[t,i,!1]}function cd(e){var t=Re();return dd(t,ye,e)}function dd(e,t,i){if(t=rr(e,t,rd)[0],e=wn(Zt)[0],typeof t=="object"&&t!==null&&typeof t.then=="function")try{var a=us(t)}catch(o){throw o===ka?dn:o}else a=t;t=Re();var s=t.queue,n=s.dispatch;return i!==t.memoizedState&&(J.flags|=2048,Ea(9,{destroy:void 0},hm.bind(null,s,i),null)),[a,n,e]}function hm(e,t){e.action=t}function hd(e){var t=Re(),i=ye;if(i!==null)return dd(t,i,e);Re(),t=t.memoizedState,i=Re();var a=i.queue.dispatch;return i.memoizedState=e,[t,a,!1]}function Ea(e,t,i,a){return e={tag:e,create:i,deps:a,inst:t,next:null},t=J.updateQueue,t===null&&(t=yn(),J.updateQueue=t),i=t.lastEffect,i===null?t.lastEffect=e.next=e:(a=i.next,i.next=e,e.next=a,t.lastEffect=e),e}function ud(){return Re().memoizedState}function xn(e,t,i,a){var s=it();J.flags|=e,s.memoizedState=Ea(1|t,{destroy:void 0},i,a===void 0?null:a)}function kn(e,t,i,a){var s=Re();a=a===void 0?null:a;var n=s.memoizedState.inst;ye!==null&&a!==null&&tr(a,ye.memoizedState.deps)?s.memoizedState=Ea(t,n,i,a):(J.flags|=e,s.memoizedState=Ea(1|t,n,i,a))}function pd(e,t){xn(8390656,8,e,t)}function hr(e,t){kn(2048,8,e,t)}function um(e){J.flags|=4;var t=J.updateQueue;if(t===null)t=yn(),J.updateQueue=t,t.events=[e];else{var i=t.events;i===null?t.events=[e]:i.push(e)}}function md(e){var t=Re().memoizedState;return um({ref:t,nextImpl:e}),function(){if((pe&2)!==0)throw Error(d(440));return t.impl.apply(void 0,arguments)}}function vd(e,t){return kn(4,2,e,t)}function fd(e,t){return kn(4,4,e,t)}function gd(e,t){if(typeof t=="function"){e=e();var i=t(e);return function(){typeof i=="function"?i():t(null)}}if(t!=null)return e=e(),t.current=e,function(){t.current=null}}function yd(e,t,i){i=i!=null?i.concat([e]):null,kn(4,4,gd.bind(null,t,e),i)}function ur(){}function bd(e,t){var i=Re();t=t===void 0?null:t;var a=i.memoizedState;return t!==null&&tr(t,a[1])?a[0]:(i.memoizedState=[e,t],e)}function wd(e,t){var i=Re();t=t===void 0?null:t;var a=i.memoizedState;if(t!==null&&tr(t,a[1]))return a[0];if(a=e(),Ji){ci(!0);try{e()}finally{ci(!1)}}return i.memoizedState=[a,t],a}function pr(e,t,i){return i===void 0||(Jt&1073741824)!==0&&(ae&261930)===0?e.memoizedState=t:(e.memoizedState=i,e=xh(),J.lanes|=e,Ti|=e,i)}function xd(e,t,i,a){return mt(i,t)?i:qa.current!==null?(e=pr(e,i,a),mt(e,t)||(Be=!0),e):(Jt&42)===0||(Jt&1073741824)!==0&&(ae&261930)===0?(Be=!0,e.memoizedState=i):(e=xh(),J.lanes|=e,Ti|=e,t)}function kd(e,t,i,a,s){var n=N.p;N.p=n!==0&&8>n?n:8;var o=q.T,l={};q.T=l,fr(e,!1,t,i);try{var h=s(),f=q.S;if(f!==null&&f(l,h),h!==null&&typeof h=="object"&&typeof h.then=="function"){var k=rm(h,a);ps(e,t,k,wt(e))}else ps(e,t,a,wt(e))}catch(A){ps(e,t,{then:function(){},status:"rejected",reason:A},wt())}finally{N.p=n,o!==null&&l.types!==null&&(o.types=l.types),q.T=o}}function pm(){}function mr(e,t,i,a){if(e.tag!==5)throw Error(d(476));var s=Td(e).queue;kd(e,s,t,W,i===null?pm:function(){return qd(e),i(a)})}function Td(e){var t=e.memoizedState;if(t!==null)return t;t={memoizedState:W,baseState:W,baseQueue:null,queue:{pending:null,lanes:0,dispatch:null,lastRenderedReducer:Zt,lastRenderedState:W},next:null};var i={};return t.next={memoizedState:i,baseState:i,baseQueue:null,queue:{pending:null,lanes:0,dispatch:null,lastRenderedReducer:Zt,lastRenderedState:i},next:null},e.memoizedState=t,e=e.alternate,e!==null&&(e.memoizedState=t),t}function qd(e){var t=Td(e);t.next===null&&(t=e.alternate.memoizedState),ps(e,t.next.queue,{},wt())}function vr(){return Xe(Ms)}function Sd(){return Re().memoizedState}function Ad(){return Re().memoizedState}function mm(e){for(var t=e.return;t!==null;){switch(t.tag){case 24:case 3:var i=wt();e=gi(i);var a=yi(t,e,i);a!==null&&(ht(a,t,i),ls(a,t,i)),t={cache:Uo()},e.payload=t;return}t=t.return}}function vm(e,t,i){var a=wt();i={lane:a,revertLane:0,gesture:null,action:i,hasEagerState:!1,eagerState:null,next:null},Tn(e)?Cd(t,i):(i=Io(e,t,i,a),i!==null&&(ht(i,e,a),jd(i,t,a)))}function Ed(e,t,i){var a=wt();ps(e,t,i,a)}function ps(e,t,i,a){var s={lane:a,revertLane:0,gesture:null,action:i,hasEagerState:!1,eagerState:null,next:null};if(Tn(e))Cd(t,s);else{var n=e.alternate;if(e.lanes===0&&(n===null||n.lanes===0)&&(n=t.lastRenderedReducer,n!==null))try{var o=t.lastRenderedState,l=n(o,i);if(s.hasEagerState=!0,s.eagerState=l,mt(l,o))return an(e,t,s,0),xe===null&&tn(),!1}catch{}if(i=Io(e,t,s,a),i!==null)return ht(i,e,a),jd(i,t,a),!0}return!1}function fr(e,t,i,a){if(a={lane:2,revertLane:Kr(),gesture:null,action:a,hasEagerState:!1,eagerState:null,next:null},Tn(e)){if(t)throw Error(d(479))}else t=Io(e,i,a,2),t!==null&&ht(t,e,2)}function Tn(e){var t=e.alternate;return e===J||t!==null&&t===J}function Cd(e,t){Sa=fn=!0;var i=e.pending;i===null?t.next=t:(t.next=i.next,i.next=t),e.pending=t}function jd(e,t,i){if((i&4194048)!==0){var a=t.lanes;a&=e.pendingLanes,i|=a,t.lanes=i,Dl(e,i)}}var ms={readContext:Xe,use:bn,useCallback:Ie,useContext:Ie,useEffect:Ie,useImperativeHandle:Ie,useLayoutEffect:Ie,useInsertionEffect:Ie,useMemo:Ie,useReducer:Ie,useRef:Ie,useState:Ie,useDebugValue:Ie,useDeferredValue:Ie,useTransition:Ie,useSyncExternalStore:Ie,useId:Ie,useHostTransitionStatus:Ie,useFormState:Ie,useActionState:Ie,useOptimistic:Ie,useMemoCache:Ie,useCacheRefresh:Ie};ms.useEffectEvent=Ie;var Md={readContext:Xe,use:bn,useCallback:function(e,t){return it().memoizedState=[e,t===void 0?null:t],e},useContext:Xe,useEffect:pd,useImperativeHandle:function(e,t,i){i=i!=null?i.concat([e]):null,xn(4194308,4,gd.bind(null,t,e),i)},useLayoutEffect:function(e,t){return xn(4194308,4,e,t)},useInsertionEffect:function(e,t){xn(4,2,e,t)},useMemo:function(e,t){var i=it();t=t===void 0?null:t;var a=e();if(Ji){ci(!0);try{e()}finally{ci(!1)}}return i.memoizedState=[a,t],a},useReducer:function(e,t,i){var a=it();if(i!==void 0){var s=i(t);if(Ji){ci(!0);try{i(t)}finally{ci(!1)}}}else s=t;return a.memoizedState=a.baseState=s,e={pending:null,lanes:0,dispatch:null,lastRenderedReducer:e,lastRenderedState:s},a.queue=e,e=e.dispatch=vm.bind(null,J,e),[a.memoizedState,e]},useRef:function(e){var t=it();return e={current:e},t.memoizedState=e},useState:function(e){e=cr(e);var t=e.queue,i=Ed.bind(null,J,t);return t.dispatch=i,[e.memoizedState,i]},useDebugValue:ur,useDeferredValue:function(e,t){var i=it();return pr(i,e,t)},useTransition:function(){var e=cr(!1);return e=kd.bind(null,J,e.queue,!0,!1),it().memoizedState=e,[!1,e]},useSyncExternalStore:function(e,t,i){var a=J,s=it();if(oe){if(i===void 0)throw Error(d(407));i=i()}else{if(i=t(),xe===null)throw Error(d(349));(ae&127)!==0||Jc(a,t,i)}s.memoizedState=i;var n={value:i,getSnapshot:t};return s.queue=n,pd($c.bind(null,a,n,e),[e]),a.flags|=2048,Ea(9,{destroy:void 0},Zc.bind(null,a,n,i,t),null),i},useId:function(){var e=it(),t=xe.identifierPrefix;if(oe){var i=Ft,a=Lt;i=(a&~(1<<32-pt(a)-1)).toString(32)+i,t="_"+t+"R_"+i,i=gn++,0<i&&(t+="H"+i.toString(32)),t+="_"}else i=lm++,t="_"+t+"r_"+i.toString(32)+"_";return e.memoizedState=t},useHostTransitionStatus:vr,useFormState:ld,useActionState:ld,useOptimistic:function(e){var t=it();t.memoizedState=t.baseState=e;var i={pending:null,lanes:0,dispatch:null,lastRenderedReducer:null,lastRenderedState:null};return t.queue=i,t=fr.bind(null,J,!0,i),i.dispatch=t,[e,t]},useMemoCache:or,useCacheRefresh:function(){return it().memoizedState=mm.bind(null,J)},useEffectEvent:function(e){var t=it(),i={impl:e};return t.memoizedState=i,function(){if((pe&2)!==0)throw Error(d(440));return i.impl.apply(void 0,arguments)}}},gr={readContext:Xe,use:bn,useCallback:bd,useContext:Xe,useEffect:hr,useImperativeHandle:yd,useInsertionEffect:vd,useLayoutEffect:fd,useMemo:wd,useReducer:wn,useRef:ud,useState:function(){return wn(Zt)},useDebugValue:ur,useDeferredValue:function(e,t){var i=Re();return xd(i,ye.memoizedState,e,t)},useTransition:function(){var e=wn(Zt)[0],t=Re().memoizedState;return[typeof e=="boolean"?e:us(e),t]},useSyncExternalStore:Xc,useId:Sd,useHostTransitionStatus:vr,useFormState:cd,useActionState:cd,useOptimistic:function(e,t){var i=Re();return id(i,ye,e,t)},useMemoCache:or,useCacheRefresh:Ad};gr.useEffectEvent=md;var zd={readContext:Xe,use:bn,useCallback:bd,useContext:Xe,useEffect:hr,useImperativeHandle:yd,useInsertionEffect:vd,useLayoutEffect:fd,useMemo:wd,useReducer:lr,useRef:ud,useState:function(){return lr(Zt)},useDebugValue:ur,useDeferredValue:function(e,t){var i=Re();return ye===null?pr(i,e,t):xd(i,ye.memoizedState,e,t)},useTransition:function(){var e=lr(Zt)[0],t=Re().memoizedState;return[typeof e=="boolean"?e:us(e),t]},useSyncExternalStore:Xc,useId:Sd,useHostTransitionStatus:vr,useFormState:hd,useActionState:hd,useOptimistic:function(e,t){var i=Re();return ye!==null?id(i,ye,e,t):(i.baseState=e,[e,i.queue.dispatch])},useMemoCache:or,useCacheRefresh:Ad};zd.useEffectEvent=md;function yr(e,t,i,a){t=e.memoizedState,i=i(a,t),i=i==null?t:O({},t,i),e.memoizedState=i,e.lanes===0&&(e.updateQueue.baseState=i)}var br={enqueueSetState:function(e,t,i){e=e._reactInternals;var a=wt(),s=gi(a);s.payload=t,i!=null&&(s.callback=i),t=yi(e,s,a),t!==null&&(ht(t,e,a),ls(t,e,a))},enqueueReplaceState:function(e,t,i){e=e._reactInternals;var a=wt(),s=gi(a);s.tag=1,s.payload=t,i!=null&&(s.callback=i),t=yi(e,s,a),t!==null&&(ht(t,e,a),ls(t,e,a))},enqueueForceUpdate:function(e,t){e=e._reactInternals;var i=wt(),a=gi(i);a.tag=2,t!=null&&(a.callback=t),t=yi(e,a,i),t!==null&&(ht(t,e,i),ls(t,e,i))}};function Nd(e,t,i,a,s,n,o){return e=e.stateNode,typeof e.shouldComponentUpdate=="function"?e.shouldComponentUpdate(a,n,o):t.prototype&&t.prototype.isPureReactComponent?!es(i,a)||!es(s,n):!0}function Id(e,t,i,a){e=t.state,typeof t.componentWillReceiveProps=="function"&&t.componentWillReceiveProps(i,a),typeof t.UNSAFE_componentWillReceiveProps=="function"&&t.UNSAFE_componentWillReceiveProps(i,a),t.state!==e&&br.enqueueReplaceState(t,t.state,null)}function Zi(e,t){var i=t;if("ref"in t){i={};for(var a in t)a!=="ref"&&(i[a]=t[a])}if(e=e.defaultProps){i===t&&(i=O({},i));for(var s in e)i[s]===void 0&&(i[s]=e[s])}return i}function Dd(e){en(e)}function Od(e){console.error(e)}function Rd(e){en(e)}function qn(e,t){try{var i=e.onUncaughtError;i(t.value,{componentStack:t.stack})}catch(a){setTimeout(function(){throw a})}}function Hd(e,t,i){try{var a=e.onCaughtError;a(i.value,{componentStack:i.stack,errorBoundary:t.tag===1?t.stateNode:null})}catch(s){setTimeout(function(){throw s})}}function wr(e,t,i){return i=gi(i),i.tag=3,i.payload={element:null},i.callback=function(){qn(e,t)},i}function Gd(e){return e=gi(e),e.tag=3,e}function Bd(e,t,i,a){var s=i.type.getDerivedStateFromError;if(typeof s=="function"){var n=a.value;e.payload=function(){return s(n)},e.callback=function(){Hd(t,i,a)}}var o=i.stateNode;o!==null&&typeof o.componentDidCatch=="function"&&(e.callback=function(){Hd(t,i,a),typeof s!="function"&&(qi===null?qi=new Set([this]):qi.add(this));var l=a.stack;this.componentDidCatch(a.value,{componentStack:l!==null?l:""})})}function fm(e,t,i,a,s){if(i.flags|=32768,a!==null&&typeof a=="object"&&typeof a.then=="function"){if(t=i.alternate,t!==null&&ba(t,i,s,!0),i=ft.current,i!==null){switch(i.tag){case 31:case 13:return Nt===null?Rn():i.alternate===null&&De===0&&(De=3),i.flags&=-257,i.flags|=65536,i.lanes=s,a===hn?i.flags|=16384:(t=i.updateQueue,t===null?i.updateQueue=new Set([a]):t.add(a),Pr(e,a,s)),!1;case 22:return i.flags|=65536,a===hn?i.flags|=16384:(t=i.updateQueue,t===null?(t={transitions:null,markerInstances:null,retryQueue:new Set([a])},i.updateQueue=t):(i=t.retryQueue,i===null?t.retryQueue=new Set([a]):i.add(a)),Pr(e,a,s)),!1}throw Error(d(435,i.tag))}return Pr(e,a,s),Rn(),!1}if(oe)return t=ft.current,t!==null?((t.flags&65536)===0&&(t.flags|=256),t.flags|=65536,t.lanes=s,a!==Bo&&(e=Error(d(422),{cause:a}),as(Ct(e,i)))):(a!==Bo&&(t=Error(d(423),{cause:a}),as(Ct(t,i))),e=e.current.alternate,e.flags|=65536,s&=-s,e.lanes|=s,a=Ct(a,i),s=wr(e.stateNode,a,s),Xo(e,s),De!==4&&(De=2)),!1;var n=Error(d(520),{cause:a});if(n=Ct(n,i),ks===null?ks=[n]:ks.push(n),De!==4&&(De=2),t===null)return!0;a=Ct(a,i),i=t;do{switch(i.tag){case 3:return i.flags|=65536,e=s&-s,i.lanes|=e,e=wr(i.stateNode,a,e),Xo(i,e),!1;case 1:if(t=i.type,n=i.stateNode,(i.flags&128)===0&&(typeof t.getDerivedStateFromError=="function"||n!==null&&typeof n.componentDidCatch=="function"&&(qi===null||!qi.has(n))))return i.flags|=65536,s&=-s,i.lanes|=s,s=Gd(s),Bd(s,e,i,a),Xo(i,s),!1}i=i.return}while(i!==null);return!1}var xr=Error(d(461)),Be=!1;function Je(e,t,i,a){t.child=e===null?Wc(t,null,i,a):Xi(t,e.child,i,a)}function Ld(e,t,i,a,s){i=i.render;var n=t.ref;if("ref"in a){var o={};for(var l in a)l!=="ref"&&(o[l]=a[l])}else o=a;return Yi(t),a=ir(e,t,i,o,n,s),l=ar(),e!==null&&!Be?(sr(e,t,s),$t(e,t,s)):(oe&&l&&Ho(t),t.flags|=1,Je(e,t,a,s),t.child)}function Fd(e,t,i,a,s){if(e===null){var n=i.type;return typeof n=="function"&&!Do(n)&&n.defaultProps===void 0&&i.compare===null?(t.tag=15,t.type=n,_d(e,t,n,a,s)):(e=nn(i.type,null,a,t,t.mode,s),e.ref=t.ref,e.return=t,t.child=e)}if(n=e.child,!jr(e,s)){var o=n.memoizedProps;if(i=i.compare,i=i!==null?i:es,i(o,a)&&e.ref===t.ref)return $t(e,t,s)}return t.flags|=1,e=Vt(n,a),e.ref=t.ref,e.return=t,t.child=e}function _d(e,t,i,a,s){if(e!==null){var n=e.memoizedProps;if(es(n,a)&&e.ref===t.ref)if(Be=!1,t.pendingProps=a=n,jr(e,s))(e.flags&131072)!==0&&(Be=!0);else return t.lanes=e.lanes,$t(e,t,s)}return kr(e,t,i,a,s)}function Wd(e,t,i,a){var s=a.children,n=e!==null?e.memoizedState:null;if(e===null&&t.stateNode===null&&(t.stateNode={_visibility:1,_pendingMarkers:null,_retryCache:null,_transitions:null}),a.mode==="hidden"){if((t.flags&128)!==0){if(n=n!==null?n.baseLanes|i:i,e!==null){for(a=t.child=e.child,s=0;a!==null;)s=s|a.lanes|a.childLanes,a=a.sibling;a=s&~n}else a=0,t.child=null;return Ud(e,t,n,i,a)}if((i&536870912)!==0)t.memoizedState={baseLanes:0,cachePool:null},e!==null&&cn(t,n!==null?n.cachePool:null),n!==null?Yc(t,n):Zo(),Vc(t);else return a=t.lanes=536870912,Ud(e,t,n!==null?n.baseLanes|i:i,i,a)}else n!==null?(cn(t,n.cachePool),Yc(t,n),wi(),t.memoizedState=null):(e!==null&&cn(t,null),Zo(),wi());return Je(e,t,s,i),t.child}function vs(e,t){return e!==null&&e.tag===22||t.stateNode!==null||(t.stateNode={_visibility:1,_pendingMarkers:null,_retryCache:null,_transitions:null}),t.sibling}function Ud(e,t,i,a,s){var n=Yo();return n=n===null?null:{parent:He._currentValue,pool:n},t.memoizedState={baseLanes:i,cachePool:n},e!==null&&cn(t,null),Zo(),Vc(t),e!==null&&ba(e,t,a,!0),t.childLanes=s,null}function Sn(e,t){return t=En({mode:t.mode,children:t.children},e.mode),t.ref=e.ref,e.child=t,t.return=e,t}function Pd(e,t,i){return Xi(t,e.child,null,i),e=Sn(t,t.pendingProps),e.flags|=2,gt(t),t.memoizedState=null,e}function gm(e,t,i){var a=t.pendingProps,s=(t.flags&128)!==0;if(t.flags&=-129,e===null){if(oe){if(a.mode==="hidden")return e=Sn(t,a),t.lanes=536870912,vs(null,e);if(er(t),(e=Te)?(e=au(e,zt),e=e!==null&&e.data==="&"?e:null,e!==null&&(t.memoizedState={dehydrated:e,treeContext:ui!==null?{id:Lt,overflow:Ft}:null,retryLane:536870912,hydrationErrors:null},i=Cc(e),i.return=t,t.child=i,Qe=t,Te=null)):e=null,e===null)throw mi(t);return t.lanes=536870912,null}return Sn(t,a)}var n=e.memoizedState;if(n!==null){var o=n.dehydrated;if(er(t),s)if(t.flags&256)t.flags&=-257,t=Pd(e,t,i);else if(t.memoizedState!==null)t.child=e.child,t.flags|=128,t=null;else throw Error(d(558));else if(Be||ba(e,t,i,!1),s=(i&e.childLanes)!==0,Be||s){if(a=xe,a!==null&&(o=Ol(a,i),o!==0&&o!==n.retryLane))throw n.retryLane=o,_i(e,o),ht(a,e,o),xr;Rn(),t=Pd(e,t,i)}else e=n.treeContext,Te=It(o.nextSibling),Qe=t,oe=!0,pi=null,zt=!1,e!==null&&zc(t,e),t=Sn(t,a),t.flags|=4096;return t}return e=Vt(e.child,{mode:a.mode,children:a.children}),e.ref=t.ref,t.child=e,e.return=t,e}function An(e,t){var i=t.ref;if(i===null)e!==null&&e.ref!==null&&(t.flags|=4194816);else{if(typeof i!="function"&&typeof i!="object")throw Error(d(284));(e===null||e.ref!==i)&&(t.flags|=4194816)}}function kr(e,t,i,a,s){return Yi(t),i=ir(e,t,i,a,void 0,s),a=ar(),e!==null&&!Be?(sr(e,t,s),$t(e,t,s)):(oe&&a&&Ho(t),t.flags|=1,Je(e,t,i,s),t.child)}function Yd(e,t,i,a,s,n){return Yi(t),t.updateQueue=null,i=Qc(t,a,i,s),Kc(e),a=ar(),e!==null&&!Be?(sr(e,t,n),$t(e,t,n)):(oe&&a&&Ho(t),t.flags|=1,Je(e,t,i,n),t.child)}function Vd(e,t,i,a,s){if(Yi(t),t.stateNode===null){var n=va,o=i.contextType;typeof o=="object"&&o!==null&&(n=Xe(o)),n=new i(a,n),t.memoizedState=n.state!==null&&n.state!==void 0?n.state:null,n.updater=br,t.stateNode=n,n._reactInternals=t,n=t.stateNode,n.props=a,n.state=t.memoizedState,n.refs={},Ko(t),o=i.contextType,n.context=typeof o=="object"&&o!==null?Xe(o):va,n.state=t.memoizedState,o=i.getDerivedStateFromProps,typeof o=="function"&&(yr(t,i,o,a),n.state=t.memoizedState),typeof i.getDerivedStateFromProps=="function"||typeof n.getSnapshotBeforeUpdate=="function"||typeof n.UNSAFE_componentWillMount!="function"&&typeof n.componentWillMount!="function"||(o=n.state,typeof n.componentWillMount=="function"&&n.componentWillMount(),typeof n.UNSAFE_componentWillMount=="function"&&n.UNSAFE_componentWillMount(),o!==n.state&&br.enqueueReplaceState(n,n.state,null),ds(t,a,n,s),cs(),n.state=t.memoizedState),typeof n.componentDidMount=="function"&&(t.flags|=4194308),a=!0}else if(e===null){n=t.stateNode;var l=t.memoizedProps,h=Zi(i,l);n.props=h;var f=n.context,k=i.contextType;o=va,typeof k=="object"&&k!==null&&(o=Xe(k));var A=i.getDerivedStateFromProps;k=typeof A=="function"||typeof n.getSnapshotBeforeUpdate=="function",l=t.pendingProps!==l,k||typeof n.UNSAFE_componentWillReceiveProps!="function"&&typeof n.componentWillReceiveProps!="function"||(l||f!==o)&&Id(t,n,a,o),fi=!1;var y=t.memoizedState;n.state=y,ds(t,a,n,s),cs(),f=t.memoizedState,l||y!==f||fi?(typeof A=="function"&&(yr(t,i,A,a),f=t.memoizedState),(h=fi||Nd(t,i,h,a,y,f,o))?(k||typeof n.UNSAFE_componentWillMount!="function"&&typeof n.componentWillMount!="function"||(typeof n.componentWillMount=="function"&&n.componentWillMount(),typeof n.UNSAFE_componentWillMount=="function"&&n.UNSAFE_componentWillMount()),typeof n.componentDidMount=="function"&&(t.flags|=4194308)):(typeof n.componentDidMount=="function"&&(t.flags|=4194308),t.memoizedProps=a,t.memoizedState=f),n.props=a,n.state=f,n.context=o,a=h):(typeof n.componentDidMount=="function"&&(t.flags|=4194308),a=!1)}else{n=t.stateNode,Qo(e,t),o=t.memoizedProps,k=Zi(i,o),n.props=k,A=t.pendingProps,y=n.context,f=i.contextType,h=va,typeof f=="object"&&f!==null&&(h=Xe(f)),l=i.getDerivedStateFromProps,(f=typeof l=="function"||typeof n.getSnapshotBeforeUpdate=="function")||typeof n.UNSAFE_componentWillReceiveProps!="function"&&typeof n.componentWillReceiveProps!="function"||(o!==A||y!==h)&&Id(t,n,a,h),fi=!1,y=t.memoizedState,n.state=y,ds(t,a,n,s),cs();var w=t.memoizedState;o!==A||y!==w||fi||e!==null&&e.dependencies!==null&&rn(e.dependencies)?(typeof l=="function"&&(yr(t,i,l,a),w=t.memoizedState),(k=fi||Nd(t,i,k,a,y,w,h)||e!==null&&e.dependencies!==null&&rn(e.dependencies))?(f||typeof n.UNSAFE_componentWillUpdate!="function"&&typeof n.componentWillUpdate!="function"||(typeof n.componentWillUpdate=="function"&&n.componentWillUpdate(a,w,h),typeof n.UNSAFE_componentWillUpdate=="function"&&n.UNSAFE_componentWillUpdate(a,w,h)),typeof n.componentDidUpdate=="function"&&(t.flags|=4),typeof n.getSnapshotBeforeUpdate=="function"&&(t.flags|=1024)):(typeof n.componentDidUpdate!="function"||o===e.memoizedProps&&y===e.memoizedState||(t.flags|=4),typeof n.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&y===e.memoizedState||(t.flags|=1024),t.memoizedProps=a,t.memoizedState=w),n.props=a,n.state=w,n.context=h,a=k):(typeof n.componentDidUpdate!="function"||o===e.memoizedProps&&y===e.memoizedState||(t.flags|=4),typeof n.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&y===e.memoizedState||(t.flags|=1024),a=!1)}return n=a,An(e,t),a=(t.flags&128)!==0,n||a?(n=t.stateNode,i=a&&typeof i.getDerivedStateFromError!="function"?null:n.render(),t.flags|=1,e!==null&&a?(t.child=Xi(t,e.child,null,s),t.child=Xi(t,null,i,s)):Je(e,t,i,s),t.memoizedState=n.state,e=t.child):e=$t(e,t,s),e}function Kd(e,t,i,a){return Ui(),t.flags|=256,Je(e,t,i,a),t.child}var Tr={dehydrated:null,treeContext:null,retryLane:0,hydrationErrors:null};function qr(e){return{baseLanes:e,cachePool:Hc()}}function Sr(e,t,i){return e=e!==null?e.childLanes&~i:0,t&&(e|=bt),e}function Qd(e,t,i){var a=t.pendingProps,s=!1,n=(t.flags&128)!==0,o;if((o=n)||(o=e!==null&&e.memoizedState===null?!1:(Oe.current&2)!==0),o&&(s=!0,t.flags&=-129),o=(t.flags&32)!==0,t.flags&=-33,e===null){if(oe){if(s?bi(t):wi(),(e=Te)?(e=au(e,zt),e=e!==null&&e.data!=="&"?e:null,e!==null&&(t.memoizedState={dehydrated:e,treeContext:ui!==null?{id:Lt,overflow:Ft}:null,retryLane:536870912,hydrationErrors:null},i=Cc(e),i.return=t,t.child=i,Qe=t,Te=null)):e=null,e===null)throw mi(t);return rl(e)?t.lanes=32:t.lanes=536870912,null}var l=a.children;return a=a.fallback,s?(wi(),s=t.mode,l=En({mode:"hidden",children:l},s),a=Wi(a,s,i,null),l.return=t,a.return=t,l.sibling=a,t.child=l,a=t.child,a.memoizedState=qr(i),a.childLanes=Sr(e,o,i),t.memoizedState=Tr,vs(null,a)):(bi(t),Ar(t,l))}var h=e.memoizedState;if(h!==null&&(l=h.dehydrated,l!==null)){if(n)t.flags&256?(bi(t),t.flags&=-257,t=Er(e,t,i)):t.memoizedState!==null?(wi(),t.child=e.child,t.flags|=128,t=null):(wi(),l=a.fallback,s=t.mode,a=En({mode:"visible",children:a.children},s),l=Wi(l,s,i,null),l.flags|=2,a.return=t,l.return=t,a.sibling=l,t.child=a,Xi(t,e.child,null,i),a=t.child,a.memoizedState=qr(i),a.childLanes=Sr(e,o,i),t.memoizedState=Tr,t=vs(null,a));else if(bi(t),rl(l)){if(o=l.nextSibling&&l.nextSibling.dataset,o)var f=o.dgst;o=f,a=Error(d(419)),a.stack="",a.digest=o,as({value:a,source:null,stack:null}),t=Er(e,t,i)}else if(Be||ba(e,t,i,!1),o=(i&e.childLanes)!==0,Be||o){if(o=xe,o!==null&&(a=Ol(o,i),a!==0&&a!==h.retryLane))throw h.retryLane=a,_i(e,a),ht(o,e,a),xr;ol(l)||Rn(),t=Er(e,t,i)}else ol(l)?(t.flags|=192,t.child=e.child,t=null):(e=h.treeContext,Te=It(l.nextSibling),Qe=t,oe=!0,pi=null,zt=!1,e!==null&&zc(t,e),t=Ar(t,a.children),t.flags|=4096);return t}return s?(wi(),l=a.fallback,s=t.mode,h=e.child,f=h.sibling,a=Vt(h,{mode:"hidden",children:a.children}),a.subtreeFlags=h.subtreeFlags&65011712,f!==null?l=Vt(f,l):(l=Wi(l,s,i,null),l.flags|=2),l.return=t,a.return=t,a.sibling=l,t.child=a,vs(null,a),a=t.child,l=e.child.memoizedState,l===null?l=qr(i):(s=l.cachePool,s!==null?(h=He._currentValue,s=s.parent!==h?{parent:h,pool:h}:s):s=Hc(),l={baseLanes:l.baseLanes|i,cachePool:s}),a.memoizedState=l,a.childLanes=Sr(e,o,i),t.memoizedState=Tr,vs(e.child,a)):(bi(t),i=e.child,e=i.sibling,i=Vt(i,{mode:"visible",children:a.children}),i.return=t,i.sibling=null,e!==null&&(o=t.deletions,o===null?(t.deletions=[e],t.flags|=16):o.push(e)),t.child=i,t.memoizedState=null,i)}function Ar(e,t){return t=En({mode:"visible",children:t},e.mode),t.return=e,e.child=t}function En(e,t){return e=vt(22,e,null,t),e.lanes=0,e}function Er(e,t,i){return Xi(t,e.child,null,i),e=Ar(t,t.pendingProps.children),e.flags|=2,t.memoizedState=null,e}function Xd(e,t,i){e.lanes|=t;var a=e.alternate;a!==null&&(a.lanes|=t),_o(e.return,t,i)}function Cr(e,t,i,a,s,n){var o=e.memoizedState;o===null?e.memoizedState={isBackwards:t,rendering:null,renderingStartTime:0,last:a,tail:i,tailMode:s,treeForkCount:n}:(o.isBackwards=t,o.rendering=null,o.renderingStartTime=0,o.last=a,o.tail=i,o.tailMode=s,o.treeForkCount=n)}function Jd(e,t,i){var a=t.pendingProps,s=a.revealOrder,n=a.tail;a=a.children;var o=Oe.current,l=(o&2)!==0;if(l?(o=o&1|2,t.flags|=128):o&=1,I(Oe,o),Je(e,t,a,i),a=oe?is:0,!l&&e!==null&&(e.flags&128)!==0)e:for(e=t.child;e!==null;){if(e.tag===13)e.memoizedState!==null&&Xd(e,i,t);else if(e.tag===19)Xd(e,i,t);else if(e.child!==null){e.child.return=e,e=e.child;continue}if(e===t)break e;for(;e.sibling===null;){if(e.return===null||e.return===t)break e;e=e.return}e.sibling.return=e.return,e=e.sibling}switch(s){case"forwards":for(i=t.child,s=null;i!==null;)e=i.alternate,e!==null&&vn(e)===null&&(s=i),i=i.sibling;i=s,i===null?(s=t.child,t.child=null):(s=i.sibling,i.sibling=null),Cr(t,!1,s,i,n,a);break;case"backwards":case"unstable_legacy-backwards":for(i=null,s=t.child,t.child=null;s!==null;){if(e=s.alternate,e!==null&&vn(e)===null){t.child=s;break}e=s.sibling,s.sibling=i,i=s,s=e}Cr(t,!0,i,null,n,a);break;case"together":Cr(t,!1,null,null,void 0,a);break;default:t.memoizedState=null}return t.child}function $t(e,t,i){if(e!==null&&(t.dependencies=e.dependencies),Ti|=t.lanes,(i&t.childLanes)===0)if(e!==null){if(ba(e,t,i,!1),(i&t.childLanes)===0)return null}else return null;if(e!==null&&t.child!==e.child)throw Error(d(153));if(t.child!==null){for(e=t.child,i=Vt(e,e.pendingProps),t.child=i,i.return=t;e.sibling!==null;)e=e.sibling,i=i.sibling=Vt(e,e.pendingProps),i.return=t;i.sibling=null}return t.child}function jr(e,t){return(e.lanes&t)!==0?!0:(e=e.dependencies,!!(e!==null&&rn(e)))}function ym(e,t,i){switch(t.tag){case 3:Ve(t,t.stateNode.containerInfo),vi(t,He,e.memoizedState.cache),Ui();break;case 27:case 5:Oi(t);break;case 4:Ve(t,t.stateNode.containerInfo);break;case 10:vi(t,t.type,t.memoizedProps.value);break;case 31:if(t.memoizedState!==null)return t.flags|=128,er(t),null;break;case 13:var a=t.memoizedState;if(a!==null)return a.dehydrated!==null?(bi(t),t.flags|=128,null):(i&t.child.childLanes)!==0?Qd(e,t,i):(bi(t),e=$t(e,t,i),e!==null?e.sibling:null);bi(t);break;case 19:var s=(e.flags&128)!==0;if(a=(i&t.childLanes)!==0,a||(ba(e,t,i,!1),a=(i&t.childLanes)!==0),s){if(a)return Jd(e,t,i);t.flags|=128}if(s=t.memoizedState,s!==null&&(s.rendering=null,s.tail=null,s.lastEffect=null),I(Oe,Oe.current),a)break;return null;case 22:return t.lanes=0,Wd(e,t,i,t.pendingProps);case 24:vi(t,He,e.memoizedState.cache)}return $t(e,t,i)}function Zd(e,t,i){if(e!==null)if(e.memoizedProps!==t.pendingProps)Be=!0;else{if(!jr(e,i)&&(t.flags&128)===0)return Be=!1,ym(e,t,i);Be=(e.flags&131072)!==0}else Be=!1,oe&&(t.flags&1048576)!==0&&Mc(t,is,t.index);switch(t.lanes=0,t.tag){case 16:e:{var a=t.pendingProps;if(e=Ki(t.elementType),t.type=e,typeof e=="function")Do(e)?(a=Zi(e,a),t.tag=1,t=Vd(null,t,e,a,i)):(t.tag=0,t=kr(null,t,e,a,i));else{if(e!=null){var s=e.$$typeof;if(s===Pe){t.tag=11,t=Ld(null,t,e,a,i);break e}else if(s===U){t.tag=14,t=Fd(null,t,e,a,i);break e}}throw t=kt(e)||e,Error(d(306,t,""))}}return t;case 0:return kr(e,t,t.type,t.pendingProps,i);case 1:return a=t.type,s=Zi(a,t.pendingProps),Vd(e,t,a,s,i);case 3:e:{if(Ve(t,t.stateNode.containerInfo),e===null)throw Error(d(387));a=t.pendingProps;var n=t.memoizedState;s=n.element,Qo(e,t),ds(t,a,null,i);var o=t.memoizedState;if(a=o.cache,vi(t,He,a),a!==n.cache&&Wo(t,[He],i,!0),cs(),a=o.element,n.isDehydrated)if(n={element:a,isDehydrated:!1,cache:o.cache},t.updateQueue.baseState=n,t.memoizedState=n,t.flags&256){t=Kd(e,t,a,i);break e}else if(a!==s){s=Ct(Error(d(424)),t),as(s),t=Kd(e,t,a,i);break e}else for(e=t.stateNode.containerInfo,e.nodeType===9?e=e.body:e=e.nodeName==="HTML"?e.ownerDocument.body:e,Te=It(e.firstChild),Qe=t,oe=!0,pi=null,zt=!0,i=Wc(t,null,a,i),t.child=i;i;)i.flags=i.flags&-3|4096,i=i.sibling;else{if(Ui(),a===s){t=$t(e,t,i);break e}Je(e,t,a,i)}t=t.child}return t;case 26:return An(e,t),e===null?(i=cu(t.type,null,t.pendingProps,null))?t.memoizedState=i:oe||(i=t.type,e=t.pendingProps,a=Wn(ee.current).createElement(i),a[Ke]=t,a[nt]=e,Ze(a,i,e),We(a),t.stateNode=a):t.memoizedState=cu(t.type,e.memoizedProps,t.pendingProps,e.memoizedState),null;case 27:return Oi(t),e===null&&oe&&(a=t.stateNode=ou(t.type,t.pendingProps,ee.current),Qe=t,zt=!0,s=Te,Ci(t.type)?(ll=s,Te=It(a.firstChild)):Te=s),Je(e,t,t.pendingProps.children,i),An(e,t),e===null&&(t.flags|=4194304),t.child;case 5:return e===null&&oe&&((s=a=Te)&&(a=Km(a,t.type,t.pendingProps,zt),a!==null?(t.stateNode=a,Qe=t,Te=It(a.firstChild),zt=!1,s=!0):s=!1),s||mi(t)),Oi(t),s=t.type,n=t.pendingProps,o=e!==null?e.memoizedProps:null,a=n.children,al(s,n)?a=null:o!==null&&al(s,o)&&(t.flags|=32),t.memoizedState!==null&&(s=ir(e,t,cm,null,null,i),Ms._currentValue=s),An(e,t),Je(e,t,a,i),t.child;case 6:return e===null&&oe&&((e=i=Te)&&(i=Qm(i,t.pendingProps,zt),i!==null?(t.stateNode=i,Qe=t,Te=null,e=!0):e=!1),e||mi(t)),null;case 13:return Qd(e,t,i);case 4:return Ve(t,t.stateNode.containerInfo),a=t.pendingProps,e===null?t.child=Xi(t,null,a,i):Je(e,t,a,i),t.child;case 11:return Ld(e,t,t.type,t.pendingProps,i);case 7:return Je(e,t,t.pendingProps,i),t.child;case 8:return Je(e,t,t.pendingProps.children,i),t.child;case 12:return Je(e,t,t.pendingProps.children,i),t.child;case 10:return a=t.pendingProps,vi(t,t.type,a.value),Je(e,t,a.children,i),t.child;case 9:return s=t.type._context,a=t.pendingProps.children,Yi(t),s=Xe(s),a=a(s),t.flags|=1,Je(e,t,a,i),t.child;case 14:return Fd(e,t,t.type,t.pendingProps,i);case 15:return _d(e,t,t.type,t.pendingProps,i);case 19:return Jd(e,t,i);case 31:return gm(e,t,i);case 22:return Wd(e,t,i,t.pendingProps);case 24:return Yi(t),a=Xe(He),e===null?(s=Yo(),s===null&&(s=xe,n=Uo(),s.pooledCache=n,n.refCount++,n!==null&&(s.pooledCacheLanes|=i),s=n),t.memoizedState={parent:a,cache:s},Ko(t),vi(t,He,s)):((e.lanes&i)!==0&&(Qo(e,t),ds(t,null,null,i),cs()),s=e.memoizedState,n=t.memoizedState,s.parent!==a?(s={parent:a,cache:a},t.memoizedState=s,t.lanes===0&&(t.memoizedState=t.updateQueue.baseState=s),vi(t,He,a)):(a=n.cache,vi(t,He,a),a!==s.cache&&Wo(t,[He],i,!0))),Je(e,t,t.pendingProps.children,i),t.child;case 29:throw t.pendingProps}throw Error(d(156,t.tag))}function ei(e){e.flags|=4}function Mr(e,t,i,a,s){if((t=(e.mode&32)!==0)&&(t=!1),t){if(e.flags|=16777216,(s&335544128)===s)if(e.stateNode.complete)e.flags|=8192;else if(Sh())e.flags|=8192;else throw Qi=hn,Vo}else e.flags&=-16777217}function $d(e,t){if(t.type!=="stylesheet"||(t.state.loading&4)!==0)e.flags&=-16777217;else if(e.flags|=16777216,!mu(t))if(Sh())e.flags|=8192;else throw Qi=hn,Vo}function Cn(e,t){t!==null&&(e.flags|=4),e.flags&16384&&(t=e.tag!==22?Nl():536870912,e.lanes|=t,za|=t)}function fs(e,t){if(!oe)switch(e.tailMode){case"hidden":t=e.tail;for(var i=null;t!==null;)t.alternate!==null&&(i=t),t=t.sibling;i===null?e.tail=null:i.sibling=null;break;case"collapsed":i=e.tail;for(var a=null;i!==null;)i.alternate!==null&&(a=i),i=i.sibling;a===null?t||e.tail===null?e.tail=null:e.tail.sibling=null:a.sibling=null}}function qe(e){var t=e.alternate!==null&&e.alternate.child===e.child,i=0,a=0;if(t)for(var s=e.child;s!==null;)i|=s.lanes|s.childLanes,a|=s.subtreeFlags&65011712,a|=s.flags&65011712,s.return=e,s=s.sibling;else for(s=e.child;s!==null;)i|=s.lanes|s.childLanes,a|=s.subtreeFlags,a|=s.flags,s.return=e,s=s.sibling;return e.subtreeFlags|=a,e.childLanes=i,t}function bm(e,t,i){var a=t.pendingProps;switch(Go(t),t.tag){case 16:case 15:case 0:case 11:case 7:case 8:case 12:case 9:case 14:return qe(t),null;case 1:return qe(t),null;case 3:return i=t.stateNode,a=null,e!==null&&(a=e.memoizedState.cache),t.memoizedState.cache!==a&&(t.flags|=2048),Xt(He),Me(),i.pendingContext&&(i.context=i.pendingContext,i.pendingContext=null),(e===null||e.child===null)&&(ya(t)?ei(t):e===null||e.memoizedState.isDehydrated&&(t.flags&256)===0||(t.flags|=1024,Lo())),qe(t),null;case 26:var s=t.type,n=t.memoizedState;return e===null?(ei(t),n!==null?(qe(t),$d(t,n)):(qe(t),Mr(t,s,null,a,i))):n?n!==e.memoizedState?(ei(t),qe(t),$d(t,n)):(qe(t),t.flags&=-16777217):(e=e.memoizedProps,e!==a&&ei(t),qe(t),Mr(t,s,e,a,i)),null;case 27:if(Ri(t),i=ee.current,s=t.type,e!==null&&t.stateNode!=null)e.memoizedProps!==a&&ei(t);else{if(!a){if(t.stateNode===null)throw Error(d(166));return qe(t),null}e=H.current,ya(t)?Nc(t):(e=ou(s,a,i),t.stateNode=e,ei(t))}return qe(t),null;case 5:if(Ri(t),s=t.type,e!==null&&t.stateNode!=null)e.memoizedProps!==a&&ei(t);else{if(!a){if(t.stateNode===null)throw Error(d(166));return qe(t),null}if(n=H.current,ya(t))Nc(t);else{var o=Wn(ee.current);switch(n){case 1:n=o.createElementNS("http://www.w3.org/2000/svg",s);break;case 2:n=o.createElementNS("http://www.w3.org/1998/Math/MathML",s);break;default:switch(s){case"svg":n=o.createElementNS("http://www.w3.org/2000/svg",s);break;case"math":n=o.createElementNS("http://www.w3.org/1998/Math/MathML",s);break;case"script":n=o.createElement("div"),n.innerHTML="<script><\/script>",n=n.removeChild(n.firstChild);break;case"select":n=typeof a.is=="string"?o.createElement("select",{is:a.is}):o.createElement("select"),a.multiple?n.multiple=!0:a.size&&(n.size=a.size);break;default:n=typeof a.is=="string"?o.createElement(s,{is:a.is}):o.createElement(s)}}n[Ke]=t,n[nt]=a;e:for(o=t.child;o!==null;){if(o.tag===5||o.tag===6)n.appendChild(o.stateNode);else if(o.tag!==4&&o.tag!==27&&o.child!==null){o.child.return=o,o=o.child;continue}if(o===t)break e;for(;o.sibling===null;){if(o.return===null||o.return===t)break e;o=o.return}o.sibling.return=o.return,o=o.sibling}t.stateNode=n;e:switch(Ze(n,s,a),s){case"button":case"input":case"select":case"textarea":a=!!a.autoFocus;break e;case"img":a=!0;break e;default:a=!1}a&&ei(t)}}return qe(t),Mr(t,t.type,e===null?null:e.memoizedProps,t.pendingProps,i),null;case 6:if(e&&t.stateNode!=null)e.memoizedProps!==a&&ei(t);else{if(typeof a!="string"&&t.stateNode===null)throw Error(d(166));if(e=ee.current,ya(t)){if(e=t.stateNode,i=t.memoizedProps,a=null,s=Qe,s!==null)switch(s.tag){case 27:case 5:a=s.memoizedProps}e[Ke]=t,e=!!(e.nodeValue===i||a!==null&&a.suppressHydrationWarning===!0||Qh(e.nodeValue,i)),e||mi(t,!0)}else e=Wn(e).createTextNode(a),e[Ke]=t,t.stateNode=e}return qe(t),null;case 31:if(i=t.memoizedState,e===null||e.memoizedState!==null){if(a=ya(t),i!==null){if(e===null){if(!a)throw Error(d(318));if(e=t.memoizedState,e=e!==null?e.dehydrated:null,!e)throw Error(d(557));e[Ke]=t}else Ui(),(t.flags&128)===0&&(t.memoizedState=null),t.flags|=4;qe(t),e=!1}else i=Lo(),e!==null&&e.memoizedState!==null&&(e.memoizedState.hydrationErrors=i),e=!0;if(!e)return t.flags&256?(gt(t),t):(gt(t),null);if((t.flags&128)!==0)throw Error(d(558))}return qe(t),null;case 13:if(a=t.memoizedState,e===null||e.memoizedState!==null&&e.memoizedState.dehydrated!==null){if(s=ya(t),a!==null&&a.dehydrated!==null){if(e===null){if(!s)throw Error(d(318));if(s=t.memoizedState,s=s!==null?s.dehydrated:null,!s)throw Error(d(317));s[Ke]=t}else Ui(),(t.flags&128)===0&&(t.memoizedState=null),t.flags|=4;qe(t),s=!1}else s=Lo(),e!==null&&e.memoizedState!==null&&(e.memoizedState.hydrationErrors=s),s=!0;if(!s)return t.flags&256?(gt(t),t):(gt(t),null)}return gt(t),(t.flags&128)!==0?(t.lanes=i,t):(i=a!==null,e=e!==null&&e.memoizedState!==null,i&&(a=t.child,s=null,a.alternate!==null&&a.alternate.memoizedState!==null&&a.alternate.memoizedState.cachePool!==null&&(s=a.alternate.memoizedState.cachePool.pool),n=null,a.memoizedState!==null&&a.memoizedState.cachePool!==null&&(n=a.memoizedState.cachePool.pool),n!==s&&(a.flags|=2048)),i!==e&&i&&(t.child.flags|=8192),Cn(t,t.updateQueue),qe(t),null);case 4:return Me(),e===null&&Zr(t.stateNode.containerInfo),qe(t),null;case 10:return Xt(t.type),qe(t),null;case 19:if(E(Oe),a=t.memoizedState,a===null)return qe(t),null;if(s=(t.flags&128)!==0,n=a.rendering,n===null)if(s)fs(a,!1);else{if(De!==0||e!==null&&(e.flags&128)!==0)for(e=t.child;e!==null;){if(n=vn(e),n!==null){for(t.flags|=128,fs(a,!1),e=n.updateQueue,t.updateQueue=e,Cn(t,e),t.subtreeFlags=0,e=i,i=t.child;i!==null;)Ec(i,e),i=i.sibling;return I(Oe,Oe.current&1|2),oe&&Kt(t,a.treeForkCount),t.child}e=e.sibling}a.tail!==null&&ze()>In&&(t.flags|=128,s=!0,fs(a,!1),t.lanes=4194304)}else{if(!s)if(e=vn(n),e!==null){if(t.flags|=128,s=!0,e=e.updateQueue,t.updateQueue=e,Cn(t,e),fs(a,!0),a.tail===null&&a.tailMode==="hidden"&&!n.alternate&&!oe)return qe(t),null}else 2*ze()-a.renderingStartTime>In&&i!==536870912&&(t.flags|=128,s=!0,fs(a,!1),t.lanes=4194304);a.isBackwards?(n.sibling=t.child,t.child=n):(e=a.last,e!==null?e.sibling=n:t.child=n,a.last=n)}return a.tail!==null?(e=a.tail,a.rendering=e,a.tail=e.sibling,a.renderingStartTime=ze(),e.sibling=null,i=Oe.current,I(Oe,s?i&1|2:i&1),oe&&Kt(t,a.treeForkCount),e):(qe(t),null);case 22:case 23:return gt(t),$o(),a=t.memoizedState!==null,e!==null?e.memoizedState!==null!==a&&(t.flags|=8192):a&&(t.flags|=8192),a?(i&536870912)!==0&&(t.flags&128)===0&&(qe(t),t.subtreeFlags&6&&(t.flags|=8192)):qe(t),i=t.updateQueue,i!==null&&Cn(t,i.retryQueue),i=null,e!==null&&e.memoizedState!==null&&e.memoizedState.cachePool!==null&&(i=e.memoizedState.cachePool.pool),a=null,t.memoizedState!==null&&t.memoizedState.cachePool!==null&&(a=t.memoizedState.cachePool.pool),a!==i&&(t.flags|=2048),e!==null&&E(Vi),null;case 24:return i=null,e!==null&&(i=e.memoizedState.cache),t.memoizedState.cache!==i&&(t.flags|=2048),Xt(He),qe(t),null;case 25:return null;case 30:return null}throw Error(d(156,t.tag))}function wm(e,t){switch(Go(t),t.tag){case 1:return e=t.flags,e&65536?(t.flags=e&-65537|128,t):null;case 3:return Xt(He),Me(),e=t.flags,(e&65536)!==0&&(e&128)===0?(t.flags=e&-65537|128,t):null;case 26:case 27:case 5:return Ri(t),null;case 31:if(t.memoizedState!==null){if(gt(t),t.alternate===null)throw Error(d(340));Ui()}return e=t.flags,e&65536?(t.flags=e&-65537|128,t):null;case 13:if(gt(t),e=t.memoizedState,e!==null&&e.dehydrated!==null){if(t.alternate===null)throw Error(d(340));Ui()}return e=t.flags,e&65536?(t.flags=e&-65537|128,t):null;case 19:return E(Oe),null;case 4:return Me(),null;case 10:return Xt(t.type),null;case 22:case 23:return gt(t),$o(),e!==null&&E(Vi),e=t.flags,e&65536?(t.flags=e&-65537|128,t):null;case 24:return Xt(He),null;case 25:return null;default:return null}}function eh(e,t){switch(Go(t),t.tag){case 3:Xt(He),Me();break;case 26:case 27:case 5:Ri(t);break;case 4:Me();break;case 31:t.memoizedState!==null&&gt(t);break;case 13:gt(t);break;case 19:E(Oe);break;case 10:Xt(t.type);break;case 22:case 23:gt(t),$o(),e!==null&&E(Vi);break;case 24:Xt(He)}}function gs(e,t){try{var i=t.updateQueue,a=i!==null?i.lastEffect:null;if(a!==null){var s=a.next;i=s;do{if((i.tag&e)===e){a=void 0;var n=i.create,o=i.inst;a=n(),o.destroy=a}i=i.next}while(i!==s)}}catch(l){fe(t,t.return,l)}}function xi(e,t,i){try{var a=t.updateQueue,s=a!==null?a.lastEffect:null;if(s!==null){var n=s.next;a=n;do{if((a.tag&e)===e){var o=a.inst,l=o.destroy;if(l!==void 0){o.destroy=void 0,s=t;var h=i,f=l;try{f()}catch(k){fe(s,h,k)}}}a=a.next}while(a!==n)}}catch(k){fe(t,t.return,k)}}function th(e){var t=e.updateQueue;if(t!==null){var i=e.stateNode;try{Pc(t,i)}catch(a){fe(e,e.return,a)}}}function ih(e,t,i){i.props=Zi(e.type,e.memoizedProps),i.state=e.memoizedState;try{i.componentWillUnmount()}catch(a){fe(e,t,a)}}function ys(e,t){try{var i=e.ref;if(i!==null){switch(e.tag){case 26:case 27:case 5:var a=e.stateNode;break;case 30:a=e.stateNode;break;default:a=e.stateNode}typeof i=="function"?e.refCleanup=i(a):i.current=a}}catch(s){fe(e,t,s)}}function _t(e,t){var i=e.ref,a=e.refCleanup;if(i!==null)if(typeof a=="function")try{a()}catch(s){fe(e,t,s)}finally{e.refCleanup=null,e=e.alternate,e!=null&&(e.refCleanup=null)}else if(typeof i=="function")try{i(null)}catch(s){fe(e,t,s)}else i.current=null}function ah(e){var t=e.type,i=e.memoizedProps,a=e.stateNode;try{e:switch(t){case"button":case"input":case"select":case"textarea":i.autoFocus&&a.focus();break e;case"img":i.src?a.src=i.src:i.srcSet&&(a.srcset=i.srcSet)}}catch(s){fe(e,e.return,s)}}function zr(e,t,i){try{var a=e.stateNode;_m(a,e.type,i,t),a[nt]=t}catch(s){fe(e,e.return,s)}}function sh(e){return e.tag===5||e.tag===3||e.tag===26||e.tag===27&&Ci(e.type)||e.tag===4}function Nr(e){e:for(;;){for(;e.sibling===null;){if(e.return===null||sh(e.return))return null;e=e.return}for(e.sibling.return=e.return,e=e.sibling;e.tag!==5&&e.tag!==6&&e.tag!==18;){if(e.tag===27&&Ci(e.type)||e.flags&2||e.child===null||e.tag===4)continue e;e.child.return=e,e=e.child}if(!(e.flags&2))return e.stateNode}}function Ir(e,t,i){var a=e.tag;if(a===5||a===6)e=e.stateNode,t?(i.nodeType===9?i.body:i.nodeName==="HTML"?i.ownerDocument.body:i).insertBefore(e,t):(t=i.nodeType===9?i.body:i.nodeName==="HTML"?i.ownerDocument.body:i,t.appendChild(e),i=i._reactRootContainer,i!=null||t.onclick!==null||(t.onclick=Pt));else if(a!==4&&(a===27&&Ci(e.type)&&(i=e.stateNode,t=null),e=e.child,e!==null))for(Ir(e,t,i),e=e.sibling;e!==null;)Ir(e,t,i),e=e.sibling}function jn(e,t,i){var a=e.tag;if(a===5||a===6)e=e.stateNode,t?i.insertBefore(e,t):i.appendChild(e);else if(a!==4&&(a===27&&Ci(e.type)&&(i=e.stateNode),e=e.child,e!==null))for(jn(e,t,i),e=e.sibling;e!==null;)jn(e,t,i),e=e.sibling}function nh(e){var t=e.stateNode,i=e.memoizedProps;try{for(var a=e.type,s=t.attributes;s.length;)t.removeAttributeNode(s[0]);Ze(t,a,i),t[Ke]=e,t[nt]=i}catch(n){fe(e,e.return,n)}}var ti=!1,Le=!1,Dr=!1,oh=typeof WeakSet=="function"?WeakSet:Set,Ue=null;function xm(e,t){if(e=e.containerInfo,tl=Xn,e=yc(e),Eo(e)){if("selectionStart"in e)var i={start:e.selectionStart,end:e.selectionEnd};else e:{i=(i=e.ownerDocument)&&i.defaultView||window;var a=i.getSelection&&i.getSelection();if(a&&a.rangeCount!==0){i=a.anchorNode;var s=a.anchorOffset,n=a.focusNode;a=a.focusOffset;try{i.nodeType,n.nodeType}catch{i=null;break e}var o=0,l=-1,h=-1,f=0,k=0,A=e,y=null;t:for(;;){for(var w;A!==i||s!==0&&A.nodeType!==3||(l=o+s),A!==n||a!==0&&A.nodeType!==3||(h=o+a),A.nodeType===3&&(o+=A.nodeValue.length),(w=A.firstChild)!==null;)y=A,A=w;for(;;){if(A===e)break t;if(y===i&&++f===s&&(l=o),y===n&&++k===a&&(h=o),(w=A.nextSibling)!==null)break;A=y,y=A.parentNode}A=w}i=l===-1||h===-1?null:{start:l,end:h}}else i=null}i=i||{start:0,end:0}}else i=null;for(il={focusedElem:e,selectionRange:i},Xn=!1,Ue=t;Ue!==null;)if(t=Ue,e=t.child,(t.subtreeFlags&1028)!==0&&e!==null)e.return=t,Ue=e;else for(;Ue!==null;){switch(t=Ue,n=t.alternate,e=t.flags,t.tag){case 0:if((e&4)!==0&&(e=t.updateQueue,e=e!==null?e.events:null,e!==null))for(i=0;i<e.length;i++)s=e[i],s.ref.impl=s.nextImpl;break;case 11:case 15:break;case 1:if((e&1024)!==0&&n!==null){e=void 0,i=t,s=n.memoizedProps,n=n.memoizedState,a=i.stateNode;try{var R=Zi(i.type,s);e=a.getSnapshotBeforeUpdate(R,n),a.__reactInternalSnapshotBeforeUpdate=e}catch(P){fe(i,i.return,P)}}break;case 3:if((e&1024)!==0){if(e=t.stateNode.containerInfo,i=e.nodeType,i===9)nl(e);else if(i===1)switch(e.nodeName){case"HEAD":case"HTML":case"BODY":nl(e);break;default:e.textContent=""}}break;case 5:case 26:case 27:case 6:case 4:case 17:break;default:if((e&1024)!==0)throw Error(d(163))}if(e=t.sibling,e!==null){e.return=t.return,Ue=e;break}Ue=t.return}}function rh(e,t,i){var a=i.flags;switch(i.tag){case 0:case 11:case 15:ai(e,i),a&4&&gs(5,i);break;case 1:if(ai(e,i),a&4)if(e=i.stateNode,t===null)try{e.componentDidMount()}catch(o){fe(i,i.return,o)}else{var s=Zi(i.type,t.memoizedProps);t=t.memoizedState;try{e.componentDidUpdate(s,t,e.__reactInternalSnapshotBeforeUpdate)}catch(o){fe(i,i.return,o)}}a&64&&th(i),a&512&&ys(i,i.return);break;case 3:if(ai(e,i),a&64&&(e=i.updateQueue,e!==null)){if(t=null,i.child!==null)switch(i.child.tag){case 27:case 5:t=i.child.stateNode;break;case 1:t=i.child.stateNode}try{Pc(e,t)}catch(o){fe(i,i.return,o)}}break;case 27:t===null&&a&4&&nh(i);case 26:case 5:ai(e,i),t===null&&a&4&&ah(i),a&512&&ys(i,i.return);break;case 12:ai(e,i);break;case 31:ai(e,i),a&4&&dh(e,i);break;case 13:ai(e,i),a&4&&hh(e,i),a&64&&(e=i.memoizedState,e!==null&&(e=e.dehydrated,e!==null&&(i=Mm.bind(null,i),Xm(e,i))));break;case 22:if(a=i.memoizedState!==null||ti,!a){t=t!==null&&t.memoizedState!==null||Le,s=ti;var n=Le;ti=a,(Le=t)&&!n?si(e,i,(i.subtreeFlags&8772)!==0):ai(e,i),ti=s,Le=n}break;case 30:break;default:ai(e,i)}}function lh(e){var t=e.alternate;t!==null&&(e.alternate=null,lh(t)),e.child=null,e.deletions=null,e.sibling=null,e.tag===5&&(t=e.stateNode,t!==null&&co(t)),e.stateNode=null,e.return=null,e.dependencies=null,e.memoizedProps=null,e.memoizedState=null,e.pendingProps=null,e.stateNode=null,e.updateQueue=null}var Ee=null,rt=!1;function ii(e,t,i){for(i=i.child;i!==null;)ch(e,t,i),i=i.sibling}function ch(e,t,i){if(ut&&typeof ut.onCommitFiberUnmount=="function")try{ut.onCommitFiberUnmount(_a,i)}catch{}switch(i.tag){case 26:Le||_t(i,t),ii(e,t,i),i.memoizedState?i.memoizedState.count--:i.stateNode&&(i=i.stateNode,i.parentNode.removeChild(i));break;case 27:Le||_t(i,t);var a=Ee,s=rt;Ci(i.type)&&(Ee=i.stateNode,rt=!1),ii(e,t,i),Es(i.stateNode),Ee=a,rt=s;break;case 5:Le||_t(i,t);case 6:if(a=Ee,s=rt,Ee=null,ii(e,t,i),Ee=a,rt=s,Ee!==null)if(rt)try{(Ee.nodeType===9?Ee.body:Ee.nodeName==="HTML"?Ee.ownerDocument.body:Ee).removeChild(i.stateNode)}catch(n){fe(i,t,n)}else try{Ee.removeChild(i.stateNode)}catch(n){fe(i,t,n)}break;case 18:Ee!==null&&(rt?(e=Ee,tu(e.nodeType===9?e.body:e.nodeName==="HTML"?e.ownerDocument.body:e,i.stateNode),Ba(e)):tu(Ee,i.stateNode));break;case 4:a=Ee,s=rt,Ee=i.stateNode.containerInfo,rt=!0,ii(e,t,i),Ee=a,rt=s;break;case 0:case 11:case 14:case 15:xi(2,i,t),Le||xi(4,i,t),ii(e,t,i);break;case 1:Le||(_t(i,t),a=i.stateNode,typeof a.componentWillUnmount=="function"&&ih(i,t,a)),ii(e,t,i);break;case 21:ii(e,t,i);break;case 22:Le=(a=Le)||i.memoizedState!==null,ii(e,t,i),Le=a;break;default:ii(e,t,i)}}function dh(e,t){if(t.memoizedState===null&&(e=t.alternate,e!==null&&(e=e.memoizedState,e!==null))){e=e.dehydrated;try{Ba(e)}catch(i){fe(t,t.return,i)}}}function hh(e,t){if(t.memoizedState===null&&(e=t.alternate,e!==null&&(e=e.memoizedState,e!==null&&(e=e.dehydrated,e!==null))))try{Ba(e)}catch(i){fe(t,t.return,i)}}function km(e){switch(e.tag){case 31:case 13:case 19:var t=e.stateNode;return t===null&&(t=e.stateNode=new oh),t;case 22:return e=e.stateNode,t=e._retryCache,t===null&&(t=e._retryCache=new oh),t;default:throw Error(d(435,e.tag))}}function Mn(e,t){var i=km(e);t.forEach(function(a){if(!i.has(a)){i.add(a);var s=zm.bind(null,e,a);a.then(s,s)}})}function lt(e,t){var i=t.deletions;if(i!==null)for(var a=0;a<i.length;a++){var s=i[a],n=e,o=t,l=o;e:for(;l!==null;){switch(l.tag){case 27:if(Ci(l.type)){Ee=l.stateNode,rt=!1;break e}break;case 5:Ee=l.stateNode,rt=!1;break e;case 3:case 4:Ee=l.stateNode.containerInfo,rt=!0;break e}l=l.return}if(Ee===null)throw Error(d(160));ch(n,o,s),Ee=null,rt=!1,n=s.alternate,n!==null&&(n.return=null),s.return=null}if(t.subtreeFlags&13886)for(t=t.child;t!==null;)uh(t,e),t=t.sibling}var Ht=null;function uh(e,t){var i=e.alternate,a=e.flags;switch(e.tag){case 0:case 11:case 14:case 15:lt(t,e),ct(e),a&4&&(xi(3,e,e.return),gs(3,e),xi(5,e,e.return));break;case 1:lt(t,e),ct(e),a&512&&(Le||i===null||_t(i,i.return)),a&64&&ti&&(e=e.updateQueue,e!==null&&(a=e.callbacks,a!==null&&(i=e.shared.hiddenCallbacks,e.shared.hiddenCallbacks=i===null?a:i.concat(a))));break;case 26:var s=Ht;if(lt(t,e),ct(e),a&512&&(Le||i===null||_t(i,i.return)),a&4){var n=i!==null?i.memoizedState:null;if(a=e.memoizedState,i===null)if(a===null)if(e.stateNode===null){e:{a=e.type,i=e.memoizedProps,s=s.ownerDocument||s;t:switch(a){case"title":n=s.getElementsByTagName("title")[0],(!n||n[Pa]||n[Ke]||n.namespaceURI==="http://www.w3.org/2000/svg"||n.hasAttribute("itemprop"))&&(n=s.createElement(a),s.head.insertBefore(n,s.querySelector("head > title"))),Ze(n,a,i),n[Ke]=e,We(n),a=n;break e;case"link":var o=uu("link","href",s).get(a+(i.href||""));if(o){for(var l=0;l<o.length;l++)if(n=o[l],n.getAttribute("href")===(i.href==null||i.href===""?null:i.href)&&n.getAttribute("rel")===(i.rel==null?null:i.rel)&&n.getAttribute("title")===(i.title==null?null:i.title)&&n.getAttribute("crossorigin")===(i.crossOrigin==null?null:i.crossOrigin)){o.splice(l,1);break t}}n=s.createElement(a),Ze(n,a,i),s.head.appendChild(n);break;case"meta":if(o=uu("meta","content",s).get(a+(i.content||""))){for(l=0;l<o.length;l++)if(n=o[l],n.getAttribute("content")===(i.content==null?null:""+i.content)&&n.getAttribute("name")===(i.name==null?null:i.name)&&n.getAttribute("property")===(i.property==null?null:i.property)&&n.getAttribute("http-equiv")===(i.httpEquiv==null?null:i.httpEquiv)&&n.getAttribute("charset")===(i.charSet==null?null:i.charSet)){o.splice(l,1);break t}}n=s.createElement(a),Ze(n,a,i),s.head.appendChild(n);break;default:throw Error(d(468,a))}n[Ke]=e,We(n),a=n}e.stateNode=a}else pu(s,e.type,e.stateNode);else e.stateNode=hu(s,a,e.memoizedProps);else n!==a?(n===null?i.stateNode!==null&&(i=i.stateNode,i.parentNode.removeChild(i)):n.count--,a===null?pu(s,e.type,e.stateNode):hu(s,a,e.memoizedProps)):a===null&&e.stateNode!==null&&zr(e,e.memoizedProps,i.memoizedProps)}break;case 27:lt(t,e),ct(e),a&512&&(Le||i===null||_t(i,i.return)),i!==null&&a&4&&zr(e,e.memoizedProps,i.memoizedProps);break;case 5:if(lt(t,e),ct(e),a&512&&(Le||i===null||_t(i,i.return)),e.flags&32){s=e.stateNode;try{la(s,"")}catch(R){fe(e,e.return,R)}}a&4&&e.stateNode!=null&&(s=e.memoizedProps,zr(e,s,i!==null?i.memoizedProps:s)),a&1024&&(Dr=!0);break;case 6:if(lt(t,e),ct(e),a&4){if(e.stateNode===null)throw Error(d(162));a=e.memoizedProps,i=e.stateNode;try{i.nodeValue=a}catch(R){fe(e,e.return,R)}}break;case 3:if(Yn=null,s=Ht,Ht=Un(t.containerInfo),lt(t,e),Ht=s,ct(e),a&4&&i!==null&&i.memoizedState.isDehydrated)try{Ba(t.containerInfo)}catch(R){fe(e,e.return,R)}Dr&&(Dr=!1,ph(e));break;case 4:a=Ht,Ht=Un(e.stateNode.containerInfo),lt(t,e),ct(e),Ht=a;break;case 12:lt(t,e),ct(e);break;case 31:lt(t,e),ct(e),a&4&&(a=e.updateQueue,a!==null&&(e.updateQueue=null,Mn(e,a)));break;case 13:lt(t,e),ct(e),e.child.flags&8192&&e.memoizedState!==null!=(i!==null&&i.memoizedState!==null)&&(Nn=ze()),a&4&&(a=e.updateQueue,a!==null&&(e.updateQueue=null,Mn(e,a)));break;case 22:s=e.memoizedState!==null;var h=i!==null&&i.memoizedState!==null,f=ti,k=Le;if(ti=f||s,Le=k||h,lt(t,e),Le=k,ti=f,ct(e),a&8192)e:for(t=e.stateNode,t._visibility=s?t._visibility&-2:t._visibility|1,s&&(i===null||h||ti||Le||$i(e)),i=null,t=e;;){if(t.tag===5||t.tag===26){if(i===null){h=i=t;try{if(n=h.stateNode,s)o=n.style,typeof o.setProperty=="function"?o.setProperty("display","none","important"):o.display="none";else{l=h.stateNode;var A=h.memoizedProps.style,y=A!=null&&A.hasOwnProperty("display")?A.display:null;l.style.display=y==null||typeof y=="boolean"?"":(""+y).trim()}}catch(R){fe(h,h.return,R)}}}else if(t.tag===6){if(i===null){h=t;try{h.stateNode.nodeValue=s?"":h.memoizedProps}catch(R){fe(h,h.return,R)}}}else if(t.tag===18){if(i===null){h=t;try{var w=h.stateNode;s?iu(w,!0):iu(h.stateNode,!1)}catch(R){fe(h,h.return,R)}}}else if((t.tag!==22&&t.tag!==23||t.memoizedState===null||t===e)&&t.child!==null){t.child.return=t,t=t.child;continue}if(t===e)break e;for(;t.sibling===null;){if(t.return===null||t.return===e)break e;i===t&&(i=null),t=t.return}i===t&&(i=null),t.sibling.return=t.return,t=t.sibling}a&4&&(a=e.updateQueue,a!==null&&(i=a.retryQueue,i!==null&&(a.retryQueue=null,Mn(e,i))));break;case 19:lt(t,e),ct(e),a&4&&(a=e.updateQueue,a!==null&&(e.updateQueue=null,Mn(e,a)));break;case 30:break;case 21:break;default:lt(t,e),ct(e)}}function ct(e){var t=e.flags;if(t&2){try{for(var i,a=e.return;a!==null;){if(sh(a)){i=a;break}a=a.return}if(i==null)throw Error(d(160));switch(i.tag){case 27:var s=i.stateNode,n=Nr(e);jn(e,n,s);break;case 5:var o=i.stateNode;i.flags&32&&(la(o,""),i.flags&=-33);var l=Nr(e);jn(e,l,o);break;case 3:case 4:var h=i.stateNode.containerInfo,f=Nr(e);Ir(e,f,h);break;default:throw Error(d(161))}}catch(k){fe(e,e.return,k)}e.flags&=-3}t&4096&&(e.flags&=-4097)}function ph(e){if(e.subtreeFlags&1024)for(e=e.child;e!==null;){var t=e;ph(t),t.tag===5&&t.flags&1024&&t.stateNode.reset(),e=e.sibling}}function ai(e,t){if(t.subtreeFlags&8772)for(t=t.child;t!==null;)rh(e,t.alternate,t),t=t.sibling}function $i(e){for(e=e.child;e!==null;){var t=e;switch(t.tag){case 0:case 11:case 14:case 15:xi(4,t,t.return),$i(t);break;case 1:_t(t,t.return);var i=t.stateNode;typeof i.componentWillUnmount=="function"&&ih(t,t.return,i),$i(t);break;case 27:Es(t.stateNode);case 26:case 5:_t(t,t.return),$i(t);break;case 22:t.memoizedState===null&&$i(t);break;case 30:$i(t);break;default:$i(t)}e=e.sibling}}function si(e,t,i){for(i=i&&(t.subtreeFlags&8772)!==0,t=t.child;t!==null;){var a=t.alternate,s=e,n=t,o=n.flags;switch(n.tag){case 0:case 11:case 15:si(s,n,i),gs(4,n);break;case 1:if(si(s,n,i),a=n,s=a.stateNode,typeof s.componentDidMount=="function")try{s.componentDidMount()}catch(f){fe(a,a.return,f)}if(a=n,s=a.updateQueue,s!==null){var l=a.stateNode;try{var h=s.shared.hiddenCallbacks;if(h!==null)for(s.shared.hiddenCallbacks=null,s=0;s<h.length;s++)Uc(h[s],l)}catch(f){fe(a,a.return,f)}}i&&o&64&&th(n),ys(n,n.return);break;case 27:nh(n);case 26:case 5:si(s,n,i),i&&a===null&&o&4&&ah(n),ys(n,n.return);break;case 12:si(s,n,i);break;case 31:si(s,n,i),i&&o&4&&dh(s,n);break;case 13:si(s,n,i),i&&o&4&&hh(s,n);break;case 22:n.memoizedState===null&&si(s,n,i),ys(n,n.return);break;case 30:break;default:si(s,n,i)}t=t.sibling}}function Or(e,t){var i=null;e!==null&&e.memoizedState!==null&&e.memoizedState.cachePool!==null&&(i=e.memoizedState.cachePool.pool),e=null,t.memoizedState!==null&&t.memoizedState.cachePool!==null&&(e=t.memoizedState.cachePool.pool),e!==i&&(e!=null&&e.refCount++,i!=null&&ss(i))}function Rr(e,t){e=null,t.alternate!==null&&(e=t.alternate.memoizedState.cache),t=t.memoizedState.cache,t!==e&&(t.refCount++,e!=null&&ss(e))}function Gt(e,t,i,a){if(t.subtreeFlags&10256)for(t=t.child;t!==null;)mh(e,t,i,a),t=t.sibling}function mh(e,t,i,a){var s=t.flags;switch(t.tag){case 0:case 11:case 15:Gt(e,t,i,a),s&2048&&gs(9,t);break;case 1:Gt(e,t,i,a);break;case 3:Gt(e,t,i,a),s&2048&&(e=null,t.alternate!==null&&(e=t.alternate.memoizedState.cache),t=t.memoizedState.cache,t!==e&&(t.refCount++,e!=null&&ss(e)));break;case 12:if(s&2048){Gt(e,t,i,a),e=t.stateNode;try{var n=t.memoizedProps,o=n.id,l=n.onPostCommit;typeof l=="function"&&l(o,t.alternate===null?"mount":"update",e.passiveEffectDuration,-0)}catch(h){fe(t,t.return,h)}}else Gt(e,t,i,a);break;case 31:Gt(e,t,i,a);break;case 13:Gt(e,t,i,a);break;case 23:break;case 22:n=t.stateNode,o=t.alternate,t.memoizedState!==null?n._visibility&2?Gt(e,t,i,a):bs(e,t):n._visibility&2?Gt(e,t,i,a):(n._visibility|=2,Ca(e,t,i,a,(t.subtreeFlags&10256)!==0||!1)),s&2048&&Or(o,t);break;case 24:Gt(e,t,i,a),s&2048&&Rr(t.alternate,t);break;default:Gt(e,t,i,a)}}function Ca(e,t,i,a,s){for(s=s&&((t.subtreeFlags&10256)!==0||!1),t=t.child;t!==null;){var n=e,o=t,l=i,h=a,f=o.flags;switch(o.tag){case 0:case 11:case 15:Ca(n,o,l,h,s),gs(8,o);break;case 23:break;case 22:var k=o.stateNode;o.memoizedState!==null?k._visibility&2?Ca(n,o,l,h,s):bs(n,o):(k._visibility|=2,Ca(n,o,l,h,s)),s&&f&2048&&Or(o.alternate,o);break;case 24:Ca(n,o,l,h,s),s&&f&2048&&Rr(o.alternate,o);break;default:Ca(n,o,l,h,s)}t=t.sibling}}function bs(e,t){if(t.subtreeFlags&10256)for(t=t.child;t!==null;){var i=e,a=t,s=a.flags;switch(a.tag){case 22:bs(i,a),s&2048&&Or(a.alternate,a);break;case 24:bs(i,a),s&2048&&Rr(a.alternate,a);break;default:bs(i,a)}t=t.sibling}}var ws=8192;function ja(e,t,i){if(e.subtreeFlags&ws)for(e=e.child;e!==null;)vh(e,t,i),e=e.sibling}function vh(e,t,i){switch(e.tag){case 26:ja(e,t,i),e.flags&ws&&e.memoizedState!==null&&lv(i,Ht,e.memoizedState,e.memoizedProps);break;case 5:ja(e,t,i);break;case 3:case 4:var a=Ht;Ht=Un(e.stateNode.containerInfo),ja(e,t,i),Ht=a;break;case 22:e.memoizedState===null&&(a=e.alternate,a!==null&&a.memoizedState!==null?(a=ws,ws=16777216,ja(e,t,i),ws=a):ja(e,t,i));break;default:ja(e,t,i)}}function fh(e){var t=e.alternate;if(t!==null&&(e=t.child,e!==null)){t.child=null;do t=e.sibling,e.sibling=null,e=t;while(e!==null)}}function xs(e){var t=e.deletions;if((e.flags&16)!==0){if(t!==null)for(var i=0;i<t.length;i++){var a=t[i];Ue=a,yh(a,e)}fh(e)}if(e.subtreeFlags&10256)for(e=e.child;e!==null;)gh(e),e=e.sibling}function gh(e){switch(e.tag){case 0:case 11:case 15:xs(e),e.flags&2048&&xi(9,e,e.return);break;case 3:xs(e);break;case 12:xs(e);break;case 22:var t=e.stateNode;e.memoizedState!==null&&t._visibility&2&&(e.return===null||e.return.tag!==13)?(t._visibility&=-3,zn(e)):xs(e);break;default:xs(e)}}function zn(e){var t=e.deletions;if((e.flags&16)!==0){if(t!==null)for(var i=0;i<t.length;i++){var a=t[i];Ue=a,yh(a,e)}fh(e)}for(e=e.child;e!==null;){switch(t=e,t.tag){case 0:case 11:case 15:xi(8,t,t.return),zn(t);break;case 22:i=t.stateNode,i._visibility&2&&(i._visibility&=-3,zn(t));break;default:zn(t)}e=e.sibling}}function yh(e,t){for(;Ue!==null;){var i=Ue;switch(i.tag){case 0:case 11:case 15:xi(8,i,t);break;case 23:case 22:if(i.memoizedState!==null&&i.memoizedState.cachePool!==null){var a=i.memoizedState.cachePool.pool;a!=null&&a.refCount++}break;case 24:ss(i.memoizedState.cache)}if(a=i.child,a!==null)a.return=i,Ue=a;else e:for(i=e;Ue!==null;){a=Ue;var s=a.sibling,n=a.return;if(lh(a),a===i){Ue=null;break e}if(s!==null){s.return=n,Ue=s;break e}Ue=n}}}var Tm={getCacheForType:function(e){var t=Xe(He),i=t.data.get(e);return i===void 0&&(i=e(),t.data.set(e,i)),i},cacheSignal:function(){return Xe(He).controller.signal}},qm=typeof WeakMap=="function"?WeakMap:Map,pe=0,xe=null,te=null,ae=0,ve=0,yt=null,ki=!1,Ma=!1,Hr=!1,ni=0,De=0,Ti=0,ea=0,Gr=0,bt=0,za=0,ks=null,dt=null,Br=!1,Nn=0,bh=0,In=1/0,Dn=null,qi=null,Fe=0,Si=null,Na=null,oi=0,Lr=0,Fr=null,wh=null,Ts=0,_r=null;function wt(){return(pe&2)!==0&&ae!==0?ae&-ae:q.T!==null?Kr():Rl()}function xh(){if(bt===0)if((ae&536870912)===0||oe){var e=Fs;Fs<<=1,(Fs&3932160)===0&&(Fs=262144),bt=e}else bt=536870912;return e=ft.current,e!==null&&(e.flags|=32),bt}function ht(e,t,i){(e===xe&&(ve===2||ve===9)||e.cancelPendingCommit!==null)&&(Ia(e,0),Ai(e,ae,bt,!1)),Ua(e,i),((pe&2)===0||e!==xe)&&(e===xe&&((pe&2)===0&&(ea|=i),De===4&&Ai(e,ae,bt,!1)),Wt(e))}function kh(e,t,i){if((pe&6)!==0)throw Error(d(327));var a=!i&&(t&127)===0&&(t&e.expiredLanes)===0||Wa(e,t),s=a?Em(e,t):Ur(e,t,!0),n=a;do{if(s===0){Ma&&!a&&Ai(e,t,0,!1);break}else{if(i=e.current.alternate,n&&!Sm(i)){s=Ur(e,t,!1),n=!1;continue}if(s===2){if(n=t,e.errorRecoveryDisabledLanes&n)var o=0;else o=e.pendingLanes&-536870913,o=o!==0?o:o&536870912?536870912:0;if(o!==0){t=o;e:{var l=e;s=ks;var h=l.current.memoizedState.isDehydrated;if(h&&(Ia(l,o).flags|=256),o=Ur(l,o,!1),o!==2){if(Hr&&!h){l.errorRecoveryDisabledLanes|=n,ea|=n,s=4;break e}n=dt,dt=s,n!==null&&(dt===null?dt=n:dt.push.apply(dt,n))}s=o}if(n=!1,s!==2)continue}}if(s===1){Ia(e,0),Ai(e,t,0,!0);break}e:{switch(a=e,n=s,n){case 0:case 1:throw Error(d(345));case 4:if((t&4194048)!==t)break;case 6:Ai(a,t,bt,!ki);break e;case 2:dt=null;break;case 3:case 5:break;default:throw Error(d(329))}if((t&62914560)===t&&(s=Nn+300-ze(),10<s)){if(Ai(a,t,bt,!ki),Ws(a,0,!0)!==0)break e;oi=t,a.timeoutHandle=$h(Th.bind(null,a,i,dt,Dn,Br,t,bt,ea,za,ki,n,"Throttled",-0,0),s);break e}Th(a,i,dt,Dn,Br,t,bt,ea,za,ki,n,null,-0,0)}}break}while(!0);Wt(e)}function Th(e,t,i,a,s,n,o,l,h,f,k,A,y,w){if(e.timeoutHandle=-1,A=t.subtreeFlags,A&8192||(A&16785408)===16785408){A={stylesheets:null,count:0,imgCount:0,imgBytes:0,suspenseyImages:[],waitingForImages:!0,waitingForViewTransition:!1,unsuspend:Pt},vh(t,n,A);var R=(n&62914560)===n?Nn-ze():(n&4194048)===n?bh-ze():0;if(R=cv(A,R),R!==null){oi=n,e.cancelPendingCommit=R(zh.bind(null,e,t,n,i,a,s,o,l,h,k,A,null,y,w)),Ai(e,n,o,!f);return}}zh(e,t,n,i,a,s,o,l,h)}function Sm(e){for(var t=e;;){var i=t.tag;if((i===0||i===11||i===15)&&t.flags&16384&&(i=t.updateQueue,i!==null&&(i=i.stores,i!==null)))for(var a=0;a<i.length;a++){var s=i[a],n=s.getSnapshot;s=s.value;try{if(!mt(n(),s))return!1}catch{return!1}}if(i=t.child,t.subtreeFlags&16384&&i!==null)i.return=t,t=i;else{if(t===e)break;for(;t.sibling===null;){if(t.return===null||t.return===e)return!0;t=t.return}t.sibling.return=t.return,t=t.sibling}}return!0}function Ai(e,t,i,a){t&=~Gr,t&=~ea,e.suspendedLanes|=t,e.pingedLanes&=~t,a&&(e.warmLanes|=t),a=e.expirationTimes;for(var s=t;0<s;){var n=31-pt(s),o=1<<n;a[n]=-1,s&=~o}i!==0&&Il(e,i,t)}function On(){return(pe&6)===0?(qs(0),!1):!0}function Wr(){if(te!==null){if(ve===0)var e=te.return;else e=te,Qt=Pi=null,nr(e),Ta=null,os=0,e=te;for(;e!==null;)eh(e.alternate,e),e=e.return;te=null}}function Ia(e,t){var i=e.timeoutHandle;i!==-1&&(e.timeoutHandle=-1,Pm(i)),i=e.cancelPendingCommit,i!==null&&(e.cancelPendingCommit=null,i()),oi=0,Wr(),xe=e,te=i=Vt(e.current,null),ae=t,ve=0,yt=null,ki=!1,Ma=Wa(e,t),Hr=!1,za=bt=Gr=ea=Ti=De=0,dt=ks=null,Br=!1,(t&8)!==0&&(t|=t&32);var a=e.entangledLanes;if(a!==0)for(e=e.entanglements,a&=t;0<a;){var s=31-pt(a),n=1<<s;t|=e[s],a&=~n}return ni=t,tn(),i}function qh(e,t){J=null,q.H=ms,t===ka||t===dn?(t=Lc(),ve=3):t===Vo?(t=Lc(),ve=4):ve=t===xr?8:t!==null&&typeof t=="object"&&typeof t.then=="function"?6:1,yt=t,te===null&&(De=1,qn(e,Ct(t,e.current)))}function Sh(){var e=ft.current;return e===null?!0:(ae&4194048)===ae?Nt===null:(ae&62914560)===ae||(ae&536870912)!==0?e===Nt:!1}function Ah(){var e=q.H;return q.H=ms,e===null?ms:e}function Eh(){var e=q.A;return q.A=Tm,e}function Rn(){De=4,ki||(ae&4194048)!==ae&&ft.current!==null||(Ma=!0),(Ti&134217727)===0&&(ea&134217727)===0||xe===null||Ai(xe,ae,bt,!1)}function Ur(e,t,i){var a=pe;pe|=2;var s=Ah(),n=Eh();(xe!==e||ae!==t)&&(Dn=null,Ia(e,t)),t=!1;var o=De;e:do try{if(ve!==0&&te!==null){var l=te,h=yt;switch(ve){case 8:Wr(),o=6;break e;case 3:case 2:case 9:case 6:ft.current===null&&(t=!0);var f=ve;if(ve=0,yt=null,Da(e,l,h,f),i&&Ma){o=0;break e}break;default:f=ve,ve=0,yt=null,Da(e,l,h,f)}}Am(),o=De;break}catch(k){qh(e,k)}while(!0);return t&&e.shellSuspendCounter++,Qt=Pi=null,pe=a,q.H=s,q.A=n,te===null&&(xe=null,ae=0,tn()),o}function Am(){for(;te!==null;)Ch(te)}function Em(e,t){var i=pe;pe|=2;var a=Ah(),s=Eh();xe!==e||ae!==t?(Dn=null,In=ze()+500,Ia(e,t)):Ma=Wa(e,t);e:do try{if(ve!==0&&te!==null){t=te;var n=yt;t:switch(ve){case 1:ve=0,yt=null,Da(e,t,n,1);break;case 2:case 9:if(Gc(n)){ve=0,yt=null,jh(t);break}t=function(){ve!==2&&ve!==9||xe!==e||(ve=7),Wt(e)},n.then(t,t);break e;case 3:ve=7;break e;case 4:ve=5;break e;case 7:Gc(n)?(ve=0,yt=null,jh(t)):(ve=0,yt=null,Da(e,t,n,7));break;case 5:var o=null;switch(te.tag){case 26:o=te.memoizedState;case 5:case 27:var l=te;if(o?mu(o):l.stateNode.complete){ve=0,yt=null;var h=l.sibling;if(h!==null)te=h;else{var f=l.return;f!==null?(te=f,Hn(f)):te=null}break t}}ve=0,yt=null,Da(e,t,n,5);break;case 6:ve=0,yt=null,Da(e,t,n,6);break;case 8:Wr(),De=6;break e;default:throw Error(d(462))}}Cm();break}catch(k){qh(e,k)}while(!0);return Qt=Pi=null,q.H=a,q.A=s,pe=i,te!==null?0:(xe=null,ae=0,tn(),De)}function Cm(){for(;te!==null&&!Ot();)Ch(te)}function Ch(e){var t=Zd(e.alternate,e,ni);e.memoizedProps=e.pendingProps,t===null?Hn(e):te=t}function jh(e){var t=e,i=t.alternate;switch(t.tag){case 15:case 0:t=Yd(i,t,t.pendingProps,t.type,void 0,ae);break;case 11:t=Yd(i,t,t.pendingProps,t.type.render,t.ref,ae);break;case 5:nr(t);default:eh(i,t),t=te=Ec(t,ni),t=Zd(i,t,ni)}e.memoizedProps=e.pendingProps,t===null?Hn(e):te=t}function Da(e,t,i,a){Qt=Pi=null,nr(t),Ta=null,os=0;var s=t.return;try{if(fm(e,s,t,i,ae)){De=1,qn(e,Ct(i,e.current)),te=null;return}}catch(n){if(s!==null)throw te=s,n;De=1,qn(e,Ct(i,e.current)),te=null;return}t.flags&32768?(oe||a===1?e=!0:Ma||(ae&536870912)!==0?e=!1:(ki=e=!0,(a===2||a===9||a===3||a===6)&&(a=ft.current,a!==null&&a.tag===13&&(a.flags|=16384))),Mh(t,e)):Hn(t)}function Hn(e){var t=e;do{if((t.flags&32768)!==0){Mh(t,ki);return}e=t.return;var i=bm(t.alternate,t,ni);if(i!==null){te=i;return}if(t=t.sibling,t!==null){te=t;return}te=t=e}while(t!==null);De===0&&(De=5)}function Mh(e,t){do{var i=wm(e.alternate,e);if(i!==null){i.flags&=32767,te=i;return}if(i=e.return,i!==null&&(i.flags|=32768,i.subtreeFlags=0,i.deletions=null),!t&&(e=e.sibling,e!==null)){te=e;return}te=e=i}while(e!==null);De=6,te=null}function zh(e,t,i,a,s,n,o,l,h){e.cancelPendingCommit=null;do Gn();while(Fe!==0);if((pe&6)!==0)throw Error(d(327));if(t!==null){if(t===e.current)throw Error(d(177));if(n=t.lanes|t.childLanes,n|=No,rp(e,i,n,o,l,h),e===xe&&(te=xe=null,ae=0),Na=t,Si=e,oi=i,Lr=n,Fr=s,wh=a,(t.subtreeFlags&10256)!==0||(t.flags&10256)!==0?(e.callbackNode=null,e.callbackPriority=0,Nm(Bs,function(){return Rh(),null})):(e.callbackNode=null,e.callbackPriority=0),a=(t.flags&13878)!==0,(t.subtreeFlags&13878)!==0||a){a=q.T,q.T=null,s=N.p,N.p=2,o=pe,pe|=4;try{xm(e,t,i)}finally{pe=o,N.p=s,q.T=a}}Fe=1,Nh(),Ih(),Dh()}}function Nh(){if(Fe===1){Fe=0;var e=Si,t=Na,i=(t.flags&13878)!==0;if((t.subtreeFlags&13878)!==0||i){i=q.T,q.T=null;var a=N.p;N.p=2;var s=pe;pe|=4;try{uh(t,e);var n=il,o=yc(e.containerInfo),l=n.focusedElem,h=n.selectionRange;if(o!==l&&l&&l.ownerDocument&&gc(l.ownerDocument.documentElement,l)){if(h!==null&&Eo(l)){var f=h.start,k=h.end;if(k===void 0&&(k=f),"selectionStart"in l)l.selectionStart=f,l.selectionEnd=Math.min(k,l.value.length);else{var A=l.ownerDocument||document,y=A&&A.defaultView||window;if(y.getSelection){var w=y.getSelection(),R=l.textContent.length,P=Math.min(h.start,R),we=h.end===void 0?P:Math.min(h.end,R);!w.extend&&P>we&&(o=we,we=P,P=o);var m=fc(l,P),u=fc(l,we);if(m&&u&&(w.rangeCount!==1||w.anchorNode!==m.node||w.anchorOffset!==m.offset||w.focusNode!==u.node||w.focusOffset!==u.offset)){var v=A.createRange();v.setStart(m.node,m.offset),w.removeAllRanges(),P>we?(w.addRange(v),w.extend(u.node,u.offset)):(v.setEnd(u.node,u.offset),w.addRange(v))}}}}for(A=[],w=l;w=w.parentNode;)w.nodeType===1&&A.push({element:w,left:w.scrollLeft,top:w.scrollTop});for(typeof l.focus=="function"&&l.focus(),l=0;l<A.length;l++){var S=A[l];S.element.scrollLeft=S.left,S.element.scrollTop=S.top}}Xn=!!tl,il=tl=null}finally{pe=s,N.p=a,q.T=i}}e.current=t,Fe=2}}function Ih(){if(Fe===2){Fe=0;var e=Si,t=Na,i=(t.flags&8772)!==0;if((t.subtreeFlags&8772)!==0||i){i=q.T,q.T=null;var a=N.p;N.p=2;var s=pe;pe|=4;try{rh(e,t.alternate,t)}finally{pe=s,N.p=a,q.T=i}}Fe=3}}function Dh(){if(Fe===4||Fe===3){Fe=0,Ae();var e=Si,t=Na,i=oi,a=wh;(t.subtreeFlags&10256)!==0||(t.flags&10256)!==0?Fe=5:(Fe=0,Na=Si=null,Oh(e,e.pendingLanes));var s=e.pendingLanes;if(s===0&&(qi=null),ro(i),t=t.stateNode,ut&&typeof ut.onCommitFiberRoot=="function")try{ut.onCommitFiberRoot(_a,t,void 0,(t.current.flags&128)===128)}catch{}if(a!==null){t=q.T,s=N.p,N.p=2,q.T=null;try{for(var n=e.onRecoverableError,o=0;o<a.length;o++){var l=a[o];n(l.value,{componentStack:l.stack})}}finally{q.T=t,N.p=s}}(oi&3)!==0&&Gn(),Wt(e),s=e.pendingLanes,(i&261930)!==0&&(s&42)!==0?e===_r?Ts++:(Ts=0,_r=e):Ts=0,qs(0)}}function Oh(e,t){(e.pooledCacheLanes&=t)===0&&(t=e.pooledCache,t!=null&&(e.pooledCache=null,ss(t)))}function Gn(){return Nh(),Ih(),Dh(),Rh()}function Rh(){if(Fe!==5)return!1;var e=Si,t=Lr;Lr=0;var i=ro(oi),a=q.T,s=N.p;try{N.p=32>i?32:i,q.T=null,i=Fr,Fr=null;var n=Si,o=oi;if(Fe=0,Na=Si=null,oi=0,(pe&6)!==0)throw Error(d(331));var l=pe;if(pe|=4,gh(n.current),mh(n,n.current,o,i),pe=l,qs(0,!1),ut&&typeof ut.onPostCommitFiberRoot=="function")try{ut.onPostCommitFiberRoot(_a,n)}catch{}return!0}finally{N.p=s,q.T=a,Oh(e,t)}}function Hh(e,t,i){t=Ct(i,t),t=wr(e.stateNode,t,2),e=yi(e,t,2),e!==null&&(Ua(e,2),Wt(e))}function fe(e,t,i){if(e.tag===3)Hh(e,e,i);else for(;t!==null;){if(t.tag===3){Hh(t,e,i);break}else if(t.tag===1){var a=t.stateNode;if(typeof t.type.getDerivedStateFromError=="function"||typeof a.componentDidCatch=="function"&&(qi===null||!qi.has(a))){e=Ct(i,e),i=Gd(2),a=yi(t,i,2),a!==null&&(Bd(i,a,t,e),Ua(a,2),Wt(a));break}}t=t.return}}function Pr(e,t,i){var a=e.pingCache;if(a===null){a=e.pingCache=new qm;var s=new Set;a.set(t,s)}else s=a.get(t),s===void 0&&(s=new Set,a.set(t,s));s.has(i)||(Hr=!0,s.add(i),e=jm.bind(null,e,t,i),t.then(e,e))}function jm(e,t,i){var a=e.pingCache;a!==null&&a.delete(t),e.pingedLanes|=e.suspendedLanes&i,e.warmLanes&=~i,xe===e&&(ae&i)===i&&(De===4||De===3&&(ae&62914560)===ae&&300>ze()-Nn?(pe&2)===0&&Ia(e,0):Gr|=i,za===ae&&(za=0)),Wt(e)}function Gh(e,t){t===0&&(t=Nl()),e=_i(e,t),e!==null&&(Ua(e,t),Wt(e))}function Mm(e){var t=e.memoizedState,i=0;t!==null&&(i=t.retryLane),Gh(e,i)}function zm(e,t){var i=0;switch(e.tag){case 31:case 13:var a=e.stateNode,s=e.memoizedState;s!==null&&(i=s.retryLane);break;case 19:a=e.stateNode;break;case 22:a=e.stateNode._retryCache;break;default:throw Error(d(314))}a!==null&&a.delete(t),Gh(e,i)}function Nm(e,t){return ge(e,t)}var Bn=null,Oa=null,Yr=!1,Ln=!1,Vr=!1,Ei=0;function Wt(e){e!==Oa&&e.next===null&&(Oa===null?Bn=Oa=e:Oa=Oa.next=e),Ln=!0,Yr||(Yr=!0,Dm())}function qs(e,t){if(!Vr&&Ln){Vr=!0;do for(var i=!1,a=Bn;a!==null;){if(e!==0){var s=a.pendingLanes;if(s===0)var n=0;else{var o=a.suspendedLanes,l=a.pingedLanes;n=(1<<31-pt(42|e)+1)-1,n&=s&~(o&~l),n=n&201326741?n&201326741|1:n?n|2:0}n!==0&&(i=!0,_h(a,n))}else n=ae,n=Ws(a,a===xe?n:0,a.cancelPendingCommit!==null||a.timeoutHandle!==-1),(n&3)===0||Wa(a,n)||(i=!0,_h(a,n));a=a.next}while(i);Vr=!1}}function Im(){Bh()}function Bh(){Ln=Yr=!1;var e=0;Ei!==0&&Um()&&(e=Ei);for(var t=ze(),i=null,a=Bn;a!==null;){var s=a.next,n=Lh(a,t);n===0?(a.next=null,i===null?Bn=s:i.next=s,s===null&&(Oa=i)):(i=a,(e!==0||(n&3)!==0)&&(Ln=!0)),a=s}Fe!==0&&Fe!==5||qs(e),Ei!==0&&(Ei=0)}function Lh(e,t){for(var i=e.suspendedLanes,a=e.pingedLanes,s=e.expirationTimes,n=e.pendingLanes&-62914561;0<n;){var o=31-pt(n),l=1<<o,h=s[o];h===-1?((l&i)===0||(l&a)!==0)&&(s[o]=op(l,t)):h<=t&&(e.expiredLanes|=l),n&=~l}if(t=xe,i=ae,i=Ws(e,e===t?i:0,e.cancelPendingCommit!==null||e.timeoutHandle!==-1),a=e.callbackNode,i===0||e===t&&(ve===2||ve===9)||e.cancelPendingCommit!==null)return a!==null&&a!==null&&qt(a),e.callbackNode=null,e.callbackPriority=0;if((i&3)===0||Wa(e,i)){if(t=i&-i,t===e.callbackPriority)return t;switch(a!==null&&qt(a),ro(i)){case 2:case 8:i=Ml;break;case 32:i=Bs;break;case 268435456:i=zl;break;default:i=Bs}return a=Fh.bind(null,e),i=ge(i,a),e.callbackPriority=t,e.callbackNode=i,t}return a!==null&&a!==null&&qt(a),e.callbackPriority=2,e.callbackNode=null,2}function Fh(e,t){if(Fe!==0&&Fe!==5)return e.callbackNode=null,e.callbackPriority=0,null;var i=e.callbackNode;if(Gn()&&e.callbackNode!==i)return null;var a=ae;return a=Ws(e,e===xe?a:0,e.cancelPendingCommit!==null||e.timeoutHandle!==-1),a===0?null:(kh(e,a,t),Lh(e,ze()),e.callbackNode!=null&&e.callbackNode===i?Fh.bind(null,e):null)}function _h(e,t){if(Gn())return null;kh(e,t,!0)}function Dm(){Ym(function(){(pe&6)!==0?ge(jl,Im):Bh()})}function Kr(){if(Ei===0){var e=wa;e===0&&(e=Ls,Ls<<=1,(Ls&261888)===0&&(Ls=256)),Ei=e}return Ei}function Wh(e){return e==null||typeof e=="symbol"||typeof e=="boolean"?null:typeof e=="function"?e:Vs(""+e)}function Uh(e,t){var i=t.ownerDocument.createElement("input");return i.name=t.name,i.value=t.value,e.id&&i.setAttribute("form",e.id),t.parentNode.insertBefore(i,t),e=new FormData(e),i.parentNode.removeChild(i),e}function Om(e,t,i,a,s){if(t==="submit"&&i&&i.stateNode===s){var n=Wh((s[nt]||null).action),o=a.submitter;o&&(t=(t=o[nt]||null)?Wh(t.formAction):o.getAttribute("formAction"),t!==null&&(n=t,o=null));var l=new Js("action","action",null,a,s);e.push({event:l,listeners:[{instance:null,listener:function(){if(a.defaultPrevented){if(Ei!==0){var h=o?Uh(s,o):new FormData(s);mr(i,{pending:!0,data:h,method:s.method,action:n},null,h)}}else typeof n=="function"&&(l.preventDefault(),h=o?Uh(s,o):new FormData(s),mr(i,{pending:!0,data:h,method:s.method,action:n},n,h))},currentTarget:s}]})}}for(var Qr=0;Qr<zo.length;Qr++){var Xr=zo[Qr],Rm=Xr.toLowerCase(),Hm=Xr[0].toUpperCase()+Xr.slice(1);Rt(Rm,"on"+Hm)}Rt(xc,"onAnimationEnd"),Rt(kc,"onAnimationIteration"),Rt(Tc,"onAnimationStart"),Rt("dblclick","onDoubleClick"),Rt("focusin","onFocus"),Rt("focusout","onBlur"),Rt($p,"onTransitionRun"),Rt(em,"onTransitionStart"),Rt(tm,"onTransitionCancel"),Rt(qc,"onTransitionEnd"),oa("onMouseEnter",["mouseout","mouseover"]),oa("onMouseLeave",["mouseout","mouseover"]),oa("onPointerEnter",["pointerout","pointerover"]),oa("onPointerLeave",["pointerout","pointerover"]),Gi("onChange","change click focusin focusout input keydown keyup selectionchange".split(" ")),Gi("onSelect","focusout contextmenu dragend focusin keydown keyup mousedown mouseup selectionchange".split(" ")),Gi("onBeforeInput",["compositionend","keypress","textInput","paste"]),Gi("onCompositionEnd","compositionend focusout keydown keypress keyup mousedown".split(" ")),Gi("onCompositionStart","compositionstart focusout keydown keypress keyup mousedown".split(" ")),Gi("onCompositionUpdate","compositionupdate focusout keydown keypress keyup mousedown".split(" "));var Ss="abort canplay canplaythrough durationchange emptied encrypted ended error loadeddata loadedmetadata loadstart pause play playing progress ratechange resize seeked seeking stalled suspend timeupdate volumechange waiting".split(" "),Gm=new Set("beforetoggle cancel close invalid load scroll scrollend toggle".split(" ").concat(Ss));function Ph(e,t){t=(t&4)!==0;for(var i=0;i<e.length;i++){var a=e[i],s=a.event;a=a.listeners;e:{var n=void 0;if(t)for(var o=a.length-1;0<=o;o--){var l=a[o],h=l.instance,f=l.currentTarget;if(l=l.listener,h!==n&&s.isPropagationStopped())break e;n=l,s.currentTarget=f;try{n(s)}catch(k){en(k)}s.currentTarget=null,n=h}else for(o=0;o<a.length;o++){if(l=a[o],h=l.instance,f=l.currentTarget,l=l.listener,h!==n&&s.isPropagationStopped())break e;n=l,s.currentTarget=f;try{n(s)}catch(k){en(k)}s.currentTarget=null,n=h}}}}function ie(e,t){var i=t[lo];i===void 0&&(i=t[lo]=new Set);var a=e+"__bubble";i.has(a)||(Yh(t,e,2,!1),i.add(a))}function Jr(e,t,i){var a=0;t&&(a|=4),Yh(i,e,a,t)}var Fn="_reactListening"+Math.random().toString(36).slice(2);function Zr(e){if(!e[Fn]){e[Fn]=!0,Bl.forEach(function(i){i!=="selectionchange"&&(Gm.has(i)||Jr(i,!1,e),Jr(i,!0,e))});var t=e.nodeType===9?e:e.ownerDocument;t===null||t[Fn]||(t[Fn]=!0,Jr("selectionchange",!1,t))}}function Yh(e,t,i,a){switch(xu(t)){case 2:var s=uv;break;case 8:s=pv;break;default:s=pl}i=s.bind(null,t,i,e),s=void 0,!yo||t!=="touchstart"&&t!=="touchmove"&&t!=="wheel"||(s=!0),a?s!==void 0?e.addEventListener(t,i,{capture:!0,passive:s}):e.addEventListener(t,i,!0):s!==void 0?e.addEventListener(t,i,{passive:s}):e.addEventListener(t,i,!1)}function $r(e,t,i,a,s){var n=a;if((t&1)===0&&(t&2)===0&&a!==null)e:for(;;){if(a===null)return;var o=a.tag;if(o===3||o===4){var l=a.stateNode.containerInfo;if(l===s)break;if(o===4)for(o=a.return;o!==null;){var h=o.tag;if((h===3||h===4)&&o.stateNode.containerInfo===s)return;o=o.return}for(;l!==null;){if(o=aa(l),o===null)return;if(h=o.tag,h===5||h===6||h===26||h===27){a=n=o;continue e}l=l.parentNode}}a=a.return}Jl(function(){var f=n,k=fo(i),A=[];e:{var y=Sc.get(e);if(y!==void 0){var w=Js,R=e;switch(e){case"keypress":if(Qs(i)===0)break e;case"keydown":case"keyup":w=zp;break;case"focusin":R="focus",w=ko;break;case"focusout":R="blur",w=ko;break;case"beforeblur":case"afterblur":w=ko;break;case"click":if(i.button===2)break e;case"auxclick":case"dblclick":case"mousedown":case"mousemove":case"mouseup":case"mouseout":case"mouseover":case"contextmenu":w=ec;break;case"drag":case"dragend":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"dragstart":case"drop":w=bp;break;case"touchcancel":case"touchend":case"touchmove":case"touchstart":w=Dp;break;case xc:case kc:case Tc:w=kp;break;case qc:w=Rp;break;case"scroll":case"scrollend":w=gp;break;case"wheel":w=Gp;break;case"copy":case"cut":case"paste":w=qp;break;case"gotpointercapture":case"lostpointercapture":case"pointercancel":case"pointerdown":case"pointermove":case"pointerout":case"pointerover":case"pointerup":w=ic;break;case"toggle":case"beforetoggle":w=Lp}var P=(t&4)!==0,we=!P&&(e==="scroll"||e==="scrollend"),m=P?y!==null?y+"Capture":null:y;P=[];for(var u=f,v;u!==null;){var S=u;if(v=S.stateNode,S=S.tag,S!==5&&S!==26&&S!==27||v===null||m===null||(S=Va(u,m),S!=null&&P.push(As(u,S,v))),we)break;u=u.return}0<P.length&&(y=new w(y,R,null,i,k),A.push({event:y,listeners:P}))}}if((t&7)===0){e:{if(y=e==="mouseover"||e==="pointerover",w=e==="mouseout"||e==="pointerout",y&&i!==vo&&(R=i.relatedTarget||i.fromElement)&&(aa(R)||R[ia]))break e;if((w||y)&&(y=k.window===k?k:(y=k.ownerDocument)?y.defaultView||y.parentWindow:window,w?(R=i.relatedTarget||i.toElement,w=f,R=R?aa(R):null,R!==null&&(we=C(R),P=R.tag,R!==we||P!==5&&P!==27&&P!==6)&&(R=null)):(w=null,R=f),w!==R)){if(P=ec,S="onMouseLeave",m="onMouseEnter",u="mouse",(e==="pointerout"||e==="pointerover")&&(P=ic,S="onPointerLeave",m="onPointerEnter",u="pointer"),we=w==null?y:Ya(w),v=R==null?y:Ya(R),y=new P(S,u+"leave",w,i,k),y.target=we,y.relatedTarget=v,S=null,aa(k)===f&&(P=new P(m,u+"enter",R,i,k),P.target=v,P.relatedTarget=we,S=P),we=S,w&&R)t:{for(P=Bm,m=w,u=R,v=0,S=m;S;S=P(S))v++;S=0;for(var L=u;L;L=P(L))S++;for(;0<v-S;)m=P(m),v--;for(;0<S-v;)u=P(u),S--;for(;v--;){if(m===u||u!==null&&m===u.alternate){P=m;break t}m=P(m),u=P(u)}P=null}else P=null;w!==null&&Vh(A,y,w,P,!1),R!==null&&we!==null&&Vh(A,we,R,P,!0)}}e:{if(y=f?Ya(f):window,w=y.nodeName&&y.nodeName.toLowerCase(),w==="select"||w==="input"&&y.type==="file")var he=dc;else if(lc(y))if(hc)he=Xp;else{he=Kp;var G=Vp}else w=y.nodeName,!w||w.toLowerCase()!=="input"||y.type!=="checkbox"&&y.type!=="radio"?f&&mo(f.elementType)&&(he=dc):he=Qp;if(he&&(he=he(e,f))){cc(A,he,i,k);break e}G&&G(e,y,f),e==="focusout"&&f&&y.type==="number"&&f.memoizedProps.value!=null&&po(y,"number",y.value)}switch(G=f?Ya(f):window,e){case"focusin":(lc(G)||G.contentEditable==="true")&&(ua=G,Co=f,ts=null);break;case"focusout":ts=Co=ua=null;break;case"mousedown":jo=!0;break;case"contextmenu":case"mouseup":case"dragend":jo=!1,bc(A,i,k);break;case"selectionchange":if(Zp)break;case"keydown":case"keyup":bc(A,i,k)}var $;if(qo)e:{switch(e){case"compositionstart":var se="onCompositionStart";break e;case"compositionend":se="onCompositionEnd";break e;case"compositionupdate":se="onCompositionUpdate";break e}se=void 0}else ha?oc(e,i)&&(se="onCompositionEnd"):e==="keydown"&&i.keyCode===229&&(se="onCompositionStart");se&&(ac&&i.locale!=="ko"&&(ha||se!=="onCompositionStart"?se==="onCompositionEnd"&&ha&&($=Zl()):(hi=k,bo="value"in hi?hi.value:hi.textContent,ha=!0)),G=_n(f,se),0<G.length&&(se=new tc(se,e,null,i,k),A.push({event:se,listeners:G}),$?se.data=$:($=rc(i),$!==null&&(se.data=$)))),($=_p?Wp(e,i):Up(e,i))&&(se=_n(f,"onBeforeInput"),0<se.length&&(G=new tc("onBeforeInput","beforeinput",null,i,k),A.push({event:G,listeners:se}),G.data=$)),Om(A,e,f,i,k)}Ph(A,t)})}function As(e,t,i){return{instance:e,listener:t,currentTarget:i}}function _n(e,t){for(var i=t+"Capture",a=[];e!==null;){var s=e,n=s.stateNode;if(s=s.tag,s!==5&&s!==26&&s!==27||n===null||(s=Va(e,i),s!=null&&a.unshift(As(e,s,n)),s=Va(e,t),s!=null&&a.push(As(e,s,n))),e.tag===3)return a;e=e.return}return[]}function Bm(e){if(e===null)return null;do e=e.return;while(e&&e.tag!==5&&e.tag!==27);return e||null}function Vh(e,t,i,a,s){for(var n=t._reactName,o=[];i!==null&&i!==a;){var l=i,h=l.alternate,f=l.stateNode;if(l=l.tag,h!==null&&h===a)break;l!==5&&l!==26&&l!==27||f===null||(h=f,s?(f=Va(i,n),f!=null&&o.unshift(As(i,f,h))):s||(f=Va(i,n),f!=null&&o.push(As(i,f,h)))),i=i.return}o.length!==0&&e.push({event:t,listeners:o})}var Lm=/\r\n?/g,Fm=/\u0000|\uFFFD/g;function Kh(e){return(typeof e=="string"?e:""+e).replace(Lm,`
+`).replace(Fm,"")}function Qh(e,t){return t=Kh(t),Kh(e)===t}function be(e,t,i,a,s,n){switch(i){case"children":typeof a=="string"?t==="body"||t==="textarea"&&a===""||la(e,a):(typeof a=="number"||typeof a=="bigint")&&t!=="body"&&la(e,""+a);break;case"className":Ps(e,"class",a);break;case"tabIndex":Ps(e,"tabindex",a);break;case"dir":case"role":case"viewBox":case"width":case"height":Ps(e,i,a);break;case"style":Ql(e,a,n);break;case"data":if(t!=="object"){Ps(e,"data",a);break}case"src":case"href":if(a===""&&(t!=="a"||i!=="href")){e.removeAttribute(i);break}if(a==null||typeof a=="function"||typeof a=="symbol"||typeof a=="boolean"){e.removeAttribute(i);break}a=Vs(""+a),e.setAttribute(i,a);break;case"action":case"formAction":if(typeof a=="function"){e.setAttribute(i,"javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')");break}else typeof n=="function"&&(i==="formAction"?(t!=="input"&&be(e,t,"name",s.name,s,null),be(e,t,"formEncType",s.formEncType,s,null),be(e,t,"formMethod",s.formMethod,s,null),be(e,t,"formTarget",s.formTarget,s,null)):(be(e,t,"encType",s.encType,s,null),be(e,t,"method",s.method,s,null),be(e,t,"target",s.target,s,null)));if(a==null||typeof a=="symbol"||typeof a=="boolean"){e.removeAttribute(i);break}a=Vs(""+a),e.setAttribute(i,a);break;case"onClick":a!=null&&(e.onclick=Pt);break;case"onScroll":a!=null&&ie("scroll",e);break;case"onScrollEnd":a!=null&&ie("scrollend",e);break;case"dangerouslySetInnerHTML":if(a!=null){if(typeof a!="object"||!("__html"in a))throw Error(d(61));if(i=a.__html,i!=null){if(s.children!=null)throw Error(d(60));e.innerHTML=i}}break;case"multiple":e.multiple=a&&typeof a!="function"&&typeof a!="symbol";break;case"muted":e.muted=a&&typeof a!="function"&&typeof a!="symbol";break;case"suppressContentEditableWarning":case"suppressHydrationWarning":case"defaultValue":case"defaultChecked":case"innerHTML":case"ref":break;case"autoFocus":break;case"xlinkHref":if(a==null||typeof a=="function"||typeof a=="boolean"||typeof a=="symbol"){e.removeAttribute("xlink:href");break}i=Vs(""+a),e.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href",i);break;case"contentEditable":case"spellCheck":case"draggable":case"value":case"autoReverse":case"externalResourcesRequired":case"focusable":case"preserveAlpha":a!=null&&typeof a!="function"&&typeof a!="symbol"?e.setAttribute(i,""+a):e.removeAttribute(i);break;case"inert":case"allowFullScreen":case"async":case"autoPlay":case"controls":case"default":case"defer":case"disabled":case"disablePictureInPicture":case"disableRemotePlayback":case"formNoValidate":case"hidden":case"loop":case"noModule":case"noValidate":case"open":case"playsInline":case"readOnly":case"required":case"reversed":case"scoped":case"seamless":case"itemScope":a&&typeof a!="function"&&typeof a!="symbol"?e.setAttribute(i,""):e.removeAttribute(i);break;case"capture":case"download":a===!0?e.setAttribute(i,""):a!==!1&&a!=null&&typeof a!="function"&&typeof a!="symbol"?e.setAttribute(i,a):e.removeAttribute(i);break;case"cols":case"rows":case"size":case"span":a!=null&&typeof a!="function"&&typeof a!="symbol"&&!isNaN(a)&&1<=a?e.setAttribute(i,a):e.removeAttribute(i);break;case"rowSpan":case"start":a==null||typeof a=="function"||typeof a=="symbol"||isNaN(a)?e.removeAttribute(i):e.setAttribute(i,a);break;case"popover":ie("beforetoggle",e),ie("toggle",e),Us(e,"popover",a);break;case"xlinkActuate":Ut(e,"http://www.w3.org/1999/xlink","xlink:actuate",a);break;case"xlinkArcrole":Ut(e,"http://www.w3.org/1999/xlink","xlink:arcrole",a);break;case"xlinkRole":Ut(e,"http://www.w3.org/1999/xlink","xlink:role",a);break;case"xlinkShow":Ut(e,"http://www.w3.org/1999/xlink","xlink:show",a);break;case"xlinkTitle":Ut(e,"http://www.w3.org/1999/xlink","xlink:title",a);break;case"xlinkType":Ut(e,"http://www.w3.org/1999/xlink","xlink:type",a);break;case"xmlBase":Ut(e,"http://www.w3.org/XML/1998/namespace","xml:base",a);break;case"xmlLang":Ut(e,"http://www.w3.org/XML/1998/namespace","xml:lang",a);break;case"xmlSpace":Ut(e,"http://www.w3.org/XML/1998/namespace","xml:space",a);break;case"is":Us(e,"is",a);break;case"innerText":case"textContent":break;default:(!(2<i.length)||i[0]!=="o"&&i[0]!=="O"||i[1]!=="n"&&i[1]!=="N")&&(i=vp.get(i)||i,Us(e,i,a))}}function el(e,t,i,a,s,n){switch(i){case"style":Ql(e,a,n);break;case"dangerouslySetInnerHTML":if(a!=null){if(typeof a!="object"||!("__html"in a))throw Error(d(61));if(i=a.__html,i!=null){if(s.children!=null)throw Error(d(60));e.innerHTML=i}}break;case"children":typeof a=="string"?la(e,a):(typeof a=="number"||typeof a=="bigint")&&la(e,""+a);break;case"onScroll":a!=null&&ie("scroll",e);break;case"onScrollEnd":a!=null&&ie("scrollend",e);break;case"onClick":a!=null&&(e.onclick=Pt);break;case"suppressContentEditableWarning":case"suppressHydrationWarning":case"innerHTML":case"ref":break;case"innerText":case"textContent":break;default:if(!Ll.hasOwnProperty(i))e:{if(i[0]==="o"&&i[1]==="n"&&(s=i.endsWith("Capture"),t=i.slice(2,s?i.length-7:void 0),n=e[nt]||null,n=n!=null?n[i]:null,typeof n=="function"&&e.removeEventListener(t,n,s),typeof a=="function")){typeof n!="function"&&n!==null&&(i in e?e[i]=null:e.hasAttribute(i)&&e.removeAttribute(i)),e.addEventListener(t,a,s);break e}i in e?e[i]=a:a===!0?e.setAttribute(i,""):Us(e,i,a)}}}function Ze(e,t,i){switch(t){case"div":case"span":case"svg":case"path":case"a":case"g":case"p":case"li":break;case"img":ie("error",e),ie("load",e);var a=!1,s=!1,n;for(n in i)if(i.hasOwnProperty(n)){var o=i[n];if(o!=null)switch(n){case"src":a=!0;break;case"srcSet":s=!0;break;case"children":case"dangerouslySetInnerHTML":throw Error(d(137,t));default:be(e,t,n,o,i,null)}}s&&be(e,t,"srcSet",i.srcSet,i,null),a&&be(e,t,"src",i.src,i,null);return;case"input":ie("invalid",e);var l=n=o=s=null,h=null,f=null;for(a in i)if(i.hasOwnProperty(a)){var k=i[a];if(k!=null)switch(a){case"name":s=k;break;case"type":o=k;break;case"checked":h=k;break;case"defaultChecked":f=k;break;case"value":n=k;break;case"defaultValue":l=k;break;case"children":case"dangerouslySetInnerHTML":if(k!=null)throw Error(d(137,t));break;default:be(e,t,a,k,i,null)}}Pl(e,n,l,h,f,o,s,!1);return;case"select":ie("invalid",e),a=o=n=null;for(s in i)if(i.hasOwnProperty(s)&&(l=i[s],l!=null))switch(s){case"value":n=l;break;case"defaultValue":o=l;break;case"multiple":a=l;default:be(e,t,s,l,i,null)}t=n,i=o,e.multiple=!!a,t!=null?ra(e,!!a,t,!1):i!=null&&ra(e,!!a,i,!0);return;case"textarea":ie("invalid",e),n=s=a=null;for(o in i)if(i.hasOwnProperty(o)&&(l=i[o],l!=null))switch(o){case"value":a=l;break;case"defaultValue":s=l;break;case"children":n=l;break;case"dangerouslySetInnerHTML":if(l!=null)throw Error(d(91));break;default:be(e,t,o,l,i,null)}Vl(e,a,s,n);return;case"option":for(h in i)i.hasOwnProperty(h)&&(a=i[h],a!=null)&&(h==="selected"?e.selected=a&&typeof a!="function"&&typeof a!="symbol":be(e,t,h,a,i,null));return;case"dialog":ie("beforetoggle",e),ie("toggle",e),ie("cancel",e),ie("close",e);break;case"iframe":case"object":ie("load",e);break;case"video":case"audio":for(a=0;a<Ss.length;a++)ie(Ss[a],e);break;case"image":ie("error",e),ie("load",e);break;case"details":ie("toggle",e);break;case"embed":case"source":case"link":ie("error",e),ie("load",e);case"area":case"base":case"br":case"col":case"hr":case"keygen":case"meta":case"param":case"track":case"wbr":case"menuitem":for(f in i)if(i.hasOwnProperty(f)&&(a=i[f],a!=null))switch(f){case"children":case"dangerouslySetInnerHTML":throw Error(d(137,t));default:be(e,t,f,a,i,null)}return;default:if(mo(t)){for(k in i)i.hasOwnProperty(k)&&(a=i[k],a!==void 0&&el(e,t,k,a,i,void 0));return}}for(l in i)i.hasOwnProperty(l)&&(a=i[l],a!=null&&be(e,t,l,a,i,null))}function _m(e,t,i,a){switch(t){case"div":case"span":case"svg":case"path":case"a":case"g":case"p":case"li":break;case"input":var s=null,n=null,o=null,l=null,h=null,f=null,k=null;for(w in i){var A=i[w];if(i.hasOwnProperty(w)&&A!=null)switch(w){case"checked":break;case"value":break;case"defaultValue":h=A;default:a.hasOwnProperty(w)||be(e,t,w,null,a,A)}}for(var y in a){var w=a[y];if(A=i[y],a.hasOwnProperty(y)&&(w!=null||A!=null))switch(y){case"type":n=w;break;case"name":s=w;break;case"checked":f=w;break;case"defaultChecked":k=w;break;case"value":o=w;break;case"defaultValue":l=w;break;case"children":case"dangerouslySetInnerHTML":if(w!=null)throw Error(d(137,t));break;default:w!==A&&be(e,t,y,w,a,A)}}uo(e,o,l,h,f,k,n,s);return;case"select":w=o=l=y=null;for(n in i)if(h=i[n],i.hasOwnProperty(n)&&h!=null)switch(n){case"value":break;case"multiple":w=h;default:a.hasOwnProperty(n)||be(e,t,n,null,a,h)}for(s in a)if(n=a[s],h=i[s],a.hasOwnProperty(s)&&(n!=null||h!=null))switch(s){case"value":y=n;break;case"defaultValue":l=n;break;case"multiple":o=n;default:n!==h&&be(e,t,s,n,a,h)}t=l,i=o,a=w,y!=null?ra(e,!!i,y,!1):!!a!=!!i&&(t!=null?ra(e,!!i,t,!0):ra(e,!!i,i?[]:"",!1));return;case"textarea":w=y=null;for(l in i)if(s=i[l],i.hasOwnProperty(l)&&s!=null&&!a.hasOwnProperty(l))switch(l){case"value":break;case"children":break;default:be(e,t,l,null,a,s)}for(o in a)if(s=a[o],n=i[o],a.hasOwnProperty(o)&&(s!=null||n!=null))switch(o){case"value":y=s;break;case"defaultValue":w=s;break;case"children":break;case"dangerouslySetInnerHTML":if(s!=null)throw Error(d(91));break;default:s!==n&&be(e,t,o,s,a,n)}Yl(e,y,w);return;case"option":for(var R in i)y=i[R],i.hasOwnProperty(R)&&y!=null&&!a.hasOwnProperty(R)&&(R==="selected"?e.selected=!1:be(e,t,R,null,a,y));for(h in a)y=a[h],w=i[h],a.hasOwnProperty(h)&&y!==w&&(y!=null||w!=null)&&(h==="selected"?e.selected=y&&typeof y!="function"&&typeof y!="symbol":be(e,t,h,y,a,w));return;case"img":case"link":case"area":case"base":case"br":case"col":case"embed":case"hr":case"keygen":case"meta":case"param":case"source":case"track":case"wbr":case"menuitem":for(var P in i)y=i[P],i.hasOwnProperty(P)&&y!=null&&!a.hasOwnProperty(P)&&be(e,t,P,null,a,y);for(f in a)if(y=a[f],w=i[f],a.hasOwnProperty(f)&&y!==w&&(y!=null||w!=null))switch(f){case"children":case"dangerouslySetInnerHTML":if(y!=null)throw Error(d(137,t));break;default:be(e,t,f,y,a,w)}return;default:if(mo(t)){for(var we in i)y=i[we],i.hasOwnProperty(we)&&y!==void 0&&!a.hasOwnProperty(we)&&el(e,t,we,void 0,a,y);for(k in a)y=a[k],w=i[k],!a.hasOwnProperty(k)||y===w||y===void 0&&w===void 0||el(e,t,k,y,a,w);return}}for(var m in i)y=i[m],i.hasOwnProperty(m)&&y!=null&&!a.hasOwnProperty(m)&&be(e,t,m,null,a,y);for(A in a)y=a[A],w=i[A],!a.hasOwnProperty(A)||y===w||y==null&&w==null||be(e,t,A,y,a,w)}function Xh(e){switch(e){case"css":case"script":case"font":case"img":case"image":case"input":case"link":return!0;default:return!1}}function Wm(){if(typeof performance.getEntriesByType=="function"){for(var e=0,t=0,i=performance.getEntriesByType("resource"),a=0;a<i.length;a++){var s=i[a],n=s.transferSize,o=s.initiatorType,l=s.duration;if(n&&l&&Xh(o)){for(o=0,l=s.responseEnd,a+=1;a<i.length;a++){var h=i[a],f=h.startTime;if(f>l)break;var k=h.transferSize,A=h.initiatorType;k&&Xh(A)&&(h=h.responseEnd,o+=k*(h<l?1:(l-f)/(h-f)))}if(--a,t+=8*(n+o)/(s.duration/1e3),e++,10<e)break}}if(0<e)return t/e/1e6}return navigator.connection&&(e=navigator.connection.downlink,typeof e=="number")?e:5}var tl=null,il=null;function Wn(e){return e.nodeType===9?e:e.ownerDocument}function Jh(e){switch(e){case"http://www.w3.org/2000/svg":return 1;case"http://www.w3.org/1998/Math/MathML":return 2;default:return 0}}function Zh(e,t){if(e===0)switch(t){case"svg":return 1;case"math":return 2;default:return 0}return e===1&&t==="foreignObject"?0:e}function al(e,t){return e==="textarea"||e==="noscript"||typeof t.children=="string"||typeof t.children=="number"||typeof t.children=="bigint"||typeof t.dangerouslySetInnerHTML=="object"&&t.dangerouslySetInnerHTML!==null&&t.dangerouslySetInnerHTML.__html!=null}var sl=null;function Um(){var e=window.event;return e&&e.type==="popstate"?e===sl?!1:(sl=e,!0):(sl=null,!1)}var $h=typeof setTimeout=="function"?setTimeout:void 0,Pm=typeof clearTimeout=="function"?clearTimeout:void 0,eu=typeof Promise=="function"?Promise:void 0,Ym=typeof queueMicrotask=="function"?queueMicrotask:typeof eu<"u"?function(e){return eu.resolve(null).then(e).catch(Vm)}:$h;function Vm(e){setTimeout(function(){throw e})}function Ci(e){return e==="head"}function tu(e,t){var i=t,a=0;do{var s=i.nextSibling;if(e.removeChild(i),s&&s.nodeType===8)if(i=s.data,i==="/$"||i==="/&"){if(a===0){e.removeChild(s),Ba(t);return}a--}else if(i==="$"||i==="$?"||i==="$~"||i==="$!"||i==="&")a++;else if(i==="html")Es(e.ownerDocument.documentElement);else if(i==="head"){i=e.ownerDocument.head,Es(i);for(var n=i.firstChild;n;){var o=n.nextSibling,l=n.nodeName;n[Pa]||l==="SCRIPT"||l==="STYLE"||l==="LINK"&&n.rel.toLowerCase()==="stylesheet"||i.removeChild(n),n=o}}else i==="body"&&Es(e.ownerDocument.body);i=s}while(i);Ba(t)}function iu(e,t){var i=e;e=0;do{var a=i.nextSibling;if(i.nodeType===1?t?(i._stashedDisplay=i.style.display,i.style.display="none"):(i.style.display=i._stashedDisplay||"",i.getAttribute("style")===""&&i.removeAttribute("style")):i.nodeType===3&&(t?(i._stashedText=i.nodeValue,i.nodeValue=""):i.nodeValue=i._stashedText||""),a&&a.nodeType===8)if(i=a.data,i==="/$"){if(e===0)break;e--}else i!=="$"&&i!=="$?"&&i!=="$~"&&i!=="$!"||e++;i=a}while(i)}function nl(e){var t=e.firstChild;for(t&&t.nodeType===10&&(t=t.nextSibling);t;){var i=t;switch(t=t.nextSibling,i.nodeName){case"HTML":case"HEAD":case"BODY":nl(i),co(i);continue;case"SCRIPT":case"STYLE":continue;case"LINK":if(i.rel.toLowerCase()==="stylesheet")continue}e.removeChild(i)}}function Km(e,t,i,a){for(;e.nodeType===1;){var s=i;if(e.nodeName.toLowerCase()!==t.toLowerCase()){if(!a&&(e.nodeName!=="INPUT"||e.type!=="hidden"))break}else if(a){if(!e[Pa])switch(t){case"meta":if(!e.hasAttribute("itemprop"))break;return e;case"link":if(n=e.getAttribute("rel"),n==="stylesheet"&&e.hasAttribute("data-precedence"))break;if(n!==s.rel||e.getAttribute("href")!==(s.href==null||s.href===""?null:s.href)||e.getAttribute("crossorigin")!==(s.crossOrigin==null?null:s.crossOrigin)||e.getAttribute("title")!==(s.title==null?null:s.title))break;return e;case"style":if(e.hasAttribute("data-precedence"))break;return e;case"script":if(n=e.getAttribute("src"),(n!==(s.src==null?null:s.src)||e.getAttribute("type")!==(s.type==null?null:s.type)||e.getAttribute("crossorigin")!==(s.crossOrigin==null?null:s.crossOrigin))&&n&&e.hasAttribute("async")&&!e.hasAttribute("itemprop"))break;return e;default:return e}}else if(t==="input"&&e.type==="hidden"){var n=s.name==null?null:""+s.name;if(s.type==="hidden"&&e.getAttribute("name")===n)return e}else return e;if(e=It(e.nextSibling),e===null)break}return null}function Qm(e,t,i){if(t==="")return null;for(;e.nodeType!==3;)if((e.nodeType!==1||e.nodeName!=="INPUT"||e.type!=="hidden")&&!i||(e=It(e.nextSibling),e===null))return null;return e}function au(e,t){for(;e.nodeType!==8;)if((e.nodeType!==1||e.nodeName!=="INPUT"||e.type!=="hidden")&&!t||(e=It(e.nextSibling),e===null))return null;return e}function ol(e){return e.data==="$?"||e.data==="$~"}function rl(e){return e.data==="$!"||e.data==="$?"&&e.ownerDocument.readyState!=="loading"}function Xm(e,t){var i=e.ownerDocument;if(e.data==="$~")e._reactRetry=t;else if(e.data!=="$?"||i.readyState!=="loading")t();else{var a=function(){t(),i.removeEventListener("DOMContentLoaded",a)};i.addEventListener("DOMContentLoaded",a),e._reactRetry=a}}function It(e){for(;e!=null;e=e.nextSibling){var t=e.nodeType;if(t===1||t===3)break;if(t===8){if(t=e.data,t==="$"||t==="$!"||t==="$?"||t==="$~"||t==="&"||t==="F!"||t==="F")break;if(t==="/$"||t==="/&")return null}}return e}var ll=null;function su(e){e=e.nextSibling;for(var t=0;e;){if(e.nodeType===8){var i=e.data;if(i==="/$"||i==="/&"){if(t===0)return It(e.nextSibling);t--}else i!=="$"&&i!=="$!"&&i!=="$?"&&i!=="$~"&&i!=="&"||t++}e=e.nextSibling}return null}function nu(e){e=e.previousSibling;for(var t=0;e;){if(e.nodeType===8){var i=e.data;if(i==="$"||i==="$!"||i==="$?"||i==="$~"||i==="&"){if(t===0)return e;t--}else i!=="/$"&&i!=="/&"||t++}e=e.previousSibling}return null}function ou(e,t,i){switch(t=Wn(i),e){case"html":if(e=t.documentElement,!e)throw Error(d(452));return e;case"head":if(e=t.head,!e)throw Error(d(453));return e;case"body":if(e=t.body,!e)throw Error(d(454));return e;default:throw Error(d(451))}}function Es(e){for(var t=e.attributes;t.length;)e.removeAttributeNode(t[0]);co(e)}var Dt=new Map,ru=new Set;function Un(e){return typeof e.getRootNode=="function"?e.getRootNode():e.nodeType===9?e:e.ownerDocument}var ri=N.d;N.d={f:Jm,r:Zm,D:$m,C:ev,L:tv,m:iv,X:sv,S:av,M:nv};function Jm(){var e=ri.f(),t=On();return e||t}function Zm(e){var t=sa(e);t!==null&&t.tag===5&&t.type==="form"?qd(t):ri.r(e)}var Ra=typeof document>"u"?null:document;function lu(e,t,i){var a=Ra;if(a&&typeof t=="string"&&t){var s=At(t);s='link[rel="'+e+'"][href="'+s+'"]',typeof i=="string"&&(s+='[crossorigin="'+i+'"]'),ru.has(s)||(ru.add(s),e={rel:e,crossOrigin:i,href:t},a.querySelector(s)===null&&(t=a.createElement("link"),Ze(t,"link",e),We(t),a.head.appendChild(t)))}}function $m(e){ri.D(e),lu("dns-prefetch",e,null)}function ev(e,t){ri.C(e,t),lu("preconnect",e,t)}function tv(e,t,i){ri.L(e,t,i);var a=Ra;if(a&&e&&t){var s='link[rel="preload"][as="'+At(t)+'"]';t==="image"&&i&&i.imageSrcSet?(s+='[imagesrcset="'+At(i.imageSrcSet)+'"]',typeof i.imageSizes=="string"&&(s+='[imagesizes="'+At(i.imageSizes)+'"]')):s+='[href="'+At(e)+'"]';var n=s;switch(t){case"style":n=Ha(e);break;case"script":n=Ga(e)}Dt.has(n)||(e=O({rel:"preload",href:t==="image"&&i&&i.imageSrcSet?void 0:e,as:t},i),Dt.set(n,e),a.querySelector(s)!==null||t==="style"&&a.querySelector(Cs(n))||t==="script"&&a.querySelector(js(n))||(t=a.createElement("link"),Ze(t,"link",e),We(t),a.head.appendChild(t)))}}function iv(e,t){ri.m(e,t);var i=Ra;if(i&&e){var a=t&&typeof t.as=="string"?t.as:"script",s='link[rel="modulepreload"][as="'+At(a)+'"][href="'+At(e)+'"]',n=s;switch(a){case"audioworklet":case"paintworklet":case"serviceworker":case"sharedworker":case"worker":case"script":n=Ga(e)}if(!Dt.has(n)&&(e=O({rel:"modulepreload",href:e},t),Dt.set(n,e),i.querySelector(s)===null)){switch(a){case"audioworklet":case"paintworklet":case"serviceworker":case"sharedworker":case"worker":case"script":if(i.querySelector(js(n)))return}a=i.createElement("link"),Ze(a,"link",e),We(a),i.head.appendChild(a)}}}function av(e,t,i){ri.S(e,t,i);var a=Ra;if(a&&e){var s=na(a).hoistableStyles,n=Ha(e);t=t||"default";var o=s.get(n);if(!o){var l={loading:0,preload:null};if(o=a.querySelector(Cs(n)))l.loading=5;else{e=O({rel:"stylesheet",href:e,"data-precedence":t},i),(i=Dt.get(n))&&cl(e,i);var h=o=a.createElement("link");We(h),Ze(h,"link",e),h._p=new Promise(function(f,k){h.onload=f,h.onerror=k}),h.addEventListener("load",function(){l.loading|=1}),h.addEventListener("error",function(){l.loading|=2}),l.loading|=4,Pn(o,t,a)}o={type:"stylesheet",instance:o,count:1,state:l},s.set(n,o)}}}function sv(e,t){ri.X(e,t);var i=Ra;if(i&&e){var a=na(i).hoistableScripts,s=Ga(e),n=a.get(s);n||(n=i.querySelector(js(s)),n||(e=O({src:e,async:!0},t),(t=Dt.get(s))&&dl(e,t),n=i.createElement("script"),We(n),Ze(n,"link",e),i.head.appendChild(n)),n={type:"script",instance:n,count:1,state:null},a.set(s,n))}}function nv(e,t){ri.M(e,t);var i=Ra;if(i&&e){var a=na(i).hoistableScripts,s=Ga(e),n=a.get(s);n||(n=i.querySelector(js(s)),n||(e=O({src:e,async:!0,type:"module"},t),(t=Dt.get(s))&&dl(e,t),n=i.createElement("script"),We(n),Ze(n,"link",e),i.head.appendChild(n)),n={type:"script",instance:n,count:1,state:null},a.set(s,n))}}function cu(e,t,i,a){var s=(s=ee.current)?Un(s):null;if(!s)throw Error(d(446));switch(e){case"meta":case"title":return null;case"style":return typeof i.precedence=="string"&&typeof i.href=="string"?(t=Ha(i.href),i=na(s).hoistableStyles,a=i.get(t),a||(a={type:"style",instance:null,count:0,state:null},i.set(t,a)),a):{type:"void",instance:null,count:0,state:null};case"link":if(i.rel==="stylesheet"&&typeof i.href=="string"&&typeof i.precedence=="string"){e=Ha(i.href);var n=na(s).hoistableStyles,o=n.get(e);if(o||(s=s.ownerDocument||s,o={type:"stylesheet",instance:null,count:0,state:{loading:0,preload:null}},n.set(e,o),(n=s.querySelector(Cs(e)))&&!n._p&&(o.instance=n,o.state.loading=5),Dt.has(e)||(i={rel:"preload",as:"style",href:i.href,crossOrigin:i.crossOrigin,integrity:i.integrity,media:i.media,hrefLang:i.hrefLang,referrerPolicy:i.referrerPolicy},Dt.set(e,i),n||ov(s,e,i,o.state))),t&&a===null)throw Error(d(528,""));return o}if(t&&a!==null)throw Error(d(529,""));return null;case"script":return t=i.async,i=i.src,typeof i=="string"&&t&&typeof t!="function"&&typeof t!="symbol"?(t=Ga(i),i=na(s).hoistableScripts,a=i.get(t),a||(a={type:"script",instance:null,count:0,state:null},i.set(t,a)),a):{type:"void",instance:null,count:0,state:null};default:throw Error(d(444,e))}}function Ha(e){return'href="'+At(e)+'"'}function Cs(e){return'link[rel="stylesheet"]['+e+"]"}function du(e){return O({},e,{"data-precedence":e.precedence,precedence:null})}function ov(e,t,i,a){e.querySelector('link[rel="preload"][as="style"]['+t+"]")?a.loading=1:(t=e.createElement("link"),a.preload=t,t.addEventListener("load",function(){return a.loading|=1}),t.addEventListener("error",function(){return a.loading|=2}),Ze(t,"link",i),We(t),e.head.appendChild(t))}function Ga(e){return'[src="'+At(e)+'"]'}function js(e){return"script[async]"+e}function hu(e,t,i){if(t.count++,t.instance===null)switch(t.type){case"style":var a=e.querySelector('style[data-href~="'+At(i.href)+'"]');if(a)return t.instance=a,We(a),a;var s=O({},i,{"data-href":i.href,"data-precedence":i.precedence,href:null,precedence:null});return a=(e.ownerDocument||e).createElement("style"),We(a),Ze(a,"style",s),Pn(a,i.precedence,e),t.instance=a;case"stylesheet":s=Ha(i.href);var n=e.querySelector(Cs(s));if(n)return t.state.loading|=4,t.instance=n,We(n),n;a=du(i),(s=Dt.get(s))&&cl(a,s),n=(e.ownerDocument||e).createElement("link"),We(n);var o=n;return o._p=new Promise(function(l,h){o.onload=l,o.onerror=h}),Ze(n,"link",a),t.state.loading|=4,Pn(n,i.precedence,e),t.instance=n;case"script":return n=Ga(i.src),(s=e.querySelector(js(n)))?(t.instance=s,We(s),s):(a=i,(s=Dt.get(n))&&(a=O({},i),dl(a,s)),e=e.ownerDocument||e,s=e.createElement("script"),We(s),Ze(s,"link",a),e.head.appendChild(s),t.instance=s);case"void":return null;default:throw Error(d(443,t.type))}else t.type==="stylesheet"&&(t.state.loading&4)===0&&(a=t.instance,t.state.loading|=4,Pn(a,i.precedence,e));return t.instance}function Pn(e,t,i){for(var a=i.querySelectorAll('link[rel="stylesheet"][data-precedence],style[data-precedence]'),s=a.length?a[a.length-1]:null,n=s,o=0;o<a.length;o++){var l=a[o];if(l.dataset.precedence===t)n=l;else if(n!==s)break}n?n.parentNode.insertBefore(e,n.nextSibling):(t=i.nodeType===9?i.head:i,t.insertBefore(e,t.firstChild))}function cl(e,t){e.crossOrigin==null&&(e.crossOrigin=t.crossOrigin),e.referrerPolicy==null&&(e.referrerPolicy=t.referrerPolicy),e.title==null&&(e.title=t.title)}function dl(e,t){e.crossOrigin==null&&(e.crossOrigin=t.crossOrigin),e.referrerPolicy==null&&(e.referrerPolicy=t.referrerPolicy),e.integrity==null&&(e.integrity=t.integrity)}var Yn=null;function uu(e,t,i){if(Yn===null){var a=new Map,s=Yn=new Map;s.set(i,a)}else s=Yn,a=s.get(i),a||(a=new Map,s.set(i,a));if(a.has(e))return a;for(a.set(e,null),i=i.getElementsByTagName(e),s=0;s<i.length;s++){var n=i[s];if(!(n[Pa]||n[Ke]||e==="link"&&n.getAttribute("rel")==="stylesheet")&&n.namespaceURI!=="http://www.w3.org/2000/svg"){var o=n.getAttribute(t)||"";o=e+o;var l=a.get(o);l?l.push(n):a.set(o,[n])}}return a}function pu(e,t,i){e=e.ownerDocument||e,e.head.insertBefore(i,t==="title"?e.querySelector("head > title"):null)}function rv(e,t,i){if(i===1||t.itemProp!=null)return!1;switch(e){case"meta":case"title":return!0;case"style":if(typeof t.precedence!="string"||typeof t.href!="string"||t.href==="")break;return!0;case"link":if(typeof t.rel!="string"||typeof t.href!="string"||t.href===""||t.onLoad||t.onError)break;return t.rel==="stylesheet"?(e=t.disabled,typeof t.precedence=="string"&&e==null):!0;case"script":if(t.async&&typeof t.async!="function"&&typeof t.async!="symbol"&&!t.onLoad&&!t.onError&&t.src&&typeof t.src=="string")return!0}return!1}function mu(e){return!(e.type==="stylesheet"&&(e.state.loading&3)===0)}function lv(e,t,i,a){if(i.type==="stylesheet"&&(typeof a.media!="string"||matchMedia(a.media).matches!==!1)&&(i.state.loading&4)===0){if(i.instance===null){var s=Ha(a.href),n=t.querySelector(Cs(s));if(n){t=n._p,t!==null&&typeof t=="object"&&typeof t.then=="function"&&(e.count++,e=Vn.bind(e),t.then(e,e)),i.state.loading|=4,i.instance=n,We(n);return}n=t.ownerDocument||t,a=du(a),(s=Dt.get(s))&&cl(a,s),n=n.createElement("link"),We(n);var o=n;o._p=new Promise(function(l,h){o.onload=l,o.onerror=h}),Ze(n,"link",a),i.instance=n}e.stylesheets===null&&(e.stylesheets=new Map),e.stylesheets.set(i,t),(t=i.state.preload)&&(i.state.loading&3)===0&&(e.count++,i=Vn.bind(e),t.addEventListener("load",i),t.addEventListener("error",i))}}var hl=0;function cv(e,t){return e.stylesheets&&e.count===0&&Qn(e,e.stylesheets),0<e.count||0<e.imgCount?function(i){var a=setTimeout(function(){if(e.stylesheets&&Qn(e,e.stylesheets),e.unsuspend){var n=e.unsuspend;e.unsuspend=null,n()}},6e4+t);0<e.imgBytes&&hl===0&&(hl=62500*Wm());var s=setTimeout(function(){if(e.waitingForImages=!1,e.count===0&&(e.stylesheets&&Qn(e,e.stylesheets),e.unsuspend)){var n=e.unsuspend;e.unsuspend=null,n()}},(e.imgBytes>hl?50:800)+t);return e.unsuspend=i,function(){e.unsuspend=null,clearTimeout(a),clearTimeout(s)}}:null}function Vn(){if(this.count--,this.count===0&&(this.imgCount===0||!this.waitingForImages)){if(this.stylesheets)Qn(this,this.stylesheets);else if(this.unsuspend){var e=this.unsuspend;this.unsuspend=null,e()}}}var Kn=null;function Qn(e,t){e.stylesheets=null,e.unsuspend!==null&&(e.count++,Kn=new Map,t.forEach(dv,e),Kn=null,Vn.call(e))}function dv(e,t){if(!(t.state.loading&4)){var i=Kn.get(e);if(i)var a=i.get(null);else{i=new Map,Kn.set(e,i);for(var s=e.querySelectorAll("link[data-precedence],style[data-precedence]"),n=0;n<s.length;n++){var o=s[n];(o.nodeName==="LINK"||o.getAttribute("media")!=="not all")&&(i.set(o.dataset.precedence,o),a=o)}a&&i.set(null,a)}s=t.instance,o=s.getAttribute("data-precedence"),n=i.get(o)||a,n===a&&i.set(null,s),i.set(o,s),this.count++,a=Vn.bind(this),s.addEventListener("load",a),s.addEventListener("error",a),n?n.parentNode.insertBefore(s,n.nextSibling):(e=e.nodeType===9?e.head:e,e.insertBefore(s,e.firstChild)),t.state.loading|=4}}var Ms={$$typeof:Ne,Provider:null,Consumer:null,_currentValue:W,_currentValue2:W,_threadCount:0};function hv(e,t,i,a,s,n,o,l,h){this.tag=1,this.containerInfo=e,this.pingCache=this.current=this.pendingChildren=null,this.timeoutHandle=-1,this.callbackNode=this.next=this.pendingContext=this.context=this.cancelPendingCommit=null,this.callbackPriority=0,this.expirationTimes=no(-1),this.entangledLanes=this.shellSuspendCounter=this.errorRecoveryDisabledLanes=this.expiredLanes=this.warmLanes=this.pingedLanes=this.suspendedLanes=this.pendingLanes=0,this.entanglements=no(0),this.hiddenUpdates=no(null),this.identifierPrefix=a,this.onUncaughtError=s,this.onCaughtError=n,this.onRecoverableError=o,this.pooledCache=null,this.pooledCacheLanes=0,this.formState=h,this.incompleteTransitions=new Map}function vu(e,t,i,a,s,n,o,l,h,f,k,A){return e=new hv(e,t,i,o,h,f,k,A,l),t=1,n===!0&&(t|=24),n=vt(3,null,null,t),e.current=n,n.stateNode=e,t=Uo(),t.refCount++,e.pooledCache=t,t.refCount++,n.memoizedState={element:a,isDehydrated:i,cache:t},Ko(n),e}function fu(e){return e?(e=va,e):va}function gu(e,t,i,a,s,n){s=fu(s),a.context===null?a.context=s:a.pendingContext=s,a=gi(t),a.payload={element:i},n=n===void 0?null:n,n!==null&&(a.callback=n),i=yi(e,a,t),i!==null&&(ht(i,e,t),ls(i,e,t))}function yu(e,t){if(e=e.memoizedState,e!==null&&e.dehydrated!==null){var i=e.retryLane;e.retryLane=i!==0&&i<t?i:t}}function ul(e,t){yu(e,t),(e=e.alternate)&&yu(e,t)}function bu(e){if(e.tag===13||e.tag===31){var t=_i(e,67108864);t!==null&&ht(t,e,67108864),ul(e,67108864)}}function wu(e){if(e.tag===13||e.tag===31){var t=wt();t=oo(t);var i=_i(e,t);i!==null&&ht(i,e,t),ul(e,t)}}var Xn=!0;function uv(e,t,i,a){var s=q.T;q.T=null;var n=N.p;try{N.p=2,pl(e,t,i,a)}finally{N.p=n,q.T=s}}function pv(e,t,i,a){var s=q.T;q.T=null;var n=N.p;try{N.p=8,pl(e,t,i,a)}finally{N.p=n,q.T=s}}function pl(e,t,i,a){if(Xn){var s=ml(a);if(s===null)$r(e,t,a,Jn,i),ku(e,a);else if(vv(s,e,t,i,a))a.stopPropagation();else if(ku(e,a),t&4&&-1<mv.indexOf(e)){for(;s!==null;){var n=sa(s);if(n!==null)switch(n.tag){case 3:if(n=n.stateNode,n.current.memoizedState.isDehydrated){var o=Hi(n.pendingLanes);if(o!==0){var l=n;for(l.pendingLanes|=2,l.entangledLanes|=2;o;){var h=1<<31-pt(o);l.entanglements[1]|=h,o&=~h}Wt(n),(pe&6)===0&&(In=ze()+500,qs(0))}}break;case 31:case 13:l=_i(n,2),l!==null&&ht(l,n,2),On(),ul(n,2)}if(n=ml(a),n===null&&$r(e,t,a,Jn,i),n===s)break;s=n}s!==null&&a.stopPropagation()}else $r(e,t,a,null,i)}}function ml(e){return e=fo(e),vl(e)}var Jn=null;function vl(e){if(Jn=null,e=aa(e),e!==null){var t=C(e);if(t===null)e=null;else{var i=t.tag;if(i===13){if(e=z(t),e!==null)return e;e=null}else if(i===31){if(e=F(t),e!==null)return e;e=null}else if(i===3){if(t.stateNode.current.memoizedState.isDehydrated)return t.tag===3?t.stateNode.containerInfo:null;e=null}else t!==e&&(e=null)}}return Jn=e,null}function xu(e){switch(e){case"beforetoggle":case"cancel":case"click":case"close":case"contextmenu":case"copy":case"cut":case"auxclick":case"dblclick":case"dragend":case"dragstart":case"drop":case"focusin":case"focusout":case"input":case"invalid":case"keydown":case"keypress":case"keyup":case"mousedown":case"mouseup":case"paste":case"pause":case"play":case"pointercancel":case"pointerdown":case"pointerup":case"ratechange":case"reset":case"resize":case"seeked":case"submit":case"toggle":case"touchcancel":case"touchend":case"touchstart":case"volumechange":case"change":case"selectionchange":case"textInput":case"compositionstart":case"compositionend":case"compositionupdate":case"beforeblur":case"afterblur":case"beforeinput":case"blur":case"fullscreenchange":case"focus":case"hashchange":case"popstate":case"select":case"selectstart":return 2;case"drag":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"mousemove":case"mouseout":case"mouseover":case"pointermove":case"pointerout":case"pointerover":case"scroll":case"touchmove":case"wheel":case"mouseenter":case"mouseleave":case"pointerenter":case"pointerleave":return 8;case"message":switch($u()){case jl:return 2;case Ml:return 8;case Bs:case ep:return 32;case zl:return 268435456;default:return 32}default:return 32}}var fl=!1,ji=null,Mi=null,zi=null,zs=new Map,Ns=new Map,Ni=[],mv="mousedown mouseup touchcancel touchend touchstart auxclick dblclick pointercancel pointerdown pointerup dragend dragstart drop compositionend compositionstart keydown keypress keyup input textInput copy cut paste click change contextmenu reset".split(" ");function ku(e,t){switch(e){case"focusin":case"focusout":ji=null;break;case"dragenter":case"dragleave":Mi=null;break;case"mouseover":case"mouseout":zi=null;break;case"pointerover":case"pointerout":zs.delete(t.pointerId);break;case"gotpointercapture":case"lostpointercapture":Ns.delete(t.pointerId)}}function Is(e,t,i,a,s,n){return e===null||e.nativeEvent!==n?(e={blockedOn:t,domEventName:i,eventSystemFlags:a,nativeEvent:n,targetContainers:[s]},t!==null&&(t=sa(t),t!==null&&bu(t)),e):(e.eventSystemFlags|=a,t=e.targetContainers,s!==null&&t.indexOf(s)===-1&&t.push(s),e)}function vv(e,t,i,a,s){switch(t){case"focusin":return ji=Is(ji,e,t,i,a,s),!0;case"dragenter":return Mi=Is(Mi,e,t,i,a,s),!0;case"mouseover":return zi=Is(zi,e,t,i,a,s),!0;case"pointerover":var n=s.pointerId;return zs.set(n,Is(zs.get(n)||null,e,t,i,a,s)),!0;case"gotpointercapture":return n=s.pointerId,Ns.set(n,Is(Ns.get(n)||null,e,t,i,a,s)),!0}return!1}function Tu(e){var t=aa(e.target);if(t!==null){var i=C(t);if(i!==null){if(t=i.tag,t===13){if(t=z(i),t!==null){e.blockedOn=t,Hl(e.priority,function(){wu(i)});return}}else if(t===31){if(t=F(i),t!==null){e.blockedOn=t,Hl(e.priority,function(){wu(i)});return}}else if(t===3&&i.stateNode.current.memoizedState.isDehydrated){e.blockedOn=i.tag===3?i.stateNode.containerInfo:null;return}}}e.blockedOn=null}function Zn(e){if(e.blockedOn!==null)return!1;for(var t=e.targetContainers;0<t.length;){var i=ml(e.nativeEvent);if(i===null){i=e.nativeEvent;var a=new i.constructor(i.type,i);vo=a,i.target.dispatchEvent(a),vo=null}else return t=sa(i),t!==null&&bu(t),e.blockedOn=i,!1;t.shift()}return!0}function qu(e,t,i){Zn(e)&&i.delete(t)}function fv(){fl=!1,ji!==null&&Zn(ji)&&(ji=null),Mi!==null&&Zn(Mi)&&(Mi=null),zi!==null&&Zn(zi)&&(zi=null),zs.forEach(qu),Ns.forEach(qu)}function $n(e,t){e.blockedOn===t&&(e.blockedOn=null,fl||(fl=!0,c.unstable_scheduleCallback(c.unstable_NormalPriority,fv)))}var eo=null;function Su(e){eo!==e&&(eo=e,c.unstable_scheduleCallback(c.unstable_NormalPriority,function(){eo===e&&(eo=null);for(var t=0;t<e.length;t+=3){var i=e[t],a=e[t+1],s=e[t+2];if(typeof a!="function"){if(vl(a||i)===null)continue;break}var n=sa(i);n!==null&&(e.splice(t,3),t-=3,mr(n,{pending:!0,data:s,method:i.method,action:a},a,s))}}))}function Ba(e){function t(h){return $n(h,e)}ji!==null&&$n(ji,e),Mi!==null&&$n(Mi,e),zi!==null&&$n(zi,e),zs.forEach(t),Ns.forEach(t);for(var i=0;i<Ni.length;i++){var a=Ni[i];a.blockedOn===e&&(a.blockedOn=null)}for(;0<Ni.length&&(i=Ni[0],i.blockedOn===null);)Tu(i),i.blockedOn===null&&Ni.shift();if(i=(e.ownerDocument||e).$$reactFormReplay,i!=null)for(a=0;a<i.length;a+=3){var s=i[a],n=i[a+1],o=s[nt]||null;if(typeof n=="function")o||Su(i);else if(o){var l=null;if(n&&n.hasAttribute("formAction")){if(s=n,o=n[nt]||null)l=o.formAction;else if(vl(s)!==null)continue}else l=o.action;typeof l=="function"?i[a+1]=l:(i.splice(a,3),a-=3),Su(i)}}}function Au(){function e(n){n.canIntercept&&n.info==="react-transition"&&n.intercept({handler:function(){return new Promise(function(o){return s=o})},focusReset:"manual",scroll:"manual"})}function t(){s!==null&&(s(),s=null),a||setTimeout(i,20)}function i(){if(!a&&!navigation.transition){var n=navigation.currentEntry;n&&n.url!=null&&navigation.navigate(n.url,{state:n.getState(),info:"react-transition",history:"replace"})}}if(typeof navigation=="object"){var a=!1,s=null;return navigation.addEventListener("navigate",e),navigation.addEventListener("navigatesuccess",t),navigation.addEventListener("navigateerror",t),setTimeout(i,100),function(){a=!0,navigation.removeEventListener("navigate",e),navigation.removeEventListener("navigatesuccess",t),navigation.removeEventListener("navigateerror",t),s!==null&&(s(),s=null)}}}function gl(e){this._internalRoot=e}to.prototype.render=gl.prototype.render=function(e){var t=this._internalRoot;if(t===null)throw Error(d(409));var i=t.current,a=wt();gu(i,a,e,t,null,null)},to.prototype.unmount=gl.prototype.unmount=function(){var e=this._internalRoot;if(e!==null){this._internalRoot=null;var t=e.containerInfo;gu(e.current,2,null,e,null,null),On(),t[ia]=null}};function to(e){this._internalRoot=e}to.prototype.unstable_scheduleHydration=function(e){if(e){var t=Rl();e={blockedOn:null,target:e,priority:t};for(var i=0;i<Ni.length&&t!==0&&t<Ni[i].priority;i++);Ni.splice(i,0,e),i===0&&Tu(e)}};var Eu=x.version;if(Eu!=="19.2.6")throw Error(d(527,Eu,"19.2.6"));N.findDOMNode=function(e){var t=e._reactInternals;if(t===void 0)throw typeof e.render=="function"?Error(d(188)):(e=Object.keys(e).join(","),Error(d(268,e)));return e=g(t),e=e!==null?D(e):null,e=e===null?null:e.stateNode,e};var gv={bundleType:0,version:"19.2.6",rendererPackageName:"react-dom",currentDispatcherRef:q,reconcilerVersion:"19.2.6"};if(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__<"u"){var io=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!io.isDisabled&&io.supportsFiber)try{_a=io.inject(gv),ut=io}catch{}}return Os.createRoot=function(e,t){if(!T(e))throw Error(d(299));var i=!1,a="",s=Dd,n=Od,o=Rd;return t!=null&&(t.unstable_strictMode===!0&&(i=!0),t.identifierPrefix!==void 0&&(a=t.identifierPrefix),t.onUncaughtError!==void 0&&(s=t.onUncaughtError),t.onCaughtError!==void 0&&(n=t.onCaughtError),t.onRecoverableError!==void 0&&(o=t.onRecoverableError)),t=vu(e,1,!1,null,null,i,a,null,s,n,o,Au),e[ia]=t.current,Zr(e),new gl(t)},Os.hydrateRoot=function(e,t,i){if(!T(e))throw Error(d(299));var a=!1,s="",n=Dd,o=Od,l=Rd,h=null;return i!=null&&(i.unstable_strictMode===!0&&(a=!0),i.identifierPrefix!==void 0&&(s=i.identifierPrefix),i.onUncaughtError!==void 0&&(n=i.onUncaughtError),i.onCaughtError!==void 0&&(o=i.onCaughtError),i.onRecoverableError!==void 0&&(l=i.onRecoverableError),i.formState!==void 0&&(h=i.formState)),t=vu(e,1,!0,t,i??null,a,s,h,n,o,l,Au),t.context=fu(null),i=t.current,a=wt(),a=oo(a),s=gi(a),s.callback=null,yi(i,s,a),i=a,t.current.lanes=i,Ua(t,i),Wt(t),e[ia]=t.current,Zr(e),new to(t)},Os.version="19.2.6",Os}var Hu;function jv(){if(Hu)return wl.exports;Hu=1;function c(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(c)}catch(x){console.error(x)}}return c(),wl.exports=Cv(),wl.exports}var Mv=jv();const zv=c=>c.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),_u=(...c)=>c.filter((x,b,d)=>!!x&&x.trim()!==""&&d.indexOf(x)===b).join(" ").trim();var Nv={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"};const Iv=_.forwardRef(({color:c="currentColor",size:x=24,strokeWidth:b=2,absoluteStrokeWidth:d,className:T="",children:C,iconNode:z,...F},M)=>_.createElement("svg",{ref:M,...Nv,width:x,height:x,stroke:c,strokeWidth:d?Number(b)*24/Number(x):b,className:_u("lucide",T),...F},[...z.map(([g,D])=>_.createElement(g,D)),...Array.isArray(C)?C:[C]]));const Se=(c,x)=>{const b=_.forwardRef(({className:d,...T},C)=>_.createElement(Iv,{ref:C,iconNode:x,className:_u(`lucide-${zv(c)}`,d),...T}));return b.displayName=`${c}`,b};const Wu=Se("ArrowLeft",[["path",{d:"m12 19-7-7 7-7",key:"1l729n"}],["path",{d:"M19 12H5",key:"x3x0zl"}]]);const Uu=Se("BookMarked",[["path",{d:"M10 2v8l3-3 3 3V2",key:"sqw3rj"}],["path",{d:"M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20",key:"k3hazp"}]]);const Di=Se("BookOpen",[["path",{d:"M12 7v14",key:"1akyts"}],["path",{d:"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",key:"ruj8y"}]]);const Pu=Se("Bookmark",[["path",{d:"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z",key:"1fy3hk"}]]);const Dv=Se("ChevronDown",[["path",{d:"m6 9 6 6 6-6",key:"qrunsl"}]]);const Ov=Se("Cpu",[["rect",{width:"16",height:"16",x:"4",y:"4",rx:"2",key:"14l7u7"}],["rect",{width:"6",height:"6",x:"9",y:"9",rx:"1",key:"5aljv4"}],["path",{d:"M15 2v2",key:"13l42r"}],["path",{d:"M15 20v2",key:"15mkzm"}],["path",{d:"M2 15h2",key:"1gxd5l"}],["path",{d:"M2 9h2",key:"1bbxkp"}],["path",{d:"M20 15h2",key:"19e6y8"}],["path",{d:"M20 9h2",key:"19tzq7"}],["path",{d:"M9 2v2",key:"165o2o"}],["path",{d:"M9 20v2",key:"i2bqo8"}]]);const Rv=Se("Download",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"7 10 12 15 17 10",key:"2ggqvy"}],["line",{x1:"12",x2:"12",y1:"15",y2:"3",key:"1vk2je"}]]);const Hv=Se("Highlighter",[["path",{d:"m9 11-6 6v3h9l3-3",key:"1a3l36"}],["path",{d:"m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4",key:"14a9rk"}]]);const Gv=Se("Languages",[["path",{d:"m5 8 6 6",key:"1wu5hv"}],["path",{d:"m4 14 6-6 2-3",key:"1k1g8d"}],["path",{d:"M2 5h12",key:"or177f"}],["path",{d:"M7 2h1",key:"1t2jsx"}],["path",{d:"m22 22-5-10-5 10",key:"don7ne"}],["path",{d:"M14 18h6",key:"1m8k6r"}]]);const Bv=Se("Lightbulb",[["path",{d:"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",key:"1gvzjb"}],["path",{d:"M9 18h6",key:"x1upvd"}],["path",{d:"M10 22h4",key:"ceow96"}]]);const Lv=Se("LogIn",[["path",{d:"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4",key:"u53s6r"}],["polyline",{points:"10 17 15 12 10 7",key:"1ail0h"}],["line",{x1:"15",x2:"3",y1:"12",y2:"12",key:"v6grx8"}]]);const Fv=Se("LogOut",[["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",key:"1uf3rs"}],["polyline",{points:"16 17 21 12 16 7",key:"1gabdz"}],["line",{x1:"21",x2:"9",y1:"12",y2:"12",key:"1uyos4"}]]);const _v=Se("Menu",[["line",{x1:"4",x2:"20",y1:"12",y2:"12",key:"1e0a9i"}],["line",{x1:"4",x2:"20",y1:"6",y2:"6",key:"1owob3"}],["line",{x1:"4",x2:"20",y1:"18",y2:"18",key:"yk5zj1"}]]);const Sl=Se("Plus",[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"M12 5v14",key:"s699le"}]]);const Yu=Se("Quote",[["path",{d:"M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z",key:"rib7q0"}],["path",{d:"M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z",key:"1ymkrd"}]]);const Wv=Se("Save",[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",key:"1c8476"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7",key:"1ydtos"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7",key:"t51u73"}]]);const Uv=Se("Scale",[["path",{d:"m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z",key:"7g6ntu"}],["path",{d:"m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z",key:"ijws7r"}],["path",{d:"M7 21h10",key:"1b0cd5"}],["path",{d:"M12 3v18",key:"108xh3"}],["path",{d:"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2",key:"3gwbw2"}]]);const Pv=Se("Search",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["path",{d:"m21 21-4.3-4.3",key:"1qie3q"}]]);const Yv=Se("Smartphone",[["rect",{width:"14",height:"20",x:"5",y:"2",rx:"2",ry:"2",key:"1yt0o3"}],["path",{d:"M12 18h.01",key:"mhygvu"}]]);const Vu=Se("Sparkles",[["path",{d:"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",key:"4pj2yx"}],["path",{d:"M20 3v4",key:"1olli1"}],["path",{d:"M22 5h-4",key:"1gvqau"}],["path",{d:"M4 17v2",key:"vumght"}],["path",{d:"M5 18H3",key:"zchphs"}]]);const Al=Se("Trash2",[["path",{d:"M3 6h18",key:"d0wm0j"}],["path",{d:"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6",key:"4alrt4"}],["path",{d:"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2",key:"v07s0e"}],["line",{x1:"10",x2:"10",y1:"11",y2:"17",key:"1uufr5"}],["line",{x1:"14",x2:"14",y1:"11",y2:"17",key:"xtxkd"}]]);const Vv=Se("TrendingUp",[["polyline",{points:"22 7 13.5 15.5 8.5 10.5 2 17",key:"126l90"}],["polyline",{points:"16 7 22 7 22 13",key:"kwv8wd"}]]);const Kv=Se("Type",[["polyline",{points:"4 7 4 4 20 4 20 7",key:"1nosan"}],["line",{x1:"9",x2:"15",y1:"20",y2:"20",key:"swin9y"}],["line",{x1:"12",x2:"12",y1:"4",y2:"20",key:"1tx1rr"}]]);const Qv=Se("Volume2",[["path",{d:"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z",key:"uqj9uw"}],["path",{d:"M16 9a5 5 0 0 1 0 6",key:"1q6k2b"}],["path",{d:"M19.364 18.364a9 9 0 0 0 0-12.728",key:"ijwkga"}]]);const Cl=Se("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),Xv=`
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --dark:#040c14;--dark2:#081828;
+  --teal:#006878;--teal-l:#00a0b8;--teal-b:#40c8e0;
+  --gold:#b88020;--gold-l:#d4a030;
+  --cream:#f0ece0;--cream-d:#e0d8c8;
+  --border:#1a3848;--red:#7a1010;--green:#0a6040;
+  --muted:#0c1828;--text:#040c14;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body,.wrap{font-family:'Cormorant Garamond',serif;background:transparent;color:var(--text);}
+.wrap{max-width:920px;margin:0 auto;padding:0 0 3rem;}
 
-/* ════════════════════════════════════════════════════════════════
-   ATHENAEUM — Personal Knowledge Library
-   ════════════════════════════════════════════════════════════════ */
+.hero{background:var(--dark);color:var(--cream);padding:3.5rem 3rem 3rem;text-align:center;border-bottom:4px double var(--teal-l);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(0,104,120,0.07) 29px);pointer-events:none;}
+.hero-badge{font-size:11px;color:var(--teal-b);letter-spacing:16px;margin-bottom:1.2rem;opacity:0.65;}
+.hero-title{font-family:'IM Fell English',serif;font-size:58px;line-height:1.0;color:var(--teal-b);letter-spacing:2px;text-shadow:0 0 60px rgba(64,200,224,0.15),0 2px 12px rgba(0,0,0,0.9);}
+.hero-subtitle{font-family:'IM Fell English',serif;font-style:italic;font-size:17px;color:var(--teal-l);margin-top:0.7rem;}
+.hero-meta{margin-top:1rem;font-size:12px;color:#1a3848;letter-spacing:3px;text-transform:uppercase;}
 
-const GlobalStyles = () => (
-  <style>{`
+.stat-strip{display:flex;justify-content:center;gap:2rem;background:var(--dark);padding:1.2rem 2rem;border-bottom:1px solid var(--teal);flex-wrap:wrap;}
+.stat .num{font-family:'IM Fell English',serif;font-size:32px;color:var(--teal-b);line-height:1;display:block;}
+.stat .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#1a3848;}
+
+.tab-bar{display:flex;flex-wrap:wrap;background:#020a10;border-bottom:2px solid var(--teal);position:sticky;top:0;z-index:100;}
+.tab{padding:0.6rem 0.75rem;font-family:'IM Fell English',serif;font-size:11.5px;color:#1a3848;cursor:pointer;border-right:1px solid #081828;transition:all 0.2s;white-space:nowrap;}
+.tab:hover{color:var(--teal-b);background:#081828;}
+.tab.active{color:var(--teal-b);background:#0c2030;border-bottom:2px solid var(--teal-b);}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+.ca{padding:0 2rem 2rem;background:var(--cream);border:1px solid var(--border);border-top:none;}
+
+.ib{padding:2rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem;}
+.ib p{font-size:17px;line-height:1.85;color:var(--muted);font-style:italic;text-align:center;}
+
+.sl{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--teal);margin-bottom:0.3rem;margin-top:1.8rem;}
+.st{font-family:'IM Fell English',serif;font-size:22px;color:var(--dark);border-bottom:1px solid var(--border);padding-bottom:0.4rem;margin-bottom:1.2rem;}
+
+.cb{margin-bottom:1.8rem;padding:1rem 1.3rem;border-left:4px solid var(--teal-l);background:rgba(0,104,120,0.04);}
+.cn{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.1rem;}
+.cname{font-weight:600;font-size:17px;color:var(--red);margin-bottom:0.3rem;}
+.cbody{font-size:15.5px;line-height:1.78;color:#040c14;}
+.cbody p{margin-bottom:0.7rem;}
+.cbody p:last-child{margin-bottom:0;}
+
+.kbox{background:var(--dark);color:var(--cream);padding:1rem 1.4rem;margin:0.9rem 0 1.2rem;border-left:5px solid var(--gold);}
+.kbox .kl{font-family:'IM Fell English',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-l);margin-bottom:0.35rem;}
+.kbox p{font-size:15px;line-height:1.7;color:var(--cream);}
+
+.codebox{background:#071420;color:var(--teal-b);padding:1rem 1.4rem;margin:0.8rem 0 1.2rem;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;border-left:4px solid var(--teal);overflow-x:auto;white-space:pre;}
+
+.pb{background:var(--dark);color:var(--cream);padding:1rem 1.5rem;margin:2rem -2rem 1.8rem;border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);}
+.pb .pl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--teal-b);margin-bottom:0.2rem;}
+.pb .pt{font-family:'IM Fell English',serif;font-size:19px;color:var(--cream);}
+.pb .pd{font-size:13px;color:var(--teal-l);margin-top:0.3rem;font-style:italic;}
+
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0.8rem;margin-bottom:1.5rem;}
+.tc{background:var(--dark);border:1px solid var(--teal);padding:1rem;border-radius:2px;}
+.tc .tn{font-family:'IM Fell English',serif;font-size:14px;color:var(--teal-b);margin-bottom:0.25rem;}
+.tc .td{font-size:12.5px;color:var(--teal-l);line-height:1.45;}
+
+.ddgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:0.8rem 0 1.2rem;}
+.sbox,.rbox{padding:0.85rem 1rem;font-size:14px;line-height:1.6;}
+.sbox{background:rgba(10,96,64,0.08);border-left:4px solid #2a8a5a;color:#0e2818;}
+.rbox{background:rgba(122,16,16,0.07);border-left:4px solid var(--red);color:#280e0e;}
+.sbox strong,.rbox strong{display:block;font-family:'IM Fell English',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.35rem;}
+.sbox strong{color:#2a8a5a;}
+.rbox strong{color:var(--red);}
+
+.mathbox{background:#e8f4f8;border:1px solid #8ab8c8;padding:0.85rem 1.1rem;margin:0.8rem 0 1.1rem;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.7;color:#040c14;}
+
+.tline{display:flex;gap:1.2rem;margin-bottom:1.3rem;align-items:flex-start;}
+.tyear{font-family:'IM Fell English',serif;font-size:13px;color:var(--teal-b);min-width:60px;padding-top:0.1rem;letter-spacing:1px;}
+.tcontent{flex:1;border-left:2px solid var(--border);padding-left:1rem;}
+.tcontent .tt{font-weight:600;font-size:15.5px;color:var(--red);margin-bottom:0.15rem;}
+.tcontent .tb{font-size:14.5px;line-height:1.65;color:var(--muted);}
+
+.dgwrap{margin:1.2rem 0 1.6rem;background:rgba(0,104,120,0.03);border:1px solid var(--border);padding:1.2rem;}
+
+.ctable{width:100%;border-collapse:collapse;font-size:14.5px;margin:0.8rem 0 1.2rem;}
+.ctable th{background:var(--dark);color:var(--teal-b);padding:0.5rem 0.8rem;font-family:'IM Fell English',serif;font-weight:500;text-align:left;font-size:12.5px;letter-spacing:1px;}
+.ctable td{padding:0.45rem 0.8rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;font-size:14.5px;}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:hover td{background:rgba(0,104,120,0.04);}
+
+.qs{background:var(--dark);margin:0 -2rem;padding:2.5rem 2rem;border-top:3px double var(--teal);}
+.qs .st{color:var(--teal-b);border-bottom-color:#081828;margin-top:0;}
+.qi{border-left:3px solid var(--teal);padding:0.75rem 1.1rem;margin-bottom:1.1rem;background:rgba(0,104,120,0.09);}
+.qt{font-family:'IM Fell English',serif;font-style:italic;font-size:16.5px;color:var(--cream);line-height:1.7;margin-bottom:0.35rem;}
+.qr{font-size:11px;color:#1a3848;letter-spacing:2px;text-transform:uppercase;}
+
+.verdict{background:var(--teal-l);color:var(--cream);padding:2rem;text-align:center;border-top:3px double var(--teal-b);}
+.verdict p{font-family:'IM Fell English',serif;font-size:17px;line-height:1.7;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-badge">— THE COMPLETE SCIENCE OF SECRECY —</div>
+  <div class="hero-title">Cryptography</div>
+  <div class="hero-subtitle">From Caesar's Cipher to Quantum-Resistant Algorithms — Every Type, Every Concept, Every Attack</div>
+  <div class="hero-meta">Deep Research Compendium · All Branches Covered · Visual Explanations Included</div>
+</div>
+
+<div class="stat-strip">
+  <div class="stat"><span class="num">5000+</span><span class="lbl">Years of History</span></div>
+  <div class="stat"><span class="num">14</span><span class="lbl">Topic Areas</span></div>
+  <div class="stat"><span class="num">40+</span><span class="lbl">Algorithms</span></div>
+  <div class="stat"><span class="num">9</span><span class="lbl">Diagrams</span></div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="show('overview',this)">Overview</div>
+  <div class="tab" onclick="show('history',this)">History</div>
+  <div class="tab" onclick="show('foundations',this)">Foundations</div>
+  <div class="tab" onclick="show('classical',this)">Classical</div>
+  <div class="tab" onclick="show('symmetric',this)">Symmetric</div>
+  <div class="tab" onclick="show('modes',this)">Cipher Modes</div>
+  <div class="tab" onclick="show('asymmetric',this)">Asymmetric</div>
+  <div class="tab" onclick="show('hash',this)">Hash &amp; MAC</div>
+  <div class="tab" onclick="show('protocols',this)">Protocols</div>
+  <div class="tab" onclick="show('attacks',this)">Cryptanalysis</div>
+  <div class="tab" onclick="show('quantum',this)">Quantum</div>
+  <div class="tab" onclick="show('advanced',this)">Advanced</div>
+  <div class="tab" onclick="show('applications',this)">Applications</div>
+  <div class="tab" onclick="show('quotes',this)">Principles</div>
+</div>
+
+<div class="ca">
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+<div class="ib"><p>Cryptography is the science of securing communication in the presence of adversaries. It is simultaneously one of humanity's oldest practices and its most rapidly evolving technical discipline — the invisible infrastructure upon which every private message, financial transaction, and secure government communication depends.</p></div>
+
+<div class="sl">Definition</div>
+<div class="st">What Cryptography Is</div>
+<div class="cb">
+  <div class="cn">Core Definition</div>
+  <div class="cname">Cryptography, Cryptanalysis, Cryptology</div>
+  <div class="cbody">
+    <p><strong>Cryptography</strong> is the practice of designing systems that protect information from unauthorised access, modification, or denial of service. <strong>Cryptanalysis</strong> is the science of breaking those systems — finding weaknesses, exploiting patterns, recovering messages without the key. <strong>Cryptology</strong> is the overarching field that encompasses both. The three are inseparable: a cipher that has not been seriously attacked is not a proven cipher, only an unexamined one.</p>
+    <p>The core problem cryptography solves: Alice wants to send a message to Bob such that Eve, who can observe the channel between them, learns nothing about the message's content. This simple model — two parties communicating in the presence of a passive eavesdropper — expands into dozens of variants: active adversaries who can modify messages, adversaries who can inject messages, adversaries who know parts of the plaintext, adversaries who are one of the communicating parties themselves.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Security Goals</div>
+  <div class="cname">The CIA Triad and Beyond</div>
+  <div class="cbody">
+    <p>Cryptographic systems are designed to provide specific security properties. The three foundational ones — the CIA triad — are:</p>
+    <p><strong>Confidentiality:</strong> Only authorised parties can read the message. This is what most people think of when they think of cryptography — encryption that makes messages unreadable to those without the key.</p>
+    <p><strong>Integrity:</strong> The message has not been altered in transit. This requires more than encryption — it requires authentication codes or digital signatures that detect any modification, however small.</p>
+    <p><strong>Authenticity (and Non-repudiation):</strong> The message genuinely came from the claimed sender, and the sender cannot later deny having sent it. Digital signatures provide both.</p>
+    <p>Modern cryptography also addresses <strong>availability</strong> (resistance to denial-of-service), <strong>forward secrecy</strong> (past communications remain secure even if long-term keys are compromised), <strong>anonymity</strong>, and <strong>zero-knowledge</strong> (proving knowledge of a secret without revealing it).</p>
+  </div>
+</div>
+
+<div class="sl">The Landscape</div>
+<div class="st">Every Branch of Modern Cryptography</div>
+<div class="tg">
+  <div class="tc"><div class="tn">Symmetric Crypto</div><div class="td">Same key encrypts and decrypts. Fast, efficient. AES, ChaCha20. Requires secure key exchange.</div></div>
+  <div class="tc"><div class="tn">Asymmetric Crypto</div><div class="td">Public key encrypts, private key decrypts. RSA, ECC, Diffie-Hellman. Solves key exchange.</div></div>
+  <div class="tc"><div class="tn">Hash Functions</div><div class="td">One-way transformation. Fixed output. Integrity verification, passwords, digital signatures.</div></div>
+  <div class="tc"><div class="tn">Digital Signatures</div><div class="td">Asymmetric authentication. Proves origin, ensures non-repudiation. DSA, ECDSA, EdDSA.</div></div>
+  <div class="tc"><div class="tn">Cryptographic Protocols</div><div class="td">Complete systems: TLS, SSH, Signal. Combine primitives into secure communication channels.</div></div>
+  <div class="tc"><div class="tn">Quantum Cryptography</div><div class="td">QKD, BB84. Leverages quantum physics for information-theoretically secure key exchange.</div></div>
+  <div class="tc"><div class="tn">Post-Quantum Crypto</div><div class="td">Classical algorithms resistant to quantum attacks. Lattice-based, code-based, hash-based.</div></div>
+  <div class="tc"><div class="tn">Zero-Knowledge Proofs</div><div class="td">Prove knowledge without revealing it. ZK-SNARKs, ZK-STARKs. Privacy-preserving authentication.</div></div>
+  <div class="tc"><div class="tn">Homomorphic Encryption</div><div class="td">Compute on encrypted data without decrypting. Cloud computing without privacy loss.</div></div>
+  <div class="tc"><div class="tn">Multi-Party Computation</div><div class="td">Multiple parties jointly compute a function without revealing their inputs to each other.</div></div>
+  <div class="tc"><div class="tn">Secret Sharing</div><div class="td">Shamir's scheme. Split a secret among N parties — any K can reconstruct it.</div></div>
+  <div class="tc"><div class="tn">Steganography</div><div class="td">Hiding the existence of a message, not just its content. Concealment, not encryption.</div></div>
+</div>
+
+<!-- SVG: Overview diagram of crypto families -->
+<div class="dgwrap">
+<svg width="100%" viewBox="0 0 680 320" role="img">
+  <title>Cryptography family tree</title>
+  <defs><marker id="ar0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Root -->
+  <rect x="250" y="14" width="180" height="44" rx="6" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="15" fill="#40c8e0" x="340" y="41" text-anchor="middle" dominant-baseline="central">Cryptography</text>
+  <!-- Level 2 -->
+  <line x1="340" y1="58" x2="340" y2="80" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar0)"/>
+  <line x1="340" y1="72" x2="120" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="340" y1="72" x2="340" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="340" y1="72" x2="560" y2="92" stroke="#00a0b8" stroke-width="0.8"/>
+  <!-- Symmetric -->
+  <rect x="44" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="120" y="112" text-anchor="middle" dominant-baseline="central">Symmetric</text>
+  <!-- Asymmetric -->
+  <rect x="264" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="340" y="112" text-anchor="middle" dominant-baseline="central">Asymmetric (Public Key)</text>
+  <!-- Hash -->
+  <rect x="484" y="92" width="152" height="40" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="560" y="112" text-anchor="middle" dominant-baseline="central">Hash Functions</text>
+  <!-- Level 3 - Sym children -->
+  <line x1="120" y1="132" x2="120" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="120" y1="152" x2="60" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="120" y1="152" x2="180" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="20" y="168" width="80" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="60" y="185" text-anchor="middle" dominant-baseline="central">Block Ciphers</text>
+  <rect x="140" y="168" width="80" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="180" y="185" text-anchor="middle" dominant-baseline="central">Stream Ciphers</text>
+  <!-- Block children -->
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="60" y="220" text-anchor="middle">AES · DES · Blowfish</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="180" y="220" text-anchor="middle">ChaCha20 · RC4 · Salsa</text>
+  <!-- Level 3 - Asym children -->
+  <line x1="340" y1="132" x2="340" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="280" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="340" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="340" y1="152" x2="400" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="246" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="280" y="185" text-anchor="middle" dominant-baseline="central">RSA</text>
+  <rect x="318" y="168" width="44" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="340" y="185" text-anchor="middle" dominant-baseline="central">DH</text>
+  <rect x="366" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="400" y="185" text-anchor="middle" dominant-baseline="central">ECC</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="340" y="220" text-anchor="middle">RSA · ElGamal · ECDSA · EdDSA</text>
+  <!-- Level 3 - Hash children -->
+  <line x1="560" y1="132" x2="560" y2="152" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="560" y1="152" x2="510" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <line x1="560" y1="152" x2="610" y2="168" stroke="#1a3848" stroke-width="0.8"/>
+  <rect x="476" y="168" width="68" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="510" y="185" text-anchor="middle" dominant-baseline="central">SHA Family</text>
+  <rect x="578" y="168" width="64" height="34" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.5"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11.5" fill="#00a0b8" x="610" y="185" text-anchor="middle" dominant-baseline="central">HMAC / MAC</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#1a3848" x="560" y="220" text-anchor="middle">MD5 · SHA-256 · SHA-3 · bcrypt</text>
+  <!-- Bottom protocols -->
+  <rect x="160" y="258" width="360" height="38" rx="5" fill="#071420" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="13" fill="#40c8e0" x="340" y="277" text-anchor="middle" dominant-baseline="central">Cryptographic Protocols: TLS · SSH · PGP · Signal · IPsec</text>
+  <line x1="340" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <line x1="120" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <line x1="560" y1="232" x2="340" y2="258" stroke="#1a3848" stroke-width="0.8" stroke-dasharray="4 3"/>
+</svg>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="panel">
+<div class="ib"><p>Cryptography is as old as writing itself. Every era of human history has produced new ciphers — and new methods of breaking them. The history of cryptography is the history of an arms race that has never ended, only accelerated.</p></div>
+
+<div class="sl">5000 Years</div>
+<div class="st">The Complete Timeline of Cryptography</div>
+
+<div class="tline"><div class="tyear">~1900 BC</div><div class="tcontent"><div class="tt">Egyptian Non-Standard Hieroglyphics</div><div class="tb">The earliest known cryptographic use — an Egyptian scribe used non-standard hieroglyphics in inscriptions, possibly to add dignity or mystery, or to restrict understanding to initiates. Not a cipher in the modern sense but the first documented deliberate manipulation of writing for secrecy.</div></div></div>
+
+<div class="tline"><div class="tyear">~600 BC</div><div class="tcontent"><div class="tt">Atbash Cipher — Hebrew Cryptography</div><div class="tb">The Atbash cipher substitutes each letter of the Hebrew alphabet with the corresponding letter from the reverse alphabet (Aleph↔Tav, Beth↔Shin). Found in the Book of Jeremiah. A simple monoalphabetic substitution, but the first cipher with a documented use in religious and political text.</div></div></div>
+
+<div class="tline"><div class="tyear">~500 BC</div><div class="tcontent"><div class="tt">Scytale — Spartan Military Cipher</div><div class="tb">The Spartan military used a scytale: a cylinder around which a strip of parchment was wound. The message was written along the cylinder, then unwound. Only someone with an identical cylinder could read it. The first documented transposition cipher — rearranging letters rather than substituting them.</div></div></div>
+
+<div class="tline"><div class="tyear">~100 BC</div><div class="tcontent"><div class="tt">Caesar Cipher — The Shift Cipher</div><div class="tb">Julius Caesar used a simple shift cipher in his military correspondence, shifting each letter three positions forward in the Latin alphabet (A→D, B→E, etc.). Simple by modern standards but effective when few recipients could read at all. The first named cipher in recorded history.</div></div></div>
+
+<div class="tline"><div class="tyear">800 AD</div><div class="tcontent"><div class="tt">Al-Kindi — The Birth of Cryptanalysis</div><div class="tb">The Arab polymath Al-Kindi wrote <em>A Manuscript on Deciphering Cryptographic Messages</em> — the first known treatise on breaking ciphers. He invented frequency analysis: the observation that different letters appear at different frequencies in any language, allowing substitution ciphers to be broken statistically. This single insight made all monoalphabetic substitution ciphers vulnerable.</div></div></div>
+
+<div class="tline"><div class="tyear">1467</div><div class="tcontent"><div class="tt">Alberti Cipher Disk — Polyalphabetic Cipher</div><div class="tb">Leon Battista Alberti invented the cipher disk and the polyalphabetic cipher: using multiple different substitution alphabets within a single message, switching between them according to a key. This defeated frequency analysis. Alberti is sometimes called the "father of Western cryptology."</div></div></div>
+
+<div class="tline"><div class="tyear">1553</div><div class="tcontent"><div class="tt">Vigenère Cipher</div><div class="tb">Giovan Battista Bellaso (often misattributed to Blaise de Vigenère) published a polyalphabetic cipher using a keyword. Each letter of the keyword determines which alphabet to use for the corresponding plaintext letter. Called "le chiffre indéchiffrable" (the indecipherable cipher) for nearly three centuries — until Charles Babbage and Friedrich Kasiski broke it in the 1800s by detecting the key length through repeated patterns.</div></div></div>
+
+<div class="tline"><div class="tyear">1854</div><div class="tcontent"><div class="tt">Playfair Cipher</div><div class="tb">Charles Wheatstone invented (and Lord Playfair popularised) a digraph substitution cipher operating on pairs of letters in a 5×5 grid. Much stronger than single-letter substitution. Used by British forces in WWII for low-level tactical communications.</div></div></div>
+
+<div class="tline"><div class="tyear">1917</div><div class="tcontent"><div class="tt">One-Time Pad — Perfect Secrecy</div><div class="tb">Gilbert Vernam patented the one-time pad: XOR each plaintext bit with a truly random key bit. The result is information-theoretically secure — mathematically unbreakable, with no computational assumption required. Shannon later proved this rigorously in 1949. The limitation: the key must be as long as the message and never reused.</div></div></div>
+
+<div class="tline"><div class="tyear">1919–45</div><div class="tcontent"><div class="tt">The Enigma Machine and WWII Cryptography</div><div class="tb">The German Enigma machine used a series of rotating electromechanical rotors to perform a complex polyalphabetic substitution with a key space of approximately 10^23. The Allied effort to break it — at Bletchley Park, led by Alan Turing and others — is widely considered a decisive factor in the Allied victory. The statistical attack on Enigma was the birth of modern computational cryptanalysis and led directly to the development of the first electronic computers.</div></div></div>
+
+<div class="tline"><div class="tyear">1949</div><div class="tcontent"><div class="tt">Shannon's Information Theory</div><div class="tb">Claude Shannon published "A Mathematical Theory of Cryptography" (originally a secret Bell Labs report from 1945, declassified in 1949), placing cryptography on a rigorous mathematical foundation. He introduced the concepts of confusion, diffusion, perfect secrecy, and entropy as they apply to cipher design. Modern cryptography descends directly from this work.</div></div></div>
+
+<div class="tline"><div class="tyear">1976</div><div class="tcontent"><div class="tt">Diffie-Hellman and Public-Key Cryptography</div><div class="tb">Whitfield Diffie and Martin Hellman published "New Directions in Cryptography," introducing the revolutionary concept of public-key cryptography — the idea that two parties could establish a shared secret over an insecure channel without any prior shared key. This solved the fundamental key distribution problem that had plagued symmetric cryptography since its inception.</div></div></div>
+
+<div class="tline"><div class="tyear">1977</div><div class="tcontent"><div class="tt">RSA — The First Public-Key Cryptosystem</div><div class="tb">Ron Rivest, Adi Shamir, and Leonard Adleman published RSA, the first practical public-key cryptosystem, based on the hardness of factoring large integers. Separately, the NIST (then NBS) published DES — the first standardised symmetric cipher — after a design process involving the NSA. Both decisions shaped cryptographic practice for decades.</div></div></div>
+
+<div class="tline"><div class="tyear">1984–91</div><div class="tcontent"><div class="tt">Quantum Cryptography and PGP</div><div class="tb">Charles Bennett and Gilles Brassard published BB84 in 1984, the first quantum key distribution protocol. In 1991, Phil Zimmermann released PGP (Pretty Good Privacy), bringing public-key encryption to the masses and triggering a "crypto war" with the US government, which attempted (and failed) to prosecute Zimmermann for exporting strong encryption.</div></div></div>
+
+<div class="tline"><div class="tyear">2001</div><div class="tcontent"><div class="tt">AES — The Advanced Encryption Standard</div><div class="tb">After a five-year open competition, NIST selected Rijndael (designed by Joan Daemen and Vincent Rijmen) as the Advanced Encryption Standard. AES became the global standard for symmetric encryption — it is today used in virtually every encrypted communication on the planet.</div></div></div>
+
+<div class="tline"><div class="tyear">2013</div><div class="tcontent"><div class="tt">The Snowden Revelations</div><div class="tb">Edward Snowden's disclosures revealed the extent of NSA mass surveillance, including the deliberate weakening of cryptographic standards (notably the Dual_EC_DRBG random number generator, suspected of containing an NSA backdoor). The revelations accelerated adoption of end-to-end encryption and renewed interest in cryptographic standards transparency.</div></div></div>
+
+<div class="tline"><div class="tyear">2022–24</div><div class="tcontent"><div class="tt">NIST Post-Quantum Standards</div><div class="tb">NIST finalised the first post-quantum cryptography standards in 2024: CRYSTALS-Kyber (key encapsulation), CRYSTALS-Dilithium, FALCON, and SPHINCS+ (digital signatures). These algorithms are designed to resist attacks from both classical and quantum computers, particularly Shor's algorithm which would break RSA and ECC.</div></div></div>
+</div>
+
+<!-- FOUNDATIONS -->
+<div id="foundations" class="panel">
+<div class="ib"><p>Every cryptographic system rests on the same mathematical and conceptual foundations. Understanding these deeply — not just memorising definitions — is what separates the engineer who implements cryptography from the one who understands why it works and when it might fail.</p></div>
+
+<div class="sl">Core Vocabulary</div>
+<div class="st">The Language of Cryptography</div>
+
+<div class="cb">
+  <div class="cn">Basic Definitions</div>
+  <div class="cname">Plaintext, Ciphertext, Keys, and Algorithms</div>
+  <div class="cbody">
+    <p><strong>Plaintext (P):</strong> The original, readable message or data. May be text, binary data, audio, video — any information that the sender wishes to protect.</p>
+    <p><strong>Ciphertext (C):</strong> The encrypted form of the plaintext. Should appear random and reveal no information about the plaintext to anyone without the key.</p>
+    <p><strong>Key (K):</strong> The secret parameter that controls the encryption and decryption process. The security of a modern cipher rests entirely on the secrecy of the key, not the secrecy of the algorithm.</p>
+    <p><strong>Encryption function (E):</strong> C = E(K, P) — takes the key and plaintext, produces ciphertext.</p>
+    <p><strong>Decryption function (D):</strong> P = D(K, C) — takes the key and ciphertext, recovers plaintext.</p>
+    <p><strong>Algorithm (Cipher):</strong> The mathematical procedure that defines E and D. In modern cryptography, the algorithm is public — security depends only on key secrecy.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Foundational Principle</div>
+  <div class="cname">Kerckhoffs's Principle (1883)</div>
+  <div class="cbody">
+    <p>Auguste Kerckhoffs stated in 1883 what remains the most important single principle in cryptography: <em>a cryptosystem should be secure even if everything about the system, except the key, is public knowledge.</em></p>
+    <p>This principle seems counterintuitive — surely hiding the algorithm adds security? In practice, the opposite is true. Hidden algorithms cannot be publicly scrutinised and may contain subtle flaws. When they are eventually discovered (and secret algorithms always are), the entire system must be rebuilt. An algorithm whose design has been openly analysed by thousands of expert cryptanalysts over years provides far stronger assurance than one whose security rests on secrecy of design.</p>
+    <p>Claude Shannon restated this as: "The enemy knows the system." Assume the adversary knows everything except the key. This is called Kerckhoffs's principle or, in its Shannon formulation, the assumption of security through open design.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Information Theory</div>
+  <div class="cname">Shannon's Perfect Secrecy and Entropy</div>
+  <div class="cbody">
+    <p>Shannon proved rigorously what constitutes a perfectly secure cipher. A cryptosystem has <strong>perfect secrecy</strong> if and only if: for every plaintext P and every ciphertext C, the probability that P was the plaintext given that C was observed equals the prior probability of P. In other words: observing the ciphertext gives the attacker no information whatsoever about the plaintext.</p>
+    <p>Shannon proved that perfect secrecy requires that the key space be at least as large as the message space — the key must be at least as long as the message. The only cipher achieving perfect secrecy in practice is the <strong>one-time pad</strong>.</p>
+    <p><strong>Entropy</strong> measures the amount of uncertainty in a random variable. A key of n bits chosen uniformly at random has entropy n bits. The goal of an encryption system is to make the ciphertext appear to have maximum entropy from the attacker's perspective — indistinguishable from random noise.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Design Principles</div>
+  <div class="cname">Confusion, Diffusion, and the Avalanche Effect</div>
+  <div class="cbody">
+    <p>Shannon identified two fundamental operations required in a secure cipher:</p>
+    <p><strong>Confusion:</strong> The relationship between the key and the ciphertext should be as complex as possible. Each ciphertext bit should depend on many key bits in a complex, non-linear way. Implemented in practice through non-linear substitution (S-boxes).</p>
+    <p><strong>Diffusion:</strong> Each plaintext bit should influence many ciphertext bits. A change in a single plaintext bit should, on average, change half the ciphertext bits. This is the <strong>avalanche effect</strong> — small input changes cascade into large, unpredictable output changes. Implemented through permutation layers, mixing operations, and linear transformations.</p>
+    <p>Every modern block cipher achieves both: confusion through substitution tables, diffusion through permutation and mixing layers, iterated over multiple rounds to amplify both effects until the ciphertext appears entirely random.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Security Models</div>
+  <div class="cname">Security Definitions — What Does "Secure" Actually Mean?</div>
+  <div class="cbody">
+    <p>Modern cryptography defines security precisely through adversarial models. The most important are:</p>
+    <p><strong>Computational security:</strong> A cipher is computationally secure if breaking it requires more computational resources than any realistic adversary possesses. Security is expressed relative to a bound on computation (e.g., 2^128 operations is considered infeasible with current technology).</p>
+    <p><strong>IND-CPA (Indistinguishability under Chosen Plaintext Attack):</strong> An adversary who can encrypt any plaintext of their choice cannot distinguish the encryption of two different plaintexts of their choice. The minimum acceptable security for an encryption scheme.</p>
+    <p><strong>IND-CCA2 (Adaptive Chosen Ciphertext Attack):</strong> An adversary who can both encrypt and decrypt any message of their choice (except the challenge ciphertext) cannot distinguish the challenge. Stronger — requires authenticated encryption.</p>
+    <p><strong>CMA-secure (Chosen Message Attack):</strong> For signatures — an adversary who can get signatures on messages of their choice cannot forge a valid signature on a new message. The standard security requirement for digital signature schemes.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Fundamental Problem</div>
+  <div class="cname">The Key Distribution Problem — Why Asymmetric Crypto Was Necessary</div>
+  <div class="cbody">
+    <p>For 3,000 years, all cryptography was symmetric: both parties needed the same key, and that key had to be shared in advance through some secure channel. This created a fundamental circularity: to communicate securely, you first need to communicate securely (to share the key). In a world of growing networks, governments, and corporations, this required elaborate key distribution infrastructure — couriers, physical meetings, trusted intermediaries.</p>
+    <p>The invention of public-key cryptography in 1976 solved this. The insight: mathematical operations that are easy in one direction but hard to reverse. If Alice can publish a public key that allows anyone to encrypt to her, but only she (with her private key) can decrypt — the key distribution problem is solved. The public key can be shared openly; no secure channel is needed to establish it.</p>
+    <p>In practice, modern systems use a <strong>hybrid approach</strong>: asymmetric cryptography to securely exchange a symmetric key, then symmetric cryptography for the actual data (which is much faster). This is exactly what TLS does.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Random Number Generation</div>
+  <div class="cname">Why Cryptographic Randomness Is Life-or-Death</div>
+  <div class="cbody">
+    <p>Almost every cryptographic operation depends on genuinely unpredictable random numbers: key generation, IV selection, nonces, padding. A weak random number generator is often the single most catastrophic failure mode in a cryptographic system. Predictable keys, predictable IVs, predictable nonces — all have led to complete breaks of otherwise sound systems.</p>
+    <p>A <strong>CSPRNG</strong> (Cryptographically Secure Pseudo-Random Number Generator) must be computationally indistinguishable from true randomness — an attacker who observes any number of outputs cannot predict past or future outputs. Examples: /dev/urandom on Linux (uses environmental entropy), AES-CTR-DRBG (NIST standard), ChaCha20 (used by modern operating systems).</p>
+    <p>True randomness is seeded from physical entropy sources: hard drive access timing, network packet inter-arrival times, mouse movements, hardware random number generators (HRNG) using thermal noise or radioactive decay. The Dual_EC_DRBG controversy showed that a backdoored CSPRNG completely undermines all security built on it — you can have perfect algorithms and perfect protocols, and a bad random number generator breaks everything.</p>
+  </div>
+</div>
+</div>
+
+<!-- CLASSICAL -->
+<div id="classical" class="panel">
+<div class="ib"><p>Classical cryptography covers all encryption methods prior to the computer age — from simple letter substitutions to the polyalphabetic systems that resisted analysis for centuries. Understanding them reveals the core ideas that modern cryptography refines: substitution, transposition, confusion, and the constant arms race between cipher designer and cryptanalyst.</p></div>
+
+<div class="sl">Substitution Ciphers</div>
+<div class="st">Replacing Each Letter With Another</div>
+
+<!-- Caesar cipher diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Caesar Cipher — Shift by 3</div>
+<svg width="100%" viewBox="0 0 680 100" role="img">
+  <title>Caesar cipher: plaintext alphabet shifted 3 positions to produce ciphertext alphabet</title>
+  <!-- Plaintext row -->
+  <text font-family="'IM Fell English',serif" font-size="11" fill="#00a0b8" x="10" y="22" letter-spacing="0">PLAINTEXT:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="13" fill="#40c8e0" x="120" y="22">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</text>
+  <!-- Arrow -->
+  <line x1="10" y1="38" x2="670" y2="38" stroke="#1a3848" stroke-width="0.6" stroke-dasharray="3 3"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="10" fill="#b88020" x="10" y="52">+ shift 3 ↓</text>
+  <!-- Ciphertext row -->
+  <text font-family="'IM Fell English',serif" font-size="11" fill="#00a0b8" x="10" y="68" letter-spacing="0">CIPHERTEXT:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="13" fill="#40c8e0" x="120" y="68">D E F G H I J K L M N O P Q R S T U V W X Y Z A B C</text>
+  <!-- Example -->
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#7a1010" x="10" y="92" font-style="italic">Example: "HELLO" → "KHOOR"   (ROT-3)   |   "ATTACK AT DAWN" → "DWWDFN DW GDZQ"</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">Monoalphabetic Substitution</div>
+  <div class="cname">Caesar Cipher, Atbash, ROT13, and General Substitution</div>
+  <div class="cbody">
+    <p>A monoalphabetic substitution cipher maps each letter of the plaintext alphabet to a fixed letter in the ciphertext alphabet. The key is the mapping itself.</p>
+    <p><strong>Caesar cipher:</strong> A rotation cipher with shift k (Caesar used k=3). The key space is only 25 — trivially brute-forced. E(k,x) = (x+k) mod 26.</p>
+    <p><strong>Atbash:</strong> The reverse alphabet — A↔Z, B↔Y, etc. A Caesar cipher with k=13 in a self-inverse mapping. Key space of 1.</p>
+    <p><strong>ROT13:</strong> A shift of 13 — self-inverse because 13+13=26. Used to obscure text online (spoilers, offensive content) but provides no security.</p>
+    <p><strong>General substitution cipher:</strong> Any bijective mapping of the alphabet to itself. Key space is 26! ≈ 4×10^26 — too large to brute-force. But completely vulnerable to <strong>frequency analysis</strong>: in English, 'E' appears ~12.7% of the time, 'T' ~9.1%, 'A' ~8.2%. The most frequent ciphertext letter is almost certainly 'E'. With enough ciphertext (~100 characters), a substitution cipher can be broken in minutes by hand.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Polyalphabetic Substitution</div>
+  <div class="cname">Vigenère Cipher — Using Multiple Alphabets</div>
+  <div class="cbody">
+    <p>The Vigenère cipher uses a keyword to select which Caesar alphabet to use for each plaintext letter. If the keyword is KEY (K=10, E=4, Y=24), then the first letter is shifted by 10, the second by 4, the third by 24, the fourth by 10 again, and so on.</p>
+    <div class="codebox">Plaintext:  A T T A C K A T D A W N
+Key:        K E Y K E Y K E Y K E Y
+Ciphertext: K X R K G I K X B K A L</div>
+    <p>This defeats simple frequency analysis because each plaintext letter is encrypted differently depending on its position. However, it is breakable by the <strong>Kasiski test</strong> (1863): repeated plaintext sequences encrypted with the same key segment produce repeated ciphertext sequences. The distance between repetitions reveals the key length. Once the key length k is known, the cipher reduces to k independent Caesar ciphers, each breakable by frequency analysis.</p>
+    <p><strong>Beaufort cipher</strong> and <strong>Autokey cipher</strong> are variants. The autokey uses the plaintext itself as the key after the initial keyword — stronger than Vigenère but still breakable.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Digraph Substitution</div>
+  <div class="cname">Playfair Cipher — Encrypting Letter Pairs</div>
+  <div class="cbody">
+    <p>The Playfair cipher operates on pairs of letters (digraphs) using a 5×5 key square (I and J share a cell). Rules: pairs in the same row shift right; pairs in the same column shift down; other pairs form the opposite corners of their rectangle. Breaking it requires digraph frequency analysis — the distribution of letter pairs is more uniform than single letters, requiring more ciphertext.</p>
+    <p>Still vulnerable to statistical attack given sufficient ciphertext (~200+ characters). Used by British forces in WWI and WWII for low-level communications.</p>
+  </div>
+</div>
+
+<div class="sl">Transposition Ciphers</div>
+<div class="st">Rearranging Rather Than Replacing</div>
+
+<div class="cb">
+  <div class="cn">Transposition</div>
+  <div class="cname">Rail Fence and Columnar Transposition</div>
+  <div class="cbody">
+    <p>Transposition ciphers preserve all plaintext characters but rearrange their positions. Letter frequencies remain identical to the plaintext — frequency analysis immediately reveals that a transposition (not substitution) was used.</p>
+    <p><strong>Rail fence cipher:</strong> Write the message in a zigzag pattern across N rails, then read off each rail in turn.</p>
+    <div class="codebox">Message: ATTACKATDAWN (3 rails)
+Rail 1:  A . . . C . . . A . . .
+Rail 2:  . T . A . K . T . W . N
+Rail 3:  . . T . . . A . . . A .
+Cipher:  ACA TAKTAWN TAA → ACATAKTWNTAA</div>
+    <p><strong>Columnar transposition:</strong> Write the message in rows of width k (the key number), then read off columns in key-specified order. The key is a permutation of column numbers. Combining columnar transposition with substitution (product cipher) produces much stronger systems.</p>
+    <p><strong>Double transposition:</strong> Apply columnar transposition twice with different keys. Used by several nations in WWI — considered very secure at the time.</p>
+  </div>
+</div>
+
+<div class="sl">The Only Perfect Cipher</div>
+<div class="st">The One-Time Pad — Perfect Secrecy in Practice</div>
+
+<div class="cb">
+  <div class="cn">Perfect Secrecy</div>
+  <div class="cname">The One-Time Pad — Why It's Unbreakable and Impractical</div>
+  <div class="cbody">
+    <p>The one-time pad (OTP) XORs each plaintext bit with a corresponding key bit from a truly random key that is at least as long as the message and used only once:</p>
+    <div class="codebox">Plaintext:  1 0 1 1 0 0 1 0  ("K" in ASCII, partial)
+Key:        1 1 0 1 0 1 0 1  (random bits)
+Ciphertext: 0 1 1 0 0 1 1 1  (XOR)</div>
+    <p>Shannon proved this is information-theoretically secure: the ciphertext is completely independent of the plaintext. Given any ciphertext, every possible plaintext of the same length is equally likely as the original message. There is no statistical attack, no computational attack, no mathematical attack. The one-time pad is the only perfectly secure cipher ever discovered.</p>
+    <p><strong>The catch:</strong> Perfect secrecy requires a key as long as the message, truly random, and used exactly once. Key distribution becomes as difficult as the original message transmission. Reusing a key (the "two-time pad") completely destroys security — XORing two ciphertexts encrypted with the same key yields the XOR of the two plaintexts, which is cryptanalytically tractable. The Soviet diplomatic cables broken in the VENONA project were broken precisely because the Soviets reused OTP key pages under wartime production pressure.</p>
+  </div>
+</div>
+
+<div class="sl">The Breaker's Tool</div>
+<div class="st">Frequency Analysis — How Classical Ciphers Are Broken</div>
+
+<div class="cb">
+  <div class="cn">Cryptanalytic Technique</div>
+  <div class="cname">Frequency Analysis — Al-Kindi's Insight</div>
+  <div class="cbody">
+    <p>Every natural language has a characteristic distribution of letter frequencies. In English: E(12.7%), T(9.1%), A(8.2%), O(7.5%), I(7.0%), N(6.7%), S(6.3%), H(6.1%), R(6.0%)... This distribution is preserved in monoalphabetic substitution ciphers. The most frequent ciphertext letter is almost certainly the encryption of E.</p>
+    <p>Frequency analysis requires approximately 100 ciphertext characters to be effective. With modern computers it works on much smaller samples. Beyond single-letter frequencies, <em>digraph</em> and <em>trigraph</em> frequencies (TH, HE, THE, AND, ING) further narrow the analysis.</p>
+    <p>Defences against frequency analysis: polyalphabetic substitution (Vigenère), homophonic substitution (multiple ciphertext symbols for frequent letters), null characters (adding meaningless letters), running key cipher (using a text passage as the key). All are broken by more sophisticated statistical techniques.</p>
+  </div>
+</div>
+</div>
+
+<!-- SYMMETRIC -->
+<div id="symmetric" class="panel">
+<div class="ib"><p>Symmetric-key cryptography uses the same key for both encryption and decryption. It is fast, efficient, and forms the backbone of virtually all data-at-rest and high-throughput encryption. The challenge is secure key distribution — solved in practice by using asymmetric cryptography to exchange symmetric keys.</p></div>
+
+<div class="pb"><div class="pl">Block Ciphers</div><div class="pt">DES, 3DES, AES, Blowfish, Twofish — Encrypting Fixed-Size Blocks</div><div class="pd">Block ciphers operate on fixed-size blocks of data (64 or 128 bits) using a fixed-size key, applying multiple rounds of confusion and diffusion to produce ciphertext indistinguishable from random.</div></div>
+
+<div class="cb">
+  <div class="cn">DES — Data Encryption Standard (1977)</div>
+  <div class="cname">The First Standardised Cipher — and Why It Was Retired</div>
+  <div class="cbody">
+    <p>DES uses a 56-bit key on 64-bit blocks through 16 rounds of a <strong>Feistel network</strong>. In a Feistel structure, the block is split into two halves (L, R). Each round computes: L_new = R, R_new = L XOR F(R, subkey), where F is a complex non-linear function. After all rounds, the halves are recombined. The Feistel structure ensures that the same algorithm performs both encryption and decryption (with reversed key schedule) — simplifying hardware implementation.</p>
+    <p>DES was broken in 1998 when the EFF built "Deep Crack" — a $250,000 machine that could brute-force any DES key in under 3 days by exhaustive search of the 2^56 ≈ 72 quadrillion possible keys. The 56-bit key was too short. NSA involvement in DES's key length was controversial — the original proposal had 64-bit keys, reduced to 56 during the standardisation process.</p>
+    <p><strong>3DES (Triple DES):</strong> Applies DES three times with different keys: C = DES_K3(DES_K2^{-1}(DES_K1(P))). Effective key strength of 112 bits (2-key) or 168 bits (3-key). Slow and largely superseded by AES but still used in legacy financial systems (EMV payment cards).</p>
+  </div>
+</div>
+
+<!-- Feistel network SVG diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Feistel Network — One Round of DES</div>
+<svg width="100%" viewBox="0 0 680 280" role="img">
+  <title>Feistel network diagram showing one round: input block split into L and R halves, R fed to function F with round key, output XORed with L to produce new R, while old R becomes new L</title>
+  <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Input block -->
+  <rect x="200" y="14" width="280" height="38" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="14" fill="#40c8e0" x="340" y="33" text-anchor="middle" dominant-baseline="central">64-bit Input Block</text>
+  <!-- Split -->
+  <line x1="280" y1="52" x2="220" y2="82" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <line x1="380" y1="52" x2="460" y2="82" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="340" y="68" text-anchor="middle">split into two 32-bit halves</text>
+  <!-- L box -->
+  <rect x="140" y="82" width="160" height="44" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="220" y="104" text-anchor="middle" dominant-baseline="central">L (left half)</text>
+  <!-- R box -->
+  <rect x="380" y="82" width="160" height="44" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="460" y="104" text-anchor="middle" dominant-baseline="central">R (right half)</text>
+  <!-- F function box -->
+  <line x1="460" y1="126" x2="460" y2="150" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <rect x="400" y="150" width="120" height="44" rx="4" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="15" fill="#d4a030" x="460" y="172" text-anchor="middle" dominant-baseline="central">F (Round Function)</text>
+  <!-- Key input to F -->
+  <rect x="570" y="160" width="90" height="32" rx="4" fill="#040c14" stroke="#006878" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="615" y="176" text-anchor="middle" dominant-baseline="central">Round Key K_i</text>
+  <line x1="570" y1="176" x2="520" y2="176" stroke="#006878" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <!-- XOR circle -->
+  <line x1="460" y1="194" x2="460" y2="214" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="220" y1="126" x2="220" y2="222" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="220" y1="222" x2="426" y2="222" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <circle cx="460" cy="222" r="14" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="16" fill="#d4a030" x="460" y="228" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <!-- Output halves -->
+  <line x1="460" y1="126" x2="220" y2="240" stroke="#1a3848" stroke-width="0.6" stroke-dasharray="3 3"/>
+  <line x1="460" y1="236" x2="460" y2="252" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <line x1="220" y1="238" x2="220" y2="252" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar1)"/>
+  <!-- Output -->
+  <rect x="140" y="252" width="160" height="38" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="220" y="271" text-anchor="middle" dominant-baseline="central">new L = old R</text>
+  <rect x="380" y="252" width="160" height="38" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#00a0b8" x="460" y="271" text-anchor="middle" dominant-baseline="central">new R = L ⊕ F(R,K_i)</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">AES — Advanced Encryption Standard (2001)</div>
+  <div class="cname">The Global Standard — Rijndael's Four Transformations</div>
+  <div class="cbody">
+    <p>AES operates on 128-bit blocks (arranged as a 4×4 byte matrix called the "state") with key sizes of 128, 192, or 256 bits, using 10, 12, or 14 rounds respectively. Unlike DES, AES uses a <strong>Substitution-Permutation Network (SPN)</strong> rather than a Feistel structure — the entire block is transformed each round.</p>
+    <p>Each round applies four transformations in sequence:</p>
+    <p><strong>SubBytes:</strong> A non-linear byte substitution using a fixed 8-bit S-box (substitution table) derived from the multiplicative inverse in GF(2^8). Provides confusion. Each of 16 bytes is replaced by a value from the S-box.</p>
+    <p><strong>ShiftRows:</strong> Each row of the 4×4 state matrix is cyclically shifted left by its row number (row 0 not shifted, row 1 shifted by 1, etc.). Provides diffusion across columns.</p>
+    <p><strong>MixColumns:</strong> Each column is treated as a polynomial over GF(2^8) and multiplied by a fixed matrix. Provides diffusion across rows — each output byte depends on all four input bytes of the column. This is the most mathematically complex step.</p>
+    <p><strong>AddRoundKey:</strong> XOR the state with the round key (derived from the original key via the key schedule). The only step that involves the key.</p>
+    <p>AES-256 with a properly random key and proper implementation is considered computationally secure against all known classical attacks. The best known attack (the biclique attack) reduces the effective key strength by about 2 bits — still requiring 2^254 operations. No practical attack exists.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Other Block Ciphers</div>
+  <div class="cname">Blowfish, Twofish, Camellia, ARIA</div>
+  <div class="cbody">
+    <p><strong>Blowfish (1993):</strong> Bruce Schneier's Feistel cipher with variable key length (32–448 bits), 64-bit blocks, 16 rounds. Fast in software, intentionally slow key setup (making brute force harder). Widely used but 64-bit blocks are vulnerable to birthday attacks in long sessions (SWEET32 attack). Superseded by its successor Twofish.</p>
+    <p><strong>Twofish (1998):</strong> An AES finalist by Schneier et al. 128-bit blocks, 128/192/256-bit keys, 16 rounds. Uses a complex key-dependent S-box and MDS matrix. No known practical attacks. Still used in some applications (VeraCrypt).</p>
+    <p><strong>Camellia (2000):</strong> Jointly developed by NTT and Mitsubishi Electric. 128-bit blocks, 128/192/256-bit keys. ISO standard, approved for use in TLS and IPsec. Considered security-equivalent to AES, widely used in Japan and Europe.</p>
+    <p><strong>ARIA (2003):</strong> South Korean national standard. 128-bit blocks, 128/192/256-bit keys. AES-like SPN structure.</p>
+  </div>
+</div>
+
+<div class="pb"><div class="pl">Stream Ciphers</div><div class="pt">RC4, Salsa20, ChaCha20 — Encrypting Bit by Bit</div><div class="pd">Stream ciphers generate a pseudorandom keystream and XOR it with the plaintext, one bit or byte at a time. Extremely fast — ideal for real-time applications and hardware implementation.</div></div>
+
+<div class="cb">
+  <div class="cn">Stream Cipher Architecture</div>
+  <div class="cname">How Stream Ciphers Work</div>
+  <div class="cbody">
+    <p>A stream cipher takes a key (and typically an IV/nonce) as input and generates a pseudorandom keystream of arbitrary length. The keystream is XORed with the plaintext:</p>
+    <div class="codebox">C_i = P_i ⊕ K_i    (XOR each bit/byte of plaintext with keystream)</div>
+    <p>Security depends entirely on the keystream being indistinguishable from random. <strong>The cardinal rule: never reuse a key-nonce pair.</strong> If C1 = P1 ⊕ K and C2 = P2 ⊕ K, then C1 ⊕ C2 = P1 ⊕ P2 — the XOR of the two plaintexts. With enough ciphertext pairs using the same key, frequency analysis recovers both plaintexts.</p>
+    <p><strong>RC4 (1987):</strong> Ron Rivest's stream cipher. Used in SSL/TLS, WEP, WPA, and PDF encryption for decades. Has serious biases in the first few bytes of output and statistical weaknesses discovered over time. Now completely deprecated — all uses of RC4 in TLS are prohibited by RFC 7465 (2015).</p>
+    <p><strong>Salsa20 / ChaCha20 (2005/2008):</strong> Daniel Bernstein's stream ciphers. Based on a 512-bit state updated with 20 rounds of ARX operations (Add, Rotate, XOR) — no S-boxes, purely 32-bit operations. Fast in software with no timing side channels (constant-time by design). ChaCha20 is the variant used in TLS 1.3, QUIC, and mobile devices. Combined with Poly1305 MAC as ChaCha20-Poly1305 AEAD, it is one of the most trusted cipher suites currently in use.</p>
+  </div>
+</div>
+</div>
+
+<!-- BLOCK CIPHER MODES -->
+<div id="modes" class="panel">
+<div class="ib"><p>A block cipher alone encrypts a single fixed-size block. To encrypt messages of arbitrary length — and to provide the security properties needed in practice — block ciphers must be used in a mode of operation. The choice of mode is as important as the choice of cipher itself.</p></div>
+
+<div class="cb">
+  <div class="cn">Why Modes Matter</div>
+  <div class="cname">The Problem With ECB — The Penguin Attack</div>
+  <div class="cbody">
+    <p>The simplest mode — <strong>ECB (Electronic Codebook)</strong> — encrypts each block independently with the same key. This is catastrophically insecure for structured data: identical plaintext blocks produce identical ciphertext blocks. Encrypt a bitmap image in ECB mode and the outline of the original image remains visible in the ciphertext — the famous "ECB penguin" demonstrates this. Block patterns, repetitions, and structural features of the plaintext survive into the ciphertext.</p>
+    <p>The fundamental requirement for a secure mode: identical plaintext blocks should produce different ciphertext blocks. All secure modes achieve this through some form of feedback from previous blocks or from a counter.</p>
+  </div>
+</div>
+
+<!-- CBC Mode SVG Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">CBC Mode (Cipher Block Chaining) — Encryption</div>
+<svg width="100%" viewBox="0 0 680 200" role="img">
+  <title>CBC mode encryption: each plaintext block is XORed with the previous ciphertext block before encryption; first block uses an IV</title>
+  <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- IV -->
+  <rect x="18" y="14" width="80" height="32" rx="4" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d4a030" x="58" y="30" text-anchor="middle" dominant-baseline="central">IV (nonce)</text>
+  <!-- Block 1 -->
+  <!-- P1 -->
+  <rect x="108" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="30" text-anchor="middle" dominant-baseline="central">P₁</text>
+  <!-- XOR 1 -->
+  <line x1="98" y1="30" x2="104" y2="30" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <line x1="188" y1="30" x2="198" y2="30" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="188" y1="30" x2="226" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="148" y1="46" x2="148" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="58" y1="46" x2="58" y2="68" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="58" y1="68" x2="130" y2="68" stroke="#b88020" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <circle cx="148" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="148" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <!-- Enc 1 -->
+  <line x1="148" y1="80" x2="148" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="108" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <!-- C1 -->
+  <line x1="148" y1="128" x2="148" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="108" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="148" y="160" text-anchor="middle" dominant-baseline="central">C₁</text>
+
+  <!-- Block 2 -->
+  <rect x="288" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="30" text-anchor="middle" dominant-baseline="central">P₂</text>
+  <line x1="188" y1="160" x2="310" y2="68" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="328" y1="46" x2="328" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <circle cx="328" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="328" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <line x1="328" y1="80" x2="328" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="288" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <line x1="328" y1="128" x2="328" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="288" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="328" y="160" text-anchor="middle" dominant-baseline="central">C₂</text>
+
+  <!-- Block 3 -->
+  <rect x="468" y="14" width="80" height="32" rx="4" fill="#071420" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="30" text-anchor="middle" dominant-baseline="central">P₃</text>
+  <line x1="368" y1="160" x2="490" y2="68" stroke="#00a0b8" stroke-width="0.8"/>
+  <line x1="508" y1="46" x2="508" y2="60" stroke="#00a0b8" stroke-width="0.8"/>
+  <circle cx="508" cy="68" r="12" fill="#040c14" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="14" fill="#d4a030" x="508" y="73" text-anchor="middle" dominant-baseline="central">⊕</text>
+  <line x1="508" y1="80" x2="508" y2="96" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="468" y="96" width="80" height="32" rx="4" fill="#040c14" stroke="#00a0b8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="112" text-anchor="middle" dominant-baseline="central">Enc(K)</text>
+  <line x1="508" y1="128" x2="508" y2="144" stroke="#00a0b8" stroke-width="0.8" marker-end="url(#ar2)"/>
+  <rect x="468" y="144" width="80" height="32" rx="4" fill="#0c2030" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="508" y="160" text-anchor="middle" dominant-baseline="central">C₃</text>
+  <!-- dotdot -->
+  <text font-family="'Cormorant Garamond',serif" font-size="20" fill="#1a3848" x="634" y="112" text-anchor="middle">···</text>
+  <!-- Key -->
+  <rect x="580" y="96" width="44" height="32" rx="3" fill="#040c14" stroke="#b88020" stroke-width="0.7"/>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#d4a030" x="602" y="112" text-anchor="middle" dominant-baseline="central">Key K</text>
+  <line x1="580" y1="112" x2="548" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2" marker-end="url(#ar2)"/>
+  <line x1="580" y1="112" x2="368" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2"/>
+  <line x1="580" y1="112" x2="188" y2="112" stroke="#b88020" stroke-width="0.6" stroke-dasharray="3 2"/>
+  <line x1="188" y1="112" x2="188" y2="112" stroke="#b88020" stroke-width="0.6"/>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">All Six Standard Modes</div>
+  <div class="cname">ECB, CBC, CFB, OFB, CTR, GCM — Properties and Use Cases</div>
+  <div class="cbody">
+    <p><strong>ECB (Electronic Codebook):</strong> Each block encrypted independently. Identical blocks produce identical ciphertext. <em>Never use for structured or repetitive data.</em> Only acceptable for single-block encryption of random data (like key wrapping).</p>
+    <p><strong>CBC (Cipher Block Chaining):</strong> Each plaintext block XORed with previous ciphertext before encryption. Requires an IV (must be random and unpredictable). Sequential — cannot be parallelised for encryption. Padding required. Vulnerable to padding oracle attacks (e.g., POODLE). Errors in one ciphertext block corrupt exactly two decrypted blocks.</p>
+    <p><strong>CFB (Cipher Feedback):</strong> Converts block cipher into a stream cipher. Encrypts the previous ciphertext, XORs with plaintext. No padding needed. Self-synchronising — after error recovery, only two blocks are corrupted. Can be parallelised for decryption.</p>
+    <p><strong>OFB (Output Feedback):</strong> Generates keystream by repeatedly encrypting the IV. XOR with plaintext. Keystream independent of plaintext — can be precomputed. Any bit error in ciphertext corrupts only the corresponding plaintext bit (no error propagation). Cannot tolerate IV reuse.</p>
+    <p><strong>CTR (Counter Mode):</strong> Encrypts successive counter values (nonce||counter) to generate keystream. Fully parallelisable for both encryption and decryption. Random access to any block. No padding. Must never reuse a nonce with the same key. Now the standard mode for high-performance encryption.</p>
+    <p><strong>GCM (Galois/Counter Mode):</strong> CTR mode encryption combined with a Galois field MAC (GHASH) for authentication. Provides both confidentiality and integrity in a single pass — Authenticated Encryption with Associated Data (AEAD). The most widely used mode today: AES-128-GCM is the default cipher in TLS 1.3. Catastrophic nonce reuse: if a (key, nonce) pair is reused with different plaintexts, both the authentication key and the plaintexts can be recovered.</p>
+  </div>
+</div>
+
+<table class="ctable">
+  <tr><th>Mode</th><th>Parallelise?</th><th>Padding?</th><th>Auth?</th><th>Main Vulnerability</th><th>Best Use</th></tr>
+  <tr><td>ECB</td><td>Yes / Yes</td><td>Yes</td><td>No</td><td>Identical blocks visible</td><td>Never for real data</td></tr>
+  <tr><td>CBC</td><td>No / Yes</td><td>Yes</td><td>No</td><td>Padding oracle attacks</td><td>Legacy systems</td></tr>
+  <tr><td>CFB</td><td>No / Yes</td><td>No</td><td>No</td><td>IV reuse</td><td>Self-syncing streams</td></tr>
+  <tr><td>OFB</td><td>Precomp</td><td>No</td><td>No</td><td>Nonce reuse, malleability</td><td>Noise channels</td></tr>
+  <tr><td>CTR</td><td>Yes / Yes</td><td>No</td><td>No</td><td>Nonce reuse, malleability</td><td>Fast bulk encryption</td></tr>
+  <tr><td>GCM</td><td>Yes / Yes</td><td>No</td><td>Yes (GHASH)</td><td>Catastrophic nonce reuse</td><td>TLS 1.3, modern apps</td></tr>
+</table>
+</div>
+
+<!-- ASYMMETRIC -->
+<div id="asymmetric" class="panel">
+<div class="ib"><p>Public-key cryptography was the most important cryptographic breakthrough of the 20th century. It transformed cryptography from a tool of governments and militaries into the foundation of the global internet — enabling strangers to communicate securely without ever having met.</p></div>
+
+<div class="cb">
+  <div class="cn">The Core Idea</div>
+  <div class="cname">Trapdoor Functions — Easy One Way, Hard the Other</div>
+  <div class="cbody">
+    <p>Asymmetric cryptography relies on <strong>trapdoor one-way functions</strong>: mathematical operations that are easy to perform in one direction and computationally infeasible to reverse without special knowledge (the "trapdoor" — the private key). Three mathematical problems underlie all widely deployed asymmetric systems:</p>
+    <p><strong>Integer factorisation:</strong> Multiplying two large primes p and q to produce n = p·q takes microseconds. Factoring n to recover p and q when n has ~2048 bits takes longer than the age of the universe with classical computers. Basis of RSA.</p>
+    <p><strong>Discrete logarithm problem (DLP):</strong> Computing g^x mod p (modular exponentiation) is fast. Finding x given g, g^x, and p is hard. Basis of Diffie-Hellman and ElGamal. ECDLP (elliptic curve discrete log) is a harder variant enabling smaller keys.</p>
+    <p><strong>Elliptic curve discrete logarithm (ECDLP):</strong> Finding k given point P and kP on an elliptic curve. Believed harder than DLP — a 256-bit ECC key provides security equivalent to a 3072-bit RSA key.</p>
+  </div>
+</div>
+
+<!-- Diffie-Hellman Color Analogy Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">Diffie-Hellman Key Exchange — The Color Analogy</div>
+<svg width="100%" viewBox="0 0 680 220" role="img">
+  <title>Diffie-Hellman explained via color mixing: Alice and Bob each mix their private color with a shared public color; they exchange the mixtures; each mixes the received color with their own private color, arriving at the same final color</title>
+  <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Shared public color (yellow) -->
+  <rect x="270" y="14" width="140" height="36" rx="5" fill="#c8a010" stroke="#b88020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#040c14" x="340" y="32" text-anchor="middle" dominant-baseline="central">Shared Public Color (g, p)</text>
+  <!-- Alice private -->
+  <rect x="30" y="14" width="120" height="36" rx="5" fill="#1a3498" stroke="#0030c8" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d0d8ff" x="90" y="32" text-anchor="middle" dominant-baseline="central">Alice: private (blue)</text>
+  <!-- Bob private -->
+  <rect x="530" y="14" width="120" height="36" rx="5" fill="#7a1a1a" stroke="#c82020" stroke-width="1"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#ffd0d0" x="590" y="32" text-anchor="middle" dominant-baseline="central">Bob: private (red)</text>
+  <!-- Mix arrows down -->
+  <line x1="90" y1="50" x2="90" y2="80" stroke="#1a3498" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <line x1="340" y1="50" x2="218" y2="80" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="340" y1="50" x2="462" y2="80" stroke="#b88020" stroke-width="0.8"/>
+  <line x1="590" y1="50" x2="590" y2="80" stroke="#7a1a1a" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <!-- Mix 1 Alice: blue+yellow = blue-green -->
+  <rect x="30" y="80" width="120" height="36" rx="5" fill="#106860" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#a0e8e0" x="90" y="98" text-anchor="middle" dominant-baseline="central">Alice sends: A = gᵃ mod p</text>
+  <!-- Mix 1 Bob: red+yellow = orange -->
+  <rect x="530" y="80" width="120" height="36" rx="5" fill="#985010" stroke="#1a3848" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#ffd090" x="590" y="98" text-anchor="middle" dominant-baseline="central">Bob sends: B = gᵇ mod p</text>
+  <!-- Exchange arrows -->
+  <line x1="150" y1="98" x2="528" y2="98" stroke="#40c8e0" stroke-width="1" stroke-dasharray="6 3" marker-end="url(#ar3)"/>
+  <line x1="530" y1="108" x2="152" y2="108" stroke="#40c8e0" stroke-width="1" stroke-dasharray="6 3" marker-end="url(#ar3)"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#00a0b8" x="340" y="92" text-anchor="middle">PUBLIC exchange over insecure channel</text>
+  <!-- Mix 2 -->
+  <line x1="90" y1="116" x2="90" y2="146" stroke="#106860" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <line x1="590" y1="116" x2="590" y2="146" stroke="#985010" stroke-width="0.8" marker-end="url(#ar3)"/>
+  <!-- Shared secret (same brown/olive color both sides) -->
+  <rect x="30" y="146" width="120" height="44" rx="5" fill="#4a4010" stroke="#b88020" stroke-width="1.2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#d4c060" x="90" y="163" text-anchor="middle" dominant-baseline="central">Alice: Bᵃ mod p</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#a09040" x="90" y="180" text-anchor="middle">= gᵃᵇ mod p ✓</text>
+  <rect x="530" y="146" width="120" height="44" rx="5" fill="#4a4010" stroke="#b88020" stroke-width="1.2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#d4c060" x="590" y="163" text-anchor="middle" dominant-baseline="central">Bob: Aᵇ mod p</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#a09040" x="590" y="180" text-anchor="middle">= gᵃᵇ mod p ✓</text>
+  <!-- Equal label -->
+  <text font-family="'IM Fell English',serif" font-size="13" fill="#40c8e0" x="340" y="174" text-anchor="middle">Same Shared Secret!</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="340" y="192" text-anchor="middle">Eve sees g, p, gᵃ mod p, gᵇ mod p — but computing gᵃᵇ requires solving the DLP</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">RSA — Rivest-Shamir-Adleman (1977)</div>
+  <div class="cname">The Mathematics of RSA Key Generation, Encryption, and Decryption</div>
+  <div class="cbody">
+    <p>RSA is based on the difficulty of factoring the product of two large prime numbers. Key generation:</p>
+    <div class="mathbox">1. Choose two large primes p, q  (each ≥ 1024 bits)
+2. Compute n = p·q  (the modulus, public)
+3. Compute φ(n) = (p-1)(q-1)  (Euler's totient, kept secret)
+4. Choose e: 1 &lt; e &lt; φ(n), gcd(e, φ(n)) = 1  (public exponent, typically 65537)
+5. Compute d: e·d ≡ 1 (mod φ(n))  (private exponent, from Extended Euclidean Algorithm)
+
+Public key:  (n, e)
+Private key: (n, d)  [or equivalently: (p, q, d, dp, dq, qp)]</div>
+    <p><strong>Encryption:</strong> C = M^e mod n</p>
+    <p><strong>Decryption:</strong> M = C^d mod n</p>
+    <p>This works because: C^d = (M^e)^d = M^(ed) = M^(1 + k·φ(n)) = M · (M^φ(n))^k = M · 1^k = M (by Euler's theorem).</p>
+    <p><strong>RSA in practice:</strong> Raw RSA is deterministic and malleable — the same plaintext always produces the same ciphertext, and ciphertexts can be manipulated algebraically. Modern RSA uses <strong>OAEP padding</strong> (Optimal Asymmetric Encryption Padding) to randomise encryption and add integrity checking. RSA-2048 provides approximately 112 bits of security. RSA-4096 provides approximately 140 bits.</p>
+    <p><strong>RSA signatures:</strong> Sign: S = H(M)^d mod n. Verify: H(M) = S^e mod n. The signer uses their private key; anyone can verify with the public key. PSS padding (Probabilistic Signature Scheme) is required for secure RSA signatures.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">ECC — Elliptic Curve Cryptography</div>
+  <div class="cname">Smaller Keys, Stronger Security — The Geometry of Groups</div>
+  <div class="cbody">
+    <p>ECC operates over points on an elliptic curve defined over a finite field. The curve equation is y² = x³ + ax + b (mod p) for prime fields. A group operation (point addition) is defined geometrically: adding two points P and Q produces a third point R on the curve. Scalar multiplication kP (adding P to itself k times) is easy; finding k given P and kP (the ECDLP) is believed to be computationally hard.</p>
+    <p><strong>ECDH (Elliptic Curve Diffie-Hellman):</strong> Alice generates private key a, public key A = aG. Bob generates private key b, public key B = bG (G is a base point on the curve). Shared secret: a·B = a·bG = b·aG = b·A. Security based on ECDLP.</p>
+    <p><strong>ECDSA (Elliptic Curve Digital Signature Algorithm):</strong> Sign with private key, verify with public key. Used in Bitcoin, TLS, code signing. Critically depends on a random, secret nonce k per signature — reusing k for two different signatures leaks the private key (the PS3 was broken this way in 2010 by Sony using a constant k).</p>
+    <p><strong>Ed25519 (EdDSA on Curve25519):</strong> Daniel Bernstein's signature scheme on the Edwards curve. Deterministic (no random nonce needed — k derived from message and private key), fast, side-channel resistant, and immune to the nonce-reuse vulnerability of ECDSA. The preferred signature algorithm for modern systems.</p>
+    <p><strong>Key size comparison:</strong> 256-bit ECC ≈ 3072-bit RSA ≈ 128-bit symmetric security. 521-bit ECC ≈ 15360-bit RSA ≈ 256-bit symmetric security. ECC's advantage is dramatic efficiency — critical for embedded systems, smart cards, and TLS handshake performance.</p>
+  </div>
+</div>
+</div>
+
+<!-- HASH FUNCTIONS -->
+<div id="hash" class="panel">
+<div class="ib"><p>Cryptographic hash functions are the workhorses of modern security infrastructure. One-way, fixed-output, collision-resistant — they appear in digital signatures, password storage, message authentication, blockchain, and certificate systems. A broken hash function breaks everything built on it.</p></div>
+
+<div class="cb">
+  <div class="cn">The Three Essential Properties</div>
+  <div class="cname">Preimage, Second Preimage, and Collision Resistance</div>
+  <div class="cbody">
+    <p>A cryptographic hash function H maps inputs of arbitrary length to a fixed-size output (digest). Three security properties are required:</p>
+    <p><strong>Preimage resistance (one-way):</strong> Given a hash value h, it should be computationally infeasible to find any input m such that H(m) = h. This is what makes hash functions useful for password storage — the database stores H(password), and even if stolen, the attacker cannot recover the password.</p>
+    <p><strong>Second preimage resistance:</strong> Given an input m₁, it should be infeasible to find a different m₂ ≠ m₁ such that H(m₁) = H(m₂). This protects document integrity — an attacker cannot replace a signed document with a different one that has the same hash.</p>
+    <p><strong>Collision resistance:</strong> It should be infeasible to find any two inputs m₁ ≠ m₂ such that H(m₁) = H(m₂). Harder to achieve than second preimage resistance. By the <strong>birthday paradox</strong>, an n-bit hash provides only n/2 bits of collision security — a 128-bit hash (MD5) provides only 64-bit collision security, meaning collisions can be found with ≈2^64 work.</p>
+    <div class="kbox">
+      <div class="kl">The Avalanche Effect in Hash Functions</div>
+      <p>SHA-256("abc") = ba7816bf8f01cfea414140de5dae2ec73b00361bbef0469348423f656b6031f<br>
+SHA-256("abd") = a44f9f4d0bb3c1e9f17e4dc24a2fb3e069f4ce1eb36aa70ad66e83c7e1e80b7<br>
+Change ONE character → completely different hash. This is the avalanche effect — any input change should alter approximately half of all output bits.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Hash Function Zoo</div>
+  <div class="cname">MD5, SHA-1, SHA-2, SHA-3 — Status and Security</div>
+  <div class="cbody">
+    <p><strong>MD5 (1992):</strong> 128-bit output. Completely broken for collision resistance — collisions can be found in seconds on a laptop. Two different executable files can be crafted with the same MD5 hash. Still appears in legacy systems and file checksums (where collision resistance is not required), but must never be used for security purposes.</p>
+    <p><strong>SHA-1 (1995):</strong> 160-bit output. Theoretically broken for years (Wang et al., 2005 showed 2^63 attacks). The SHAttered attack (2017, Google/CWI) produced the first practical SHA-1 collision — two different PDF files with the same SHA-1. Deprecated for all security uses. Certificate authorities stopped issuing SHA-1 certificates in 2017.</p>
+    <p><strong>SHA-2 family (2001):</strong> SHA-224, SHA-256, SHA-384, SHA-512. Currently secure. SHA-256 is the most widely deployed hash function in the world (Bitcoin, TLS, code signing, GPG). Based on the Merkle-Damgård construction with Davies-Meyer compression function. No practical attacks known.</p>
+    <p><strong>SHA-3 / Keccak (2015):</strong> Completely different design from SHA-2 — uses a <strong>sponge construction</strong> rather than Merkle-Damgård. Absorbs input in blocks, squeezes output of desired length. Provides resistance against length-extension attacks (a vulnerability of Merkle-Damgård hash functions). SHA3-256, SHA3-512, SHAKE128, SHAKE256 (extendable output functions).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Message Authentication</div>
+  <div class="cname">HMAC — Hash-Based Message Authentication Codes</div>
+  <div class="cbody">
+    <p>A MAC (Message Authentication Code) proves both integrity (message not altered) and authenticity (message came from key holder). HMAC constructs a MAC from any hash function:</p>
+    <div class="mathbox">HMAC(K, M) = H((K ⊕ opad) || H((K ⊕ ipad) || M))
+
+where opad = 0x5c5c5c..., ipad = 0x363636...  (different padding constants)
+</div>
+    <p>The double-hash construction defeats length-extension attacks and provides security proofs based on the PRF properties of the underlying hash. HMAC-SHA256 is ubiquitous — used in TLS, JWT tokens, AWS API authentication, and virtually every authenticated protocol.</p>
+    <p><strong>Why not just prepend the key?</strong> H(K||M) is vulnerable to length-extension attacks: given H(K||M), an attacker can compute H(K||M||extra) for any extra data without knowing K. The HMAC construction specifically prevents this.</p>
+    <p><strong>Poly1305:</strong> A Carter-Wegman MAC that is faster than HMAC and provides stronger provable security guarantees. Used in ChaCha20-Poly1305 (TLS 1.3) and WireGuard.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Password Hashing</div>
+  <div class="cname">bcrypt, scrypt, Argon2 — Why Regular Hash Functions Are Dangerous for Passwords</div>
+  <div class="cbody">
+    <p>Regular hash functions (SHA-256, etc.) are designed to be fast. This is catastrophic for password storage: modern GPUs can compute billions of SHA-256 hashes per second, making offline dictionary attacks devastating. A dedicated password hashing function must be deliberately slow and memory-hard.</p>
+    <p><strong>bcrypt (1999):</strong> Based on the Blowfish cipher's expensive key schedule. A cost parameter (work factor) controls computational expense — doubling the cost factor doubles the time. 72-character input limit (historical Blowfish limitation). Still widely used and considered secure, though not memory-hard.</p>
+    <p><strong>scrypt (2009):</strong> Colin Percival's memory-hard function. Uses large amounts of memory in a sequential access pattern that is difficult to parallelise in hardware ASICs or GPUs. Parameters: N (CPU/memory cost), r (block size), p (parallelisation). Used in Litecoin.</p>
+    <p><strong>Argon2 (2015):</strong> Winner of the Password Hashing Competition. Three variants: Argon2d (data-dependent, faster, vulnerable to side-channel in some contexts), Argon2i (data-independent, side-channel resistant), Argon2id (hybrid, recommended). Configurable time cost, memory cost, and parallelism. Current recommendation for all new password storage systems. Never use plain MD5, SHA-1, or SHA-256 for password hashing.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Merkle Trees</div>
+  <div class="cname">Hash Trees — The Data Structure Beneath Blockchain and Certificate Transparency</div>
+  <div class="cbody">
+    <p>A Merkle tree is a binary tree of hash values. Each leaf node contains the hash of a data block. Each non-leaf node contains the hash of its two children. The root hash (Merkle root) summarises all the data — any change to any leaf changes all nodes on its path to the root.</p>
+    <p>Key property: <strong>Merkle proofs</strong>. To prove that a specific transaction (leaf) is included in a tree with a known root, you only need to provide the sibling hashes along the path from the leaf to the root — O(log n) hashes instead of all n data blocks. Bitcoin uses Merkle trees to efficiently prove transaction inclusion. Certificate Transparency logs use Merkle trees to provide auditable, tamper-evident logs of all TLS certificates issued.</p>
+  </div>
+</div>
+</div>
+
+<!-- PROTOCOLS -->
+<div id="protocols" class="panel">
+<div class="ib"><p>Cryptographic protocols combine primitives — symmetric ciphers, public-key algorithms, hash functions, MACs — into complete systems providing secure communication. Understanding protocols means understanding not just their components but how they interact, what attacks they prevent, and what assumptions they make.</p></div>
+
+<div class="cb">
+  <div class="cn">TLS — Transport Layer Security</div>
+  <div class="cname">The Protocol That Secures the Internet — How HTTPS Works</div>
+  <div class="cbody">
+    <p>TLS (Transport Layer Security, successor to SSL) is the protocol that provides the "S" in HTTPS. It establishes a secure channel over an insecure network, providing confidentiality, integrity, and authentication. TLS 1.3 (RFC 8446, 2018) is the current standard.</p>
+    <p><strong>TLS 1.3 Handshake (simplified):</strong></p>
+    <div class="mathbox">1. Client → Server: ClientHello (supported cipher suites, key_share gˣ)
+2. Server → Client: ServerHello (chosen cipher suite, key_share gʸ)
+                    Certificate (server's X.509 certificate)
+                    CertificateVerify (signature over handshake with private key)
+                    Finished (HMAC over handshake transcript)
+3. Client → Server: Finished (HMAC over handshake transcript)
+4. Both: Derive session keys from gˣʸ (ECDH shared secret)
+   → Application data encrypted with AES-128-GCM or ChaCha20-Poly1305</div>
+    <p><strong>1-RTT vs 0-RTT:</strong> TLS 1.3 completes the handshake in one round trip (vs two in TLS 1.2). TLS 1.3 also supports 0-RTT ("early data") for resuming sessions — the client sends encrypted data with its first message, without waiting for the server's response. 0-RTT has reduced security guarantees (no replay protection) and should only be used for idempotent requests.</p>
+    <p><strong>Perfect Forward Secrecy (PFS):</strong> TLS 1.3 mandates ephemeral key exchange (ECDHE) — a new DH key pair is generated for each session. If the server's long-term private key is later compromised, past session recordings remain private. TLS 1.2 without PFS (using RSA key exchange) allows an attacker who later obtains the private key to decrypt all previously recorded sessions.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">SSH — Secure Shell</div>
+  <div class="cname">Encrypted Remote Access — How SSH Works</div>
+  <div class="cbody">
+    <p>SSH provides secure remote command-line access, file transfer (SCP, SFTP), and port forwarding. It consists of three layers: Transport (key exchange, encryption), Authentication (user identity verification), and Connection (multiplexing of logical channels).</p>
+    <p><strong>Key exchange:</strong> Diffie-Hellman or ECDH to establish session keys. Server identity verified by host key (RSA or Ed25519 public key stored in ~/.ssh/known_hosts). Man-in-the-middle on first connection ("trust-on-first-use" / TOFU model) is a vulnerability — mitigated by certificate-based or DANE-based host key verification.</p>
+    <p><strong>Authentication methods:</strong> Password (encrypted, but weak against brute force), public key (Ed25519 or RSA keypair — vastly preferred; private key never leaves the client), certificate-based (CA-signed SSH certificates for large deployments), FIDO2/hardware key (most secure).</p>
+    <p><strong>Port forwarding:</strong> SSH tunnels encrypt connections from local to remote ports. Local forwarding: access a remote service as if it were local. Remote forwarding: expose a local service through the remote server. Dynamic forwarding: SOCKS proxy through the SSH connection.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">PGP/GPG</div>
+  <div class="cname">Pretty Good Privacy — Email Encryption and the Web of Trust</div>
+  <div class="cbody">
+    <p>PGP (Pretty Good Privacy) and its open-source implementation GPG use hybrid encryption: a random session key encrypts the message with a symmetric cipher, and the session key is encrypted with the recipient's RSA or ECC public key.</p>
+    <p><strong>Digital signatures in PGP:</strong> The sender hashes the message and encrypts the hash with their private key. The recipient decrypts with the sender's public key and verifies the hash matches. Provides non-repudiation.</p>
+    <p><strong>Web of Trust:</strong> Unlike TLS which relies on CAs, PGP uses a decentralised web of trust. Users sign each other's public keys, creating a network where trust propagates transitively. Difficult to manage at scale and the reason PGP adoption has been limited outside technical communities.</p>
+    <p>The PKI (Public Key Infrastructure) model — used in TLS — provides a hierarchical trust model: Certificate Authorities (CAs) sign end-entity certificates, browsers maintain a list of trusted root CAs. Vulnerable to rogue CAs issuing fraudulent certificates (the DigiNotar compromise, 2011, demonstrated this catastrophically).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Signal Protocol</div>
+  <div class="cname">The Double Ratchet — State of the Art in Messaging Security</div>
+  <div class="cbody">
+    <p>The Signal Protocol (used in Signal, WhatsApp, and others) provides end-to-end encrypted messaging with forward secrecy and <strong>break-in recovery</strong> — if an attacker learns your keys at one moment, they cannot decrypt past or future messages.</p>
+    <p><strong>X3DH (Extended Triple Diffie-Hellman):</strong> Initial key agreement combining long-term, medium-term, and one-time Diffie-Hellman keys. Provides forward secrecy and deniability (no signature proves who sent the message).</p>
+    <p><strong>Double Ratchet Algorithm:</strong> Two ratchets advance simultaneously. The <em>Diffie-Hellman ratchet</em> runs whenever a new DH key is sent — provides break-in recovery. The <em>symmetric-key ratchet</em> runs for every message — provides per-message forward secrecy. Both use a KDF (key derivation function) to advance the state. The result: every message uses a unique key, and compromise of any key reveals only that one message.</p>
+    <p>Signal also uses <strong>Sealed Sender</strong> (hiding sender identity even from the Signal server), <strong>Private Contact Discovery</strong> (finding contacts without revealing your contacts to the server), and <strong>SGX-based attestation</strong> for server-side privacy.</p>
+  </div>
+</div>
+</div>
+
+<!-- CRYPTANALYSIS -->
+<div id="attacks" class="panel">
+<div class="ib"><p>Cryptanalysis — the science of breaking ciphers — has driven the evolution of cryptography throughout history. Every advance in cryptographic design has been provoked by a new attack. Understanding how ciphers fail is essential to understanding why strong ciphers are designed the way they are.</p></div>
+
+<div class="sl">Attack Taxonomy</div>
+<div class="st">Categories of Attack — From Passive to Active</div>
+
+<div class="cb">
+  <div class="cn">By Attacker Model</div>
+  <div class="cname">What the Adversary Can Observe and Control</div>
+  <div class="cbody">
+    <p><strong>Ciphertext-only attack (COA):</strong> The attacker has only ciphertext. The weakest model. Classical frequency analysis is a COA. Modern ciphers must resist this trivially.</p>
+    <p><strong>Known-plaintext attack (KPA):</strong> The attacker has pairs of (plaintext, ciphertext). Common in practice — HTTP headers, file headers, and known message formats provide known plaintext. Broke many WWII ciphers.</p>
+    <p><strong>Chosen-plaintext attack (CPA):</strong> The attacker can encrypt any plaintext of their choice and observe the ciphertext. Realistic for public-key systems (public key is known). A cipher secure under CPA is the minimum standard for modern symmetric encryption.</p>
+    <p><strong>Chosen-ciphertext attack (CCA):</strong> The attacker can decrypt any ciphertext of their choice (except the challenge). Covers scenarios where an attacker can interact with a decryption oracle. Padding oracle attacks are CCA attacks. IND-CCA2 security (adaptive CCA) is the gold standard.</p>
+    <p><strong>Related-key attack:</strong> The attacker has access to encryptions under multiple keys that have a known mathematical relationship. DES was vulnerable; AES was designed to resist these.</p>
+    <p><strong>Side-channel attack:</strong> The attacker observes physical characteristics of the implementation (timing, power consumption, electromagnetic emissions, sound, cache behaviour) rather than the algorithm itself.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Mathematical Attacks</div>
+  <div class="cname">Differential and Linear Cryptanalysis</div>
+  <div class="cbody">
+    <p><strong>Differential cryptanalysis (Biham and Shamir, 1990):</strong> Studies how differences in plaintext pairs propagate through cipher rounds. By choosing plaintext pairs with specific XOR differences and observing the resulting ciphertext differences, properties of the round function and subkeys can be inferred. DES was designed to resist differential cryptanalysis (the IBM designers knew of the attack in 1974 but were asked by the NSA not to publish it). Effective against many ciphers with too few rounds or weak S-boxes.</p>
+    <p><strong>Linear cryptanalysis (Matsui, 1993):</strong> Approximates the cipher's behaviour with linear (XOR) equations connecting plaintext bits, ciphertext bits, and key bits. Statistical analysis of many plaintext-ciphertext pairs recovers key bits. Broke DES with 2^43 known plaintexts. Modern ciphers are designed so that no linear approximation holds with probability significantly different from 1/2.</p>
+    <p><strong>Algebraic attacks:</strong> Express the cipher as a system of equations over a finite field and solve with algebraic methods. Theoretically threatening but practically limited — the systems produced by modern ciphers are highly overdetermined and resistant to known equation-solving techniques.</p>
+    <p><strong>Slide attacks, boomerang attacks, impossible differential attacks:</strong> Families of techniques that exploit structural weaknesses in cipher design. A well-designed modern cipher (AES, ChaCha20) resists all of these with significant security margin.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">The Birthday Attack</div>
+  <div class="cname">Why Hash Output Size Must Be Double the Security Level</div>
+  <div class="cbody">
+    <p>The birthday paradox: in a group of 23 people, there is a >50% probability that two share a birthday. Generalised: to find any collision among n equally likely outputs, you need only ≈√n trials. For an n-bit hash function, collisions can be found in ≈2^(n/2) computations — not 2^n.</p>
+    <p>This is why SHA-256 provides 128 bits of collision security (not 256). A 128-bit hash (MD5) provides only 64-bit collision security — feasible to break with modern hardware. For a hash function to provide k bits of collision security, it needs 2k bits of output. To provide 128-bit security against collision attacks, you need SHA-256 or better.</p>
+    <p>Birthday attacks also apply to block cipher modes: CTR mode with a random nonce has a birthday problem — after 2^(n/2) blocks encrypted with the same key, collisions in the keystream become likely, leaking plaintext relationships. This is why 64-bit block ciphers (DES, 3DES, Blowfish) have a practical security limit of ≈32GB per key (2^32 × 8 bytes) — the SWEET32 attack exploits this.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Implementation Attacks</div>
+  <div class="cname">Side-Channels, Padding Oracles, and Fault Attacks</div>
+  <div class="cbody">
+    <p><strong>Timing attacks:</strong> If decryption time depends on the key or plaintext, measuring timing reveals secrets. RSA decryption (using the Chinese Remainder Theorem) has timing variations that leak the private key if not carefully implemented with constant-time code. Kocher (1996) demonstrated this on real implementations. ChaCha20 and Ed25519 are designed to be inherently constant-time.</p>
+    <p><strong>Power analysis:</strong> Simple Power Analysis (SPA) reads the key from a single power trace; Differential Power Analysis (DPA) uses statistical analysis of many traces. Critical for smart card security — the power consumed by XOR, AND, and branch instructions varies with bit values, leaking key material. Countermeasures: masking (adding random values), shuffling (randomising operation order), balanced hardware.</p>
+    <p><strong>Padding oracle attacks:</strong> CBC mode decryption with server-side error messages about invalid padding. An attacker who can submit ciphertexts and observe whether decryption produces valid padding (even just a timing difference) can decrypt any ciphertext byte by byte in O(256×n) queries. POODLE (2014) exploited this against SSL 3.0. Fix: authenticated encryption (GCM, ChaCha20-Poly1305) — the authentication check happens before padding is validated.</p>
+    <p><strong>Fault attacks:</strong> Inducing hardware errors (voltage glitches, clock manipulation, laser injection) during cryptographic computation. A single bit flip during RSA-CRT signing reveals the private key through Bellcore attack. Countermeasures: signature verification before output, redundant computation, error detection codes.</p>
+    <p><strong>Cache timing attacks (Spectre/Meltdown-class):</strong> Memory access patterns — specifically which cache lines are accessed — leak information. AES table-based implementations leak key bits through cache timing. AES-NI hardware instructions eliminate this entirely. Spectre (2018) showed that speculative execution can leak secrets across security boundaries through shared cache state.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Protocol Attacks</div>
+  <div class="cname">BEAST, CRIME, POODLE, Heartbleed — When Good Primitives Go Wrong</div>
+  <div class="cbody">
+    <p><strong>BEAST (2011):</strong> Chosen-plaintext attack on CBC mode in TLS 1.0 — the IV for each record was the last ciphertext block of the previous record, making it predictable. Fix: TLS 1.1 (random IVs) or RC4 (ironically, now known to be worse). Fully fixed in TLS 1.2/1.3.</p>
+    <p><strong>CRIME (2012):</strong> If TLS compression is enabled and an attacker can inject chosen plaintext alongside secret data (like session cookies), they can learn the secret by observing compressed ciphertext length. Compression leaks information about repeated substrings. Fix: disable TLS compression entirely.</p>
+    <p><strong>POODLE (2014):</strong> Padding oracle attack on SSL 3.0 (and later some TLS implementations with SSLv3 fallback). Fix: disable SSL 3.0.</p>
+    <p><strong>Heartbleed (2014):</strong> Not a cryptographic attack but an implementation bug in OpenSSL's heartbeat extension. The server echoed back more memory than requested, leaking private keys, session tokens, and user data. Demonstrated that a single memory corruption bug in a widely deployed library can compromise the entire cryptographic infrastructure built on it. Over 500,000 servers were affected.</p>
+    <p><strong>Man-in-the-Middle (MITM):</strong> An attacker intercepts communication between two parties, establishing separate encrypted sessions with each, transparently relaying messages. Defeated by proper certificate validation in TLS — the server's certificate is signed by a CA the client trusts. Certificate pinning (HPKP) was an additional defence, now largely abandoned due to deployment complexity.</p>
+  </div>
+</div>
+</div>
+
+<!-- QUANTUM -->
+<div id="quantum" class="panel">
+<div class="ib"><p>Quantum computers represent the most significant existential threat to current cryptographic infrastructure. Shor's algorithm, running on a sufficiently large quantum computer, would break RSA, Diffie-Hellman, and elliptic curve cryptography — the three algorithms that underpin virtually all asymmetric security deployed today. The race to quantum-resistant cryptography is already underway.</p></div>
+
+<div class="cb">
+  <div class="cn">Quantum Computing Basics</div>
+  <div class="cname">Qubits, Superposition, Entanglement, and Interference</div>
+  <div class="cbody">
+    <p>A classical bit is 0 or 1. A <strong>qubit</strong> can be in a <strong>superposition</strong> of 0 and 1 simultaneously — not "both at once" in a naive sense, but in a quantum state |ψ⟩ = α|0⟩ + β|1⟩ where |α|² and |β|² are the probabilities of measuring 0 and 1. A register of n qubits can represent a superposition of all 2^n classical states simultaneously.</p>
+    <p><strong>Entanglement:</strong> Two qubits can be correlated such that measuring one instantly determines the other's state, regardless of distance. Used in quantum key distribution and some quantum algorithms.</p>
+    <p><strong>Quantum interference:</strong> Quantum algorithms work by constructing interference patterns that amplify probability amplitudes of correct answers and cancel amplitudes of incorrect ones. This is how quantum algorithms achieve speedups — they are not brute-force search, but carefully engineered interference patterns.</p>
+    <p><strong>Decoherence:</strong> The primary engineering challenge. Qubits are extremely fragile — any interaction with the environment collapses the superposition. Current quantum computers (2024) have ~1000-4000 physical qubits but require significant error correction overhead — a large-scale fault-tolerant quantum computer capable of running Shor's algorithm on 2048-bit RSA might require millions of physical qubits.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Shor's Algorithm (1994)</div>
+  <div class="cname">The Quantum Algorithm That Breaks RSA, DH, and ECC</div>
+  <div class="cbody">
+    <p>Peter Shor's algorithm solves the integer factorisation problem (and discrete logarithm problem) in <strong>polynomial time</strong> on a quantum computer — specifically O((log n)^3) operations. Classical algorithms require sub-exponential time O(exp(n^(1/3) (log n)^(2/3))) (general number field sieve). On a large enough quantum computer, RSA-2048 could be broken in hours.</p>
+    <p>The algorithm works by: (1) reducing factorisation to finding the period of a modular exponential function; (2) using the <strong>Quantum Fourier Transform</strong> to find the period in quantum superposition; (3) using the period to find prime factors classically. The QFT is the heart of the speedup — it finds periodicity exponentially faster than the classical Discrete Fourier Transform.</p>
+    <p>Impact: RSA, all Diffie-Hellman variants (DH, ECDH), ElGamal, DSA, and ECDSA would all be broken. Key sizes provide no refuge — doubling the key size gives polynomial rather than exponential resistance.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Grover's Algorithm (1996)</div>
+  <div class="cname">The Quantum Algorithm That Weakens Symmetric Cryptography</div>
+  <div class="cbody">
+    <p>Grover's algorithm provides a quadratic speedup for unstructured search: searching a space of N items requires only O(√N) quantum operations instead of O(N) classical. Applied to cryptography: brute-forcing an n-bit key requires 2^n classical operations but only 2^(n/2) quantum operations.</p>
+    <p>Impact on symmetric cryptography: AES-128 provides 64-bit quantum security (not 128-bit). AES-256 provides 128-bit quantum security. The defence is simple: <strong>double the key size</strong>. AES-256 and SHA-256 are considered quantum-safe (128-bit post-quantum security). This is why NIST recommends AES-256 for post-quantum security.</p>
+    <p>Grover does not break hash functions catastrophically — second preimage resistance halves (SHA-256 provides 128-bit quantum preimage resistance), but collision resistance drops by one third (SHA-256 provides 85 bits of quantum collision security by BHT algorithm). Recommendation: use SHA-256 minimum (provides adequate quantum collision resistance); use SHA-384 for high-security applications.</p>
+  </div>
+</div>
+
+<!-- BB84 Diagram -->
+<div class="dgwrap">
+<div style="font-family:'IM Fell English',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;">BB84 Quantum Key Distribution Protocol</div>
+<svg width="100%" viewBox="0 0 680 260" role="img">
+  <title>BB84 QKD protocol: Alice sends polarised photons in two random bases; Bob measures in random bases; they compare bases over classical channel and keep only bits where bases matched</title>
+  <defs><marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00a0b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <!-- Alice -->
+  <rect x="10" y="10" width="100" height="240" rx="6" fill="#040c14" stroke="#006878" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="60" y="32" text-anchor="middle">Alice</text>
+  <!-- Bob -->
+  <rect x="570" y="10" width="100" height="240" rx="6" fill="#040c14" stroke="#006878" stroke-width="1"/>
+  <text font-family="'IM Fell English',serif" font-size="14" fill="#40c8e0" x="620" y="32" text-anchor="middle">Bob</text>
+  <!-- Step labels -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="56">1. Random bits:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="10" y="72">0 1 1 0 1 0 0 1</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="96">2. Random bases:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#b88020" x="10" y="112">+ × + × + × × +</text>
+  <!-- Quantum channel -->
+  <rect x="120" y="120" width="440" height="36" rx="4" fill="#040c14" stroke="#40c8e0" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#40c8e0" x="340" y="138" text-anchor="middle" dominant-baseline="central">Quantum Channel (photon polarisations)</text>
+  <line x1="110" y1="138" x2="118" y2="138" stroke="#40c8e0" stroke-width="1" marker-end="url(#ar4)"/>
+  <!-- Photon symbols -->
+  <text font-family="'Cormorant Garamond',serif" font-size="16" fill="#d4a030" x="170" y="118" text-anchor="middle">↕ ↗ ↕ ↗ ↕ ↔ ↔ ↕</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#1a3848" x="340" y="115" text-anchor="middle">polarised photons</text>
+  <!-- Bob measurement -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="56">3. Random bases:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#b88020" x="570" y="72">+ + × × + × + +</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="96">4. Bob measures:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="570" y="112">0 ? 1 0 1 0 ? 1</text>
+  <!-- Classical channel for basis comparison -->
+  <rect x="120" y="168" width="440" height="36" rx="4" fill="#040c14" stroke="#b88020" stroke-width="0.8"/>
+  <text font-family="'Cormorant Garamond',serif" font-size="12" fill="#d4a030" x="340" y="186" text-anchor="middle" dominant-baseline="central">Classical Channel — Compare bases publicly</text>
+  <line x1="570" y1="186" x2="562" y2="186" stroke="#b88020" stroke-width="1" marker-end="url(#ar4)"/>
+  <line x1="110" y1="186" x2="118" y2="186" stroke="#b88020" stroke-width="1" marker-end="url(#ar4)"/>
+  <!-- Matching result -->
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="220">Bases match?</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#2a8a5a" x="10" y="236">✓ . . ✓ ✓ ✓ . ✓</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="10" y="252">Key bits:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="70" y="252">0 0 1 0 1</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="11" fill="#1a3848" x="570" y="220">Keep matching:</text>
+  <text font-family="'JetBrains Mono',monospace" font-size="11" fill="#40c8e0" x="570" y="236">0 0 1 0 1 ✓</text>
+  <text font-family="'Cormorant Garamond',serif" font-size="10" fill="#7a1010" x="340" y="252" text-anchor="middle">Eve's eavesdropping disturbs photon states → detectable as elevated error rate in key reconciliation</text>
+</svg>
+</div>
+
+<div class="cb">
+  <div class="cn">Post-Quantum Cryptography (PQC)</div>
+  <div class="cname">NIST Standards 2024 — The Algorithms That Replace RSA and ECC</div>
+  <div class="cbody">
+    <p>Post-quantum cryptography (not to be confused with quantum cryptography) refers to classical algorithms — running on conventional computers — that are believed to resist attacks from both classical and quantum computers. NIST standardised the first four algorithms in 2024 after an eight-year competition.</p>
+    <p><strong>CRYSTALS-Kyber (ML-KEM, FIPS 203):</strong> Key Encapsulation Mechanism (KEM) for key exchange. Based on the Module Learning With Errors (MLWE) problem — a lattice-based hard problem. Kyber-768 provides approximately 180 bits of classical security and 164 bits of quantum security. Fast and compact. Already deployed in Chrome, Cloudflare, and Signal.</p>
+    <p><strong>CRYSTALS-Dilithium (ML-DSA, FIPS 204):</strong> Digital signature algorithm. Also lattice-based (Module Learning With Errors and Short Integer Solution). Fast signature generation and verification. Dilithium3 is the recommended security level.</p>
+    <p><strong>FALCON (FN-DSA, FIPS 206):</strong> Lattice-based signature algorithm based on NTRU lattices. More compact signatures than Dilithium but more complex implementation (requires careful floating-point arithmetic). Recommended where signature size matters.</p>
+    <p><strong>SPHINCS+ (SLH-DSA, FIPS 205):</strong> Hash-based signature scheme. Security relies only on the security of the underlying hash function — no lattice assumptions. More conservative security guarantee but much larger signatures (8-50KB). Preferred for high-security, low-frequency signing (certificate authorities, code signing).</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Lattice Cryptography</div>
+  <div class="cname">The Mathematical Foundation of Post-Quantum Security</div>
+  <div class="cbody">
+    <p>Lattice-based cryptography is built on the hardness of problems in high-dimensional integer lattices. The two foundational problems:</p>
+    <p><strong>Shortest Vector Problem (SVP):</strong> Given a lattice basis, find the shortest non-zero vector. Believed hard for classical and quantum computers when the lattice dimension is large enough (≥500 dimensions).</p>
+    <p><strong>Learning With Errors (LWE):</strong> Given pairs (a_i, b_i = a_i·s + e_i mod q) where s is a secret vector and e_i are small random errors, find s. The errors make the system hard to solve — without them, it would be a simple linear algebra problem. Regev (2005) showed that solving LWE is as hard as solving worst-case lattice problems.</p>
+    <p>Lattice-based cryptography has an extraordinary additional property: it supports <strong>fully homomorphic encryption</strong> (FHE) — computing arbitrary functions on encrypted data. This is why lattice crypto is considered the most promising foundation for the future of applied cryptography.</p>
+  </div>
+</div>
+</div>
+
+<!-- ADVANCED -->
+<div id="advanced" class="panel">
+<div class="ib"><p>Beyond encryption and signatures lies a universe of advanced cryptographic techniques that solve problems once thought impossible: proving knowledge without revealing it, computing on encrypted data without decrypting it, splitting secrets so no single party holds them. These are the frontiers of modern applied cryptography.</p></div>
+
+<div class="cb">
+  <div class="cn">Zero-Knowledge Proofs (ZKP)</div>
+  <div class="cname">Proving You Know Something Without Revealing What You Know</div>
+  <div class="cbody">
+    <p>A zero-knowledge proof allows a <em>prover</em> to convince a <em>verifier</em> that a statement is true without revealing any information beyond the fact of its truth. Three properties are required: <strong>Completeness</strong> (honest prover always convinces honest verifier), <strong>Soundness</strong> (dishonest prover cannot convince verifier of a false statement), <strong>Zero-knowledge</strong> (verifier learns nothing except that the statement is true).</p>
+    <p><strong>Classic example (Ali Baba cave):</strong> Prover wants to prove they know the cave's magic word (which opens a secret door) without revealing the word. The cave has two paths meeting at the door. Prover enters one path; verifier asks them to exit from a specified path. Prover can only comply if they know the magic word. After many repetitions, verifier is convinced. No information about the word was transmitted.</p>
+    <p><strong>Schnorr protocol:</strong> Prove knowledge of a discrete logarithm (private key x such that y = g^x) without revealing x. Basis of many practical ZKP systems and the Fiat-Shamir transform (converting interactive proofs to non-interactive).</p>
+    <p><strong>zk-SNARKs (Succinct Non-interactive Arguments of Knowledge):</strong> Non-interactive zero-knowledge proofs that are both succinct (constant-size proof regardless of computation size) and fast to verify. Used in Zcash (anonymous cryptocurrency) and Ethereum smart contracts. Require a trusted setup — the "toxic waste" problem where a trusted party generates public parameters; if the randomness used is ever revealed, counterfeits can be created.</p>
+    <p><strong>zk-STARKs (Scalable Transparent ARguments of Knowledge):</strong> Remove the trusted setup requirement. Larger proofs than SNARKs but quantum-resistant and transparent. Used in StarkWare's Ethereum Layer 2 scaling solutions. Based on hash functions and error-correcting codes.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Homomorphic Encryption (HE/FHE)</div>
+  <div class="cname">Computing on Encrypted Data — The Holy Grail of Privacy-Preserving Computation</div>
+  <div class="cbody">
+    <p>Homomorphic encryption allows computation on encrypted data: E(a) ⊕ E(b) = E(a+b), E(a) ⊗ E(b) = E(a×b). Cloud servers can compute on encrypted data and return encrypted results — without ever learning the data.</p>
+    <p><strong>Partial HE:</strong> Supports either addition or multiplication but not both. RSA is multiplicatively homomorphic: Enc(m₁)·Enc(m₂) = Enc(m₁·m₂). Paillier is additively homomorphic.</p>
+    <p><strong>Somewhat HE (SHE):</strong> Supports limited numbers of both operations before noise accumulates and destroys correctness. Gentry's original 2009 construction.</p>
+    <p><strong>Fully Homomorphic Encryption (FHE):</strong> Supports arbitrary depth circuits of additions and multiplications. Craig Gentry's 2009 breakthrough used lattice-based cryptography with a "bootstrapping" technique to refresh the ciphertext and reduce accumulated noise. Modern schemes: TFHE (fast bootstrapping, ~1ms per gate), CKKS (approximate arithmetic, ideal for machine learning), BFV/BGV (exact arithmetic for integers).</p>
+    <p>Applications: privacy-preserving machine learning (training on encrypted medical data), private database queries, secure voting systems, private information retrieval. Currently 1000-10000× slower than unencrypted computation — improving rapidly but not yet practical for most applications.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Secure Multi-Party Computation (MPC)</div>
+  <div class="cname">Computing Joint Functions Without Revealing Individual Inputs</div>
+  <div class="cbody">
+    <p>Multi-party computation (MPC) allows n parties to jointly compute a function f(x₁, x₂, ..., xn) where each party i contributes their private input xᵢ and learns only the output — nothing about others' inputs beyond what the output reveals.</p>
+    <p><strong>Classic problem (Yao's Millionaires, 1982):</strong> Two millionaires want to know who is richer without revealing their wealth. Yao's garbled circuit construction was the first general solution.</p>
+    <p><strong>Garbled circuits:</strong> Yao's protocol encodes a boolean circuit as a "garbled" version where gate truth tables are encrypted. One party garbles the circuit; the other evaluates it. Each party learns only the output. Two parties, semi-honest model. O(|circuit|) communication.</p>
+    <p><strong>Secret sharing-based MPC (BGW, SPDZ):</strong> Inputs are secret-shared among parties. Computation proceeds share by share. SPDZ (pronounced "speedz") is a practical protocol for dishonest majority — remains secure even if all but one party is corrupted. Used in production by companies doing privacy-preserving analytics.</p>
+    <p>Applications: private auctions (bidders commit without revealing bids), private set intersection (determining which contacts are mutual without revealing contact lists — used by Signal), threshold signatures (requiring k of n parties to sign — used in cryptocurrency custody), privacy-preserving machine learning.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Secret Sharing</div>
+  <div class="cname">Shamir's Secret Sharing — Splitting a Secret Among N Parties</div>
+  <div class="cbody">
+    <p>Shamir's Secret Sharing (1979) allows a secret S to be split into n shares such that any k shares can reconstruct S but any k-1 shares reveal nothing about S. This is a (k, n) threshold scheme.</p>
+    <p><strong>Construction:</strong> Choose a random polynomial f(x) of degree k-1 over a prime field with f(0) = S. Give each party i the share (i, f(i)). Any k shares allow Lagrange interpolation to recover f(0) = S. Fewer than k shares provide zero information — perfect information-theoretic security.</p>
+    <div class="mathbox">f(x) = S + a₁x + a₂x² + ... + a_{k-1}x^{k-1}  (mod prime p)
+Share_i = f(i)  for i = 1, 2, ..., n
+
+Recovery: Lagrange interpolation from any k shares → f(0) = S</div>
+    <p>Applications: distributed key management (HSMs), cryptocurrency wallet recovery, private CA key protection, nuclear launch authentication (the inspiration for n-of-m codes), password managers. Verifiable Secret Sharing (VSS) adds the ability to verify share correctness without revealing the secret.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Blockchain Cryptography</div>
+  <div class="cname">How Cryptography Powers Decentralised Trust</div>
+  <div class="cbody">
+    <p>Blockchain systems use a combination of cryptographic primitives to create immutable, decentralised ledgers:</p>
+    <p><strong>Hash chaining:</strong> Each block includes the hash of the previous block's header. Changing any block requires recomputing all subsequent blocks' hashes. With proof-of-work, each recomputation requires enormous energy — making history tamper-evident in practice.</p>
+    <p><strong>Merkle trees:</strong> Transaction data in each block is organised as a Merkle tree. The Merkle root in the block header summarises all transactions. SPV (Simple Payment Verification) clients can verify a transaction's inclusion with O(log n) hashes.</p>
+    <p><strong>Digital signatures:</strong> ECDSA (secp256k1) in Bitcoin; Ed25519 in many others. Authorise transactions — only the private key holder can spend funds associated with the corresponding public key/address.</p>
+    <p><strong>Proof of Work:</strong> Bitcoin requires miners to find a nonce such that SHA256(SHA256(block_header)) ≤ target. Adjustable difficulty. Requires computing ~10^22 hashes for a single block at current difficulty. Provides probabilistic finality — rewriting history requires redoing all PoW since the target block.</p>
+    <p><strong>Zero-knowledge proofs in crypto:</strong> Zcash uses zk-SNARKs to shield transaction amounts and addresses while proving validity. Tornado Cash used ZKPs for anonymous ETH mixing. Layer 2 rollups (StarkNet, zkSync) use ZKPs to prove the correctness of batched off-chain transactions.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Steganography</div>
+  <div class="cname">Hiding the Existence of the Message — Not Just Its Content</div>
+  <div class="cbody">
+    <p>Steganography conceals the existence of a communication; cryptography conceals its content. The two are complementary: encrypted steganographic messages provide both. Modern digital steganography hides data in the least significant bits (LSBs) of image, audio, or video files — imperceptible to human senses but detectable by statistical analysis (steganalysis).</p>
+    <p>In practice, modern steganography tools use spread-spectrum techniques and frequency-domain embedding (DCT coefficient modification in JPEG files) to evade detection. State actors use steganography in malware command-and-control communications (hiding commands in social media images) and for intelligence communication in contested environments.</p>
+  </div>
+</div>
+</div>
+
+<!-- APPLICATIONS -->
+<div id="applications" class="panel">
+<div class="ib"><p>Cryptography is everywhere — not as an abstract mathematical discipline but as the invisible infrastructure that makes digital life possible. Every HTTPS connection, every bank transfer, every encrypted message, every software update, every password database, every cryptocurrency transaction depends on specific cryptographic choices made by engineers and standardised by researchers.</p></div>
+
+<div class="cb">
+  <div class="cn">Web Security — HTTPS and PKI</div>
+  <div class="cname">How the Public Key Infrastructure Secures the Web</div>
+  <div class="cbody">
+    <p>Every HTTPS connection uses TLS, which uses the Web PKI (Public Key Infrastructure) for authentication. The trust chain: browser vendors (Chrome, Firefox, Safari) maintain lists of trusted root Certificate Authorities (CAs). CAs issue intermediate certificates. Intermediates issue end-entity certificates to website operators. When you visit https://example.com, the server presents its certificate, your browser validates the chain to a trusted root, and TLS uses the certificate's public key for authentication.</p>
+    <p><strong>Certificate Transparency (CT):</strong> CAs are required to log all issued certificates to public, append-only logs verified by Merkle trees. This prevents silent issuance of rogue certificates. Browsers require certificates to appear in CT logs.</p>
+    <p><strong>HSTS (HTTP Strict Transport Security):</strong> Instructs browsers to always use HTTPS for a domain. HSTS Preload lists these domains in browsers themselves — no initial HTTP request needed.</p>
+    <p><strong>HPKP (HTTP Public Key Pinning):</strong> Was deprecated — too many sites misconfigured it and locked themselves out.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">End-to-End Encryption</div>
+  <div class="cname">Signal, WhatsApp, iMessage — How Modern Messaging Is Secured</div>
+  <div class="cbody">
+    <p>End-to-end encryption (E2EE) ensures that only the communicating users can read the messages — not the service provider, not the network, not governments (unless they can access an endpoint). Signal Protocol (Signal, WhatsApp) uses X3DH initial key agreement + Double Ratchet for ongoing messages. iMessage uses encryption keys associated with Apple IDs — Apple cannot read iMessages between devices with iMessage enabled, but iCloud backup of iMessages was (until recently) unencrypted.</p>
+    <p>Key challenges: <strong>Key verification</strong> — how do users confirm they are talking to the right person and not an attacker who has compromised the server's key distribution? Signal, WhatsApp provide "Safety Numbers" / "Security Codes" for manual key verification. <strong>Multi-device support</strong> — supporting multiple devices (phone + laptop) requires careful key management to maintain E2EE properties. <strong>Metadata</strong> — even with E2EE, who is communicating with whom and when is often visible to the service provider.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Password Storage</div>
+  <div class="cname">The Right Way and the Wrong Way to Store Passwords</div>
+  <div class="cbody">
+    <p>Passwords must never be stored in plaintext or reversibly encrypted. The correct approach: store a slow, salted hash.</p>
+    <div class="ddgrid">
+      <div class="sbox"><strong>✓ Correct</strong>Argon2id(password, random_salt, cost_params). Unique salt per user. Argon2id parameters tuned for ~100-300ms verification time. Full hash stored. Can verify but cannot reverse.</div>
+      <div class="rbox"><strong>✗ Wrong</strong>Plain text. MD5(password). SHA-1(password). Even SHA-256(password) without salt. Unsalted hashes enable rainbow table attacks. Fast hashes enable billions of guesses per second on GPU clusters.</div>
+    </div>
+    <p>Real-world breaches: LinkedIn (2012) — 117M SHA-1 hashes without salt, most cracked in days. Adobe (2013) — 153M passwords stored with reversible encryption (3DES ECB!), hint in plaintext. RockYou (2009) — 32M passwords in plaintext. These breaches illustrate that the specification of the correct algorithm is not sufficient — it must be correctly implemented and properly configured.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Full-Disk Encryption</div>
+  <div class="cname">BitLocker, FileVault, LUKS — Protecting Data at Rest</div>
+  <div class="cbody">
+    <p>Full-disk encryption (FDE) protects data when a device is powered off. AES-XTS (XEX-based Tweaked-codebook mode with ciphertext Stealing) is the standard mode for disk encryption — each 512-byte sector is encrypted with AES using the sector number as an additional "tweak" to prevent cross-sector copying attacks. AES-XTS is not authenticated (no integrity) but provides confidentiality.</p>
+    <p><strong>Key derivation:</strong> The user's passphrase is run through a KDF (PBKDF2 in BitLocker, Argon2 in modern LUKS) to derive the encryption key, which encrypts the actual volume master key (VMK). This allows password changes without re-encrypting the entire volume. TPM integration (BitLocker) ties the VMK to specific hardware state, preventing cold-boot attacks.</p>
+    <p><strong>VeraCrypt:</strong> Open-source FDE supporting plausible deniability — a single encrypted container can hold two volumes, each accessible with different passwords. Neither volume's existence can be proven to the other's holder.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Cryptocurrency Security</div>
+  <div class="cname">How Bitcoin Addresses and Private Keys Work</div>
+  <div class="cbody">
+    <p>A Bitcoin "wallet" is a collection of ECDSA (secp256k1) private keys. A private key is a 256-bit random number. The corresponding public key is the elliptic curve point k·G. The Bitcoin address is Base58Check(RIPEMD160(SHA256(public_key))) — a double-hash of the public key, providing quantum resistance (public key is not exposed until spending). BIP39 mnemonics encode the master seed as 12-24 English words.</p>
+    <p>Transactions are signed with the private key — the signature proves ownership without revealing the key. Once a transaction is broadcast and mined, the public key is revealed; Bitcoin addresses should generally not be reused (the initial hash provides quantum resistance, but once spent the public key is exposed). HD wallets (BIP32) derive all keys from a single master seed, enabling backup with one mnemonic.</p>
+  </div>
+</div>
+
+<div class="cb">
+  <div class="cn">Code Signing and Software Supply Chain</div>
+  <div class="cname">Trusting Software in a World of Compromised Packages</div>
+  <div class="cbody">
+    <p>Code signing uses RSA or ECC digital signatures to prove that software came from a specific publisher and has not been modified. Operating systems verify these signatures before execution (Windows Authenticode, macOS Gatekeeper, iOS/Android app stores). Certificate-based signing ties identity to cryptographic keys through CAs.</p>
+    <p>The SolarWinds attack (2020) demonstrated the catastrophic consequences of supply chain compromise: attackers injected malicious code into the software build process, which was then signed with SolarWinds' legitimate certificate and distributed as an official update to ~18,000 organisations including US government agencies. Cryptographic signatures only prove the build was signed — not that the build was uncompromised.</p>
+    <p><strong>Sigstore / SLSA:</strong> Modern supply chain security frameworks combining signed software artifacts, transparency logs (similar to Certificate Transparency), and build provenance attestations. Increasingly required by major package managers.</p>
+  </div>
+</div>
+</div>
+
+<!-- QUOTES -->
+<div id="quotes" class="panel">
+<div class="qs" style="margin:0 -2rem; padding:2rem 2rem;">
+  <div class="sl" style="color:#1a3848;margin-top:0;">The Voices of the Field</div>
+  <div class="st" style="color:var(--teal-b);border-bottom-color:#081828;">Principles, Maxims, and Fundamental Laws of Cryptography</div>
+
+  <div class="qi"><div class="qt">"The enemy knows the system. One ought to design systems under the assumption that the enemy will immediately gain full familiarity with them."</div><div class="qr">Claude Shannon · Shannon's Maxim · 1949</div></div>
+  <div class="qi"><div class="qt">"A cryptosystem should be secure even if everything about the system, except the key, is public knowledge."</div><div class="qr">Auguste Kerckhoffs · Kerckhoffs's Principle · 1883</div></div>
+  <div class="qi"><div class="qt">"Cryptography is not the solution to your security problem. Cryptography is one part of the solution to part of your security problem."</div><div class="qr">Bruce Schneier · Secrets and Lies · 2000</div></div>
+  <div class="qi"><div class="qt">"Anyone can invent an encryption algorithm they themselves cannot break. It doesn't mean it's secure."</div><div class="qr">Bruce Schneier</div></div>
+  <div class="qi"><div class="qt">"There are two kinds of cryptography in this world: cryptography that will stop your kid sister from reading your files, and cryptography that will stop major governments from reading your files."</div><div class="qr">Bruce Schneier · Applied Cryptography · 1996</div></div>
+  <div class="qi"><div class="qt">"The best we can do is slow down the inevitable compromise of our systems. The goal is to make the cost of attack greater than the value of the information."</div><div class="qr">Cryptographic Design Principle</div></div>
+  <div class="qi"><div class="qt">"Perfect forward secrecy is not a luxury. It is a requirement for any system where the long-term compromise of a single key must not compromise past sessions."</div><div class="qr">Modern TLS Design Philosophy</div></div>
+  <div class="qi"><div class="qt">"Don't roll your own crypto. This is the most important rule in applied cryptography."</div><div class="qr">Universal Principle of Cryptographic Engineering</div></div>
+  <div class="qi"><div class="qt">"Cryptography can protect you from a passive eavesdropper. It cannot protect you from someone who has compromised your endpoint."</div><div class="qr">Security Engineering Principle</div></div>
+  <div class="qi"><div class="qt">"A key that has never been used is perfectly secure. A key that has been used once with a one-time pad is still perfectly secure. A key that has been used twice with a one-time pad is completely broken."</div><div class="qr">The Two-Time Pad Maxim</div></div>
+  <div class="qi"><div class="qt">"Complexity is the enemy of security."</div><div class="qr">Bruce Schneier</div></div>
+  <div class="qi"><div class="qt">"We stand today on the brink of a revolution in cryptography... Public-key cryptosystems are perhaps the most significant new development in cryptography in the last 300 years."</div><div class="qr">Whitfield Diffie and Martin Hellman · 1976</div></div>
+  <div class="qi"><div class="qt">"The value of a problem is not the solution. The value is in getting there; it is in understanding the problem, seeing what can be done, and extending the frontier of the science."</div><div class="qr">Richard Feynman · Applicable to all of cryptographic research</div></div>
+  <div class="qi"><div class="qt">"In cryptography, attacks only get better. They never get worse."</div><div class="qr">Cryptographic Community Principle</div></div>
+  <div class="qi"><div class="qt">"A computer lets you make more mistakes faster than any invention in human history, with the possible exceptions of handguns and tequila."</div><div class="qr">Mitch Ratcliffe · Applied to: never implement crypto from scratch</div></div>
+  <div class="qi"><div class="qt">"Amateurs hack systems. Professionals hack people."</div><div class="qr">Bruce Schneier · On social engineering vs. cryptographic attack</div></div>
+  <div class="qi"><div class="qt">"Cryptographic protocols have a way of failing in ways their designers didn't predict. The more complex the protocol, the more ways it can fail."</div><div class="qr">Applied Cryptography Design Principle</div></div>
+  <div class="qi"><div class="qt">"The most dangerous phrase in cryptography is: 'we should be fine if we just change this one thing.'"</div><div class="qr">Cryptographic Engineering Wisdom</div></div>
+  <div class="qi"><div class="qt">"Using cryptography without understanding it is like writing secure code in a language you don't speak."</div><div class="qr">Cryptographic Engineering Principle</div></div>
+  <div class="qi"><div class="qt">"Harvest now, decrypt later. The quantum threat is not tomorrow — it is the data being stolen today that will be decrypted when quantum computers mature."</div><div class="qr">Post-Quantum Security Urgency</div></div>
+</div>
+</div>
+
+</div><!-- end content-area -->
+
+<div class="verdict">
+  <p>"Cryptography is the most consequential application of mathematics in human history — the invisible architecture of trust in a world built on computation. Every encrypted message, every authenticated certificate, every private transaction rests on the intractability of mathematical problems whose difficulty we believe in but cannot prove. That uncertainty — the gap between assumed and proven security — is what drives the field forward, what makes cryptanalysis necessary, and what makes the work never finished."</p>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+function show(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+<\/script>
+</body>
+</html>
+`,Jv={},Zv=()=>r.jsx("style",{children:`
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Naskh+Arabic:wght@400;700&family=DM+Mono:wght@300;400;500&display=swap');
 
     :root {
@@ -1763,211 +3027,7 @@ const GlobalStyles = () => (
       .sidebar-fixed { transform: translateX(-100%); transition: transform 0.3s ease; }
       .sidebar-fixed.open { transform: translateX(0); }
     }
-  `}</style>
-);
-
-/* ════════════════════════════════════════════════════════════════
-   ATHENAEUM LOGO — small triangular A mark
-   ════════════════════════════════════════════════════════════════ */
-const AthenaeumMark = ({ size = 22 }) => (
-  <svg viewBox="0 0 32 32" width={size} height={size} fill="none" aria-hidden="true">
-    <path d="M5.5 27.5 15.9 4.5 26.5 27.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" strokeLinejoin="miter"/>
-    <path d="M10.5 20.5h10.8" stroke="currentColor" strokeWidth="2"/>
-    <path d="M9 27.5h14" stroke="currentColor" strokeWidth="2"/>
-    <path d="M7 8.5h5.2M19.8 8.5H25" stroke="#9E6F1A" strokeWidth="1.5" strokeLinecap="square"/>
-  </svg>
-);
-
-/* ════════════════════════════════════════════════════════════════
-   DICTIONARY (EN → AR)
-   ════════════════════════════════════════════════════════════════ */
-const DICTIONARY = {
-  jurisprudence: { ar: "فقه القانون", ipa: "/ˌdʒʊə.rɪsˈpruː.dəns/", def: "the theory or philosophy of law." },
-  sovereignty:   { ar: "السيادة", ipa: "/ˈsɒv.rɪn.ti/", def: "supreme power or authority." },
-  precedent:     { ar: "سابقة قضائية", ipa: "/ˈpres.ɪ.dənt/", def: "an earlier event used as a guide." },
-  statute:       { ar: "تشريع", ipa: "/ˈstætʃ.uːt/", def: "a written law." },
-  tribunal:      { ar: "محكمة", ipa: "/traɪˈbjuː.nəl/", def: "a body to settle disputes." },
-  ontology:      { ar: "علم الوجود", ipa: "/ɒnˈtɒl.ə.dʒi/", def: "the philosophical study of being." },
-  epistemology:  { ar: "نظرية المعرفة", ipa: "/ɪˌpɪs.təˈmɒl.ə.dʒi/", def: "the theory of knowledge." },
-  metaphysics:   { ar: "ميتافيزيقا", ipa: "/ˌmet.əˈfɪz.ɪks/", def: "branch of philosophy on first principles." },
-  dialectic:     { ar: "جدل", ipa: "/ˌdaɪ.əˈlek.tɪk/", def: "discourse to reach truth." },
-  prince:        { ar: "أمير", ipa: "/prɪns/", def: "a ruler or sovereign." },
-  fortune:       { ar: "حظ", ipa: "/ˈfɔːr.tʃən/", def: "chance or luck affecting affairs." },
-  virtue:        { ar: "فضيلة", ipa: "/ˈvɜː.tʃuː/", def: "moral excellence." },
-  vice:          { ar: "رذيلة", ipa: "/vaɪs/", def: "immoral behaviour." },
-  liberty:       { ar: "حرية", ipa: "/ˈlɪb.ə.ti/", def: "the state of being free." },
-  justice:       { ar: "عدالة", ipa: "/ˈdʒʌs.tɪs/", def: "fair treatment." },
-  authority:     { ar: "سلطة", ipa: "/ɔːˈθɒr.ə.ti/", def: "the power to give orders." },
-  legitimacy:    { ar: "شرعية", ipa: "/lɪˈdʒɪt.ɪ.mə.si/", def: "conformity to law." },
-  hegemony:      { ar: "هيمنة", ipa: "/hɪˈɡem.ə.ni/", def: "leadership or dominance." },
-  capital:       { ar: "رأس المال", ipa: "/ˈkæp.ɪ.təl/", def: "wealth used for investment." },
-  market:        { ar: "سوق", ipa: "/ˈmɑː.kɪt/", def: "an arena for trade." },
-  inflation:     { ar: "تضخم", ipa: "/ɪnˈfleɪ.ʃən/", def: "general rise in prices." },
-  scarcity:      { ar: "ندرة", ipa: "/ˈskeə.sə.ti/", def: "shortage of supply." },
-  equilibrium:   { ar: "توازن", ipa: "/ˌiː.kwɪˈlɪb.ri.əm/", def: "a state of balance." },
-  liquidity:     { ar: "سيولة", ipa: "/lɪˈkwɪd.ə.ti/", def: "ease of converting to cash." },
-  interest:      { ar: "فائدة", ipa: "/ˈɪn.trəst/", def: "money paid for loans." },
-  recession:     { ar: "ركود", ipa: "/rɪˈseʃ.ən/", def: "economic decline." },
-  paradox:       { ar: "مفارقة", ipa: "/ˈpær.ə.dɒks/", def: "a seemingly contradictory statement." },
-  axiom:         { ar: "بديهية", ipa: "/ˈæk.si.əm/", def: "a self-evident truth." },
-  hypothesis:    { ar: "فرضية", ipa: "/haɪˈpɒθ.ə.sɪs/", def: "a proposed explanation." },
-  synthesis:     { ar: "تركيب", ipa: "/ˈsɪn.θə.sɪs/", def: "combination of ideas." },
-  empirical:     { ar: "تجريبي", ipa: "/ɪmˈpɪr.ɪ.kəl/", def: "based on observation." },
-  intuition:     { ar: "حدس", ipa: "/ˌɪn.tjuˈɪʃ.ən/", def: "understanding without reasoning." },
-  prudence:      { ar: "حكمة", ipa: "/ˈpruː.dəns/", def: "cautious wisdom." },
-  endure:        { ar: "يتحمل", ipa: "/ɪnˈdjʊə/", def: "to suffer patiently." },
-  transcend:     { ar: "يتجاوز", ipa: "/trænˈsend/", def: "to go beyond a limit." },
-  contemplate:   { ar: "يتأمل", ipa: "/ˈkɒn.təm.pleɪt/", def: "to consider thoughtfully." },
-  manifest:      { ar: "يتجلى", ipa: "/ˈmæn.ɪ.fest/", def: "to display clearly." },
-  inherent:      { ar: "متأصل", ipa: "/ɪnˈhɪər.ənt/", def: "existing as a permanent attribute." },
-  immutable:     { ar: "ثابت", ipa: "/ɪˈmjuː.tə.bəl/", def: "unchanging." },
-  bias:          { ar: "تحيز", ipa: "/ˈbaɪ.əs/", def: "prejudice for or against." },
-  heuristic:     { ar: "استدلال", ipa: "/hjʊəˈrɪs.tɪk/", def: "a mental shortcut." },
-  resilience:    { ar: "صمود", ipa: "/rɪˈzɪl.i.əns/", def: "capacity to recover." },
-  contract:      { ar: "عقد", ipa: "/ˈkɒn.trækt/", def: "a binding agreement." },
-  clause:        { ar: "بند", ipa: "/klɔːz/", def: "a separate part of a contract." },
-  provision:     { ar: "حكم", ipa: "/prəˈvɪʒ.ən/", def: "a stipulation in a legal document." },
-  stratagem:     { ar: "حيلة", ipa: "/ˈstræt.ə.dʒəm/", def: "a plan or scheme." },
-  deception:     { ar: "خداع", ipa: "/dɪˈsep.ʃən/", def: "the act of misleading." },
-  victory:       { ar: "نصر", ipa: "/ˈvɪk.tər.i/", def: "success against an adversary." },
-  discipline:    { ar: "انضباط", ipa: "/ˈdɪs.ə.plɪn/", def: "controlled behaviour." },
-  terrain:       { ar: "تضاريس", ipa: "/təˈreɪn/", def: "the physical features of land." },
-  sovereign:     { ar: "صاحب السيادة", ipa: "/ˈsɒv.rɪn/", def: "supreme ruler." },
-  adversary:     { ar: "خصم", ipa: "/ˈæd.və.sər.i/", def: "an opponent." },
-};
-
-/* ════════════════════════════════════════════════════════════════
-   READING-PROGRESS HELPERS
-   ════════════════════════════════════════════════════════════════ */
-function getReadStatus(article, library) {
-  const r = library?.reading?.[article.id];
-  if (!r) return "new";
-  if (article.richHtml) {
-    const read = (r.readSections || []).length;
-    const total = r.totalPanels || 0;
-    if (total > 0 && read >= total) return "done";
-    if (read > 0) return "reading";
-    return "new";
-  }
-  return r.marked ? "done" : "new";
-}
-
-function getReadProgress(article, library) {
-  const r = library?.reading?.[article.id];
-  if (!r) return 0;
-  if (article.richHtml) {
-    const total = r.totalPanels || 0;
-    if (!total) return 0;
-    return Math.min(1, (r.readSections || []).length / total);
-  }
-  return r.marked ? 1 : 0;
-}
-
-function StatusBadge({ status, percent }) {
-  const styles = {
-    new:     { background: "var(--gold)",     color: "var(--cream-3)", border: "1px solid var(--gold-deep)" },
-    reading: { background: "var(--cream-3)",  color: "var(--ink)",     border: "1.5px solid var(--ink)" },
-    done:    { background: "var(--ink)",      color: "var(--cream-3)", border: "1px solid var(--ink)" },
-  };
-  const labels = {
-    new:     "NEW",
-    reading: percent != null ? `READING · ${Math.round(percent * 100)}%` : "READING",
-    done:    "✓ READ",
-  };
-  return (
-    <span style={{
-      ...styles[status],
-      display: "inline-flex",
-      alignItems: "center",
-      padding: "4px 10px",
-      fontFamily: "DM Mono, monospace",
-      fontSize: 9,
-      letterSpacing: "0.18em",
-      fontWeight: 700,
-      borderRadius: 999,
-      whiteSpace: "nowrap",
-    }}>
-      {labels[status]}
-    </span>
-  );
-}
-
-function ProgressBar({ percent }) {
-  const p = Math.max(0, Math.min(100, percent || 0));
-  return (
-    <div style={{
-      position: "sticky",
-      top: 0,
-      zIndex: 19,
-      height: 3,
-      background: "var(--rule-soft)",
-      width: "100%",
-    }}>
-      <div style={{
-        width: `${p}%`,
-        height: "100%",
-        background: "var(--gold)",
-      }}/>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   DAILY QUOTE — deterministic per calendar day
-   ════════════════════════════════════════════════════════════════ */
-function getDailyQuoteIndex(quoteCount, date) {
-  if (!quoteCount) return -1;
-  // Hash the date string (YYYY-MM-DD) into an integer, then mod by count.
-  // This guarantees the same quote shows up all day, and changes at midnight.
-  const key = date.toISOString().slice(0, 10);
-  let h = 0;
-  for (let i = 0; i < key.length; i++) {
-    h = ((h << 5) - h + key.charCodeAt(i)) | 0;
-  }
-  return Math.abs(h) % quoteCount;
-}
-
-function getDailyQuote(quotes) {
-  if (!quotes || quotes.length === 0) return null;
-  const idx = getDailyQuoteIndex(quotes.length, new Date());
-  return { quote: quotes[idx], index: idx, total: quotes.length };
-}
-
-function formatTodayDate() {
-  return new Date().toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════
-   CATEGORIES (sidebar nav)
-   ════════════════════════════════════════════════════════════════ */
-const CATEGORIES = [
-  { id: "law",            name: "Law",            icon: Scale },
-  { id: "economic",       name: "Economic",       icon: TrendingUp },
-  { id: "philosophy",     name: "Philosophy",     icon: Lightbulb },
-  { id: "tech",           name: "Tech",           icon: Cpu },
-  { id: "book-summaries", name: "Book Summaries", icon: BookOpen },
-];
-
-// Quick lookup: is a given category id RTL/Arabic?
-const isRtlCategory = (id) => CATEGORIES.find(c => c.id === id)?.rtl === true;
-
-const COLLECTIONS = [
-  { id: "quotes",     name: "Quotes",     icon: Quote },
-  { id: "vocabulary", name: "Vocabulary", icon: BookMarked },
-];
-
-const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map(c => [c.id, c.name]));
-const HIDDEN_CATEGORIES = new Set(["arabic-law"]);
-
-/* ════════════════════════════════════════════════════════════════
-   RICH-HTML ARTICLES — preserved exactly as their original files
-   ════════════════════════════════════════════════════════════════ */
-const WINNING_BRIEF_HTML = `
+  `}),Ku=({size:c=22})=>r.jsxs("svg",{viewBox:"0 0 32 32",width:c,height:c,fill:"none","aria-hidden":"true",children:[r.jsx("path",{d:"M5.5 27.5 15.9 4.5 26.5 27.5",stroke:"currentColor",strokeWidth:"2.2",strokeLinecap:"square",strokeLinejoin:"miter"}),r.jsx("path",{d:"M10.5 20.5h10.8",stroke:"currentColor",strokeWidth:"2"}),r.jsx("path",{d:"M9 27.5h14",stroke:"currentColor",strokeWidth:"2"}),r.jsx("path",{d:"M7 8.5h5.2M19.8 8.5H25",stroke:"#9E6F1A",strokeWidth:"1.5",strokeLinecap:"square"})]}),$v={jurisprudence:{ar:"فقه القانون",ipa:"/ˌdʒʊə.rɪsˈpruː.dəns/",def:"the theory or philosophy of law."},sovereignty:{ar:"السيادة",ipa:"/ˈsɒv.rɪn.ti/",def:"supreme power or authority."},precedent:{ar:"سابقة قضائية",ipa:"/ˈpres.ɪ.dənt/",def:"an earlier event used as a guide."},statute:{ar:"تشريع",ipa:"/ˈstætʃ.uːt/",def:"a written law."},tribunal:{ar:"محكمة",ipa:"/traɪˈbjuː.nəl/",def:"a body to settle disputes."},ontology:{ar:"علم الوجود",ipa:"/ɒnˈtɒl.ə.dʒi/",def:"the philosophical study of being."},epistemology:{ar:"نظرية المعرفة",ipa:"/ɪˌpɪs.təˈmɒl.ə.dʒi/",def:"the theory of knowledge."},metaphysics:{ar:"ميتافيزيقا",ipa:"/ˌmet.əˈfɪz.ɪks/",def:"branch of philosophy on first principles."},dialectic:{ar:"جدل",ipa:"/ˌdaɪ.əˈlek.tɪk/",def:"discourse to reach truth."},prince:{ar:"أمير",ipa:"/prɪns/",def:"a ruler or sovereign."},fortune:{ar:"حظ",ipa:"/ˈfɔːr.tʃən/",def:"chance or luck affecting affairs."},virtue:{ar:"فضيلة",ipa:"/ˈvɜː.tʃuː/",def:"moral excellence."},vice:{ar:"رذيلة",ipa:"/vaɪs/",def:"immoral behaviour."},liberty:{ar:"حرية",ipa:"/ˈlɪb.ə.ti/",def:"the state of being free."},justice:{ar:"عدالة",ipa:"/ˈdʒʌs.tɪs/",def:"fair treatment."},authority:{ar:"سلطة",ipa:"/ɔːˈθɒr.ə.ti/",def:"the power to give orders."},legitimacy:{ar:"شرعية",ipa:"/lɪˈdʒɪt.ɪ.mə.si/",def:"conformity to law."},hegemony:{ar:"هيمنة",ipa:"/hɪˈɡem.ə.ni/",def:"leadership or dominance."},capital:{ar:"رأس المال",ipa:"/ˈkæp.ɪ.təl/",def:"wealth used for investment."},market:{ar:"سوق",ipa:"/ˈmɑː.kɪt/",def:"an arena for trade."},inflation:{ar:"تضخم",ipa:"/ɪnˈfleɪ.ʃən/",def:"general rise in prices."},scarcity:{ar:"ندرة",ipa:"/ˈskeə.sə.ti/",def:"shortage of supply."},equilibrium:{ar:"توازن",ipa:"/ˌiː.kwɪˈlɪb.ri.əm/",def:"a state of balance."},liquidity:{ar:"سيولة",ipa:"/lɪˈkwɪd.ə.ti/",def:"ease of converting to cash."},interest:{ar:"فائدة",ipa:"/ˈɪn.trəst/",def:"money paid for loans."},recession:{ar:"ركود",ipa:"/rɪˈseʃ.ən/",def:"economic decline."},paradox:{ar:"مفارقة",ipa:"/ˈpær.ə.dɒks/",def:"a seemingly contradictory statement."},axiom:{ar:"بديهية",ipa:"/ˈæk.si.əm/",def:"a self-evident truth."},hypothesis:{ar:"فرضية",ipa:"/haɪˈpɒθ.ə.sɪs/",def:"a proposed explanation."},synthesis:{ar:"تركيب",ipa:"/ˈsɪn.θə.sɪs/",def:"combination of ideas."},empirical:{ar:"تجريبي",ipa:"/ɪmˈpɪr.ɪ.kəl/",def:"based on observation."},intuition:{ar:"حدس",ipa:"/ˌɪn.tjuˈɪʃ.ən/",def:"understanding without reasoning."},prudence:{ar:"حكمة",ipa:"/ˈpruː.dəns/",def:"cautious wisdom."},endure:{ar:"يتحمل",ipa:"/ɪnˈdjʊə/",def:"to suffer patiently."},transcend:{ar:"يتجاوز",ipa:"/trænˈsend/",def:"to go beyond a limit."},contemplate:{ar:"يتأمل",ipa:"/ˈkɒn.təm.pleɪt/",def:"to consider thoughtfully."},manifest:{ar:"يتجلى",ipa:"/ˈmæn.ɪ.fest/",def:"to display clearly."},inherent:{ar:"متأصل",ipa:"/ɪnˈhɪər.ənt/",def:"existing as a permanent attribute."},immutable:{ar:"ثابت",ipa:"/ɪˈmjuː.tə.bəl/",def:"unchanging."},bias:{ar:"تحيز",ipa:"/ˈbaɪ.əs/",def:"prejudice for or against."},heuristic:{ar:"استدلال",ipa:"/hjʊəˈrɪs.tɪk/",def:"a mental shortcut."},resilience:{ar:"صمود",ipa:"/rɪˈzɪl.i.əns/",def:"capacity to recover."},contract:{ar:"عقد",ipa:"/ˈkɒn.trækt/",def:"a binding agreement."},clause:{ar:"بند",ipa:"/klɔːz/",def:"a separate part of a contract."},provision:{ar:"حكم",ipa:"/prəˈvɪʒ.ən/",def:"a stipulation in a legal document."},stratagem:{ar:"حيلة",ipa:"/ˈstræt.ə.dʒəm/",def:"a plan or scheme."},deception:{ar:"خداع",ipa:"/dɪˈsep.ʃən/",def:"the act of misleading."},victory:{ar:"نصر",ipa:"/ˈvɪk.tər.i/",def:"success against an adversary."},discipline:{ar:"انضباط",ipa:"/ˈdɪs.ə.plɪn/",def:"controlled behaviour."},terrain:{ar:"تضاريس",ipa:"/təˈreɪn/",def:"the physical features of land."},sovereign:{ar:"صاحب السيادة",ipa:"/ˈsɒv.rɪn/",def:"supreme ruler."},adversary:{ar:"خصم",ipa:"/ˈæd.və.sər.i/",def:"an opponent."}};function ef(c,x){const b=x?.reading?.[c.id];if(!b)return"new";if(c.richHtml){const d=(b.readSections||[]).length,T=b.totalPanels||0;return T>0&&d>=T?"done":d>0?"reading":"new"}return b.marked?"done":"new"}function Qu(c,x){const b=x?.reading?.[c.id];if(!b)return 0;if(c.richHtml){const d=b.totalPanels||0;return d?Math.min(1,(b.readSections||[]).length/d):0}return b.marked?1:0}function tf({status:c,percent:x}){const b={new:{background:"var(--gold)",color:"var(--cream-3)",border:"1px solid var(--gold-deep)"},reading:{background:"var(--cream-3)",color:"var(--ink)",border:"1.5px solid var(--ink)"},done:{background:"var(--ink)",color:"var(--cream-3)",border:"1px solid var(--ink)"}},d={new:"NEW",reading:x!=null?`READING · ${Math.round(x*100)}%`:"READING",done:"✓ READ"};return r.jsx("span",{style:{...b[c],display:"inline-flex",alignItems:"center",padding:"4px 10px",fontFamily:"DM Mono, monospace",fontSize:9,letterSpacing:"0.18em",fontWeight:700,borderRadius:999,whiteSpace:"nowrap"},children:d[c]})}function Gu({percent:c}){const x=Math.max(0,Math.min(100,c||0));return r.jsx("div",{style:{position:"sticky",top:0,zIndex:19,height:3,background:"var(--rule-soft)",width:"100%"},children:r.jsx("div",{style:{width:`${x}%`,height:"100%",background:"var(--gold)"}})})}function Xu(c,x){if(!c)return-1;const b=x.toISOString().slice(0,10);let d=0;for(let T=0;T<b.length;T++)d=(d<<5)-d+b.charCodeAt(T)|0;return Math.abs(d)%c}function af(c){if(!c||c.length===0)return null;const x=Xu(c.length,new Date);return{quote:c[x],index:x,total:c.length}}function sf(){return new Date().toLocaleDateString(void 0,{weekday:"long",year:"numeric",month:"long",day:"numeric"})}const Hs=[{id:"law",name:"Law",icon:Uv},{id:"economic",name:"Economic",icon:Vv},{id:"philosophy",name:"Philosophy",icon:Bv},{id:"tech",name:"Tech",icon:Ov},{id:"book-summaries",name:"Book Summaries",icon:Di}],so=c=>Hs.find(x=>x.id===c)?.rtl===!0,nf=[{id:"quotes",name:"Quotes",icon:Yu},{id:"vocabulary",name:"Vocabulary",icon:Uu}],Rs=Object.fromEntries(Hs.map(c=>[c.id,c.name])),of=new Set(["arabic-law"]),rf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -2696,12 +3756,10 @@ const WINNING_BRIEF_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const POINT_MADE_HTML = `
+`,lf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -3461,12 +4519,10 @@ const POINT_MADE_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const PRINCE_HTML = `
+`,cf=`
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
 
@@ -4002,9 +5058,7 @@ const PRINCE_HTML = `
   </div>
 
 </div>
-`;
-
-const ART_OF_WAR_HTML = `
+`,df=`
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
 
@@ -4523,9 +5577,7 @@ const ART_OF_WAR_HTML = `
   </div>
 
 </div>
-`;
-
-const WORLDLY_WISDOM_HTML = `
+`,hf=`
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap');
 
@@ -5075,10 +6127,8 @@ const WORLDLY_WISDOM_HTML = `
     event.target.classList.add('active');
     document.querySelector('.content-area').scrollTop = 0;
   }
-</script>
-`;
-
-const HUMAN_NATURE_HTML = `
+<\/script>
+`,uf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -5552,12 +6602,10 @@ const HUMAN_NATURE_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const STRATEGIES_OF_WAR_HTML = `
+`,pf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -6071,12 +7119,10 @@ const STRATEGIES_OF_WAR_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const CROSS_EXAMINATION_HTML = `
+`,mf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -6764,12 +7810,10 @@ const CROSS_EXAMINATION_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const MAKING_YOUR_CASE_HTML = `
+`,vf=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -7411,12 +8455,10 @@ const MAKING_YOUR_CASE_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const TRIAL_TECHNIQUES_HTML = `
+`,ff=`
 <!DOCTYPE html>
 <html>
 <head>
@@ -8177,12 +9219,10 @@ const TRIAL_TECHNIQUES_HTML = `
     document.getElementById(id).classList.add('active');
     el.classList.add('active');
   }
-</script>
+<\/script>
 </body>
 </html>
-`;
-
-const BEYOND_GOOD_EVIL_HTML = `<!DOCTYPE html>
+`,gf=`<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -9226,1698 +10266,11 @@ const BEYOND_GOOD_EVIL_HTML = `<!DOCTYPE html>
     el.classList.add('active');
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
-</script>
+<\/script>
 
 </body>
 </html>
-`;
-
-
-
-
-
-/* ════════════════════════════════════════════════════════════════
-   SEED ARTICLES
-   ════════════════════════════════════════════════════════════════ */
-const SEED_ARTICLES = [
-  {
-    id: "cryptography-complete-deep-research",
-    title: "Cryptography - Complete Deep Research",
-    author: "Athenaeum Research",
-    category: "tech",
-    excerpt: "A complete map of cryptography from classical ciphers to public-key systems, attacks, TLS, and quantum-resistant algorithms.",
-    date: "Deep Research",
-    readTime: "60 min",
-    richHtml: CRYPTOGRAPHY_COMPLETE_DEEP_RESEARCH_HTML,
-    body: [],
-  },
-  {
-    id: "dubai-cassation-2026-4-135",
-    title: "حكم محكمة تمييز دبي — الطعنان رقما 4 و 135 لسنة 2026 تجاري",
-    author: "محكمة تمييز دبي",
-    category: "arabic-law",
-    excerpt: "حجية الأمر المقضي ومبدأ نسبية أثر العقود — نقض جزئي بسبب سابقة الفصل في النزاع أمام محاكم أبوظبي. جلسة 25-2-2026.",
-    date: "25-2-2026",
-    readTime: "35 د",
-    corePrinciple: [
-      {
-        text: "قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، فمتى حاز الحكم قوة الأمر المقضي امتنع على الخصوم العودة إلى المناقشة في المسألة التي فُصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.",
-        source: "حجية الأمر المقضي · المادة 87 من قانون الإثبات",
-      },
-      {
-        text: "إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير. ولكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة الشركاء فيها، فلا تُلزَم بديون غيرها ولا تُطالَب بحقوقها.",
-        source: "نسبية أثر العقود · المادتان 250 و 252 من قانون المعاملات المدنية",
-      },
-    ],
-    body: [
-          "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
-          "باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة التمييز — بالجلسة العلنية المنعقدة يوم 25-02-2026 بمقر محكمة التمييز بدبي. في الطعن رقم 4 لسنة 2026 طعن تجاري. طاعن: و. ا. ا. د. مطعون ضدهم: ط. ا. ل. ا. ا. ذ. ش. ذ. ا. ا. ، س. ا. م. ، س. ك. م. ، ز. ز. ، س. ل. م. ، ج. ر. الحكم المطعون فيه: الصادر بالاستئناف رقم 2025/2731 استئناف تجاري بتاريخ 25-12-2025.",
-          "أصدرت المحكمة الحكم التالي بعد الاطلاع على الأوراق وسماع تقرير التلخيص الذي أعده وتلاه بجلسة المرافعة السيد القاضي المقرر دكتور/ محسن إبراهيم، وبعد المداولة:",
-          "حيث إن الوقائع — على ما يبين من الحكم المطعون فيه وسائر الأوراق — تتحصل في أن الطاعن في الطعن رقم 135 لسنة 2026 تجاري (جيزهونج رين) أقام على المطعون ضدهم فيه (1- وقار أحمد الله ديتا، 2- زهينكسين زهانج، 3- طريق الإخلاص لتجارة السيارات المستعملة ذ.م.م — شركة الشخص الواحد، 4- سينوباك أوتو م.م.ح، 5- سينوباك كارز م.م.ح، 6- سينوباك للسيارات م.م.ح) الدعوى رقم 2404 لسنة 2024 تجاري بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه وبينهم.",
-          "وإلزام المطعون ضدهم من الثالثة حتى الأخيرة والطاعن بأن يؤدوا إليه مبلغ 24,823,268 درهماً (أربعة وعشرون مليوناً وثمانمائة وثلاثة وعشرون ألفاً ومائتان وثمانية وستون درهماً) والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.",
-          "وقال بياناً لذلك إنه أحد رجال الأعمال الصينيين وله العديد من الاستثمارات في الدولة وخارجها، وبتاريخ 1/4/2023 أبرم اتفاقية تعاون مع المطعون ضدهم من الثاني حتى الأخيرة تهدف إلى تكوين شراكة في مجال تجارة السيارات، على أن تكون حصته فيها بنسبة 84.94% من أسهمها بمبلغ 14,654,984.81 درهماً، وحصة المطعون ضده الأول بنسبة 13.06% بمبلغ 2,252,559.46 درهماً، وحصة المطعون ضده الثاني بنسبة 2% بمبلغ 345,051.19 درهماً.",
-          "وقد سدد للمطعون ضده الأول مبلغ 11,656,096 درهماً بموجب إقرارات وسندات قبض، إلا أن المطعون ضده الأول أخل بتنفيذ التزاماته التعاقدية ولم ينشئ الشركة، ولم يقم بإدخال باقي أطراف الاتفاقية في الشركة، ولم يزوده بالبيانات المالية عن كيفية تصرفه في المبالغ التي تسلمها منه ومآلها، ولم يوزع الأرباح أو يرد له المبالغ التي سددها، وكذا عوائد استثماراتها الاتفاقية بواقع 28% سنوياً ليكون العائد الاستثماري المستحق له عن المبالغ التي استلمها المطعون ضده الأول منه حتى تاريخ 31/1/2024 مبلغ 2,572,247 درهم، بما يحق له فسخ هذه الاتفاقية واسترداد ما سبق وأن سدده، والتعويض عما فاته من كسب وما لحقه من خسارة. ومن ثم فقد أقام الدعوى بما سلف من طلبات.",
-          "ندبت المحكمة خبيراً وبعد أن أودع تقريريه الأصلي والتكميلي حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023 ورفضت ما عدا ذلك من طلبات. استأنف (المدعي) الطاعن في الطعن رقم 135 لسنة 2026 تجاري هذا الحكم بالاستئناف رقم 2731 لسنة 2025 تجاري، وبتاريخ 25-12-2025 قضت المحكمة بإلغاء الحكم المستأنف فيما قضى به من رفض طلبي استرداد المبلغ الذي سدده الطاعن في الطعن رقم 135 لسنة 2026 تجاري، والتعويض، وبإلزام المطعون ضده الأول بأن يؤدي إليه مبلغ 11,706,096 درهماً والفائدة القانونية بواقع 5% سنوياً من تاريخ المطالبة وحتى السداد التام، على أن تسري الفائدة على مبلغ التعويض من تاريخ صيرورة الحكم نهائياً.",
-          "طعن المدعى عليه الأول في هذا الحكم بالتمييز بالطعن رقم 4 لسنة 2026 تجاري بموجب صحيفة أودعت إلكترونياً لدى مكتب إدارة الدعوى بتاريخ 02-01-2026 بطلب نقض الحكم المطعون فيه والإحالة. قدم محامي المطعون ضده الأول مذكرة بالرد دفع فيها بعدم قبول الطعن لمخالفته لإعمال موجبات المادة 179 من قانون الإجراءات المدنية رقم (42) لسنة 2022 والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وعلى بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه؛ إذ دُوِّن بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية — في حين أن تاريخ الحكم محل الطعن هو 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي، وطلب رفض الطعن.",
-          "كما قدم الطاعن مذكرة أبدى فيها دفعاً بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 تجاري أبوظبي والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. كما طعن المدعي في ذات الحكم بالتمييز بالطعن رقم 135/2026 بموجب صحيفة أودعت لدى مكتب إدارة الدعوى بتاريخ 21-01-2026 بطلب نقض الحكم المطعون فيه والقضاء له بكافة طلباته في الدعوى. لم يقدم المطعون ضدهم مذكرة بالرد، وإذ عرض الطعنان على هذه المحكمة في غرفة مشورة فرأت أنهما جديران بالنظر وحددت جلسة لنظرهما وفيها قررت حجزهما للحكم لجلسة اليوم.",
-          "⁂",
-          "وحيث إنه عن دفع المطعون ضده الأول في الطعن رقم 4 لسنة 2026 بعدم قبول الطعن لعدم اشتمال صحيفة الطعن على البيانات الجوهرية المقررة بالمادة 179 من قانون الإجراءات المدنية رقم 42 لسنة 2022 — والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وبيان الحكم المطعون فيه وتاريخ صدوره — إذ ورد بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية، في حين أن تاريخ الحكم محل الطعن صدر بتاريخ 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي.",
-          "وحيث إن هذا الدفع غير سديد. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً لنص المادة (179) من قانون الإجراءات المدنية رقم 42 لسنة 2022 أنه: «1. يرفع الطعن بالنقض بصحيفة تودع مكتب إدارة الدعوى في المحكمة التي أصدرت الحكم، أو المحكمة الاتحادية العليا أو محكمة النقض أو محكمة التمييز — بحسب الأحوال — موقعة من محامٍ مقبول للمرافعة أمامها، على أن يقدم ما يفيد أداء الرسم كاملاً مع التأمين خلال (3) ثلاثة أيام عمل تالية لتاريخ الإشعار بتقدير الرسم، ويقيد الطعن في السجل المعد لذلك عقب استيفاء ذلك الإجراء».",
-          "«4- يجب أن تشتمل الصحيفة علاوة على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم على بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه إذا كان قد تم الإعلان وبيان الأسباب التي بني عليها الطعن وطلبات الطاعن. 5- إذا لم يحصل الطعن على الوجه المتقدم كان غير مقبول، وتحكم المحكمة من تلقاء نفسها بعدم قبوله».",
-          "وكان المشرع قد استهدف من ذكر بيانات الحكم المطعون فيه وأسماء الخصوم التعريفَ بالحكم المطعون فيه والمحكمة التي أصدرته وأشخاص وصفات من تتردد بينهم الخصومة تعريفاً كافياً ينفي الجهالة أو اللبس، حتى لا يكتنف الغموضُ الصحيفةَ وشخص المحكوم له أو المحكوم عليه. وقد رتبت هذه المادة البطلان على النقص أو الخطأ الجسيم في أسماء الخصوم أو صفاتهم، متى كان من شأنه التجهيل بالخصم أو إحداث لبس في التعرف على شخصيته، بما قد يؤدي إلى عدم التعريف بحقيقة شخصيته أو إلى استبدال شخص بآخر لا شأن له بالخصومة. أما إذا كان النقص أو الخطأ في بيانات الحكم المطعون عليه وأسماء الخصوم أو صفاتهم لا يؤدي إلى التشكيك أو التجهيل في حقيقة القضية المطعون في حكمها والخصم أو اتصاله بالخصومة، فلا محل لإعمال جزاء البطلان المنصوص عليه في المادة سالفة البيان.",
-          "وكان البين من صحيفة الطعن أنها أوردت بديباجتها أسماء الخصوم فيها، وأن الحكم المطعون فيه رقم 2731 لسنة 2025 استئناف تجاري وأنه صدر بتاريخ 25-12-2025، وقد اختتمت بطلبات الطاعن بطلب قبول الطعن شكلاً، وبصفة مستعجلة وقف تنفيذ الحكم المطعون فيه، وفي الموضوع بنقض الحكم المطعون فيه. ومن ثم فإنها تكون قد اشتملت على البيانات الجوهرية التي تطلبتها المادة 179 من المرسوم بقانون رقم 42 لسنة 2022. ولا ينال من ذلك ما ورد خطأً بالصحيفة في البند أولاً منها من أن الحكم المطعون فيه صدر من محاكم أبوظبي بتاريخ 24-12-2025، إذ أن هذا الخطأ ليس من شأنه أن يؤدي إلى التجهيل بالحكم المطعون فيه أو يفقد الصحيفة شروط قبولها، بما يضحى معه الدفع قائماً على غير أساس.",
-          "وحيث إن الطعنين استوفيا أوضاعهما الشكلية.",
-          "⁂",
-          "أولاً — الطعن رقم 135 لسنة 2026 تجاري",
-          "وحيث إن الطعن أقيم على ثلاثة أسباب، ينعى الطاعن بالأول والثاني منها على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، إذ قضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة بالتضامن مع المطعون ضده الأول في أداء المبلغ المقضي به والتعويض، رغم تمسكه بأنهم شركاء في الاتفاقية محل التداعي، وأن المطعون ضده الأول يمتلك المطعون ضدهم من الثالثة حتى الأخيرة، وأن امتلاك الأخير لتلك الشركات كان سبباً لعقد الاتفاقية محل الطعن، وأنهم استحصلوا منه على جزء من المبلغ الذي أداه بغرض تفعيل الاتفاقية، بما كان يتعين إلزامهم بالتضامن بأداء المبلغ المقضي به والتعويض، والعوائد المتوقعة للربح بواقع 28% عن المبلغ الذي أداه (6,104,203.88 درهم) من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025 وما يستجد منها وفق البين بتقرير الخبير الاستشاري المقدم منه. وإذ خالف الحكم المطعون فيه هذا النظر وقضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة مع المطعون ضده الأول في سداد المبلغ المقضي به والأرباح المتوقعة، فهو مما يعيبه ويستوجب نقضه.",
-          "وحيث إن هذا النعي مردود. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً للمادتين 250 و252 من قانون المعاملات المدنية أنه إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير، ولكن يجوز أن يكسبه حقاً، مما يدل على أن العقد آثاره نسبية لا تتعدى أطرافه والخلف العام والخلف الخاص لكل منهما والدائنين في الحدود التي بينها القانون. فلا يرتب العقد التزاماً في ذمة الغير، ولا تنصرف الحقوق الناشئة عنه إلا إلى طرفيه، إلا أن يتضمن اشتراطاً لمصلحة الغير.",
-          "وأن لكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة وشخصية أية شركة أخرى وعن ذمة وشخصية الشركاء فيها، فلا تلتزم أي منها بديون الأخرى أو تطالب بحقوقها. وكان الثابت من الاتفاقية المؤرخة 1-4-2023 أنها مبرمة بين الطاعن والمطعون ضدهما الأول والثاني بأشخاصهم. ومن ثم فإن آثارها لا تنصرف إلا لهؤلاء فقط دون المطعون ضدهم من الثالثة حتى الأخيرة. وإذ انتهى الحكم المطعون فيه إلى ما يوافق هذا النظر — ولم يلزم المطعون ضدهم الثلاثة الآخرين مع المطعون ضده الأول — بالمبلغ المقضي به والتعويض، فإنه يكون قد انتهى إلى النتيجة الصحيحة في هذا الشأن، بما يكون معه النعي عليه بما ورد بهذين السببين قائماً على غير أساس.",
-          "وحيث إن الطاعن ينعى بالسبب الثالث على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، وفي بيانه يقول إن الحكم المطعون فيه رفض إلزام المطعون ضده الأول (الطاعن في الطعن رقم 4 لسنة 2026 تجاري) بأن يؤدي إليه عوائد أرباح المبلغ المسلم إليه، كما قدر له تعويضاً بخساً — رغم أن الاتفاقية محل التداعي نصت على استحقاقه لعوائد أرباح بواقع 28% — بما يحق له اقتضاء أرباح عن المبلغ الذي أداه للمطعون ضده الأول بواقع 6,104,203.88 درهم من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025، وأن ما حاق به من أضرار يجاوز التعويض المقضي به، بما كان يتعين القضاء بالتعويض المطالب به جبراً للضرر، وهو مما يعيب الحكم بما يستوجب نقضه. وتشير المحكمة إلى الرد على هذا السبب مع الطعن رقم 4 لسنة 2026 تجاري.",
-          "⁂",
-          "ثانياً — الطعن رقم 4 لسنة 2026 تجاري",
-          "وحيث إنه عن دفع الطاعن بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين 1180 و1297 لسنة 2024 نقض تجاري أبوظبي — فإنه من المقرر في قضاء هذه المحكمة أن مقتضى المادة 94 من قانون الإجراءات المدنية أن الدفع بعدم جواز نظر الدعوى لسابقة الفصل فيها من النظام العام تقضي به المحكمة من تلقاء نفسها، ولو لم يتمسك به أي من الخصوم، طالما كانت عناصره مطروحة عليها. ويجوز إبداؤه في أي مرحلة ولو لأول مرة أمام محكمة التمييز، طالما كانت عناصره مطروحة.",
-          "وعلة ذلك احترام حجية الحكم السابق صدوره في نفس الدعوى، وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. وأنه يشترط لإعمال حجية الشيء المحكوم فيه — عملاً بنص المادة 87 من قانون الإثبات — وحدة الخصوم والموضوع والسبب، ولا يمنع من وحدة الموضوع اختلاف الطلبات في الدعويين، إذ يكفي أن يكون الحكم السابق قد حسم النزاع حول مسألة أساسية أو مسألة كلية شاملة يتوقف على ثبوتها أو نفيها ثبوت أو نفي الحق موضوع الدعوى التالية.",
-          "ومن المقرر كذلك أن قضاء الحكم النهائي في منطوقه أو في أسبابه المرتبطة به في مسألة أساسية يحوز قوة الأمر المقضي به، ويكون مانعاً للخصوم أنفسهم من التنازع في هذه المسألة في دعوى تالية تكون فيها هذه المسألة بذاتها هي الأساس فيما يدعيه أحد الطرفين من حقوق مترتبة عليها. وأن قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، وأنه متى حاز الحكم قوة الأمر المقضي فإنه يمنع الخصوم في الدعوى التي صدر فيها من العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.",
-          "لما كان ذلك، وكان المطعون ضده الأول جيزهونج رين (المدعي في الدعوى) سبق وأن أقام على الطاعن وقار أحمد الله ديتا والمطعون ضده الثاني (زهينكسين زهانج) الدعوى رقم 146 لسنة 2024 تجاري أبوظبي بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه والطاعن والمطعون ضده الثاني، وإلزامهما بأن يؤديا إليه مبلغ 24,823,268 درهماً والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.",
-          "وقُضي في تلك الدعوى بفسخ عقد الشراكة المؤرخ 1-4-2023، وبإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.",
-          "وقد طعن المدعي في تلك الدعوى (المطعون ضده الأول) على هذا الحكم بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي، وقُضي فيه بتاريخ 30-4-2024 برفض الاستئناف وتأييد الحكم المستأنف. كما طعن في ذات الحكم المدعى عليه (وقار أحمد الله ديتا) بالاستئناف رقم 1442 لسنة 2024 تجاري، وقُضي فيه بتاريخ 28-12-2024 بعدم جواز الاستئناف لسابقة الفصل فيه بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي. فطعن عليه بالتمييز بالطعن رقم 1180 لسنة 2024 تجاري، وبتاريخ 25/12/2024 قضت محكمة النقض بعدم جواز الطعن. وكذا بالطعن رقم 1297 لسنة 2024 تجاري، وبتاريخ 4-2-2025 قضت المحكمة برفض الطعن.",
-          "وكانت طلبات (المطعون ضده الأول) قِبَل المدعى عليه الأول (الطاعن) في الدعوى الماثلة هي ذات طلباته في الدعوى السابقة رقم 146 لسنة 2024 تجاري أبوظبي، وعن ذات الموضوع وبذات السبب. بما يمتنع معه على الخصوم التنازع في المسألة التي فصل فيها الحكم السابق بدعوى تالية، ولو بأدلة قانونية أو واقعية لم تسبق إثارتها في الدعوى السابقة، أو أُثيرت فيها ولم يبحثها الحكم الصادر في تلك الدعوى، طالما كانت تلك المسألة هي بذاتها الأساس فيما يدعيه أي من الطرفين قِبل الآخر من حقوق مترتبة عليها لم تتغير، وتناضل فيها الطرفان في الدعوى السابقة، واستقرت حقيقتها بالحكم السابق استقراراً جامعاً مانعاً من إعادة مناقشته، وذلك احتراماً لحجية الحكم النهائي البات الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي والمردد بين طرفي الطعن.",
-          "بما كان يتعين على الحكم المطعون فيه القضاء بعدم جواز نظر الدعوى بشأن طلب المدعي (المطعون ضده الأول في الطعن رقم 4 لسنة 2026 تجاري — الطاعن في الطعن رقم 135 لسنة 2026 تجاري) استرداد ما سبق وأن سدده للطاعن مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. وإذ خالف الحكم المطعون فيه هذا النظر، فهو مما يعيبه ويستوجب نقضه.",
-          "وحيث إن المحكمة قد انتهت إلى نقض الحكم المطعون فيه وفقاً لما تقدم، فإن النعي عليه بما ورد بالسبب الثالث من أسباب الطعن رقم 135 لسنة 2026 تجاري يكون قائماً على غير أساس متعيناً رفضه.",
-          "⁂",
-          "وحيث إن الاستئناف رقم 2731 لسنة 2025 صالح للفصل فيه — ولما تقدم، وكان البين بالأوراق أن الحكم الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي، سبق له وأن نظر ذات الطلبات في الدعوى قِبَل الطاعن وانتهى بحكم نهائي بات حائز لقوة الأمر المقضي بإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.",
-          "بما يمتنع معه على الخصوم في الدعوى السابقة العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها أو أُثيرت ولم يبحثها الحكم الصادر فيها، وذلك احتراماً لحجية الحكم السابق صدوره في نفس الدعوى. وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. بما يتعين معه القضاء بعدم جواز نظر الدعوى بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها بالدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 والطعنين بالنقض رقمي 1180 و1297 لسنة 2024 أبوظبي.",
-          "(دون طلب الفسخ، بحسبان أن محكمة أول درجة حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023، وقد ارتضى المدعى عليه الأول هذا الحكم ولم يستأنفه، وإنما الذي استأنفه هو المدعي — المحكوم له — وأن القاعدة هي ألا يضار طاعن بطعنه).",
-          "وحيث إنه ولما كان القضاء بعدم جواز نظر الدعوى لسابقة الفصل فيها بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، يستوي في النتيجة وقضاء محكمة الدرجة الأولى برفض تلك الطلبات، بما يتعين معه رفض الاستئناف في هذا الشأن وفقاً لما أنشأته هذه المحكمة من أسباب.",
-          "⁂",
-          "فلهذه الأسباب",
-          "حكمت المحكمة في الطعن رقم 135 لسنة 2026 تجاري برفضه، وبإلزام الطاعن بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين.",
-          "وفي الطعن رقم 4 لسنة 2026 تجاري بنقض الحكم المطعون فيه فيما قضى به من إلزام الطاعن بأن يؤدي للمطعون ضده الأول مبلغ 11,706,096 درهماً، وبإلزام المطعون ضده الأول بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة.",
-          "وفي الاستئناف رقم 2731 لسنة 2025 تجاري برفضه، وألزمت المستأنف بالمصروفات ومبلغ ألف درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين."
-    ],
-  },
-  {
-    id: "dubai-appeal-2013-1",
-    title: "حكم محكمة استئناف دبي — الاستئناف رقم 1 لسنة 2013 تجاري",
-    author: "محكمة استئناف دبي",
-    category: "arabic-law",
-    excerpt: "الاعتراف بحكم تحكيم أجنبي صادر في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك 1958 — جلسة 9-7-2013.",
-    date: "9-7-2013",
-    readTime: "30 د",
-    corePrinciple: [
-      {
-        text: "الاتفاقيات الدولية التي صادقت عليها دولة الإمارات تُعدُّ قانوناً داخلياً واجب التطبيق، ويلتزم القاضي بإعمال أحكامها على ما يُعرض عليه من منازعات في شأن تنفيذ أحكام المحكَّمين الأجنبية. ولا تُرفض إجابة طلب الاعتراف بحكم التحكيم الأجنبي ما لم تثبت إحدى الحالات الواردة حصراً في المادة الخامسة من اتفاقية نيويورك.",
-        source: "اتفاقية نيويورك 1958 · المرسوم الاتحادي رقم 43 لسنة 2006",
-      },
-    ],
-    body: [
-          "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
-          "باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة الاستئناف — بالجلسة العلنية المنعقدة يوم 09-07-2013 بمقر محكمة الاستئناف بدبي. في الاستئناف رقم 1 لسنة 2013 استئناف تجاري. مستأنف: م. ا. ش. ذ. م. م. ضد مستأنف ضده: ش. ب. ت. ا. ب. ج. ا. ب. ا. ا. ك. .. ك. ج. ش. ا. الحكم المستأنف: الصادر بالدعوى رقم 2012/681 تجاري كلي بتاريخ 09-12-2012.",
-          "أصدرت المحكمة الحكم التالي بعد الإطلاع على الأوراق وسماع المرافعة والمداولة:",
-          "وحيث أن محكمة أول درجة وبجلسة 9-12-2012 قضت في الدعوى رقم 681-2012 تجاري كلي حضوريا بالتصديق على حكم التحكيم الصادر في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) بتاريخ 20-7-2011 في شتوتجارت - ألمانيا عن المحكم الفرد (جوشيم كوجنبيرغ)، وبإلزام المدعى عليها بمصروفات الدعوى ومبلغ ألف درهم مقابل أتعاب المحاماة، ورفضت ما عدا ذلك من طلبات.",
-          "ولما كان هذا الحكم لم يلق قبولاً لدى المدعى عليها فقد طعن وكيلها عليه بالاستئناف الراهن بصحيفة أودعت قلم كتاب هذه المحكمة بتاريخ 2-1-2013، وقدم مذكرة شارحة على سند من أن الحكم المستأنف أخطأ في تطبيق القانون وشابه الفساد في الاستدلال والقصور في التسبيب ومخالفة الثابت في الأوراق، وطلب في ختامها قبول الاستئناف شكلا وفي الموضوع إلغاء الحكم المستأنف والقضاء مجددا برفض الدعوى وإلزام المستأنف ضدها بالرسوم والمصاريف ومقابل أتعاب المحاماة.",
-          "وذلك على سند من أن محكمة أول درجة قضت بالتصديق على حكم التحكيم الأجنبي موضوع الدعوى على خلاف صحيح القانون ولم تقض بالاعتراف به بل رفضت ما عدا ذلك من طلبات، وقد ارتضت المستأنف ضدها ذلك القضاء ولم تطعن عليه بما يتعين إلغاؤه. كما أنه لا يجوز التحكيم في المسائل التي لا يجوز فيها الصلح، وأن موضوع النزاع ناشئ عن اتفاقية توزيع حصري وتختص المحكمة التي يقع في دائرتها محل التنفيذ، وهذه القاعدة من النظام العام ولا يجوز مخالفتها، ومن ثم لا يجوز تسوية النزاع بالتحكيم وفي ذلك تعارض مع السياسة العامة للدولة، ويكون شرط التحكيم الوارد في الاتفاقية باطلا لمخالفته النظام العام.",
-          "ولقضاء محكمة أول درجة بالعلم الشخصي في شأن انضمام دولة الإمارات وجمهورية ألمانيا الاتحادية إلى اتفاقية نيويورك، ولأن المستأنف ضدها لم تقدم كامل الاتفاق وملحقاته ولم تقدم ترجمة قانونية معتمدة، ولأن النسخة الإنجليزية من الاتفاق وحكم التحكيم غير ممهورين بتوقيع المترجم وختمه، ولأن حكم التحكيم لم يصبح ملزما للطرفين، وأن المستأنفة لم توقع على وثيقة التحكيم، والمستأنف ضدها لم تقدم كامل أجزاء حكم المحكم، وأن التحكيم تم في فرنسا وليس ألمانيا بالمخالفة لاتفاق التحكيم، بما يلزم على المحكمة رفض طلب الاعتراف بحكم التحكيم. وأرفقت صورة من قانون التحكيم الألماني بشأن اختصاص المحكمة العليا بتنفيذ حكم المحكمين، وكتابا من المحكم إلى القنصلية الفرنسية لإصدار تأشيرة للمستشار القانوني للمستأنفة لحضور اجتماع بباريس.",
-          "ومثلت المستأنف ضدها بوكيل عنها وقدم مذكرة طلب في ختامها رفض الاستئناف وتأييد الحكم المستأنف، وقدم قائمة صادرة عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) بالدول التي انضمت وصادقت على اتفاقية نيويورك ومن ضمنها دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية، ووثيقة المهمة وبيانا بالشروط والأحكام المرجعية بأن مكان التحكيم شتوتجارت - ألمانيا، ورسالة بريد إلكتروني بعقد جلسة التحكيم الأولى في شتوتجارت ما لم يتفق الأطراف على عقدها في باريس لتخفيض تكاليف الطيران دون تغيير للمقر القانوني للتحكيم. ثم تبادل طرفا الاستئناف تقديم المذكرات وصمم كل منهما على دفاعه، فقررت المحكمة حجز الاستئناف للحكم لجلسة 25-6-2013 ثم مدت أجل النطق بالحكم لجلسة اليوم.",
-          "⁂",
-          "وحيث إنه عن شكل الاستئناف فإنه قد جاء ممن يملكه قانونا خلال الأجل المنصوص عليه بأحكام المادة (159) من قانون الإجراءات المدنية المعدل، وعن حكم قابل للاستئناف وقد استوفى كافة شروطه الشكلية المقررة قانونا وبما يتعين قبوله شكلا.",
-          "وحيث إنه عن موضوع الاستئناف وفي ضوء حاصل أسبابه سالفة البيان عملا بالأثر الناقل للاستئناف، فإنه ولما كان المقرر قضاء لدى محكمة تمييز دبي الموقرة أن مفاد نص المادتين 165 و 166 من قانون الإجراءات المدنية أن محكمة الاستئناف لا تقتصر وظيفتها على مراقبة الحكم المستأنف من حيث سلامة التطبيق القانوني فحسب، وإنما يترتب على رفع الاستئناف نقل موضوع الاستئناف إلى محكمة الدرجة الثانية لتفصل فيه من جديد، دونما حاجة لإعادة القضية إلى محكمة الدرجة الأولى التي استنفدت ولايتها بالحكم في الموضوع، وذلك في حدود طلبات المستأنف.",
-          "وإعادة طرحه عليها بكل ما اشتمل عليه من أدلة ودفوع وأوجه دفاع لتقول كلمتها فيه بقضاء مسبب يواجه عناصر النزاع الواقعية والقانونية على حد سواء، لا على أساس ما كان مقدما فيها أمام محكمة أول درجة فحسب بل أيضا على أساس ما يطرح من هذه الأدلة وأوجه الدفاع والدفوع الموضوعية ويكون قد فات على الطرفين إبداؤه أمام محكمة أول درجة. ولها في هذا النطاق كمحكمة موضوع السلطة التامة في بحث الأدلة والمستندات والقرائن وأقوال الشهود وفي موازنة بعضها بالبعض الآخر وترجيح ما تطمئن إليه منها واستخلاص ما ترى أنه الواقع في الدعوى. (الطعن رقم 129 لسنة 2009 أحوال شخصية بجلسة 2-2-2010).",
-          "وحيث إنه متى كان ذلك وكانت (المدعية) المستأنف ضدها قد أقامت دعواها أمام محكمة أول درجة بطلب التصديق والاعتراف بحكم التحكيم الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC)، والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها وإلزام خصمتها (المدعى عليها) المستأنفة بالمصروفات.",
-          "وحيث إنه هديا بما تقدم فإن هذه الدعوى لا تخرج عن كونها منازعة في شأن الاعتراف بأحكام المحاكم الأجنبية وأحكام المحكمين والتي تناولها المرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 بموافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع، ومن ثم يصار إلى القضاء بإجابة طالب الاعتراف بها إلى طلبه أو رفضه بحسب الأحوال.",
-          "⁂",
-          "وحيث إنه ولما كان ما تقدم وكان المقرر لدى محكمة تمييز دبي الموقرة أنه ولئن كان المشرع قد نظم في الباب الثالث من الكتاب الثاني من قانون الإجراءات المدنية القواعد المتعلقة بالتحكيم في دولة الإمارات العربية المتحدة والإجراءات الواجب اتباعها عند طلب الخصوم التصديق على حكم المحكمة أو بطلانه، فقد نصت الفقرة الرابعة من المادة 212 من هذا القانون على أنه: «يجب أن يصدر حكم المحكم في دولة الإمارات العربية المتحدة وإلا اتبعت في شأنه القواعد المقررة لأحكام المحكمين الصادرة في بلد أجنبي».",
-          "كما نصت المادة 213 منه على أنه: «في التحكيم الذي يتم بين الخصوم خارج المحكمة فيجب على المحكمين أن يسلموا صورة من الحكم إلى كل طرف خلال خمسة أيام من صدور قرار التحكيم وتنظر المحكمة في تصديق أو إبطال القرار بناء على طلب أحد الخصوم بالإجراءات المعتادة لرفع الدعوى». ونصت الفقرة الأولى من المادة 215 من ذات القانون على أنه: «لا ينفذ حكم المحكمين إلا إذا صادقت عليه المحكمة التي أودع الحكم قلم كتابها وذلك بعد الاطلاع على الحكم ووثيقة التحكيم والتثبت من أنه لا يوجد مانع من تنفيذه».",
-          "وكان مفاد هذه النصوص مجتمعة أن التصديق على أحكام المحكمين الصادرة داخل دولة الإمارات هي وحدها التي تدخل في ولاية المحاكم الوطنية دون أحكام المحكمين الصادرة في دولة أجنبية، يستوي في ذلك أن تكون هذه الأحكام مما يجوز التصديق عليها في الدولة التي صدرت فيها من عدمه. إلا أنه من المقرر أيضا وفق ما تقضي به المادة 238 من قانون الإجراءات المدنية أن الاتفاقيات الدولية التي أصبحت تشريعا نافذ المفعول في دولة الإمارات العربية المتحدة بالتصديق عليها تعد قانونا داخليا واجب التطبيق في الدولة، ويلتزم القاضي بإعمال أحكامها على ما يعرض عليه من منازعات في شأن تنفيذ أحكام المحاكم الأجنبية وأحكام المحكمين.",
-          "وكان الثابت بالمرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 موافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع.",
-          "⁂",
-          "وقد نصت المادة الأولى من هذه الاتفاقية على أنه: «1- تطبق هذه الاتفاقية على الاعتراف بقرارات التحكيم وتنفيذها متى صدرت هذه القرارات في أراضي دولة خلاف الدولة التي يطلب الاعتراف بهذه القرارات وتنفيذها فيها، ومتى كانت ناشئة عن خلافات بين أشخاص طبيعيين أو اعتباريين، وتنطبق أيضا على قرارات التحكيم التي لا تعتبر قرارات محلية في الدولة التي يطلب فيها الاعتراف بهذه القرارات وتنفيذها. 2- لا يقتصر مصطلح (قرارات التحكيم) على القرارات التي يصدرها محكمون معينون لكل قضية بل يشمل أيضا القرارات التي يصدرها هيئات تحكيم دائمة تكون الأطراف قد أحالت إليها».",
-          "ونصت المادة الثانية من ذات الاتفاقية على أن: «1- تعترف كل دولة متعاقدة بأي اتفاق مكتوب يتعهد فيه الطرفان بأن يحيلوا إلى التحكيم جميع الخلافات أو أية خلافات نشأت أو قد تنشأ بينهما بالنسبة لعلاقة قانونية محددة. 2- يشمل مصطلح (اتفاق مكتوب) أي شرط تحكيم يرد في عقد أو أي اتفاق تحكيم وقع عليه من الطرفين أو وارد في رسائل أو برقيات متبادلة».",
-          "ونصت المادة الثالثة منها على أنه: «على كل دولة متعاقدة أن تعترف بقرارات التحكيم كقرارات ملزمة وأن تقوم بتنفيذها وفقا للقواعد الإجرائية المتبعة في الإقليم الذي يحتج فيه بالقرار طبقا للشروط الواردة في المواد التالية، ولا تفرض على الاعتراف بقرارات التحكيم التي تنطبق عليها هذه الاتفاقية أو على تنفيذها شروط أكثر تشددا بكثير أو رسوم أو أعباء أعلى بكثير مما يفرض على الاعتراف بقرارات التحكيم المحلية أو على تنفيذها».",
-          "كما نصت المادة الرابعة منها على أنه: «1- للحصول على الاعتراف والتنفيذ المذكورين في المادة السابقة يقوم الطرف الذي يطلب الاعتراف والتنفيذ وقت تقديم الطلب بتقديم ما يلي: أ- القرار الأصلي مصدقا عليه حسب الأصول المتبعة أو نسخة منه معتمدة حسب الأصول، ب- الاتفاق الأصلي المشار إليه في المادة الثانية أو صورة منه معتمدة حسب الأصول. 2- متى كان الحكم المذكور أو الاتفاق المذكور بلغة خلاف اللغة الرسمية للبلد الذي يحتج فيه بالقرار يجب على الطرف الذي يطلب الاعتراف بالقرار وتنفيذه أن يقدم ترجمة لها تبين الوثيقتين بهذه اللغة، ويجب أن تكون الترجمة معتمدة من موظف رسمي أو مترجم محلف أو ممثل قانوني أو قنصلي».",
-          "وكذلك نصت المادة الخامسة من الاتفاقية على أنه: «1- لا يجوز رفض طلب الاعتراف بالقرار وتنفيذه بناء على طلب الطرف المحتج ضده بهذا القرار إلا إذا قدم ذلك الطرف إلى السلطة المختصة التي يطلب فيها الاعتراف والتنفيذ ما يثبت: أ- أن طرفي الاتفاق المشار إليه في المادة الثانية كان بمقتضى القانون المنطبق عليهما في حالة من حالات انعدام الأهلية، أو كان الاتفاق غير صحيح بمقتضى القانون الذي أخضع له الطرفان الاتفاق، أو إذا لم يكن هناك ما يشير إلى ذلك بمقتضى قانون البلد الذي صدر فيه القرار.",
-          "ب- أن الطرف الذي يحتج ضده بالقرار لم يخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم أو كان لأي سبب آخر غير قادر على عرض قضيته. ج- أن القرار يتناول خلافا لم تتوقعه أو تتضمنه شروط الإحالة إلى التحكيم ويتضمن قرارات بشأن مسائل تتجاوز نطاق الإحالة إلى التحكيم، على أن يراعى في الحالات التي يمكن فيها فصل القرارات المتعلقة بالمسائل التي تخضع للتحكيم عن المسائل التي لا تخضع، أنه يجوز الاعتراف بجزء القرار الذي يتضمن قرارات تتعلق بمسائل تخضع للتحكيم وتنفيذ هذا الجزء.",
-          "د- أن تشكيل هيئة التحكيم أو أن إجراءات التحكيم لم تكن وفقا لاتفاق الطرفين أو لم تكن في حالة عدم وجود مثل هذا الاتفاق وفقا لقانون البلد الذي جرى فيه التحكيم. هـ- أن القرار لم يصبح بعد ملزما للطرفين أو أنه نقض أو أوقف تنفيذه من قبل سلطة مختصة في البلد الذي صدر فيه أو بموجب قانون هذا البلد. 2- كذلك يجوز رفض الاعتراف بقرار التحكيم ورفض تنفيذه إذا تبين للسلطة المختصة في البلد الذي يطلب فيه الاعتراف بالقرار وتنفيذه: أ- أنه لا يمكن تسوية موضوع النزاع بالتحكيم طبقا لقانون ذلك البلد، أو ب- أن الاعتراف بالقرار أو تنفيذه يتعارض مع السياسة العامة لذلك البلد». (الطعن رقم 132 لسنة 2012 تجاري الصادر بجلسة 18-9-2012).",
-          "⁂",
-          "وحيث إنه ولما كان ما تقدم وكان الحكم المطلوب الاعتراف به الصادر من المحكم هو حكم أجنبي صادر خارج دولة الإمارات العربية المتحدة في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك في شأن الاعتراف بأحكام التحكيم وتنفيذها والتي صادقت عليها دولة الإمارات العربية المتحدة بموجب المرسوم الاتحادي رقم 43 لسنة 2006 في شأن انضمام دولة الإمارات العربية المتحدة لاتفاقية نيويورك للاعتراف بقرارات التحكيم الأجنبية وتنفيذها.",
-          "وإذ قدمت المستأنف ضدها نسخة من حكم التحكيم معتمدة وفق الأصول ومصدقة، وأصل اتفاقية التوزيع المتضمنة الاتفاق على التحكيم معتمدة وفق الأصول ومصدقة، كما قدمت ترجمتهما القانونية، فإنها تكون قد استوفت متطلبات المادة الرابعة من القانون المذكور.",
-          "وحيث إن الرقابة القضائية لهذه المحكمة على حكم المحكم الأجنبي عند النظر في طلب الاعتراف بالحكم الأجنبي وتنفيذه إنما تقتصر على التثبت من عدم مخالفته لما ورد بالمرسوم الاتحادي سالف البيان، وذلك باستيفائه لمقومات الحكم الشكلية والموضوعية المتطلبة فيه والواردة في المادتين 4 و 5 منه، كون أن الحكم التحكيمي موضوع الدعوى مصدق حسب الأصول المتبعة، ولم يتبين لهذه المحكمة أن النزاع موضوع حكم التحكيم من المسائل التي لا يجوز فيها الصلح، كما لم تتبين المحكمة مخالفته للنظام العام.",
-          "لا سيما وأن المستأنفة لم تقدم لهذه المحكمة توافر حالة من الحالات التي وردت بالمادة الخامسة من المرسوم المذكور آنفا، حيث إنها لم تثبت توافر حالة من حالات انعدام الأهلية، أو أن الاتفاق لم يكن صحيحا، أو أنها لم تخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم، أو أنها كانت غير قادرة على عرض دفاعها أمامه، أو أن حكم المحكم تناول ما يخالف أو يجاوز شرط التحكيم الوارد في الاتفاقية المبرمة مع المستأنف ضدها، أو أن تشكيل هيئة التحكيم أو إجراءاته لم تكن وفقا لتلك الاتفاقية، أو أن حكم المحكم لم يصبح بعد ملزما لطرفيه أو أنه نقض أو أوقف تنفيذه من قبل السلطة المختصة في جمهورية ألمانيا الاتحادية البلد الذي صدر فيه.",
-          "ولما كان حكم التحكيم موضوع الدعوى قد استوفى الشروط الواردة بالمرسوم سالف البيان، فإنه يتعين على المحكمة — وبالبناء على ما أنشأته من أسباب تتفق وصحيح القانون — الاعتراف بالحكم التحكيمي الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC) والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها.",
-          "ولا ينال من ذلك ما نعت به المستأنفة من أن قضاء الحكم المستأنف كان بالتصديق وليس بالاعتراف، لكون المستأنف ضدها قد طلب التصديق والاعتراف وساوت بينهما في طلباتها، فضلا عن أن التصديق صنو الاعتراف. وإذ انتهت هذه المحكمة في أسبابها على نحو ما سلف بيانه إلى الاعتراف بالحكم المراد الاعتراف به، فمن ثم يكون الاستئناف وارد على غير سند صحيح وتقضي المحكمة برفضه.",
-          "كما لا ينال من ذلك باقي ما أثارته المستأنفة في مذكرتها الشارحة والوارد سلفا بأسباب هذا الحكم، ذلك أنه من المقرر قانونا أن الأصل في إجراءات التحكيم أن تكون قد روعيت، وعلى من يدعي أنها قد خولفت إقامة الدليل على صحة ما يدعيه، والمناط في هذا الخصوص هو الاعتداد بالبيانات المثبتة بحكم المحكم، ودون تتبع لما يبديه الخصم من دفاع ظاهر الفساد.",
-          "إذ أن دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية منضمتان إلى اتفاقية نيويورك وفق بيان القائمة الصادر عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) والمقدم نسخة منها من المستأنف ضدها. كما أنه لا يستلزم توقيع من قام بالترجمة على أصل السند المحرر بلغة أجنبية والذي قام بترجمته، ويكتفى بتوقيعه على السند الذي أنشأه والمتضمن أعمال الترجمة إلى العربية التي قام بها. وكذلك لأن المستأنف ضدها قدمت أصل الاتفاقية وحكم المحكم وترجمتهما القانونية، وأن إجراء إحدى جلسات التحكيم في باريس بفرنسا — وهي إحدى دول الاتحاد الأوروبي — درءا لتكلفة الطيران وبموافقة الطرفين دون تغيير للمقر القانوني للتحكيم وهي شتوتجارت بألمانيا، لا ينال من هذا الحكم.",
-          "وحيث إنه عن رسوم ومصروفات الاستئناف شاملة أتعاب المحاماة وعن درجتي التقاضي، فإنه ولما كان غرم التداعي يقع على من كانت عاقبة أمره خسرانه، وكانت المستأنفة هي من خسرت الدعوى، فإن المحكمة تلزمها بالرسوم والمصاريف ومبلغ ألفي درهم مقابل أتعاب المحاماة، عملا بالمادتين 133 و 168 من قانون الإجراءات المدنية المعدل.",
-          "⁂",
-          "فلهذه الأسباب",
-          "حكمت المحكمة بقبول الاستئناف شكلا، وفي الموضوع برفضه وتأييد الحكم المستأنف، وألزمت المستأنفة بالرسوم والمصاريف عن درجتي التقاضي ومبلغ ألفي درهم مقابل أتعاب المحاماة.",
-          "أمين السر — رئيس الدائرة"
-    ],
-  },
-  {
-    id: "winning-brief-garner",
-    title: "The Winning Brief — Full Summary",
-    author: "Bryan A. Garner",
-    category: "law",
-    excerpt: "100 tips for persuasive briefing in trial and appellate courts — complete coverage.",
-    date: "Oxford UP",
-    readTime: "45 min",
-    richHtml: WINNING_BRIEF_HTML,
-    body: [],
-  },
-  {
-    id: "point-made-guberman",
-    title: "Point Made — Full Summary",
-    author: "Ross Guberman",
-    category: "law",
-    excerpt: "How to write like the nation's top advocates — comprehensive techniques and examples.",
-    date: "Oxford UP",
-    readTime: "40 min",
-    richHtml: POINT_MADE_HTML,
-    body: [],
-  },
-  {
-    id: "cross-examination-pozner-dodd",
-    title: "Cross-Examination — Full Summary",
-    author: "Pozner & Dodd",
-    category: "law",
-    excerpt: "Science and craft of cross-examination — complete chapter-level coverage.",
-    date: "LexisNexis",
-    readTime: "45 min",
-    richHtml: CROSS_EXAMINATION_HTML,
-    body: [],
-  },
-  {
-    id: "making-your-case-scalia-garner",
-    title: "Making Your Case — Full Summary",
-    author: "Scalia & Garner",
-    category: "law",
-    excerpt: "The art of persuading judges — from one of the Court's clearest voices and the foremost legal-writing authority.",
-    date: "Thomson West",
-    readTime: "35 min",
-    richHtml: MAKING_YOUR_CASE_HTML,
-    body: [],
-  },
-  {
-    id: "trial-techniques-mauet",
-    title: "Trial Techniques — Full Summary",
-    author: "Thomas A. Mauet",
-    category: "law",
-    excerpt: "The complete trial advocacy primer — from voir dire and openings through cross-examination and closing.",
-    date: "Aspen Casebook",
-    readTime: "50 min",
-    richHtml: TRIAL_TECHNIQUES_HTML,
-    body: [],
-  },
-  {
-    id: "beyond-good-and-evil",
-    title: "Beyond Good and Evil — Full Summary",
-    author: "Friedrich Nietzsche",
-    category: "philosophy",
-    excerpt: "A comprehensive walkthrough of Nietzsche's critique of dogmatic philosophy, master/slave morality, and the will to power.",
-    date: "1886",
-    readTime: "40 min",
-    richHtml: BEYOND_GOOD_EVIL_HTML,
-    body: [],
-  },
-  {
-    id: "the-prince",
-    title: "The Prince — Full Summary",
-    author: "Niccolò Machiavelli",
-    category: "book-summaries",
-    excerpt: "The foundational treatise on political power, statecraft, and the realities of rule.",
-    date: "1532",
-    readTime: "30 min",
-    richHtml: PRINCE_HTML,
-    body: [],
-  },
-  {
-    id: "art-of-war",
-    title: "The Art of War — Full Summary",
-    author: "Sun Tzu",
-    category: "book-summaries",
-    excerpt: "The 13 chapters on strategy, deception, terrain, and the art of winning without fighting.",
-    date: "5th c. BCE",
-    readTime: "30 min",
-    richHtml: ART_OF_WAR_HTML,
-    body: [],
-  },
-  {
-    id: "worldly-wisdom",
-    title: "The Art of Worldly Wisdom — Full Summary",
-    author: "Baltasar Gracián",
-    category: "book-summaries",
-    excerpt: "300 maxims on prudence, perception, self-mastery, and navigating the social world.",
-    date: "1647",
-    readTime: "35 min",
-    richHtml: WORLDLY_WISDOM_HTML,
-    body: [],
-  },
-  {
-    id: "laws-of-human-nature",
-    title: "The Laws of Human Nature — Full Summary",
-    author: "Robert Greene",
-    category: "book-summaries",
-    excerpt: "18 laws decoding behaviour, character, and the hidden forces driving people.",
-    date: "2018",
-    readTime: "40 min",
-    richHtml: HUMAN_NATURE_HTML,
-    body: [],
-  },
-  {
-    id: "33-strategies-of-war",
-    title: "The 33 Strategies of War — Full Summary",
-    author: "Robert Greene",
-    category: "book-summaries",
-    excerpt: "33 strategies of conflict — from defensive warfare to grand strategy and unconventional war.",
-    date: "2006",
-    readTime: "35 min",
-    richHtml: STRATEGIES_OF_WAR_HTML,
-    body: [],
-  },
-  {
-    id: "inflation-psychology",
-    title: "Inflation, Interest Rates, and Market Psychology",
-    author: "Editorial Note",
-    category: "economic",
-    excerpt: "Why expectations matter as much as fundamentals when prices begin to climb.",
-    date: "Apr 2026",
-    readTime: "6 min",
-    body: [
-      "Inflation is taught as a mechanical phenomenon — too much money chasing too few goods — and the equation is broadly correct as far as it goes. What the textbook treatment understates is the role of expectation. Once households and firms come to believe that prices will continue to rise, they act in ways that ensure the prophecy fulfils itself. The market, in this respect, is not a thermometer but a thermostat with a long memory.",
-      "The central bank's traditional response is interest rates. Raising the cost of capital cools investment, dampens consumption, and — through these channels — restores the equilibrium between supply and demand. The mechanism is real, but it is also slow. Estimates suggest that monetary policy operates with lags of twelve to eighteen months, which means that the rate set today is wrestling with the inflation of last spring.",
-      "Psychology compresses the lag in one direction and lengthens it in the other. A credible central bank can subdue inflation expectations with a single decisive move; a discredited one can hike repeatedly with little effect, because the market has already priced in the bank's eventual capitulation. Credibility, hard to acquire and easy to lose, is the missing variable in most monetary models. It belongs to the realm of intuition more than calculation, and it is therefore liable to the heuristic distortions that govern other social facts.",
-      "For the investor, three implications follow. First, the level of nominal rates matters less than the trajectory of expectations. A 5% rate that is widely expected to fall behaves like a much looser policy than a 4% rate widely expected to rise. Second, asset classes do not respond uniformly: equities reprice on the discount-rate channel, bonds on the inflation-expectations channel, real estate on the financing-cost channel. Third, scarcity in particular markets — energy, semiconductors, housing — can drive headline numbers in ways that obscure the underlying monetary picture.",
-      "The honest synthesis is that inflation is a partly psychological phenomenon governed by partly mechanical instruments. The central banker's task is to hold the line until expectations re-anchor; the investor's task is to read the line being held. Neither party is operating with the certainty the press tends to attribute to them.",
-    ],
-  },
-];
-
-/* ════════════════════════════════════════════════════════════════
-   STORAGE
-   ════════════════════════════════════════════════════════════════ */
-const STORAGE_KEY = "athenaeum-v1";
-const safeGet = async () => {
-  try {
-    const r = await window.storage?.get(STORAGE_KEY);
-    return r ? JSON.parse(r.value) : null;
-  } catch { return null; }
-};
-const safeSet = async (data) => {
-  try { await window.storage?.set(STORAGE_KEY, JSON.stringify(data)); } catch {}
-};
-
-const GOOGLE_CLIENT_ID_STORAGE_KEY = "athenaeum-google-client-id";
-const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client";
-
-function getConfiguredGoogleClientId() {
-  const envClientId = import.meta.env?.VITE_GOOGLE_CLIENT_ID || "";
-  if (envClientId) return envClientId;
-  try { return window.localStorage?.getItem(GOOGLE_CLIENT_ID_STORAGE_KEY) || ""; }
-  catch { return ""; }
-}
-
-function storeGoogleClientId(clientId) {
-  try {
-    if (clientId) window.localStorage?.setItem(GOOGLE_CLIENT_ID_STORAGE_KEY, clientId);
-    else window.localStorage?.removeItem(GOOGLE_CLIENT_ID_STORAGE_KEY);
-  } catch {}
-}
-
-function loadGoogleIdentityScript() {
-  if (window.google?.accounts?.id) return Promise.resolve();
-  const existing = document.querySelector(`script[src="${GOOGLE_IDENTITY_SCRIPT}"]`);
-  if (existing) {
-    return new Promise((resolve, reject) => {
-      existing.addEventListener("load", resolve, { once: true });
-      existing.addEventListener("error", reject, { once: true });
-    });
-  }
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = GOOGLE_IDENTITY_SCRIPT;
-    script.async = true;
-    script.defer = true;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
-
-function decodeGoogleCredential(credential) {
-  try {
-    const encoded = credential.split(".")[1];
-    const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
-    const json = decodeURIComponent(
-      Array.from(atob(normalized))
-        .map(ch => `%${(`00${ch.charCodeAt(0).toString(16)}`).slice(-2)}`)
-        .join("")
-    );
-    const payload = JSON.parse(json);
-    return {
-      provider: "google",
-      id: payload.sub,
-      name: payload.name || payload.email || "Google Reader",
-      email: payload.email || "",
-      picture: payload.picture || "",
-      signedInAt: Date.now(),
-    };
-  } catch {
-    return null;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════
-   APP
-   ════════════════════════════════════════════════════════════════ */
-function isAthenaeumStandalone() {
-  try {
-    return window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator?.standalone === true;
-  } catch {
-    return false;
-  }
-}
-
-export default function Athenaeum() {
-  // view: { kind: 'list' | 'reader' | 'editor' | 'collection', ... }
-  const [view, setView] = useState({ kind: "list", category: "all" });
-  const [customArticles, setCustomArticles] = useState([]);
-  const [library, setLibrary] = useState({ highlights: [], quotes: [], vocabulary: [], reading: {} });
-  const [search, setSearch] = useState("");
-  const [fontSize, setFontSize] = useState(1); // 0=small, 1=med, 2=large
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selection, setSelection] = useState(null);
-  const [dictPopup, setDictPopup] = useState(null);
-  const [account, setAccount] = useState(null);
-  const [readingMode, setReadingMode] = useState(false);
-  const [booxPlain, setBooxPlain] = useState(false);
-  const [installPromptEvent, setInstallPromptEvent] = useState(null);
-  const [installStatus, setInstallStatus] = useState("");
-  const [isStandalone, setIsStandalone] = useState(() => isAthenaeumStandalone());
-  const [installDismissed, setInstallDismissed] = useState(() => {
-    try { return window.localStorage?.getItem("athenaeum-install-dismissed") === "1"; }
-    catch { return false; }
-  });
-  const articleRef = useRef(null);
-
-  /* Load persisted data */
-  useEffect(() => {
-    safeGet().then(d => {
-      if (d) {
-        setCustomArticles(d.customArticles || []);
-        setLibrary({
-          highlights: d.library?.highlights || [],
-          quotes:     d.library?.quotes     || [],
-          vocabulary: d.library?.vocabulary || [],
-          reading:    d.library?.reading    || {},
-        });
-        setAccount(d.account || null);
-        if (d.fontSize !== undefined) setFontSize(d.fontSize);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    const onBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      setInstallPromptEvent(event);
-      setInstallStatus("");
-    };
-    const onAppInstalled = () => {
-      setIsStandalone(true);
-      setInstallDismissed(true);
-      try { window.localStorage?.setItem("athenaeum-install-dismissed", "1"); } catch {}
-    };
-    const media = window.matchMedia?.("(display-mode: standalone)");
-    const onDisplayModeChange = () => setIsStandalone(isAthenaeumStandalone());
-
-    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-    window.addEventListener("appinstalled", onAppInstalled);
-    media?.addEventListener?.("change", onDisplayModeChange);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", onAppInstalled);
-      media?.removeEventListener?.("change", onDisplayModeChange);
-    };
-  }, []);
-
-  const persist = useCallback((next) => {
-    safeSet({ customArticles, library, fontSize, account, ...next });
-  }, [customArticles, library, fontSize, account]);
-
-  const updateAccount = useCallback((nextAccount) => {
-    setAccount(nextAccount);
-    safeSet({ customArticles, library, fontSize, account: nextAccount });
-  }, [customArticles, library, fontSize]);
-
-  const updateFontSize = useCallback((n) => {
-    setFontSize(n);
-    safeSet({ customArticles, library, fontSize: n, account });
-  }, [customArticles, library, account]);
-
-  const dismissInstallPrompt = useCallback(() => {
-    setInstallDismissed(true);
-    try { window.localStorage?.setItem("athenaeum-install-dismissed", "1"); } catch {}
-  }, []);
-
-  const installApp = useCallback(async () => {
-    if (!installPromptEvent) {
-      setInstallStatus("Use the browser menu and choose Install app or Add to Home Screen.");
-      return;
-    }
-    try {
-      installPromptEvent.prompt();
-      const choice = await installPromptEvent.userChoice;
-      setInstallPromptEvent(null);
-      if (choice?.outcome === "accepted") {
-        dismissInstallPrompt();
-      } else {
-        setInstallStatus("You can save the app later from this prompt or the browser menu.");
-      }
-    } catch {
-      setInstallStatus("Use the browser menu and choose Install app or Add to Home Screen.");
-    }
-  }, [installPromptEvent, dismissInstallPrompt]);
-
-  /* All articles combined */
-  const allArticles = useMemo(
-    () => [...customArticles, ...SEED_ARTICLES].filter(a => !HIDDEN_CATEGORIES.has(a.category)),
-    [customArticles]
-  );
-
-  /* Selection handler */
-  useEffect(() => {
-    const handler = () => {
-      const sel = window.getSelection();
-      const text = sel?.toString().trim();
-      if (!text || text.length < 2) { setSelection(null); return; }
-      if (!articleRef.current?.contains(sel.anchorNode)) { setSelection(null); return; }
-      const range = sel.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      setSelection({
-        text,
-        x: rect.left + rect.width / 2,
-        y: rect.top - 8,
-        articleId: view.kind === "reader" ? view.articleId : null,
-      });
-    };
-    document.addEventListener("mouseup", handler);
-    document.addEventListener("touchend", handler);
-    return () => {
-      document.removeEventListener("mouseup", handler);
-      document.removeEventListener("touchend", handler);
-    };
-  }, [view]);
-
-  useEffect(() => {
-    const close = () => { setSelection(null); setDictPopup(null); };
-    window.addEventListener("scroll", close, true);
-    return () => window.removeEventListener("scroll", close, true);
-  }, []);
-
-  // Listen for "mark as read" toggles from the iframe books
-  useEffect(() => {
-    const onMsg = (e) => {
-      const d = e.data;
-      if (!d || d.type !== "athenaeum-mark-section" || !d.articleId) return;
-      setLibrary(prev => {
-        const reading = { ...(prev.reading || {}) };
-        const prior = reading[d.articleId] || {};
-        const sections = new Set(prior.readSections || []);
-        if (d.read) sections.add(d.panelId);
-        else sections.delete(d.panelId);
-        reading[d.articleId] = {
-          ...prior,
-          readSections: Array.from(sections),
-          totalPanels: d.allPanels ? d.allPanels.length : (prior.totalPanels || 0),
-          lastSeen: Date.now(),
-        };
-        const next = { ...prev, reading };
-        safeSet({ customArticles, library: next, fontSize, account });
-        return next;
-      });
-    };
-    window.addEventListener("message", onMsg);
-    return () => window.removeEventListener("message", onMsg);
-  }, [customArticles, fontSize, account]);
-
-  // Toggle a plain-text article's "marked as read" state
-  const toggleMarkRead = useCallback((articleId) => {
-    setLibrary(prev => {
-      const reading = { ...(prev.reading || {}) };
-      const prior = reading[articleId] || {};
-      reading[articleId] = { ...prior, marked: !prior.marked, lastSeen: Date.now() };
-      const next = { ...prev, reading };
-      safeSet({ customArticles, library: next, fontSize, account });
-      return next;
-    });
-  }, [customArticles, fontSize, account]);
-
-  /* Actions */
-  const addHighlight = () => {
-    if (!selection) return;
-    const next = {
-      ...library,
-      highlights: [...library.highlights, {
-        id: Date.now(), text: selection.text, articleId: selection.articleId,
-        when: new Date().toLocaleDateString(),
-      }],
-    };
-    setLibrary(next); persist({ library: next });
-    setSelection(null); window.getSelection()?.removeAllRanges();
-  };
-
-  const addQuote = () => {
-    if (!selection) return;
-    const a = allArticles.find(x => x.id === selection.articleId);
-    const next = {
-      ...library,
-      quotes: [...library.quotes, {
-        id: Date.now(), text: selection.text, articleId: selection.articleId,
-        source: a ? `${a.author}, "${a.title}"` : "Unknown",
-        when: new Date().toLocaleDateString(),
-      }],
-    };
-    setLibrary(next); persist({ library: next });
-    setSelection(null); window.getSelection()?.removeAllRanges();
-  };
-
-  const lookup = () => {
-    if (!selection) return;
-    const word = selection.text.toLowerCase().replace(/[^a-z]/g, "");
-    setDictPopup({ word, x: selection.x, y: selection.y });
-    setSelection(null);
-  };
-
-  const saveWord = (word, entry) => {
-    if (library.vocabulary.find(v => v.word === word)) return;
-    const next = {
-      ...library,
-      vocabulary: [...library.vocabulary, { id: Date.now(), word, ...entry, when: new Date().toLocaleDateString() }],
-    };
-    setLibrary(next); persist({ library: next });
-  };
-
-  const removeFrom = (kind, id) => {
-    const next = { ...library, [kind]: library[kind].filter(x => x.id !== id) };
-    setLibrary(next); persist({ library: next });
-  };
-
-  const saveCustomArticle = (article) => {
-    const finalArticle = { ...article, id: article.id || `custom-${Date.now()}`, custom: true };
-    const exists = customArticles.find(a => a.id === finalArticle.id);
-    const next = exists
-      ? customArticles.map(a => a.id === finalArticle.id ? finalArticle : a)
-      : [finalArticle, ...customArticles];
-    setCustomArticles(next);
-    safeSet({ customArticles: next, library, fontSize, account });
-    setView({ kind: "reader", articleId: finalArticle.id });
-  };
-
-  const deleteCustomArticle = (id) => {
-    const next = customArticles.filter(a => a.id !== id);
-    setCustomArticles(next);
-    safeSet({ customArticles: next, library, fontSize, account });
-  };
-
-  /* Filter by current category + search */
-  const visibleArticles = useMemo(() => {
-    let list = allArticles;
-    if (view.kind === "list" && view.category !== "all") {
-      list = list.filter(a => a.category === view.category);
-    }
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(a =>
-        a.title.toLowerCase().includes(q) ||
-        a.author.toLowerCase().includes(q) ||
-        a.excerpt.toLowerCase().includes(q) ||
-        (a.body || []).some(p => p.toLowerCase().includes(q)) ||
-        (a.richHtml ? a.richHtml.toLowerCase().includes(q) : false)
-      );
-    }
-    return list;
-  }, [allArticles, view, search]);
-
-  const renderArticleParagraph = (text, articleId) => {
-    const marks = library.highlights.filter(h => h.articleId === articleId).map(h => h.text);
-    if (!marks.length) return text;
-    const positions = [];
-    marks.forEach(m => {
-      let i = text.indexOf(m);
-      while (i !== -1) { positions.push({ start: i, end: i + m.length }); i = text.indexOf(m, i + m.length); }
-    });
-    positions.sort((a,b) => a.start - b.start);
-    const filtered = [];
-    positions.forEach(p => { if (!filtered.length || p.start >= filtered[filtered.length-1].end) filtered.push(p); });
-    const parts = [];
-    let cursor = 0;
-    filtered.forEach((p, idx) => {
-      if (cursor < p.start) parts.push(text.slice(cursor, p.start));
-      parts.push(<mark key={idx} className="user-highlight">{text.slice(p.start, p.end)}</mark>);
-      cursor = p.end;
-    });
-    if (cursor < text.length) parts.push(text.slice(cursor));
-    return parts;
-  };
-
-  const FONT_SCALES = [0.85, 1.0, 1.15, 1.32, 1.5, 1.7];
-  const safeFontIdx = Math.max(0, Math.min(FONT_SCALES.length - 1, fontSize));
-  const fontPx = FONT_SCALES[safeFontIdx];
-  const readerModeActive = readingMode;
-  const inkModeActive = booxPlain;
-
-  return (
-    <div
-      className={[
-        "body min-h-screen flex",
-        readerModeActive ? "reader-mode-shell" : "",
-        inkModeActive ? "ink-mode-shell boox-plain-shell" : "",
-      ].filter(Boolean).join(" ")}
-      style={{ background: inkModeActive ? "#FFFFFF" : "var(--cream)" }}>
-      <GlobalStyles />
-
-      {/* SIDEBAR */}
-      {!readerModeActive && (
-        <Sidebar
-          view={view}
-          setView={(v) => { setView(v); setSidebarOpen(false); }}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          onAddText={() => { setView({ kind: "editor" }); setSidebarOpen(false); }}
-        />
-      )}
-
-      {/* MAIN */}
-      <div className="flex-1 flex flex-col min-w-0" style={{ marginLeft: 0 }}>
-        <Header
-          search={search} setSearch={setSearch}
-          fontSize={fontSize} setFontSize={updateFontSize}
-          onToggleSidebar={() => setSidebarOpen(o => !o)}
-          showFontControls={view.kind === "reader"}
-          inkMode={inkModeActive}
-          readingMode={readerModeActive}
-          onToggleInk={() => setBooxPlain(v => !v)}
-          onToggleReadingMode={() => setReadingMode(v => !v)}
-          account={account}
-          onAccountChange={updateAccount}
-        />
-
-        <main className={"flex-1 overflow-y-auto thin-scroll" + (readerModeActive ? " reader-main-immersive" : "")}>
-          {view.kind === "list" && (
-            <ListView
-              articles={visibleArticles}
-              category={view.category}
-              library={library}
-              onOpen={(id) => setView({ kind: "reader", articleId: id })}
-              onAddText={() => setView({ kind: "editor" })}
-              onDelete={deleteCustomArticle}
-            />
-          )}
-          {view.kind === "reader" && (
-            <ReaderView
-              article={allArticles.find(a => a.id === view.articleId)}
-              onBack={() => setView({ kind: "list", category: "all" })}
-              articleRef={articleRef}
-              renderParagraph={renderArticleParagraph}
-              fontPx={fontPx}
-              library={library}
-              onToggleMarkRead={toggleMarkRead}
-              booxPlain={inkModeActive}
-              onEdit={() => {
-                const a = allArticles.find(a => a.id === view.articleId);
-                if (a?.custom) setView({ kind: "editor", editingId: a.id });
-              }}
-            />
-          )}
-          {view.kind === "editor" && (
-            <EditorView
-              existing={view.editingId ? customArticles.find(a => a.id === view.editingId) : null}
-              onSave={saveCustomArticle}
-              onCancel={() => setView({ kind: "list", category: "all" })}
-            />
-          )}
-          {view.kind === "collection" && (
-            <CollectionView
-              kind={view.collection}
-              library={library}
-              allArticles={allArticles}
-              onRemove={removeFrom}
-              onJump={(articleId) => setView({ kind: "reader", articleId })}
-            />
-          )}
-          {view.kind === "daily" && (
-            <DailyQuoteView
-              library={library}
-              allArticles={allArticles}
-              onJump={(articleId) => setView({ kind: "reader", articleId })}
-              onGoToQuotes={() => setView({ kind: "collection", collection: "quotes" })}
-            />
-          )}
-        </main>
-      </div>
-
-      {/* SELECTION TOOLBAR */}
-      {selection && (
-        <div className="fixed z-50 fade tooltail glow-card"
-          style={{
-            left: Math.max(140, Math.min(typeof window !== "undefined" ? window.innerWidth - 140 : 800, selection.x)),
-            top: Math.max(60, selection.y - 56),
-            transform: "translateX(-50%)",
-            padding: 4, display: "flex", gap: 0,
-          }}>
-          <ToolBtn onClick={addHighlight} icon={<Highlighter size={13}/>} label="Highlight"/>
-          {selection.articleId && <ToolBtn onClick={addQuote} icon={<Quote size={13}/>} label="Save Quote"/>}
-          <ToolBtn onClick={lookup} icon={<Languages size={13}/>} label="Define"/>
-        </div>
-      )}
-
-      {dictPopup && (
-        <DictionaryCard
-          word={dictPopup.word} x={dictPopup.x} y={dictPopup.y}
-          onClose={() => setDictPopup(null)}
-          onSave={saveWord}
-          saved={library.vocabulary.some(v => v.word === dictPopup.word)}
-        />
-      )}
-
-      {!isStandalone && !installDismissed && (
-        <InstallAppPrompt
-          canInstall={!!installPromptEvent}
-          status={installStatus}
-          onInstall={installApp}
-          onDismiss={dismissInstallPrompt}
-        />
-      )}
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   SIDEBAR
-   ════════════════════════════════════════════════════════════════ */
-function InstallAppPrompt({ canInstall, status, onInstall, onDismiss }) {
-  return (
-    <aside className="install-app-prompt fade" aria-label="Save Athenaeum as an app">
-      <div className="install-app-prompt__top">
-        <div className="install-app-prompt__icon" aria-hidden="true">
-          <Smartphone size={21}/>
-        </div>
-        <div>
-          <h2 className="install-app-prompt__title">Save Athenaeum as an app</h2>
-          <p className="install-app-prompt__copy">
-            Open it from your home screen or desktop with a cleaner app window for reading.
-          </p>
-        </div>
-        <button type="button" className="install-app-prompt__close" onClick={onDismiss} aria-label="Dismiss install message">
-          <X size={15}/>
-        </button>
-      </div>
-
-      <div className="install-app-prompt__actions">
-        <button type="button" className="reader-btn" onClick={onInstall}>
-          <Download size={13}/> {canInstall ? "Install App" : "How to Save"}
-        </button>
-        <button type="button" className="reader-mode-btn" onClick={onDismiss}>
-          Not now
-        </button>
-      </div>
-      {status && <p className="install-app-prompt__status">{status}</p>}
-    </aside>
-  );
-}
-
-function Sidebar({ view, setView, open, onClose, onAddText }) {
-  const isActive = (kind, val) => {
-    if (kind === "daily")        return view.kind === "daily";
-    if (kind === "all-articles") return view.kind === "list" && view.category === "all";
-    if (kind === "category")     return view.kind === "list" && view.category === val;
-    if (kind === "collection")   return view.kind === "collection" && view.collection === val;
-    return false;
-  };
-
-  return (
-    <>
-      {/* Mobile overlay */}
-      {open && <div onClick={onClose} className="lg:hidden fixed inset-0 z-30 fade" style={{background:"rgba(0,0,0,0.55)"}}/>}
-
-      <aside
-        className={`sidebar-fixed ${open ? "open" : ""} fixed lg:sticky top-0 left-0 z-40 h-screen w-[260px] flex flex-col`}
-        style={{ background: "var(--navy)", color: "var(--cream)" }}>
-
-        {/* Brand */}
-        <div className="px-5 py-5 flex items-center gap-3 border-b" style={{ borderColor: "#1A1A1A" }}>
-          <div className="logo-mark dark"><AthenaeumMark size={22}/></div>
-          <div>
-            <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "#C8BD9A" }}>
-              Digital Library
-            </div>
-            <div className="display text-2xl leading-tight italic" style={{ fontWeight: 500 }}>Athenaeum</div>
-          </div>
-        </div>
-
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto thin-scroll px-3 py-5 space-y-0.5">
-          <NavBtn
-            label="All Articles"
-            icon={BookOpen}
-            active={isActive("all-articles")}
-            onClick={() => setView({ kind: "list", category: "all" })}
-            small
-          />
-
-          <div className="ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3" style={{ color: "#A8A088" }}>
-            Categories
-          </div>
-          {CATEGORIES.map(c => (
-            <NavBtn key={c.id} label={c.name} icon={c.icon} rtl={c.rtl}
-              active={isActive("category", c.id)}
-              onClick={() => setView({ kind: "list", category: c.id })}/>
-          ))}
-
-          <div className="ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3" style={{ color: "#A8A088" }}>
-            My Library
-          </div>
-          {COLLECTIONS.map(c => (
-            <NavBtn key={c.id} label={c.name} icon={c.icon}
-              active={isActive("collection", c.id)}
-              onClick={() => setView({ kind: "collection", collection: c.id })}/>
-          ))}
-
-          <div className="my-3 mx-3" style={{ height: 1, background: "#1A1A1A" }}/>
-
-          {/* Daily Quote — pinned at end */}
-          <NavBtn
-            label="Quote of the Day"
-            icon={Sparkles}
-            active={isActive("daily")}
-            onClick={() => setView({ kind: "daily" })}
-          />
-        </nav>
-
-        {/* Add Text */}
-        <div className="p-4 border-t" style={{ borderColor: "#1A1A1A" }}>
-          <button onClick={onAddText}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 ui text-[11px] tracking-[0.18em] transition"
-            style={{
-              background: "var(--cream-3)",
-              color: "var(--ink)",
-              borderRadius: 999,
-              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            }}>
-            <Plus size={14}/> Add Text
-          </button>
-        </div>
-      </aside>
-    </>
-  );
-}
-
-function NavBtn({ label, icon: Icon, active, onClick, small, rtl }) {
-  return (
-    <button onClick={onClick} data-active={active}
-      className="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left">
-      <span className="flex items-center justify-center w-8 h-8 rounded shrink-0"
-        style={{ background: active ? "var(--gold-soft)" : "#1A1A1A" }}>
-        <Icon size={15} style={{ color: active ? "var(--gold)" : "#E8DDB8" }}/>
-      </span>
-      <span style={{
-        fontFamily: rtl
-          ? "'Noto Naskh Arabic', serif"
-          : "'Cormorant Garamond', serif",
-        fontStyle: rtl ? "normal" : "italic",
-        fontWeight: active ? (rtl ? 700 : 600) : (rtl ? 600 : 500),
-        color: active ? "var(--cream-3)" : "#EFE5C2",
-        fontSize: rtl ? "1.1rem" : (small ? "0.95rem" : "1.05rem"),
-        direction: rtl ? "rtl" : "ltr",
-        flex: 1,
-        textAlign: rtl ? "right" : "left",
-      }}>{label}</span>
-    </button>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   HEADER
-   ════════════════════════════════════════════════════════════════ */
-function Header({
-  search,
-  setSearch,
-  fontSize,
-  setFontSize,
-  onToggleSidebar,
-  showFontControls,
-  inkMode,
-  readingMode,
-  onToggleInk,
-  onToggleReadingMode,
-  account,
-  onAccountChange,
-}) {
-  return (
-    <header className="sticky top-0 z-20 px-4 md:px-8 py-4 flex items-center gap-4"
-      style={{ background: "var(--cream)", borderBottom: "1.5px solid var(--rule)" }}>
-      <button onClick={onToggleSidebar}
-        className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg"
-        style={{ background: "var(--cream-3)", border: "1px solid var(--rule)" }}>
-        <Menu size={18} style={{ color: "var(--ink)" }}/>
-      </button>
-
-      <div className="hidden md:flex items-center gap-3">
-        <div className="logo-mark"><AthenaeumMark size={22}/></div>
-        <div>
-          <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "var(--ink-3)" }}>
-            Personal Knowledge Library
-          </div>
-          <div className="display text-xl leading-tight italic" style={{ fontWeight: 500, color: "var(--ink)" }}>
-            Athenaeum
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1"/>
-
-      {/* Search */}
-      <div className="flex-1 md:flex-none md:w-[340px] max-w-md flex items-center gap-2 px-4 py-2.5 rounded-full"
-        style={{ background: "var(--cream-3)", border: "1px solid var(--rule)" }}>
-        <Search size={14} style={{ color: "var(--ink-3)" }}/>
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search articles, words, quotes…"
-          className="bg-transparent outline-none flex-1 body text-sm"
-          style={{ color: "var(--ink)" }}/>
-      </div>
-
-      {/* Font size stepper — A− / A+ for e-ink touch */}
-      {showFontControls && (
-        <div className="flex items-center gap-0.5 p-1 rounded-full"
-          style={{ background: "var(--cream-3)", border: "1.5px solid var(--rule)" }}
-          title="Font size">
-          <button
-            onClick={() => setFontSize(Math.max(0, fontSize - 1))}
-            disabled={fontSize <= 0}
-            aria-label="Decrease font size"
-            className="flex items-center justify-center rounded-full"
-            style={{
-              width: 44, height: 44,
-              background: "transparent",
-              color: fontSize <= 0 ? "var(--ink-3)" : "var(--ink)",
-              opacity: fontSize <= 0 ? 0.4 : 1,
-              fontFamily: "Cormorant Garamond, serif",
-              fontWeight: 700,
-              fontSize: 17,
-              lineHeight: 1,
-            }}>
-            A−
-          </button>
-          <div style={{ width: 1, height: 24, background: "var(--rule)" }}/>
-          <button
-            onClick={() => setFontSize(Math.min(5, fontSize + 1))}
-            disabled={fontSize >= 5}
-            aria-label="Increase font size"
-            className="flex items-center justify-center rounded-full"
-            style={{
-              width: 44, height: 44,
-              background: "transparent",
-              color: fontSize >= 5 ? "var(--ink-3)" : "var(--ink)",
-              opacity: fontSize >= 5 ? 0.4 : 1,
-              fontFamily: "Cormorant Garamond, serif",
-              fontWeight: 700,
-              fontSize: 22,
-              lineHeight: 1,
-            }}>
-            A+
-          </button>
-        </div>
-      )}
-
-      <div className="mode-toggle-group" aria-label="Reader display modes">
-        <button
-          type="button"
-          className="mode-toggle-btn"
-          data-active={inkMode}
-          aria-pressed={inkMode}
-          onClick={onToggleInk}>
-          <Type size={15}/> Ink
-        </button>
-        <button
-          type="button"
-          className="mode-toggle-btn"
-          data-active={readingMode}
-          aria-pressed={readingMode}
-          onClick={onToggleReadingMode}>
-          <BookOpen size={15}/> Read
-        </button>
-      </div>
-
-      <GoogleAccountMenu account={account} onAccountChange={onAccountChange}/>
-    </header>
-  );
-}
-
-function GoogleAccountMenu({ account, onAccountChange }) {
-  const [open, setOpen] = useState(false);
-  const [clientId] = useState(() => getConfiguredGoogleClientId());
-  const [status, setStatus] = useState("");
-
-  const handleCredential = useCallback((response) => {
-    const nextAccount = decodeGoogleCredential(response?.credential || "");
-    if (!nextAccount) {
-      setStatus("Could not read the Google account response.");
-      return;
-    }
-    onAccountChange?.(nextAccount);
-    setOpen(false);
-    setStatus("");
-  }, [onAccountChange]);
-
-  const startGoogleSignIn = () => {
-    if (!clientId) {
-      setStatus("Google sign-in needs a Google OAuth Client ID configured for this site.");
-      return;
-    }
-    setStatus("Opening Google sign-in...");
-    loadGoogleIdentityScript()
-      .then(() => {
-        if (!window.google?.accounts?.id) throw new Error("Google unavailable");
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleCredential,
-          ux_mode: "popup",
-          auto_select: false,
-          use_fedcm_for_prompt: true,
-        });
-        window.google.accounts.id.prompt();
-      })
-      .catch(() => setStatus("Google sign-in could not load."));
-  };
-
-  const signOut = () => {
-    try { window.google?.accounts?.id?.disableAutoSelect?.(); } catch {}
-    onAccountChange?.(null);
-    setOpen(false);
-  };
-
-  const initial = (account?.name || account?.email || "G").trim().charAt(0).toUpperCase();
-
-  return (
-    <div className="account-shell">
-      <button
-        type="button"
-        className="account-trigger"
-        onClick={() => setOpen(o => !o)}
-        aria-label={account ? "Open account menu" : "Open login"}>
-        <span className="account-avatar">
-          {account?.picture ? <img src={account.picture} alt=""/> : (account ? initial : <LogIn size={15}/>)}
-        </span>
-        <span className="account-label">{account ? (account.name || "Account") : "Login"}</span>
-      </button>
-
-      {open && (
-        <div className="login-overlay fade" role="dialog" aria-modal="true" aria-label="Login">
-          <div className="login-card">
-            <button type="button" className="login-close" onClick={() => setOpen(false)} aria-label="Close login">
-              <X size={17}/>
-            </button>
-
-            <h2 className="login-title">Login</h2>
-
-            {account ? (
-              <>
-                <div className="flex items-center gap-3">
-                  <span className="account-avatar" style={{ width: 48, height: 48 }}>
-                    {account.picture ? <img src={account.picture} alt=""/> : initial}
-                  </span>
-                  <div style={{ minWidth: 0 }}>
-                    <p className="account-name">{account.name || "Signed in"}</p>
-                    {account.email && <p className="account-email">{account.email}</p>}
-                    <span className="account-sync-status">Google connected</span>
-                  </div>
-                </div>
-                <div className="account-actions">
-                  <button type="button" className="account-secondary" onClick={signOut}>
-                    <LogOut size={13}/> Sign out
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="login-social-grid">
-                  <button type="button" className="login-social-btn google" onClick={startGoogleSignIn} aria-label="Continue with Google">
-                    <span className="google-mark">G</span>
-                    <span className="login-social-label">Continue with Google</span>
-                  </button>
-                </div>
-                <span className="account-sync-status">Google only</span>
-                {status && <p className="login-status">{status}</p>}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   LIST VIEW (main content cards + Add Text panel)
-   ════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   SECTION MASTHEAD — editorial header for category list views
-   ════════════════════════════════════════════════════════════════ */
-
-// Per-category metadata: tagline + ornament + accent.
-// Falls back gracefully for unknown categories.
-const SECTION_META = {
-  "law":            { numeral: "I",  taglineEn: "Briefs, advocacy, and the architecture of persuasion." },
-  "economic":       { numeral: "II", taglineEn: "Markets, scarcity, and the choreography of choice." },
-  "philosophy":     { numeral: "III",taglineEn: "Being, knowing, and questions that refuse to settle." },
-  "tech":           { numeral: "IV", taglineEn: "Algorithms, networks, and the philosophy of the artefact." },
-  "book-summaries": { numeral: "V",  taglineEn: "Distilled volumes — the canon, condensed." },
-  "all":            { numeral: "—",  taglineEn: "Everything in the library, gathered." },
-};
-
-// Convert a count to display form: roman in LTR, eastern-arabic in RTL
-function formatCount(n, isRtl) {
-  if (isRtl) {
-    const arabicNumerals = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
-    return String(n).split("").map(d => arabicNumerals[+d] || d).join("");
-  }
-  return String(n).padStart(2, "0");
-}
-
-function SectionMasthead({ category, heading, isRtl, itemCount }) {
-  const meta = SECTION_META[category] || {};
-  const nextTagline = isRtl ? meta.taglineAr : meta.taglineEn;
-  const nextItemLabel = isRtl
-    ? (itemCount === 1 ? "\u0645\u0642\u0627\u0644 \u0648\u0627\u062d\u062f" : itemCount === 2 ? "\u0645\u0642\u0627\u0644\u0627\u0646" : `${formatCount(itemCount, true)} \u0645\u0642\u0627\u0644\u0627\u062a`)
-    : `${formatCount(itemCount, false)} ${itemCount === 1 ? "Item" : "Items"}`;
-  const nextSectionLabel = isRtl ? "\u0642\u0633\u0645" : "Section";
-  const nextPrompt = isRtl ? "\u0627\u062e\u062a\u0631 \u0645\u0642\u0627\u0644\u0627 \u0644\u0644\u0642\u0631\u0627\u0621\u0629" : "Select an article to begin";
-  const CategoryIcon = CATEGORIES.find(c => c.id === category)?.icon || BookOpen;
-
-  return (
-    <div className={"section-masthead rise" + (isRtl ? " is-rtl" : "")} style={{ direction: isRtl ? "rtl" : "ltr" }}>
-      <div className="section-masthead__folio" aria-hidden="true">
-        <span>{nextSectionLabel} {meta.numeral || "-"}</span>
-      </div>
-
-      <div className="section-masthead__inner">
-        <div className="section-masthead__top">
-          <div className="section-masthead__eyebrow">
-            <span>{nextSectionLabel}</span>
-            <span>{meta.numeral || "-"}</span>
-          </div>
-          <div className="section-masthead__seal" aria-hidden="true">
-            <CategoryIcon size={23}/>
-          </div>
-        </div>
-
-        <div className="section-masthead__title-row">
-          <h2 className="section-masthead__title">{heading}</h2>
-          <span className="section-masthead__mark" aria-hidden="true"/>
-        </div>
-
-        {nextTagline && <p className="section-masthead__deck">{nextTagline}</p>}
-
-        <div className="section-masthead__bottom">
-          <span className="section-masthead__count">{nextItemLabel}</span>
-          <span className="section-masthead__line"/>
-          <span className="section-masthead__prompt">{nextPrompt}</span>
-        </div>
-      </div>
-    </div>
-  );
-  const tagline = isRtl ? meta.taglineAr : meta.taglineEn;
-  const itemLabel = isRtl
-    ? (itemCount === 1 ? "مقال واحد" : itemCount === 2 ? "مقالان" : `${formatCount(itemCount, true)} مقالات`)
-    : `${formatCount(itemCount, false)} ${itemCount === 1 ? "Item" : "Items"}`;
-  const sectionLabel = isRtl ? "قسم" : "Section";
-
-  return (
-    <div className="card rise" style={{
-      padding: "2rem 2rem 1.75rem",
-      direction: isRtl ? "rtl" : "ltr",
-      position: "relative",
-      overflow: "hidden",
-    }}>
-      {/* Decorative gold corner ornament — always on the trailing side */}
-      <div style={{
-        position: "absolute",
-        [isRtl ? "left" : "right"]: 0,
-        top: 0,
-        width: 80,
-        height: 80,
-        background: `linear-gradient(${isRtl ? "225deg" : "135deg"}, var(--gold-soft) 0%, transparent 70%)`,
-        opacity: 0.6,
-        pointerEvents: "none",
-      }}/>
-
-      {/* Eyebrow row — direction:rtl on parent handles ordering automatically */}
-      <div className="flex items-center gap-3 mb-4">
-        <span style={{ width: 28, height: 1.5, background: "var(--gold)", flexShrink: 0 }}/>
-        <span style={{
-          fontSize: 10,
-          letterSpacing: isRtl ? "0.2em" : "0.32em",
-          textTransform: isRtl ? "none" : "uppercase",
-          color: "var(--gold-deep)",
-          fontWeight: 700,
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'DM Mono', monospace",
-        }}>
-          {sectionLabel} · {meta.numeral || "—"}
-        </span>
-      </div>
-
-      {/* Main title row */}
-      <div className="flex items-baseline gap-4 mb-3 flex-wrap">
-        <h2 style={{
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
-          fontStyle: isRtl ? "normal" : "italic",
-          fontWeight: isRtl ? 700 : 600,
-          fontSize: isRtl ? "clamp(2.2rem, 5vw, 3rem)" : "clamp(2rem, 4.5vw, 2.75rem)",
-          color: "var(--ink)",
-          lineHeight: 1.05,
-          margin: 0,
-        }}>
-          {heading}
-        </h2>
-
-        <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: "italic",
-          fontSize: "1.4rem",
-          color: "var(--gold)",
-          opacity: 0.55,
-          letterSpacing: "0.4em",
-          padding: "0 0.25rem",
-          alignSelf: "center",
-        }}>
-          ◆
-        </span>
-      </div>
-
-      {/* Tagline */}
-      {tagline && (
-        <p style={{
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
-          fontStyle: isRtl ? "normal" : "italic",
-          fontSize: isRtl ? "1.05rem" : "1.15rem",
-          color: "var(--ink-2)",
-          fontWeight: 400,
-          lineHeight: 1.55,
-          margin: "0 0 1.25rem",
-          maxWidth: "38rem",
-        }}>
-          {tagline}
-        </p>
-      )}
-
-      {/* Bottom row: count → rule → invitation. direction:rtl flips ordering for Arabic. */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.85rem",
-        paddingTop: "1rem",
-        borderTop: "1px solid var(--rule)",
-      }}>
-        <span style={{
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'DM Mono', monospace",
-          fontSize: 11,
-          letterSpacing: isRtl ? "0.05em" : "0.22em",
-          textTransform: isRtl ? "none" : "uppercase",
-          color: "var(--gold-deep)",
-          fontWeight: 700,
-          flexShrink: 0,
-        }}>
-          {itemLabel}
-        </span>
-        <span style={{ flex: 1, height: 1, background: "var(--rule)" }}/>
-        <span style={{
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif",
-          fontStyle: isRtl ? "normal" : "italic",
-          fontSize: isRtl ? "0.9rem" : "0.95rem",
-          color: "var(--ink-3)",
-          flexShrink: 0,
-        }}>
-          {isRtl ? "اختر مقالا للقراءة" : "Select an article to begin"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function LegacyListView({ articles, category, library, onOpen, onAddText, onDelete }) {
-  const heading = category === "all" ? "Articles & Summaries" : CATEGORY_LABELS[category];
-  const isRtl = isRtlCategory(category);
-
-  return (
-    <div className="px-4 md:px-8 py-6 md:py-8 grid grid-cols-12 gap-6">
-      {/* Articles column */}
-      <div className="col-span-12 xl:col-span-8 2xl:col-span-9 space-y-4">
-        {/* Section masthead */}
-        <SectionMasthead
-          category={category}
-          heading={heading}
-          isRtl={isRtl}
-          itemCount={articles.length}
-        />
-
-        {articles.length === 0 ? (
-          <div className="card px-8 py-16 text-center rise">
-            <div className="display text-5xl mb-3 italic" style={{ color: "var(--gold)" }}>◆</div>
-            <p className="display text-xl italic mb-1" style={{ color: "var(--ink-2)" }}>
-              No articles in this section yet.
-            </p>
-            <p className="body text-sm mb-6" style={{ color: "var(--ink-3)" }}>
-              Use the editor to add your own piece.
-            </p>
-            <button onClick={onAddText} className="reader-btn">
-              <Plus size={14}/> Add Text
-            </button>
-          </div>
-        ) : (
-          articles.map((a, i) => (
-            <ArticleCard key={a.id} article={a} onOpen={() => onOpen(a.id)}
-              onDelete={a.custom ? () => onDelete(a.id) : null}
-              status={getReadStatus(a, library)}
-              progress={getReadProgress(a, library)}
-              style={{ animationDelay: `${i * 0.04}s` }}/>
-          ))
-        )}
-      </div>
-
-      {/* Add Text panel */}
-      <aside className="col-span-12 xl:col-span-4 2xl:col-span-3">
-        <div className="card p-6 sticky top-24 rise">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="display text-2xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
-              Add Text
-            </h3>
-            <span className="tag">Full Page</span>
-          </div>
-          <p className="body text-sm leading-relaxed mb-6" style={{ color: "var(--ink-3)" }}>
-            Open a full-page editor and paste your own articles, notes, or chapters. They will appear in your library and can be highlighted, quoted, and looked up the same way.
-          </p>
-          <button onClick={onAddText} className="pill-light">
-            <Plus size={13}/> Open Editor
-          </button>
-        </div>
-
-        <div className="card p-6 mt-4 rise" style={{ animationDelay: "0.1s" }}>
-          <div className="ui text-[9px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--gold-deep)" }}>
-            How to use
-          </div>
-          <ul className="body text-sm leading-relaxed space-y-2.5" style={{ color: "var(--ink-2)" }}>
-            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>i.</span><span>Open any article and select text to <em>highlight</em>, <em>save a quote</em>, or <em>define</em>.</span></li>
-            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>ii.</span><span>Definitions show English, Arabic, IPA, and a brief gloss.</span></li>
-            <li className="flex gap-2"><span style={{ color: "var(--gold)" }}>iii.</span><span>Saved items live in <em>Quotes</em> and <em>Vocabulary</em>.</span></li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function LegacyArticleCard({ article: a, onOpen, onDelete, status = "new", progress = 0, style }) {
-  const isRtl = isRtlCategory(a.category);
-  const rtlStyle = isRtl ? {
-    direction: "rtl",
-    fontFamily: "'Noto Naskh Arabic', serif",
-    textAlign: "right",
-  } : null;
-  return (
-    <div className="card px-6 py-5 rise" style={style}>
-      <div className="flex items-start justify-between gap-3 mb-3 flex-wrap"
-        style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="tag">{CATEGORY_LABELS[a.category] || "Misc"}</span>
-          <StatusBadge status={status} percent={progress}/>
-        </div>
-        {onDelete && (
-          <button onClick={(e) => { e.stopPropagation(); if (confirm("Delete this article?")) onDelete(); }}
-            className="opacity-50 hover:opacity-100" title="Delete">
-            <Trash2 size={14} style={{ color: "var(--ink-3)" }}/>
-          </button>
-        )}
-      </div>
-      <h3 onClick={onOpen} className={isRtl ? "mb-2 cursor-pointer leading-tight" : "display text-2xl md:text-[1.7rem] mb-2 cursor-pointer leading-tight"}
-        style={{
-          fontWeight: isRtl ? 700 : 600,
-          color: "var(--ink)",
-          fontSize: isRtl ? "1.5rem" : undefined,
-          ...rtlStyle,
-        }}>
-        {a.title}
-      </h3>
-      <p className={isRtl ? "text-sm md:text-[0.95rem] mb-4 leading-relaxed" : "body text-sm md:text-[0.95rem] mb-4 italic leading-relaxed"}
-        style={{ color: "var(--ink-3)", ...rtlStyle }}>
-        {a.author} {a.excerpt && `— ${a.excerpt}`}
-      </p>
-      <div className="flex items-center justify-between">
-        <button onClick={onOpen} className="reader-btn">
-          <BookOpen size={12}/> Open Reader
-        </button>
-        <div className="ui text-[9px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
-          {a.readTime} · {a.date}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   READER VIEW
-   ════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   BOOX E-INK OVERRIDE for embedded book HTML
-   Injects a stylesheet that:
-   • forces light page + dark text (high contrast for e-ink)
-   • saturates accent colors so they survive Kaleido 3 desaturation
-   • removes shadows / blurs
-   • applies CSS zoom for the user font-size control
-   ════════════════════════════════════════════════════════════════ */
-function getArticleFolio(index, isRtl) {
-  return isRtl ? formatCount(index + 1, true) : String(index + 1).padStart(2, "0");
-}
-
-function getProgressLabel(status, progress) {
-  if (status === "done") return "Complete";
-  if (progress > 0) return `${Math.round(progress * 100)}% read`;
-  return "Unread";
-}
-
-function getTodayArticle(articles) {
-  if (!articles.length) return null;
-  const idx = getDailyQuoteIndex(articles.length, new Date());
-  return articles[idx < 0 ? 0 : idx];
-}
-
-function ListView({ articles, category, library, onOpen, onAddText, onDelete }) {
-  const heading = category === "all" ? "Articles & Summaries" : CATEGORY_LABELS[category];
-  const isRtl = isRtlCategory(category);
-  const articleStates = articles.map((article, index) => {
-    const progress = getReadProgress(article, library);
-    const status = getReadStatus(article, library);
-    const lastSeen = library?.reading?.[article.id]?.lastSeen || 0;
-    return { article, index, progress, status, lastSeen };
-  });
-  const continueItem =
-    articleStates
-      .filter(item => item.progress > 0 && item.progress < 1)
-      .sort((a, b) => b.lastSeen - a.lastSeen)[0] ||
-    articleStates
-      .filter(item => item.status !== "done")
-      .sort((a, b) => a.index - b.index)[0] ||
-    articleStates[0];
-  const todayArticle = getTodayArticle(articles);
-  const completedCount = articleStates.filter(item => item.status === "done").length;
-  const readingCount = articleStates.filter(item => item.progress > 0 && item.progress < 1).length;
-
-  return (
-    <div className="px-4 md:px-8 py-6 md:py-8 library-board">
-      <div className="library-main-stack">
-        <SectionMasthead
-          category={category}
-          heading={heading}
-          isRtl={isRtl}
-          itemCount={articles.length}
-        />
-
-        {articles.length === 0 ? (
-          <div className="card px-8 py-16 text-center rise">
-            <div className="display text-5xl mb-3 italic" style={{ color: "var(--gold)" }}>*</div>
-            <p className="display text-xl italic mb-1" style={{ color: "var(--ink-2)" }}>
-              No articles in this section yet.
-            </p>
-            <p className="body text-sm mb-6" style={{ color: "var(--ink-3)" }}>
-              Use the editor to add your own piece.
-            </p>
-            <button onClick={onAddText} className="reader-btn">
-              <Plus size={14}/> Add Text
-            </button>
-          </div>
-        ) : (
-          <div className="archive-list rise" style={{ animationDelay: "0.06s" }}>
-            <div className="archive-list__header" aria-hidden="true">
-              <span>Folio</span>
-              <span>Title Record</span>
-              <span>Reading State</span>
-            </div>
-            {articleStates.map(({ article, index, status, progress }) => (
-              <ArticleCard
-                key={article.id}
-                article={article}
-                folio={getArticleFolio(index, isRtl)}
-                onOpen={() => onOpen(article.id)}
-                onDelete={article.custom ? () => onDelete(article.id) : null}
-                status={status}
-                progress={progress}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <aside className="library-side-stack">
-        <div className="shelf-panel rise">
-          <div className="shelf-panel__label">Library State</div>
-          <div className="shelf-stats" aria-label="Library reading summary">
-            <div className="shelf-stat">
-              <strong>{formatCount(articles.length, false)}</strong>
-              <span>Total</span>
-            </div>
-            <div className="shelf-stat">
-              <strong>{formatCount(readingCount, false)}</strong>
-              <span>Active</span>
-            </div>
-            <div className="shelf-stat">
-              <strong>{formatCount(completedCount, false)}</strong>
-              <span>Read</span>
-            </div>
-          </div>
-          {continueItem ? (
-            <ShelfMiniCard
-              label={continueItem.progress > 0 ? "Continue Reading" : "Begin Here"}
-              article={continueItem.article}
-              progress={continueItem.progress}
-              onOpen={() => onOpen(continueItem.article.id)}
-            />
-          ) : (
-            <p className="shelf-panel__copy">Your reading queue will appear here once this section has texts.</p>
-          )}
-        </div>
-
-        {todayArticle && (
-          <div className="shelf-panel rise" style={{ animationDelay: "0.08s" }}>
-            <div className="shelf-panel__label">Today's Reading</div>
-            <h3 className="shelf-panel__title">{todayArticle.title}</h3>
-            <p className="shelf-panel__copy">
-              A rotating shelf pick for the day, chosen from the current library view.
-            </p>
-            <button onClick={() => onOpen(todayArticle.id)} className="pill-light">
-              <BookMarked size={13}/> Open Pick
-            </button>
-          </div>
-        )}
-
-        <div className="shelf-panel rise" style={{ animationDelay: "0.12s" }}>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="shelf-panel__title" style={{ margin: 0 }}>Add Text</h3>
-            <span className="tag">Full Page</span>
-          </div>
-          <p className="shelf-panel__copy">
-            Paste your own articles, notes, or chapters. They enter the archive with the same highlights, quotes, definitions, and reading progress.
-          </p>
-          <button onClick={onAddText} className="pill-light">
-            <Plus size={13}/> Open Editor
-          </button>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function ShelfMiniCard({ label, article, progress, onOpen }) {
-  return (
-    <div className="shelf-mini-card">
-      <div className="shelf-mini-card__meta">
-        <span className="shelf-mini-card__detail">{label}</span>
-        <span className="tag">{CATEGORY_LABELS[article.category] || "Misc"}</span>
-      </div>
-      <h3 className="shelf-mini-card__title">{article.title}</h3>
-      <div className="mini-progress" aria-hidden="true" style={{ "--progress": `${Math.round(progress * 100)}%` }}>
-        <span/>
-      </div>
-      <div className="flex items-center justify-between gap-3 mt-3">
-        <span className="shelf-mini-card__detail">{getProgressLabel(progress >= 1 ? "done" : progress > 0 ? "reading" : "new", progress)}</span>
-        <button onClick={onOpen} className="reader-btn archive-open-btn">
-          <BookOpen size={12}/> Read
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ArticleCard({ article: a, folio, onOpen, onDelete, status = "new", progress = 0 }) {
-  const isRtl = isRtlCategory(a.category);
-  const rtlStyle = isRtl ? {
-    direction: "rtl",
-    fontFamily: "'Noto Naskh Arabic', serif",
-    textAlign: "right",
-  } : null;
-  const progressPct = Math.round(progress * 100);
-
-  return (
-    <div className="archive-row" onClick={onOpen} style={{ direction: isRtl ? "rtl" : "ltr" }}>
-      <div className="archive-row__folio">
-        <span className="archive-row__number">{folio}</span>
-        <span className="archive-row__category">{CATEGORY_LABELS[a.category] || "Misc"}</span>
-      </div>
-
-      <div className="archive-row__body">
-        <div className="archive-row__meta">
-          <StatusBadge status={status} percent={progress}/>
-          <span className="ui text-[9px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
-            {a.readTime} / {a.date}
-          </span>
-          {onDelete && (
-            <button onClick={(e) => { e.stopPropagation(); if (confirm("Delete this article?")) onDelete(); }}
-              className="opacity-55 hover:opacity-100" title="Delete">
-              <Trash2 size={14} style={{ color: "var(--ink-3)" }}/>
-            </button>
-          )}
-        </div>
-        <h3 className="archive-row__title" style={{
-          fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : undefined,
-          fontStyle: isRtl ? "normal" : undefined,
-          fontWeight: isRtl ? 700 : undefined,
-          ...rtlStyle,
-        }}>
-          {a.title}
-        </h3>
-        <p className="archive-row__excerpt" style={rtlStyle}>
-          {a.author}{a.excerpt ? ` - ${a.excerpt}` : ""}
-        </p>
-      </div>
-
-      <div className="archive-row__progress">
-        <div className="archive-row__progress-label">
-          <span>{getProgressLabel(status, progress)}</span>
-          <span>{progressPct}%</span>
-        </div>
-        <div className="mini-progress" aria-hidden="true" style={{ "--progress": `${progressPct}%` }}>
-          <span/>
-        </div>
-        <button onClick={(e) => { e.stopPropagation(); onOpen(); }} className="reader-btn archive-open-btn">
-          <BookOpen size={12}/> Open Reader
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, plainInk = false) {
-  const overrideCss = `
+`,yf=[{id:"cryptography-complete-deep-research",title:"Cryptography - Complete Deep Research",author:"Athenaeum Research",category:"tech",excerpt:"A complete map of cryptography from classical ciphers to public-key systems, attacks, TLS, and quantum-resistant algorithms.",date:"Deep Research",readTime:"60 min",richHtml:Xv,body:[]},{id:"dubai-cassation-2026-4-135",title:"حكم محكمة تمييز دبي — الطعنان رقما 4 و 135 لسنة 2026 تجاري",author:"محكمة تمييز دبي",category:"arabic-law",excerpt:"حجية الأمر المقضي ومبدأ نسبية أثر العقود — نقض جزئي بسبب سابقة الفصل في النزاع أمام محاكم أبوظبي. جلسة 25-2-2026.",date:"25-2-2026",readTime:"35 د",corePrinciple:[{text:"قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، فمتى حاز الحكم قوة الأمر المقضي امتنع على الخصوم العودة إلى المناقشة في المسألة التي فُصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.",source:"حجية الأمر المقضي · المادة 87 من قانون الإثبات"},{text:"إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير. ولكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة الشركاء فيها، فلا تُلزَم بديون غيرها ولا تُطالَب بحقوقها.",source:"نسبية أثر العقود · المادتان 250 و 252 من قانون المعاملات المدنية"}],body:["بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ","باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة التمييز — بالجلسة العلنية المنعقدة يوم 25-02-2026 بمقر محكمة التمييز بدبي. في الطعن رقم 4 لسنة 2026 طعن تجاري. طاعن: و. ا. ا. د. مطعون ضدهم: ط. ا. ل. ا. ا. ذ. ش. ذ. ا. ا. ، س. ا. م. ، س. ك. م. ، ز. ز. ، س. ل. م. ، ج. ر. الحكم المطعون فيه: الصادر بالاستئناف رقم 2025/2731 استئناف تجاري بتاريخ 25-12-2025.","أصدرت المحكمة الحكم التالي بعد الاطلاع على الأوراق وسماع تقرير التلخيص الذي أعده وتلاه بجلسة المرافعة السيد القاضي المقرر دكتور/ محسن إبراهيم، وبعد المداولة:","حيث إن الوقائع — على ما يبين من الحكم المطعون فيه وسائر الأوراق — تتحصل في أن الطاعن في الطعن رقم 135 لسنة 2026 تجاري (جيزهونج رين) أقام على المطعون ضدهم فيه (1- وقار أحمد الله ديتا، 2- زهينكسين زهانج، 3- طريق الإخلاص لتجارة السيارات المستعملة ذ.م.م — شركة الشخص الواحد، 4- سينوباك أوتو م.م.ح، 5- سينوباك كارز م.م.ح، 6- سينوباك للسيارات م.م.ح) الدعوى رقم 2404 لسنة 2024 تجاري بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه وبينهم.","وإلزام المطعون ضدهم من الثالثة حتى الأخيرة والطاعن بأن يؤدوا إليه مبلغ 24,823,268 درهماً (أربعة وعشرون مليوناً وثمانمائة وثلاثة وعشرون ألفاً ومائتان وثمانية وستون درهماً) والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.","وقال بياناً لذلك إنه أحد رجال الأعمال الصينيين وله العديد من الاستثمارات في الدولة وخارجها، وبتاريخ 1/4/2023 أبرم اتفاقية تعاون مع المطعون ضدهم من الثاني حتى الأخيرة تهدف إلى تكوين شراكة في مجال تجارة السيارات، على أن تكون حصته فيها بنسبة 84.94% من أسهمها بمبلغ 14,654,984.81 درهماً، وحصة المطعون ضده الأول بنسبة 13.06% بمبلغ 2,252,559.46 درهماً، وحصة المطعون ضده الثاني بنسبة 2% بمبلغ 345,051.19 درهماً.","وقد سدد للمطعون ضده الأول مبلغ 11,656,096 درهماً بموجب إقرارات وسندات قبض، إلا أن المطعون ضده الأول أخل بتنفيذ التزاماته التعاقدية ولم ينشئ الشركة، ولم يقم بإدخال باقي أطراف الاتفاقية في الشركة، ولم يزوده بالبيانات المالية عن كيفية تصرفه في المبالغ التي تسلمها منه ومآلها، ولم يوزع الأرباح أو يرد له المبالغ التي سددها، وكذا عوائد استثماراتها الاتفاقية بواقع 28% سنوياً ليكون العائد الاستثماري المستحق له عن المبالغ التي استلمها المطعون ضده الأول منه حتى تاريخ 31/1/2024 مبلغ 2,572,247 درهم، بما يحق له فسخ هذه الاتفاقية واسترداد ما سبق وأن سدده، والتعويض عما فاته من كسب وما لحقه من خسارة. ومن ثم فقد أقام الدعوى بما سلف من طلبات.","ندبت المحكمة خبيراً وبعد أن أودع تقريريه الأصلي والتكميلي حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023 ورفضت ما عدا ذلك من طلبات. استأنف (المدعي) الطاعن في الطعن رقم 135 لسنة 2026 تجاري هذا الحكم بالاستئناف رقم 2731 لسنة 2025 تجاري، وبتاريخ 25-12-2025 قضت المحكمة بإلغاء الحكم المستأنف فيما قضى به من رفض طلبي استرداد المبلغ الذي سدده الطاعن في الطعن رقم 135 لسنة 2026 تجاري، والتعويض، وبإلزام المطعون ضده الأول بأن يؤدي إليه مبلغ 11,706,096 درهماً والفائدة القانونية بواقع 5% سنوياً من تاريخ المطالبة وحتى السداد التام، على أن تسري الفائدة على مبلغ التعويض من تاريخ صيرورة الحكم نهائياً.","طعن المدعى عليه الأول في هذا الحكم بالتمييز بالطعن رقم 4 لسنة 2026 تجاري بموجب صحيفة أودعت إلكترونياً لدى مكتب إدارة الدعوى بتاريخ 02-01-2026 بطلب نقض الحكم المطعون فيه والإحالة. قدم محامي المطعون ضده الأول مذكرة بالرد دفع فيها بعدم قبول الطعن لمخالفته لإعمال موجبات المادة 179 من قانون الإجراءات المدنية رقم (42) لسنة 2022 والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وعلى بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه؛ إذ دُوِّن بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية — في حين أن تاريخ الحكم محل الطعن هو 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي، وطلب رفض الطعن.","كما قدم الطاعن مذكرة أبدى فيها دفعاً بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 تجاري أبوظبي والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. كما طعن المدعي في ذات الحكم بالتمييز بالطعن رقم 135/2026 بموجب صحيفة أودعت لدى مكتب إدارة الدعوى بتاريخ 21-01-2026 بطلب نقض الحكم المطعون فيه والقضاء له بكافة طلباته في الدعوى. لم يقدم المطعون ضدهم مذكرة بالرد، وإذ عرض الطعنان على هذه المحكمة في غرفة مشورة فرأت أنهما جديران بالنظر وحددت جلسة لنظرهما وفيها قررت حجزهما للحكم لجلسة اليوم.","⁂","وحيث إنه عن دفع المطعون ضده الأول في الطعن رقم 4 لسنة 2026 بعدم قبول الطعن لعدم اشتمال صحيفة الطعن على البيانات الجوهرية المقررة بالمادة 179 من قانون الإجراءات المدنية رقم 42 لسنة 2022 — والتي أوجبت أن تشتمل صحيفة الطعن على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم وبيان الحكم المطعون فيه وتاريخ صدوره — إذ ورد بصحيفة الطعن أن تاريخ الحكم المطعون فيه 24/12/2025، وأنه صادر عن محكمة أبوظبي الاستئنافية، في حين أن تاريخ الحكم محل الطعن صدر بتاريخ 25/12/2025، وصادر عن محكمة دبي وليس أبوظبي.","وحيث إن هذا الدفع غير سديد. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً لنص المادة (179) من قانون الإجراءات المدنية رقم 42 لسنة 2022 أنه: «1. يرفع الطعن بالنقض بصحيفة تودع مكتب إدارة الدعوى في المحكمة التي أصدرت الحكم، أو المحكمة الاتحادية العليا أو محكمة النقض أو محكمة التمييز — بحسب الأحوال — موقعة من محامٍ مقبول للمرافعة أمامها، على أن يقدم ما يفيد أداء الرسم كاملاً مع التأمين خلال (3) ثلاثة أيام عمل تالية لتاريخ الإشعار بتقدير الرسم، ويقيد الطعن في السجل المعد لذلك عقب استيفاء ذلك الإجراء».","«4- يجب أن تشتمل الصحيفة علاوة على البيانات المتعلقة بأسماء الخصوم وصفاتهم وعنوان كل منهم على بيان الحكم المطعون فيه وتاريخ صدوره وتاريخ إعلانه إذا كان قد تم الإعلان وبيان الأسباب التي بني عليها الطعن وطلبات الطاعن. 5- إذا لم يحصل الطعن على الوجه المتقدم كان غير مقبول، وتحكم المحكمة من تلقاء نفسها بعدم قبوله».","وكان المشرع قد استهدف من ذكر بيانات الحكم المطعون فيه وأسماء الخصوم التعريفَ بالحكم المطعون فيه والمحكمة التي أصدرته وأشخاص وصفات من تتردد بينهم الخصومة تعريفاً كافياً ينفي الجهالة أو اللبس، حتى لا يكتنف الغموضُ الصحيفةَ وشخص المحكوم له أو المحكوم عليه. وقد رتبت هذه المادة البطلان على النقص أو الخطأ الجسيم في أسماء الخصوم أو صفاتهم، متى كان من شأنه التجهيل بالخصم أو إحداث لبس في التعرف على شخصيته، بما قد يؤدي إلى عدم التعريف بحقيقة شخصيته أو إلى استبدال شخص بآخر لا شأن له بالخصومة. أما إذا كان النقص أو الخطأ في بيانات الحكم المطعون عليه وأسماء الخصوم أو صفاتهم لا يؤدي إلى التشكيك أو التجهيل في حقيقة القضية المطعون في حكمها والخصم أو اتصاله بالخصومة، فلا محل لإعمال جزاء البطلان المنصوص عليه في المادة سالفة البيان.","وكان البين من صحيفة الطعن أنها أوردت بديباجتها أسماء الخصوم فيها، وأن الحكم المطعون فيه رقم 2731 لسنة 2025 استئناف تجاري وأنه صدر بتاريخ 25-12-2025، وقد اختتمت بطلبات الطاعن بطلب قبول الطعن شكلاً، وبصفة مستعجلة وقف تنفيذ الحكم المطعون فيه، وفي الموضوع بنقض الحكم المطعون فيه. ومن ثم فإنها تكون قد اشتملت على البيانات الجوهرية التي تطلبتها المادة 179 من المرسوم بقانون رقم 42 لسنة 2022. ولا ينال من ذلك ما ورد خطأً بالصحيفة في البند أولاً منها من أن الحكم المطعون فيه صدر من محاكم أبوظبي بتاريخ 24-12-2025، إذ أن هذا الخطأ ليس من شأنه أن يؤدي إلى التجهيل بالحكم المطعون فيه أو يفقد الصحيفة شروط قبولها، بما يضحى معه الدفع قائماً على غير أساس.","وحيث إن الطعنين استوفيا أوضاعهما الشكلية.","⁂","أولاً — الطعن رقم 135 لسنة 2026 تجاري","وحيث إن الطعن أقيم على ثلاثة أسباب، ينعى الطاعن بالأول والثاني منها على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، إذ قضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة بالتضامن مع المطعون ضده الأول في أداء المبلغ المقضي به والتعويض، رغم تمسكه بأنهم شركاء في الاتفاقية محل التداعي، وأن المطعون ضده الأول يمتلك المطعون ضدهم من الثالثة حتى الأخيرة، وأن امتلاك الأخير لتلك الشركات كان سبباً لعقد الاتفاقية محل الطعن، وأنهم استحصلوا منه على جزء من المبلغ الذي أداه بغرض تفعيل الاتفاقية، بما كان يتعين إلزامهم بالتضامن بأداء المبلغ المقضي به والتعويض، والعوائد المتوقعة للربح بواقع 28% عن المبلغ الذي أداه (6,104,203.88 درهم) من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025 وما يستجد منها وفق البين بتقرير الخبير الاستشاري المقدم منه. وإذ خالف الحكم المطعون فيه هذا النظر وقضى برفض إلزام المطعون ضدهم من الثالثة حتى الأخيرة مع المطعون ضده الأول في سداد المبلغ المقضي به والأرباح المتوقعة، فهو مما يعيبه ويستوجب نقضه.","وحيث إن هذا النعي مردود. ذلك أنه من المقرر في قضاء هذه المحكمة وفقاً للمادتين 250 و252 من قانون المعاملات المدنية أنه إعمالاً لمبدأ نسبية أثر العقود، فإن أثر العقد ينصرف إلى عاقديه ولا يرتب التزامات في ذمة الغير، ولكن يجوز أن يكسبه حقاً، مما يدل على أن العقد آثاره نسبية لا تتعدى أطرافه والخلف العام والخلف الخاص لكل منهما والدائنين في الحدود التي بينها القانون. فلا يرتب العقد التزاماً في ذمة الغير، ولا تنصرف الحقوق الناشئة عنه إلا إلى طرفيه، إلا أن يتضمن اشتراطاً لمصلحة الغير.","وأن لكل شركة ذمة مالية وشخصية اعتبارية مستقلة عن ذمة وشخصية أية شركة أخرى وعن ذمة وشخصية الشركاء فيها، فلا تلتزم أي منها بديون الأخرى أو تطالب بحقوقها. وكان الثابت من الاتفاقية المؤرخة 1-4-2023 أنها مبرمة بين الطاعن والمطعون ضدهما الأول والثاني بأشخاصهم. ومن ثم فإن آثارها لا تنصرف إلا لهؤلاء فقط دون المطعون ضدهم من الثالثة حتى الأخيرة. وإذ انتهى الحكم المطعون فيه إلى ما يوافق هذا النظر — ولم يلزم المطعون ضدهم الثلاثة الآخرين مع المطعون ضده الأول — بالمبلغ المقضي به والتعويض، فإنه يكون قد انتهى إلى النتيجة الصحيحة في هذا الشأن، بما يكون معه النعي عليه بما ورد بهذين السببين قائماً على غير أساس.","وحيث إن الطاعن ينعى بالسبب الثالث على الحكم المطعون فيه مخالفة القانون والخطأ في تطبيقه والقصور في التسبيب والفساد في الاستدلال، وفي بيانه يقول إن الحكم المطعون فيه رفض إلزام المطعون ضده الأول (الطاعن في الطعن رقم 4 لسنة 2026 تجاري) بأن يؤدي إليه عوائد أرباح المبلغ المسلم إليه، كما قدر له تعويضاً بخساً — رغم أن الاتفاقية محل التداعي نصت على استحقاقه لعوائد أرباح بواقع 28% — بما يحق له اقتضاء أرباح عن المبلغ الذي أداه للمطعون ضده الأول بواقع 6,104,203.88 درهم من تاريخ الاستحقاق الحاصل في 1-3-2024 وحتى 1-3-2025، وأن ما حاق به من أضرار يجاوز التعويض المقضي به، بما كان يتعين القضاء بالتعويض المطالب به جبراً للضرر، وهو مما يعيب الحكم بما يستوجب نقضه. وتشير المحكمة إلى الرد على هذا السبب مع الطعن رقم 4 لسنة 2026 تجاري.","⁂","ثانياً — الطعن رقم 4 لسنة 2026 تجاري","وحيث إنه عن دفع الطاعن بعدم جواز نظر الدعوى لسبق الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين 1180 و1297 لسنة 2024 نقض تجاري أبوظبي — فإنه من المقرر في قضاء هذه المحكمة أن مقتضى المادة 94 من قانون الإجراءات المدنية أن الدفع بعدم جواز نظر الدعوى لسابقة الفصل فيها من النظام العام تقضي به المحكمة من تلقاء نفسها، ولو لم يتمسك به أي من الخصوم، طالما كانت عناصره مطروحة عليها. ويجوز إبداؤه في أي مرحلة ولو لأول مرة أمام محكمة التمييز، طالما كانت عناصره مطروحة.","وعلة ذلك احترام حجية الحكم السابق صدوره في نفس الدعوى، وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. وأنه يشترط لإعمال حجية الشيء المحكوم فيه — عملاً بنص المادة 87 من قانون الإثبات — وحدة الخصوم والموضوع والسبب، ولا يمنع من وحدة الموضوع اختلاف الطلبات في الدعويين، إذ يكفي أن يكون الحكم السابق قد حسم النزاع حول مسألة أساسية أو مسألة كلية شاملة يتوقف على ثبوتها أو نفيها ثبوت أو نفي الحق موضوع الدعوى التالية.","ومن المقرر كذلك أن قضاء الحكم النهائي في منطوقه أو في أسبابه المرتبطة به في مسألة أساسية يحوز قوة الأمر المقضي به، ويكون مانعاً للخصوم أنفسهم من التنازع في هذه المسألة في دعوى تالية تكون فيها هذه المسألة بذاتها هي الأساس فيما يدعيه أحد الطرفين من حقوق مترتبة عليها. وأن قوة الأمر المقضي التي تلحق بالحكم تعلو على اعتبارات النظام العام، وأنه متى حاز الحكم قوة الأمر المقضي فإنه يمنع الخصوم في الدعوى التي صدر فيها من العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها، أو أُثيرت ولم يبحثها الحكم الصادر فيها.","لما كان ذلك، وكان المطعون ضده الأول جيزهونج رين (المدعي في الدعوى) سبق وأن أقام على الطاعن وقار أحمد الله ديتا والمطعون ضده الثاني (زهينكسين زهانج) الدعوى رقم 146 لسنة 2024 تجاري أبوظبي بطلب الحكم بفسخ الاتفاقية المؤرخة 1-4-2023 المبرمة بينه والطاعن والمطعون ضده الثاني، وإلزامهما بأن يؤديا إليه مبلغ 24,823,268 درهماً والفائدة التأخيرية بواقع 20% سنوياً من تاريخ المطالبة وحتى تمام السداد.","وقُضي في تلك الدعوى بفسخ عقد الشراكة المؤرخ 1-4-2023، وبإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.","وقد طعن المدعي في تلك الدعوى (المطعون ضده الأول) على هذا الحكم بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي، وقُضي فيه بتاريخ 30-4-2024 برفض الاستئناف وتأييد الحكم المستأنف. كما طعن في ذات الحكم المدعى عليه (وقار أحمد الله ديتا) بالاستئناف رقم 1442 لسنة 2024 تجاري، وقُضي فيه بتاريخ 28-12-2024 بعدم جواز الاستئناف لسابقة الفصل فيه بالاستئناف رقم 478 لسنة 2024 تجاري أبوظبي. فطعن عليه بالتمييز بالطعن رقم 1180 لسنة 2024 تجاري، وبتاريخ 25/12/2024 قضت محكمة النقض بعدم جواز الطعن. وكذا بالطعن رقم 1297 لسنة 2024 تجاري، وبتاريخ 4-2-2025 قضت المحكمة برفض الطعن.","وكانت طلبات (المطعون ضده الأول) قِبَل المدعى عليه الأول (الطاعن) في الدعوى الماثلة هي ذات طلباته في الدعوى السابقة رقم 146 لسنة 2024 تجاري أبوظبي، وعن ذات الموضوع وبذات السبب. بما يمتنع معه على الخصوم التنازع في المسألة التي فصل فيها الحكم السابق بدعوى تالية، ولو بأدلة قانونية أو واقعية لم تسبق إثارتها في الدعوى السابقة، أو أُثيرت فيها ولم يبحثها الحكم الصادر في تلك الدعوى، طالما كانت تلك المسألة هي بذاتها الأساس فيما يدعيه أي من الطرفين قِبل الآخر من حقوق مترتبة عليها لم تتغير، وتناضل فيها الطرفان في الدعوى السابقة، واستقرت حقيقتها بالحكم السابق استقراراً جامعاً مانعاً من إعادة مناقشته، وذلك احتراماً لحجية الحكم النهائي البات الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي والمردد بين طرفي الطعن.","بما كان يتعين على الحكم المطعون فيه القضاء بعدم جواز نظر الدعوى بشأن طلب المدعي (المطعون ضده الأول في الطعن رقم 4 لسنة 2026 تجاري — الطاعن في الطعن رقم 135 لسنة 2026 تجاري) استرداد ما سبق وأن سدده للطاعن مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي. وإذ خالف الحكم المطعون فيه هذا النظر، فهو مما يعيبه ويستوجب نقضه.","وحيث إن المحكمة قد انتهت إلى نقض الحكم المطعون فيه وفقاً لما تقدم، فإن النعي عليه بما ورد بالسبب الثالث من أسباب الطعن رقم 135 لسنة 2026 تجاري يكون قائماً على غير أساس متعيناً رفضه.","⁂","وحيث إن الاستئناف رقم 2731 لسنة 2025 صالح للفصل فيه — ولما تقدم، وكان البين بالأوراق أن الحكم الصادر في الدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 استئناف تجاري أبوظبي، والطعنين رقمي 1180 و1297 لسنة 2024 نقض تجاري أبوظبي، سبق له وأن نظر ذات الطلبات في الدعوى قِبَل الطاعن وانتهى بحكم نهائي بات حائز لقوة الأمر المقضي بإلزام (الطاعن) بأن يؤدي (للمطعون ضده الأول) مبلغ 11,656,096.00 درهماً والفائدة بواقع 5% سنوياً من تاريخ قيد الدعوى وحتى السداد التام، وبرفض طلب المطعون ضده الأول الحصول على العائد الاتفاقي عن الاتفاقية سالفة البيان، وبإلزام (الطاعن) بتعويض (المطعون ضده الأول) عن الضرر المادي والمعنوي بمبلغ 500,000 درهم.","بما يمتنع معه على الخصوم في الدعوى السابقة العودة إلى المناقشة في المسألة التي فصل فيها، ولو بأدلة قانونية أو واقعية لم يسبق إثارتها أو أُثيرت ولم يبحثها الحكم الصادر فيها، وذلك احتراماً لحجية الحكم السابق صدوره في نفس الدعوى. وهذه الحجية أجدر بالاحترام وأكثر اتصالاً بالنظام العام من أي أمر آخر، لما يترتب على إهدارها من تأبيد المنازعات وعدم استقرار الحقوق لأصحابها. بما يتعين معه القضاء بعدم جواز نظر الدعوى بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، لسابقة الفصل فيها بالدعوى رقم 146 لسنة 2024 تجاري أبوظبي واستئنافيها رقمي 478 و1442 لسنة 2024 والطعنين بالنقض رقمي 1180 و1297 لسنة 2024 أبوظبي.","(دون طلب الفسخ، بحسبان أن محكمة أول درجة حكمت بتاريخ 21-8-2025 بفسخ الاتفاقية المؤرخة 1-4-2023، وقد ارتضى المدعى عليه الأول هذا الحكم ولم يستأنفه، وإنما الذي استأنفه هو المدعي — المحكوم له — وأن القاعدة هي ألا يضار طاعن بطعنه).","وحيث إنه ولما كان القضاء بعدم جواز نظر الدعوى لسابقة الفصل فيها بشأن طلب المستأنف استرداد ما سبق وأن سدده للمستأنف ضده الأول مبلغ 11,656,096 درهماً، والتعويض عما فاته من كسب وما لحقه من خسارة، يستوي في النتيجة وقضاء محكمة الدرجة الأولى برفض تلك الطلبات، بما يتعين معه رفض الاستئناف في هذا الشأن وفقاً لما أنشأته هذه المحكمة من أسباب.","⁂","فلهذه الأسباب","حكمت المحكمة في الطعن رقم 135 لسنة 2026 تجاري برفضه، وبإلزام الطاعن بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين.","وفي الطعن رقم 4 لسنة 2026 تجاري بنقض الحكم المطعون فيه فيما قضى به من إلزام الطاعن بأن يؤدي للمطعون ضده الأول مبلغ 11,706,096 درهماً، وبإلزام المطعون ضده الأول بالمصروفات ومبلغ ألفي درهم مقابل أتعاب المحاماة.","وفي الاستئناف رقم 2731 لسنة 2025 تجاري برفضه، وألزمت المستأنف بالمصروفات ومبلغ ألف درهم مقابل أتعاب المحاماة مع مصادرة مبلغ التأمين."]},{id:"dubai-appeal-2013-1",title:"حكم محكمة استئناف دبي — الاستئناف رقم 1 لسنة 2013 تجاري",author:"محكمة استئناف دبي",category:"arabic-law",excerpt:"الاعتراف بحكم تحكيم أجنبي صادر في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك 1958 — جلسة 9-7-2013.",date:"9-7-2013",readTime:"30 د",corePrinciple:[{text:"الاتفاقيات الدولية التي صادقت عليها دولة الإمارات تُعدُّ قانوناً داخلياً واجب التطبيق، ويلتزم القاضي بإعمال أحكامها على ما يُعرض عليه من منازعات في شأن تنفيذ أحكام المحكَّمين الأجنبية. ولا تُرفض إجابة طلب الاعتراف بحكم التحكيم الأجنبي ما لم تثبت إحدى الحالات الواردة حصراً في المادة الخامسة من اتفاقية نيويورك.",source:"اتفاقية نيويورك 1958 · المرسوم الاتحادي رقم 43 لسنة 2006"}],body:["بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ","باسم صاحب السمو الشيخ محمد بن راشد آل مكتوم حاكم دبي — محكمة الاستئناف — بالجلسة العلنية المنعقدة يوم 09-07-2013 بمقر محكمة الاستئناف بدبي. في الاستئناف رقم 1 لسنة 2013 استئناف تجاري. مستأنف: م. ا. ش. ذ. م. م. ضد مستأنف ضده: ش. ب. ت. ا. ب. ج. ا. ب. ا. ا. ك. .. ك. ج. ش. ا. الحكم المستأنف: الصادر بالدعوى رقم 2012/681 تجاري كلي بتاريخ 09-12-2012.","أصدرت المحكمة الحكم التالي بعد الإطلاع على الأوراق وسماع المرافعة والمداولة:","وحيث أن محكمة أول درجة وبجلسة 9-12-2012 قضت في الدعوى رقم 681-2012 تجاري كلي حضوريا بالتصديق على حكم التحكيم الصادر في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) بتاريخ 20-7-2011 في شتوتجارت - ألمانيا عن المحكم الفرد (جوشيم كوجنبيرغ)، وبإلزام المدعى عليها بمصروفات الدعوى ومبلغ ألف درهم مقابل أتعاب المحاماة، ورفضت ما عدا ذلك من طلبات.","ولما كان هذا الحكم لم يلق قبولاً لدى المدعى عليها فقد طعن وكيلها عليه بالاستئناف الراهن بصحيفة أودعت قلم كتاب هذه المحكمة بتاريخ 2-1-2013، وقدم مذكرة شارحة على سند من أن الحكم المستأنف أخطأ في تطبيق القانون وشابه الفساد في الاستدلال والقصور في التسبيب ومخالفة الثابت في الأوراق، وطلب في ختامها قبول الاستئناف شكلا وفي الموضوع إلغاء الحكم المستأنف والقضاء مجددا برفض الدعوى وإلزام المستأنف ضدها بالرسوم والمصاريف ومقابل أتعاب المحاماة.","وذلك على سند من أن محكمة أول درجة قضت بالتصديق على حكم التحكيم الأجنبي موضوع الدعوى على خلاف صحيح القانون ولم تقض بالاعتراف به بل رفضت ما عدا ذلك من طلبات، وقد ارتضت المستأنف ضدها ذلك القضاء ولم تطعن عليه بما يتعين إلغاؤه. كما أنه لا يجوز التحكيم في المسائل التي لا يجوز فيها الصلح، وأن موضوع النزاع ناشئ عن اتفاقية توزيع حصري وتختص المحكمة التي يقع في دائرتها محل التنفيذ، وهذه القاعدة من النظام العام ولا يجوز مخالفتها، ومن ثم لا يجوز تسوية النزاع بالتحكيم وفي ذلك تعارض مع السياسة العامة للدولة، ويكون شرط التحكيم الوارد في الاتفاقية باطلا لمخالفته النظام العام.","ولقضاء محكمة أول درجة بالعلم الشخصي في شأن انضمام دولة الإمارات وجمهورية ألمانيا الاتحادية إلى اتفاقية نيويورك، ولأن المستأنف ضدها لم تقدم كامل الاتفاق وملحقاته ولم تقدم ترجمة قانونية معتمدة، ولأن النسخة الإنجليزية من الاتفاق وحكم التحكيم غير ممهورين بتوقيع المترجم وختمه، ولأن حكم التحكيم لم يصبح ملزما للطرفين، وأن المستأنفة لم توقع على وثيقة التحكيم، والمستأنف ضدها لم تقدم كامل أجزاء حكم المحكم، وأن التحكيم تم في فرنسا وليس ألمانيا بالمخالفة لاتفاق التحكيم، بما يلزم على المحكمة رفض طلب الاعتراف بحكم التحكيم. وأرفقت صورة من قانون التحكيم الألماني بشأن اختصاص المحكمة العليا بتنفيذ حكم المحكمين، وكتابا من المحكم إلى القنصلية الفرنسية لإصدار تأشيرة للمستشار القانوني للمستأنفة لحضور اجتماع بباريس.","ومثلت المستأنف ضدها بوكيل عنها وقدم مذكرة طلب في ختامها رفض الاستئناف وتأييد الحكم المستأنف، وقدم قائمة صادرة عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) بالدول التي انضمت وصادقت على اتفاقية نيويورك ومن ضمنها دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية، ووثيقة المهمة وبيانا بالشروط والأحكام المرجعية بأن مكان التحكيم شتوتجارت - ألمانيا، ورسالة بريد إلكتروني بعقد جلسة التحكيم الأولى في شتوتجارت ما لم يتفق الأطراف على عقدها في باريس لتخفيض تكاليف الطيران دون تغيير للمقر القانوني للتحكيم. ثم تبادل طرفا الاستئناف تقديم المذكرات وصمم كل منهما على دفاعه، فقررت المحكمة حجز الاستئناف للحكم لجلسة 25-6-2013 ثم مدت أجل النطق بالحكم لجلسة اليوم.","⁂","وحيث إنه عن شكل الاستئناف فإنه قد جاء ممن يملكه قانونا خلال الأجل المنصوص عليه بأحكام المادة (159) من قانون الإجراءات المدنية المعدل، وعن حكم قابل للاستئناف وقد استوفى كافة شروطه الشكلية المقررة قانونا وبما يتعين قبوله شكلا.","وحيث إنه عن موضوع الاستئناف وفي ضوء حاصل أسبابه سالفة البيان عملا بالأثر الناقل للاستئناف، فإنه ولما كان المقرر قضاء لدى محكمة تمييز دبي الموقرة أن مفاد نص المادتين 165 و 166 من قانون الإجراءات المدنية أن محكمة الاستئناف لا تقتصر وظيفتها على مراقبة الحكم المستأنف من حيث سلامة التطبيق القانوني فحسب، وإنما يترتب على رفع الاستئناف نقل موضوع الاستئناف إلى محكمة الدرجة الثانية لتفصل فيه من جديد، دونما حاجة لإعادة القضية إلى محكمة الدرجة الأولى التي استنفدت ولايتها بالحكم في الموضوع، وذلك في حدود طلبات المستأنف.","وإعادة طرحه عليها بكل ما اشتمل عليه من أدلة ودفوع وأوجه دفاع لتقول كلمتها فيه بقضاء مسبب يواجه عناصر النزاع الواقعية والقانونية على حد سواء، لا على أساس ما كان مقدما فيها أمام محكمة أول درجة فحسب بل أيضا على أساس ما يطرح من هذه الأدلة وأوجه الدفاع والدفوع الموضوعية ويكون قد فات على الطرفين إبداؤه أمام محكمة أول درجة. ولها في هذا النطاق كمحكمة موضوع السلطة التامة في بحث الأدلة والمستندات والقرائن وأقوال الشهود وفي موازنة بعضها بالبعض الآخر وترجيح ما تطمئن إليه منها واستخلاص ما ترى أنه الواقع في الدعوى. (الطعن رقم 129 لسنة 2009 أحوال شخصية بجلسة 2-2-2010).","وحيث إنه متى كان ذلك وكانت (المدعية) المستأنف ضدها قد أقامت دعواها أمام محكمة أول درجة بطلب التصديق والاعتراف بحكم التحكيم الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC)، والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها وإلزام خصمتها (المدعى عليها) المستأنفة بالمصروفات.","وحيث إنه هديا بما تقدم فإن هذه الدعوى لا تخرج عن كونها منازعة في شأن الاعتراف بأحكام المحاكم الأجنبية وأحكام المحكمين والتي تناولها المرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 بموافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع، ومن ثم يصار إلى القضاء بإجابة طالب الاعتراف بها إلى طلبه أو رفضه بحسب الأحوال.","⁂","وحيث إنه ولما كان ما تقدم وكان المقرر لدى محكمة تمييز دبي الموقرة أنه ولئن كان المشرع قد نظم في الباب الثالث من الكتاب الثاني من قانون الإجراءات المدنية القواعد المتعلقة بالتحكيم في دولة الإمارات العربية المتحدة والإجراءات الواجب اتباعها عند طلب الخصوم التصديق على حكم المحكمة أو بطلانه، فقد نصت الفقرة الرابعة من المادة 212 من هذا القانون على أنه: «يجب أن يصدر حكم المحكم في دولة الإمارات العربية المتحدة وإلا اتبعت في شأنه القواعد المقررة لأحكام المحكمين الصادرة في بلد أجنبي».","كما نصت المادة 213 منه على أنه: «في التحكيم الذي يتم بين الخصوم خارج المحكمة فيجب على المحكمين أن يسلموا صورة من الحكم إلى كل طرف خلال خمسة أيام من صدور قرار التحكيم وتنظر المحكمة في تصديق أو إبطال القرار بناء على طلب أحد الخصوم بالإجراءات المعتادة لرفع الدعوى». ونصت الفقرة الأولى من المادة 215 من ذات القانون على أنه: «لا ينفذ حكم المحكمين إلا إذا صادقت عليه المحكمة التي أودع الحكم قلم كتابها وذلك بعد الاطلاع على الحكم ووثيقة التحكيم والتثبت من أنه لا يوجد مانع من تنفيذه».","وكان مفاد هذه النصوص مجتمعة أن التصديق على أحكام المحكمين الصادرة داخل دولة الإمارات هي وحدها التي تدخل في ولاية المحاكم الوطنية دون أحكام المحكمين الصادرة في دولة أجنبية، يستوي في ذلك أن تكون هذه الأحكام مما يجوز التصديق عليها في الدولة التي صدرت فيها من عدمه. إلا أنه من المقرر أيضا وفق ما تقضي به المادة 238 من قانون الإجراءات المدنية أن الاتفاقيات الدولية التي أصبحت تشريعا نافذ المفعول في دولة الإمارات العربية المتحدة بالتصديق عليها تعد قانونا داخليا واجب التطبيق في الدولة، ويلتزم القاضي بإعمال أحكامها على ما يعرض عليه من منازعات في شأن تنفيذ أحكام المحاكم الأجنبية وأحكام المحكمين.","وكان الثابت بالمرسوم الاتحادي رقم 43 لسنة 2006 الذي نشر في الجريدة الرسمية في 28-6-2006 موافقة دولة الإمارات العربية المتحدة على الانضمام إلى اتفاقية نيويورك لسنة 1958 بشأن الاعتراف بقرارات التحكيم الأجنبية وتنفيذها، وبالتالي فإن أحكامها تكون هي الواجبة التطبيق على واقعة النزاع.","⁂","وقد نصت المادة الأولى من هذه الاتفاقية على أنه: «1- تطبق هذه الاتفاقية على الاعتراف بقرارات التحكيم وتنفيذها متى صدرت هذه القرارات في أراضي دولة خلاف الدولة التي يطلب الاعتراف بهذه القرارات وتنفيذها فيها، ومتى كانت ناشئة عن خلافات بين أشخاص طبيعيين أو اعتباريين، وتنطبق أيضا على قرارات التحكيم التي لا تعتبر قرارات محلية في الدولة التي يطلب فيها الاعتراف بهذه القرارات وتنفيذها. 2- لا يقتصر مصطلح (قرارات التحكيم) على القرارات التي يصدرها محكمون معينون لكل قضية بل يشمل أيضا القرارات التي يصدرها هيئات تحكيم دائمة تكون الأطراف قد أحالت إليها».","ونصت المادة الثانية من ذات الاتفاقية على أن: «1- تعترف كل دولة متعاقدة بأي اتفاق مكتوب يتعهد فيه الطرفان بأن يحيلوا إلى التحكيم جميع الخلافات أو أية خلافات نشأت أو قد تنشأ بينهما بالنسبة لعلاقة قانونية محددة. 2- يشمل مصطلح (اتفاق مكتوب) أي شرط تحكيم يرد في عقد أو أي اتفاق تحكيم وقع عليه من الطرفين أو وارد في رسائل أو برقيات متبادلة».","ونصت المادة الثالثة منها على أنه: «على كل دولة متعاقدة أن تعترف بقرارات التحكيم كقرارات ملزمة وأن تقوم بتنفيذها وفقا للقواعد الإجرائية المتبعة في الإقليم الذي يحتج فيه بالقرار طبقا للشروط الواردة في المواد التالية، ولا تفرض على الاعتراف بقرارات التحكيم التي تنطبق عليها هذه الاتفاقية أو على تنفيذها شروط أكثر تشددا بكثير أو رسوم أو أعباء أعلى بكثير مما يفرض على الاعتراف بقرارات التحكيم المحلية أو على تنفيذها».","كما نصت المادة الرابعة منها على أنه: «1- للحصول على الاعتراف والتنفيذ المذكورين في المادة السابقة يقوم الطرف الذي يطلب الاعتراف والتنفيذ وقت تقديم الطلب بتقديم ما يلي: أ- القرار الأصلي مصدقا عليه حسب الأصول المتبعة أو نسخة منه معتمدة حسب الأصول، ب- الاتفاق الأصلي المشار إليه في المادة الثانية أو صورة منه معتمدة حسب الأصول. 2- متى كان الحكم المذكور أو الاتفاق المذكور بلغة خلاف اللغة الرسمية للبلد الذي يحتج فيه بالقرار يجب على الطرف الذي يطلب الاعتراف بالقرار وتنفيذه أن يقدم ترجمة لها تبين الوثيقتين بهذه اللغة، ويجب أن تكون الترجمة معتمدة من موظف رسمي أو مترجم محلف أو ممثل قانوني أو قنصلي».","وكذلك نصت المادة الخامسة من الاتفاقية على أنه: «1- لا يجوز رفض طلب الاعتراف بالقرار وتنفيذه بناء على طلب الطرف المحتج ضده بهذا القرار إلا إذا قدم ذلك الطرف إلى السلطة المختصة التي يطلب فيها الاعتراف والتنفيذ ما يثبت: أ- أن طرفي الاتفاق المشار إليه في المادة الثانية كان بمقتضى القانون المنطبق عليهما في حالة من حالات انعدام الأهلية، أو كان الاتفاق غير صحيح بمقتضى القانون الذي أخضع له الطرفان الاتفاق، أو إذا لم يكن هناك ما يشير إلى ذلك بمقتضى قانون البلد الذي صدر فيه القرار.","ب- أن الطرف الذي يحتج ضده بالقرار لم يخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم أو كان لأي سبب آخر غير قادر على عرض قضيته. ج- أن القرار يتناول خلافا لم تتوقعه أو تتضمنه شروط الإحالة إلى التحكيم ويتضمن قرارات بشأن مسائل تتجاوز نطاق الإحالة إلى التحكيم، على أن يراعى في الحالات التي يمكن فيها فصل القرارات المتعلقة بالمسائل التي تخضع للتحكيم عن المسائل التي لا تخضع، أنه يجوز الاعتراف بجزء القرار الذي يتضمن قرارات تتعلق بمسائل تخضع للتحكيم وتنفيذ هذا الجزء.","د- أن تشكيل هيئة التحكيم أو أن إجراءات التحكيم لم تكن وفقا لاتفاق الطرفين أو لم تكن في حالة عدم وجود مثل هذا الاتفاق وفقا لقانون البلد الذي جرى فيه التحكيم. هـ- أن القرار لم يصبح بعد ملزما للطرفين أو أنه نقض أو أوقف تنفيذه من قبل سلطة مختصة في البلد الذي صدر فيه أو بموجب قانون هذا البلد. 2- كذلك يجوز رفض الاعتراف بقرار التحكيم ورفض تنفيذه إذا تبين للسلطة المختصة في البلد الذي يطلب فيه الاعتراف بالقرار وتنفيذه: أ- أنه لا يمكن تسوية موضوع النزاع بالتحكيم طبقا لقانون ذلك البلد، أو ب- أن الاعتراف بالقرار أو تنفيذه يتعارض مع السياسة العامة لذلك البلد». (الطعن رقم 132 لسنة 2012 تجاري الصادر بجلسة 18-9-2012).","⁂","وحيث إنه ولما كان ما تقدم وكان الحكم المطلوب الاعتراف به الصادر من المحكم هو حكم أجنبي صادر خارج دولة الإمارات العربية المتحدة في شتوتجارت - ألمانيا وفقا لاتفاقية نيويورك في شأن الاعتراف بأحكام التحكيم وتنفيذها والتي صادقت عليها دولة الإمارات العربية المتحدة بموجب المرسوم الاتحادي رقم 43 لسنة 2006 في شأن انضمام دولة الإمارات العربية المتحدة لاتفاقية نيويورك للاعتراف بقرارات التحكيم الأجنبية وتنفيذها.","وإذ قدمت المستأنف ضدها نسخة من حكم التحكيم معتمدة وفق الأصول ومصدقة، وأصل اتفاقية التوزيع المتضمنة الاتفاق على التحكيم معتمدة وفق الأصول ومصدقة، كما قدمت ترجمتهما القانونية، فإنها تكون قد استوفت متطلبات المادة الرابعة من القانون المذكور.","وحيث إن الرقابة القضائية لهذه المحكمة على حكم المحكم الأجنبي عند النظر في طلب الاعتراف بالحكم الأجنبي وتنفيذه إنما تقتصر على التثبت من عدم مخالفته لما ورد بالمرسوم الاتحادي سالف البيان، وذلك باستيفائه لمقومات الحكم الشكلية والموضوعية المتطلبة فيه والواردة في المادتين 4 و 5 منه، كون أن الحكم التحكيمي موضوع الدعوى مصدق حسب الأصول المتبعة، ولم يتبين لهذه المحكمة أن النزاع موضوع حكم التحكيم من المسائل التي لا يجوز فيها الصلح، كما لم تتبين المحكمة مخالفته للنظام العام.","لا سيما وأن المستأنفة لم تقدم لهذه المحكمة توافر حالة من الحالات التي وردت بالمادة الخامسة من المرسوم المذكور آنفا، حيث إنها لم تثبت توافر حالة من حالات انعدام الأهلية، أو أن الاتفاق لم يكن صحيحا، أو أنها لم تخطر على الوجه الصحيح بتعيين المحكم أو بإجراءات التحكيم، أو أنها كانت غير قادرة على عرض دفاعها أمامه، أو أن حكم المحكم تناول ما يخالف أو يجاوز شرط التحكيم الوارد في الاتفاقية المبرمة مع المستأنف ضدها، أو أن تشكيل هيئة التحكيم أو إجراءاته لم تكن وفقا لتلك الاتفاقية، أو أن حكم المحكم لم يصبح بعد ملزما لطرفيه أو أنه نقض أو أوقف تنفيذه من قبل السلطة المختصة في جمهورية ألمانيا الاتحادية البلد الذي صدر فيه.","ولما كان حكم التحكيم موضوع الدعوى قد استوفى الشروط الواردة بالمرسوم سالف البيان، فإنه يتعين على المحكمة — وبالبناء على ما أنشأته من أسباب تتفق وصحيح القانون — الاعتراف بالحكم التحكيمي الصادر بتاريخ 20-7-2011 عن المحكم المنفرد في شتوتجارت - ألمانيا في الدعوى التحكيمية رقم 15977 - جيه اتش ان (JHN 15977) طبقا لقواعد التحكيم المطبقة في غرفة التجارة الدولية (ICC) والأمر بتنفيذه طبقا لقواعد اتفاقية نيويورك الخاصة بالاعتراف بأحكام المحكمين الأجنبية وتنفيذها.","ولا ينال من ذلك ما نعت به المستأنفة من أن قضاء الحكم المستأنف كان بالتصديق وليس بالاعتراف، لكون المستأنف ضدها قد طلب التصديق والاعتراف وساوت بينهما في طلباتها، فضلا عن أن التصديق صنو الاعتراف. وإذ انتهت هذه المحكمة في أسبابها على نحو ما سلف بيانه إلى الاعتراف بالحكم المراد الاعتراف به، فمن ثم يكون الاستئناف وارد على غير سند صحيح وتقضي المحكمة برفضه.","كما لا ينال من ذلك باقي ما أثارته المستأنفة في مذكرتها الشارحة والوارد سلفا بأسباب هذا الحكم، ذلك أنه من المقرر قانونا أن الأصل في إجراءات التحكيم أن تكون قد روعيت، وعلى من يدعي أنها قد خولفت إقامة الدليل على صحة ما يدعيه، والمناط في هذا الخصوص هو الاعتداد بالبيانات المثبتة بحكم المحكم، ودون تتبع لما يبديه الخصم من دفاع ظاهر الفساد.","إذ أن دولة الإمارات العربية المتحدة وجمهورية ألمانيا الاتحادية منضمتان إلى اتفاقية نيويورك وفق بيان القائمة الصادر عن الأمانة العامة للجنة الأمم المتحدة للقانون التجاري الدولي (الأونسيترال) والمقدم نسخة منها من المستأنف ضدها. كما أنه لا يستلزم توقيع من قام بالترجمة على أصل السند المحرر بلغة أجنبية والذي قام بترجمته، ويكتفى بتوقيعه على السند الذي أنشأه والمتضمن أعمال الترجمة إلى العربية التي قام بها. وكذلك لأن المستأنف ضدها قدمت أصل الاتفاقية وحكم المحكم وترجمتهما القانونية، وأن إجراء إحدى جلسات التحكيم في باريس بفرنسا — وهي إحدى دول الاتحاد الأوروبي — درءا لتكلفة الطيران وبموافقة الطرفين دون تغيير للمقر القانوني للتحكيم وهي شتوتجارت بألمانيا، لا ينال من هذا الحكم.","وحيث إنه عن رسوم ومصروفات الاستئناف شاملة أتعاب المحاماة وعن درجتي التقاضي، فإنه ولما كان غرم التداعي يقع على من كانت عاقبة أمره خسرانه، وكانت المستأنفة هي من خسرت الدعوى، فإن المحكمة تلزمها بالرسوم والمصاريف ومبلغ ألفي درهم مقابل أتعاب المحاماة، عملا بالمادتين 133 و 168 من قانون الإجراءات المدنية المعدل.","⁂","فلهذه الأسباب","حكمت المحكمة بقبول الاستئناف شكلا، وفي الموضوع برفضه وتأييد الحكم المستأنف، وألزمت المستأنفة بالرسوم والمصاريف عن درجتي التقاضي ومبلغ ألفي درهم مقابل أتعاب المحاماة.","أمين السر — رئيس الدائرة"]},{id:"winning-brief-garner",title:"The Winning Brief — Full Summary",author:"Bryan A. Garner",category:"law",excerpt:"100 tips for persuasive briefing in trial and appellate courts — complete coverage.",date:"Oxford UP",readTime:"45 min",richHtml:rf,body:[]},{id:"point-made-guberman",title:"Point Made — Full Summary",author:"Ross Guberman",category:"law",excerpt:"How to write like the nation's top advocates — comprehensive techniques and examples.",date:"Oxford UP",readTime:"40 min",richHtml:lf,body:[]},{id:"cross-examination-pozner-dodd",title:"Cross-Examination — Full Summary",author:"Pozner & Dodd",category:"law",excerpt:"Science and craft of cross-examination — complete chapter-level coverage.",date:"LexisNexis",readTime:"45 min",richHtml:mf,body:[]},{id:"making-your-case-scalia-garner",title:"Making Your Case — Full Summary",author:"Scalia & Garner",category:"law",excerpt:"The art of persuading judges — from one of the Court's clearest voices and the foremost legal-writing authority.",date:"Thomson West",readTime:"35 min",richHtml:vf,body:[]},{id:"trial-techniques-mauet",title:"Trial Techniques — Full Summary",author:"Thomas A. Mauet",category:"law",excerpt:"The complete trial advocacy primer — from voir dire and openings through cross-examination and closing.",date:"Aspen Casebook",readTime:"50 min",richHtml:ff,body:[]},{id:"beyond-good-and-evil",title:"Beyond Good and Evil — Full Summary",author:"Friedrich Nietzsche",category:"philosophy",excerpt:"A comprehensive walkthrough of Nietzsche's critique of dogmatic philosophy, master/slave morality, and the will to power.",date:"1886",readTime:"40 min",richHtml:gf,body:[]},{id:"the-prince",title:"The Prince — Full Summary",author:"Niccolò Machiavelli",category:"book-summaries",excerpt:"The foundational treatise on political power, statecraft, and the realities of rule.",date:"1532",readTime:"30 min",richHtml:cf,body:[]},{id:"art-of-war",title:"The Art of War — Full Summary",author:"Sun Tzu",category:"book-summaries",excerpt:"The 13 chapters on strategy, deception, terrain, and the art of winning without fighting.",date:"5th c. BCE",readTime:"30 min",richHtml:df,body:[]},{id:"worldly-wisdom",title:"The Art of Worldly Wisdom — Full Summary",author:"Baltasar Gracián",category:"book-summaries",excerpt:"300 maxims on prudence, perception, self-mastery, and navigating the social world.",date:"1647",readTime:"35 min",richHtml:hf,body:[]},{id:"laws-of-human-nature",title:"The Laws of Human Nature — Full Summary",author:"Robert Greene",category:"book-summaries",excerpt:"18 laws decoding behaviour, character, and the hidden forces driving people.",date:"2018",readTime:"40 min",richHtml:uf,body:[]},{id:"33-strategies-of-war",title:"The 33 Strategies of War — Full Summary",author:"Robert Greene",category:"book-summaries",excerpt:"33 strategies of conflict — from defensive warfare to grand strategy and unconventional war.",date:"2006",readTime:"35 min",richHtml:pf,body:[]},{id:"inflation-psychology",title:"Inflation, Interest Rates, and Market Psychology",author:"Editorial Note",category:"economic",excerpt:"Why expectations matter as much as fundamentals when prices begin to climb.",date:"Apr 2026",readTime:"6 min",body:["Inflation is taught as a mechanical phenomenon — too much money chasing too few goods — and the equation is broadly correct as far as it goes. What the textbook treatment understates is the role of expectation. Once households and firms come to believe that prices will continue to rise, they act in ways that ensure the prophecy fulfils itself. The market, in this respect, is not a thermometer but a thermostat with a long memory.","The central bank's traditional response is interest rates. Raising the cost of capital cools investment, dampens consumption, and — through these channels — restores the equilibrium between supply and demand. The mechanism is real, but it is also slow. Estimates suggest that monetary policy operates with lags of twelve to eighteen months, which means that the rate set today is wrestling with the inflation of last spring.","Psychology compresses the lag in one direction and lengthens it in the other. A credible central bank can subdue inflation expectations with a single decisive move; a discredited one can hike repeatedly with little effect, because the market has already priced in the bank's eventual capitulation. Credibility, hard to acquire and easy to lose, is the missing variable in most monetary models. It belongs to the realm of intuition more than calculation, and it is therefore liable to the heuristic distortions that govern other social facts.","For the investor, three implications follow. First, the level of nominal rates matters less than the trajectory of expectations. A 5% rate that is widely expected to fall behaves like a much looser policy than a 4% rate widely expected to rise. Second, asset classes do not respond uniformly: equities reprice on the discount-rate channel, bonds on the inflation-expectations channel, real estate on the financing-cost channel. Third, scarcity in particular markets — energy, semiconductors, housing — can drive headline numbers in ways that obscure the underlying monetary picture.","The honest synthesis is that inflation is a partly psychological phenomenon governed by partly mechanical instruments. The central banker's task is to hold the line until expectations re-anchor; the investor's task is to read the line being held. Neither party is operating with the certainty the press tends to attribute to them."]}],Ju="athenaeum-v1",bf=async()=>{try{const c=await window.storage?.get(Ju);return c?JSON.parse(c.value):null}catch{return null}},ta=async c=>{try{await window.storage?.set(Ju,JSON.stringify(c))}catch{}},wf="athenaeum-google-client-id",Bu="https://accounts.google.com/gsi/client";function xf(){const c=Jv?.VITE_GOOGLE_CLIENT_ID||"";if(c)return c;try{return window.localStorage?.getItem(wf)||""}catch{return""}}function kf(){if(window.google?.accounts?.id)return Promise.resolve();const c=document.querySelector(`script[src="${Bu}"]`);return c?new Promise((x,b)=>{c.addEventListener("load",x,{once:!0}),c.addEventListener("error",b,{once:!0})}):new Promise((x,b)=>{const d=document.createElement("script");d.src=Bu,d.async=!0,d.defer=!0,d.onload=x,d.onerror=b,document.head.appendChild(d)})}function Tf(c){try{const b=c.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"),d=decodeURIComponent(Array.from(atob(b)).map(C=>`%${`00${C.charCodeAt(0).toString(16)}`.slice(-2)}`).join("")),T=JSON.parse(d);return{provider:"google",id:T.sub,name:T.name||T.email||"Google Reader",email:T.email||"",picture:T.picture||"",signedInAt:Date.now()}}catch{return null}}function Lu(){try{return window.matchMedia?.("(display-mode: standalone)")?.matches||window.navigator?.standalone===!0}catch{return!1}}function qf(){const[c,x]=_.useState({kind:"list",category:"all"}),[b,d]=_.useState([]),[T,C]=_.useState({highlights:[],quotes:[],vocabulary:[],reading:{}}),[z,F]=_.useState(""),[M,g]=_.useState(1),[D,O]=_.useState(!1),[B,Y]=_.useState(null),[re,le]=_.useState(null),[ce,V]=_.useState(null),[at,Ne]=_.useState(!1),[Pe,st]=_.useState(!1),[Ce,U]=_.useState(null),[je,_e]=_.useState(""),[xt,Ye]=_.useState(()=>Lu()),[$e,Bt]=_.useState(()=>{try{return window.localStorage?.getItem("athenaeum-install-dismissed")==="1"}catch{return!1}}),kt=_.useRef(null);_.useEffect(()=>{bf().then(j=>{j&&(d(j.customArticles||[]),C({highlights:j.library?.highlights||[],quotes:j.library?.quotes||[],vocabulary:j.library?.vocabulary||[],reading:j.library?.reading||{}}),V(j.account||null),j.fontSize!==void 0&&g(j.fontSize))})},[]),_.useEffect(()=>{const j=ge=>{ge.preventDefault(),U(ge),_e("")},Z=()=>{Ye(!0),Bt(!0);try{window.localStorage?.setItem("athenaeum-install-dismissed","1")}catch{}},K=window.matchMedia?.("(display-mode: standalone)"),ke=()=>Ye(Lu());return window.addEventListener("beforeinstallprompt",j),window.addEventListener("appinstalled",Z),K?.addEventListener?.("change",ke),()=>{window.removeEventListener("beforeinstallprompt",j),window.removeEventListener("appinstalled",Z),K?.removeEventListener?.("change",ke)}},[]);const et=_.useCallback(j=>{ta({customArticles:b,library:T,fontSize:M,account:ce,...j})},[b,T,M,ce]),q=_.useCallback(j=>{V(j),ta({customArticles:b,library:T,fontSize:M,account:j})},[b,T,M]),N=_.useCallback(j=>{g(j),ta({customArticles:b,library:T,fontSize:j,account:ce})},[b,T,ce]),W=_.useCallback(()=>{Bt(!0);try{window.localStorage?.setItem("athenaeum-install-dismissed","1")}catch{}},[]),me=_.useCallback(async()=>{if(!Ce){_e("Use the browser menu and choose Install app or Add to Home Screen.");return}try{Ce.prompt();const j=await Ce.userChoice;U(null),j?.outcome==="accepted"?W():_e("You can save the app later from this prompt or the browser menu.")}catch{_e("Use the browser menu and choose Install app or Add to Home Screen.")}},[Ce,W]),ne=_.useMemo(()=>[...b,...yf].filter(j=>!of.has(j.category)),[b]);_.useEffect(()=>{const j=()=>{const Z=window.getSelection(),K=Z?.toString().trim();if(!K||K.length<2){Y(null);return}if(!kt.current?.contains(Z.anchorNode)){Y(null);return}const ge=Z.getRangeAt(0).getBoundingClientRect();Y({text:K,x:ge.left+ge.width/2,y:ge.top-8,articleId:c.kind==="reader"?c.articleId:null})};return document.addEventListener("mouseup",j),document.addEventListener("touchend",j),()=>{document.removeEventListener("mouseup",j),document.removeEventListener("touchend",j)}},[c]),_.useEffect(()=>{const j=()=>{Y(null),le(null)};return window.addEventListener("scroll",j,!0),()=>window.removeEventListener("scroll",j,!0)},[]),_.useEffect(()=>{const j=Z=>{const K=Z.data;!K||K.type!=="athenaeum-mark-section"||!K.articleId||C(ke=>{const ge={...ke.reading||{}},qt=ge[K.articleId]||{},Ot=new Set(qt.readSections||[]);K.read?Ot.add(K.panelId):Ot.delete(K.panelId),ge[K.articleId]={...qt,readSections:Array.from(Ot),totalPanels:K.allPanels?K.allPanels.length:qt.totalPanels||0,lastSeen:Date.now()};const Ae={...ke,reading:ge};return ta({customArticles:b,library:Ae,fontSize:M,account:ce}),Ae})};return window.addEventListener("message",j),()=>window.removeEventListener("message",j)},[b,M,ce]);const p=_.useCallback(j=>{C(Z=>{const K={...Z.reading||{}},ke=K[j]||{};K[j]={...ke,marked:!ke.marked,lastSeen:Date.now()};const ge={...Z,reading:K};return ta({customArticles:b,library:ge,fontSize:M,account:ce}),ge})},[b,M,ce]),E=()=>{if(!B)return;const j={...T,highlights:[...T.highlights,{id:Date.now(),text:B.text,articleId:B.articleId,when:new Date().toLocaleDateString()}]};C(j),et({library:j}),Y(null),window.getSelection()?.removeAllRanges()},I=()=>{if(!B)return;const j=ne.find(K=>K.id===B.articleId),Z={...T,quotes:[...T.quotes,{id:Date.now(),text:B.text,articleId:B.articleId,source:j?`${j.author}, "${j.title}"`:"Unknown",when:new Date().toLocaleDateString()}]};C(Z),et({library:Z}),Y(null),window.getSelection()?.removeAllRanges()},H=()=>{if(!B)return;const j=B.text.toLowerCase().replace(/[^a-z]/g,"");le({word:j,x:B.x,y:B.y}),Y(null)},Q=(j,Z)=>{if(T.vocabulary.find(ke=>ke.word===j))return;const K={...T,vocabulary:[...T.vocabulary,{id:Date.now(),word:j,...Z,when:new Date().toLocaleDateString()}]};C(K),et({library:K})},ee=(j,Z)=>{const K={...T,[j]:T[j].filter(ke=>ke.id!==Z)};C(K),et({library:K})},de=j=>{const Z={...j,id:j.id||`custom-${Date.now()}`,custom:!0},ke=b.find(ge=>ge.id===Z.id)?b.map(ge=>ge.id===Z.id?Z:ge):[Z,...b];d(ke),ta({customArticles:ke,library:T,fontSize:M,account:ce}),x({kind:"reader",articleId:Z.id})},Ve=j=>{const Z=b.filter(K=>K.id!==j);d(Z),ta({customArticles:Z,library:T,fontSize:M,account:ce})},Me=_.useMemo(()=>{let j=ne;if(c.kind==="list"&&c.category!=="all"&&(j=j.filter(Z=>Z.category===c.category)),z.trim()){const Z=z.toLowerCase();j=j.filter(K=>K.title.toLowerCase().includes(Z)||K.author.toLowerCase().includes(Z)||K.excerpt.toLowerCase().includes(Z)||(K.body||[]).some(ke=>ke.toLowerCase().includes(Z))||(K.richHtml?K.richHtml.toLowerCase().includes(Z):!1))}return j},[ne,c,z]),Oi=(j,Z)=>{const K=T.highlights.filter(Ae=>Ae.articleId===Z).map(Ae=>Ae.text);if(!K.length)return j;const ke=[];K.forEach(Ae=>{let ze=j.indexOf(Ae);for(;ze!==-1;)ke.push({start:ze,end:ze+Ae.length}),ze=j.indexOf(Ae,ze+Ae.length)}),ke.sort((Ae,ze)=>Ae.start-ze.start);const ge=[];ke.forEach(Ae=>{(!ge.length||Ae.start>=ge[ge.length-1].end)&&ge.push(Ae)});const qt=[];let Ot=0;return ge.forEach((Ae,ze)=>{Ot<Ae.start&&qt.push(j.slice(Ot,Ae.start)),qt.push(r.jsx("mark",{className:"user-highlight",children:j.slice(Ae.start,Ae.end)},ze)),Ot=Ae.end}),Ot<j.length&&qt.push(j.slice(Ot)),qt},Ri=[.85,1,1.15,1.32,1.5,1.7],Fa=Math.max(0,Math.min(Ri.length-1,M)),Gs=Ri[Fa],Tt=at,li=Pe;return r.jsxs("div",{className:["body min-h-screen flex",Tt?"reader-mode-shell":"",li?"ink-mode-shell boox-plain-shell":""].filter(Boolean).join(" "),style:{background:li?"#FFFFFF":"var(--cream)"},children:[r.jsx(Zv,{}),!Tt&&r.jsx(Af,{view:c,setView:j=>{x(j),O(!1)},open:D,onClose:()=>O(!1),onAddText:()=>{x({kind:"editor"}),O(!1)}}),r.jsxs("div",{className:"flex-1 flex flex-col min-w-0",style:{marginLeft:0},children:[r.jsx(Ef,{search:z,setSearch:F,fontSize:M,setFontSize:N,onToggleSidebar:()=>O(j=>!j),showFontControls:c.kind==="reader",inkMode:li,readingMode:Tt,onToggleInk:()=>st(j=>!j),onToggleReadingMode:()=>Ne(j=>!j),account:ce,onAccountChange:q}),r.jsxs("main",{className:"flex-1 overflow-y-auto thin-scroll"+(Tt?" reader-main-immersive":""),children:[c.kind==="list"&&r.jsx(If,{articles:Me,category:c.category,library:T,onOpen:j=>x({kind:"reader",articleId:j}),onAddText:()=>x({kind:"editor"}),onDelete:Ve}),c.kind==="reader"&&r.jsx(Gf,{article:ne.find(j=>j.id===c.articleId),onBack:()=>x({kind:"list",category:"all"}),articleRef:kt,renderParagraph:Oi,fontPx:Gs,library:T,onToggleMarkRead:p,booxPlain:li,onEdit:()=>{const j=ne.find(Z=>Z.id===c.articleId);j?.custom&&x({kind:"editor",editingId:j.id})}}),c.kind==="editor"&&r.jsx(Bf,{existing:c.editingId?b.find(j=>j.id===c.editingId):null,onSave:de,onCancel:()=>x({kind:"list",category:"all"})}),c.kind==="collection"&&r.jsx(Ff,{kind:c.collection,library:T,allArticles:ne,onRemove:ee,onJump:j=>x({kind:"reader",articleId:j})}),c.kind==="daily"&&r.jsx(Lf,{library:T,allArticles:ne,onJump:j=>x({kind:"reader",articleId:j}),onGoToQuotes:()=>x({kind:"collection",collection:"quotes"})})]})]}),B&&r.jsxs("div",{className:"fixed z-50 fade tooltail glow-card",style:{left:Math.max(140,Math.min(typeof window<"u"?window.innerWidth-140:800,B.x)),top:Math.max(60,B.y-56),transform:"translateX(-50%)",padding:4,display:"flex",gap:0},children:[r.jsx(ql,{onClick:E,icon:r.jsx(Hv,{size:13}),label:"Highlight"}),B.articleId&&r.jsx(ql,{onClick:I,icon:r.jsx(Yu,{size:13}),label:"Save Quote"}),r.jsx(ql,{onClick:H,icon:r.jsx(Gv,{size:13}),label:"Define"})]}),re&&r.jsx(_f,{word:re.word,x:re.x,y:re.y,onClose:()=>le(null),onSave:Q,saved:T.vocabulary.some(j=>j.word===re.word)}),!xt&&!$e&&r.jsx(Sf,{canInstall:!!Ce,status:je,onInstall:me,onDismiss:W})]})}function Sf({canInstall:c,status:x,onInstall:b,onDismiss:d}){return r.jsxs("aside",{className:"install-app-prompt fade","aria-label":"Save Athenaeum as an app",children:[r.jsxs("div",{className:"install-app-prompt__top",children:[r.jsx("div",{className:"install-app-prompt__icon","aria-hidden":"true",children:r.jsx(Yv,{size:21})}),r.jsxs("div",{children:[r.jsx("h2",{className:"install-app-prompt__title",children:"Save Athenaeum as an app"}),r.jsx("p",{className:"install-app-prompt__copy",children:"Open it from your home screen or desktop with a cleaner app window for reading."})]}),r.jsx("button",{type:"button",className:"install-app-prompt__close",onClick:d,"aria-label":"Dismiss install message",children:r.jsx(Cl,{size:15})})]}),r.jsxs("div",{className:"install-app-prompt__actions",children:[r.jsxs("button",{type:"button",className:"reader-btn",onClick:b,children:[r.jsx(Rv,{size:13})," ",c?"Install App":"How to Save"]}),r.jsx("button",{type:"button",className:"reader-mode-btn",onClick:d,children:"Not now"})]}),x&&r.jsx("p",{className:"install-app-prompt__status",children:x})]})}function Af({view:c,setView:x,open:b,onClose:d,onAddText:T}){const C=(z,F)=>z==="daily"?c.kind==="daily":z==="all-articles"?c.kind==="list"&&c.category==="all":z==="category"?c.kind==="list"&&c.category===F:z==="collection"?c.kind==="collection"&&c.collection===F:!1;return r.jsxs(r.Fragment,{children:[b&&r.jsx("div",{onClick:d,className:"lg:hidden fixed inset-0 z-30 fade",style:{background:"rgba(0,0,0,0.55)"}}),r.jsxs("aside",{className:`sidebar-fixed ${b?"open":""} fixed lg:sticky top-0 left-0 z-40 h-screen w-[260px] flex flex-col`,style:{background:"var(--navy)",color:"var(--cream)"},children:[r.jsxs("div",{className:"px-5 py-5 flex items-center gap-3 border-b",style:{borderColor:"#1A1A1A"},children:[r.jsx("div",{className:"logo-mark dark",children:r.jsx(Ku,{size:22})}),r.jsxs("div",{children:[r.jsx("div",{className:"ui text-[9px] tracking-[0.32em] uppercase",style:{color:"#C8BD9A"},children:"Digital Library"}),r.jsx("div",{className:"display text-2xl leading-tight italic",style:{fontWeight:500},children:"Athenaeum"})]})]}),r.jsxs("nav",{className:"flex-1 overflow-y-auto thin-scroll px-3 py-5 space-y-0.5",children:[r.jsx(ao,{label:"All Articles",icon:Di,active:C("all-articles"),onClick:()=>x({kind:"list",category:"all"}),small:!0}),r.jsx("div",{className:"ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3",style:{color:"#A8A088"},children:"Categories"}),Hs.map(z=>r.jsx(ao,{label:z.name,icon:z.icon,rtl:z.rtl,active:C("category",z.id),onClick:()=>x({kind:"list",category:z.id})},z.id)),r.jsx("div",{className:"ui text-[9px] tracking-[0.3em] uppercase pt-5 pb-2 px-3",style:{color:"#A8A088"},children:"My Library"}),nf.map(z=>r.jsx(ao,{label:z.name,icon:z.icon,active:C("collection",z.id),onClick:()=>x({kind:"collection",collection:z.id})},z.id)),r.jsx("div",{className:"my-3 mx-3",style:{height:1,background:"#1A1A1A"}}),r.jsx(ao,{label:"Quote of the Day",icon:Vu,active:C("daily"),onClick:()=>x({kind:"daily"})})]}),r.jsx("div",{className:"p-4 border-t",style:{borderColor:"#1A1A1A"},children:r.jsxs("button",{onClick:T,className:"w-full flex items-center justify-center gap-2 py-3 px-4 ui text-[11px] tracking-[0.18em] transition",style:{background:"var(--cream-3)",color:"var(--ink)",borderRadius:999,boxShadow:"0 2px 6px rgba(0,0,0,0.15)"},children:[r.jsx(Sl,{size:14})," Add Text"]})})]})]})}function ao({label:c,icon:x,active:b,onClick:d,small:T,rtl:C}){return r.jsxs("button",{onClick:d,"data-active":b,className:"nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left",children:[r.jsx("span",{className:"flex items-center justify-center w-8 h-8 rounded shrink-0",style:{background:b?"var(--gold-soft)":"#1A1A1A"},children:r.jsx(x,{size:15,style:{color:b?"var(--gold)":"#E8DDB8"}})}),r.jsx("span",{style:{fontFamily:C?"'Noto Naskh Arabic', serif":"'Cormorant Garamond', serif",fontStyle:C?"normal":"italic",fontWeight:b?C?700:600:C?600:500,color:b?"var(--cream-3)":"#EFE5C2",fontSize:C?"1.1rem":T?"0.95rem":"1.05rem",direction:C?"rtl":"ltr",flex:1,textAlign:C?"right":"left"},children:c})]})}function Ef({search:c,setSearch:x,fontSize:b,setFontSize:d,onToggleSidebar:T,showFontControls:C,inkMode:z,readingMode:F,onToggleInk:M,onToggleReadingMode:g,account:D,onAccountChange:O}){return r.jsxs("header",{className:"sticky top-0 z-20 px-4 md:px-8 py-4 flex items-center gap-4",style:{background:"var(--cream)",borderBottom:"1.5px solid var(--rule)"},children:[r.jsx("button",{onClick:T,className:"lg:hidden flex items-center justify-center w-10 h-10 rounded-lg",style:{background:"var(--cream-3)",border:"1px solid var(--rule)"},children:r.jsx(_v,{size:18,style:{color:"var(--ink)"}})}),r.jsxs("div",{className:"hidden md:flex items-center gap-3",children:[r.jsx("div",{className:"logo-mark",children:r.jsx(Ku,{size:22})}),r.jsxs("div",{children:[r.jsx("div",{className:"ui text-[9px] tracking-[0.32em] uppercase",style:{color:"var(--ink-3)"},children:"Personal Knowledge Library"}),r.jsx("div",{className:"display text-xl leading-tight italic",style:{fontWeight:500,color:"var(--ink)"},children:"Athenaeum"})]})]}),r.jsx("div",{className:"flex-1"}),r.jsxs("div",{className:"flex-1 md:flex-none md:w-[340px] max-w-md flex items-center gap-2 px-4 py-2.5 rounded-full",style:{background:"var(--cream-3)",border:"1px solid var(--rule)"},children:[r.jsx(Pv,{size:14,style:{color:"var(--ink-3)"}}),r.jsx("input",{value:c,onChange:B=>x(B.target.value),placeholder:"Search articles, words, quotes…",className:"bg-transparent outline-none flex-1 body text-sm",style:{color:"var(--ink)"}})]}),C&&r.jsxs("div",{className:"flex items-center gap-0.5 p-1 rounded-full",style:{background:"var(--cream-3)",border:"1.5px solid var(--rule)"},title:"Font size",children:[r.jsx("button",{onClick:()=>d(Math.max(0,b-1)),disabled:b<=0,"aria-label":"Decrease font size",className:"flex items-center justify-center rounded-full",style:{width:44,height:44,background:"transparent",color:b<=0?"var(--ink-3)":"var(--ink)",opacity:b<=0?.4:1,fontFamily:"Cormorant Garamond, serif",fontWeight:700,fontSize:17,lineHeight:1},children:"A−"}),r.jsx("div",{style:{width:1,height:24,background:"var(--rule)"}}),r.jsx("button",{onClick:()=>d(Math.min(5,b+1)),disabled:b>=5,"aria-label":"Increase font size",className:"flex items-center justify-center rounded-full",style:{width:44,height:44,background:"transparent",color:b>=5?"var(--ink-3)":"var(--ink)",opacity:b>=5?.4:1,fontFamily:"Cormorant Garamond, serif",fontWeight:700,fontSize:22,lineHeight:1},children:"A+"})]}),r.jsxs("div",{className:"mode-toggle-group","aria-label":"Reader display modes",children:[r.jsxs("button",{type:"button",className:"mode-toggle-btn","data-active":z,"aria-pressed":z,onClick:M,children:[r.jsx(Kv,{size:15})," Ink"]}),r.jsxs("button",{type:"button",className:"mode-toggle-btn","data-active":F,"aria-pressed":F,onClick:g,children:[r.jsx(Di,{size:15})," Read"]})]}),r.jsx(Cf,{account:D,onAccountChange:O})]})}function Cf({account:c,onAccountChange:x}){const[b,d]=_.useState(!1),[T]=_.useState(()=>xf()),[C,z]=_.useState(""),F=_.useCallback(O=>{const B=Tf(O?.credential||"");if(!B){z("Could not read the Google account response.");return}x?.(B),d(!1),z("")},[x]),M=()=>{if(!T){z("Google sign-in needs a Google OAuth Client ID configured for this site.");return}z("Opening Google sign-in..."),kf().then(()=>{if(!window.google?.accounts?.id)throw new Error("Google unavailable");window.google.accounts.id.initialize({client_id:T,callback:F,ux_mode:"popup",auto_select:!1,use_fedcm_for_prompt:!0}),window.google.accounts.id.prompt()}).catch(()=>z("Google sign-in could not load."))},g=()=>{try{window.google?.accounts?.id?.disableAutoSelect?.()}catch{}x?.(null),d(!1)},D=(c?.name||c?.email||"G").trim().charAt(0).toUpperCase();return r.jsxs("div",{className:"account-shell",children:[r.jsxs("button",{type:"button",className:"account-trigger",onClick:()=>d(O=>!O),"aria-label":c?"Open account menu":"Open login",children:[r.jsx("span",{className:"account-avatar",children:c?.picture?r.jsx("img",{src:c.picture,alt:""}):c?D:r.jsx(Lv,{size:15})}),r.jsx("span",{className:"account-label",children:c?c.name||"Account":"Login"})]}),b&&r.jsx("div",{className:"login-overlay fade",role:"dialog","aria-modal":"true","aria-label":"Login",children:r.jsxs("div",{className:"login-card",children:[r.jsx("button",{type:"button",className:"login-close",onClick:()=>d(!1),"aria-label":"Close login",children:r.jsx(Cl,{size:17})}),r.jsx("h2",{className:"login-title",children:"Login"}),c?r.jsxs(r.Fragment,{children:[r.jsxs("div",{className:"flex items-center gap-3",children:[r.jsx("span",{className:"account-avatar",style:{width:48,height:48},children:c.picture?r.jsx("img",{src:c.picture,alt:""}):D}),r.jsxs("div",{style:{minWidth:0},children:[r.jsx("p",{className:"account-name",children:c.name||"Signed in"}),c.email&&r.jsx("p",{className:"account-email",children:c.email}),r.jsx("span",{className:"account-sync-status",children:"Google connected"})]})]}),r.jsx("div",{className:"account-actions",children:r.jsxs("button",{type:"button",className:"account-secondary",onClick:g,children:[r.jsx(Fv,{size:13})," Sign out"]})})]}):r.jsxs(r.Fragment,{children:[r.jsx("div",{className:"login-social-grid",children:r.jsxs("button",{type:"button",className:"login-social-btn google",onClick:M,"aria-label":"Continue with Google",children:[r.jsx("span",{className:"google-mark",children:"G"}),r.jsx("span",{className:"login-social-label",children:"Continue with Google"})]})}),r.jsx("span",{className:"account-sync-status",children:"Google only"}),C&&r.jsx("p",{className:"login-status",children:C})]})]})})]})}const jf={law:{numeral:"I",taglineEn:"Briefs, advocacy, and the architecture of persuasion."},economic:{numeral:"II",taglineEn:"Markets, scarcity, and the choreography of choice."},philosophy:{numeral:"III",taglineEn:"Being, knowing, and questions that refuse to settle."},tech:{numeral:"IV",taglineEn:"Algorithms, networks, and the philosophy of the artefact."},"book-summaries":{numeral:"V",taglineEn:"Distilled volumes — the canon, condensed."},all:{numeral:"—",taglineEn:"Everything in the library, gathered."}};function La(c,x){if(x){const b=["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];return String(c).split("").map(d=>b[+d]||d).join("")}return String(c).padStart(2,"0")}function Mf({category:c,heading:x,isRtl:b,itemCount:d}){const T=jf[c]||{},C=b?T.taglineAr:T.taglineEn,z=b?d===1?"مقال واحد":d===2?"مقالان":`${La(d,!0)} مقالات`:`${La(d,!1)} ${d===1?"Item":"Items"}`,F=b?"قسم":"Section",M=b?"اختر مقالا للقراءة":"Select an article to begin",g=Hs.find(D=>D.id===c)?.icon||Di;return r.jsxs("div",{className:"section-masthead rise"+(b?" is-rtl":""),style:{direction:b?"rtl":"ltr"},children:[r.jsx("div",{className:"section-masthead__folio","aria-hidden":"true",children:r.jsxs("span",{children:[F," ",T.numeral||"-"]})}),r.jsxs("div",{className:"section-masthead__inner",children:[r.jsxs("div",{className:"section-masthead__top",children:[r.jsxs("div",{className:"section-masthead__eyebrow",children:[r.jsx("span",{children:F}),r.jsx("span",{children:T.numeral||"-"})]}),r.jsx("div",{className:"section-masthead__seal","aria-hidden":"true",children:r.jsx(g,{size:23})})]}),r.jsxs("div",{className:"section-masthead__title-row",children:[r.jsx("h2",{className:"section-masthead__title",children:x}),r.jsx("span",{className:"section-masthead__mark","aria-hidden":"true"})]}),C&&r.jsx("p",{className:"section-masthead__deck",children:C}),r.jsxs("div",{className:"section-masthead__bottom",children:[r.jsx("span",{className:"section-masthead__count",children:z}),r.jsx("span",{className:"section-masthead__line"}),r.jsx("span",{className:"section-masthead__prompt",children:M})]})]})]})}function zf(c,x){return x?La(c+1,!0):String(c+1).padStart(2,"0")}function Zu(c,x){return c==="done"?"Complete":x>0?`${Math.round(x*100)}% read`:"Unread"}function Nf(c){if(!c.length)return null;const x=Xu(c.length,new Date);return c[x<0?0:x]}function If({articles:c,category:x,library:b,onOpen:d,onAddText:T,onDelete:C}){const z=x==="all"?"Articles & Summaries":Rs[x],F=so(x),M=c.map((Y,re)=>{const le=Qu(Y,b),ce=ef(Y,b),V=b?.reading?.[Y.id]?.lastSeen||0;return{article:Y,index:re,progress:le,status:ce,lastSeen:V}}),g=M.filter(Y=>Y.progress>0&&Y.progress<1).sort((Y,re)=>re.lastSeen-Y.lastSeen)[0]||M.filter(Y=>Y.status!=="done").sort((Y,re)=>Y.index-re.index)[0]||M[0],D=Nf(c),O=M.filter(Y=>Y.status==="done").length,B=M.filter(Y=>Y.progress>0&&Y.progress<1).length;return r.jsxs("div",{className:"px-4 md:px-8 py-6 md:py-8 library-board",children:[r.jsxs("div",{className:"library-main-stack",children:[r.jsx(Mf,{category:x,heading:z,isRtl:F,itemCount:c.length}),c.length===0?r.jsxs("div",{className:"card px-8 py-16 text-center rise",children:[r.jsx("div",{className:"display text-5xl mb-3 italic",style:{color:"var(--gold)"},children:"*"}),r.jsx("p",{className:"display text-xl italic mb-1",style:{color:"var(--ink-2)"},children:"No articles in this section yet."}),r.jsx("p",{className:"body text-sm mb-6",style:{color:"var(--ink-3)"},children:"Use the editor to add your own piece."}),r.jsxs("button",{onClick:T,className:"reader-btn",children:[r.jsx(Sl,{size:14})," Add Text"]})]}):r.jsxs("div",{className:"archive-list rise",style:{animationDelay:"0.06s"},children:[r.jsxs("div",{className:"archive-list__header","aria-hidden":"true",children:[r.jsx("span",{children:"Folio"}),r.jsx("span",{children:"Title Record"}),r.jsx("span",{children:"Reading State"})]}),M.map(({article:Y,index:re,status:le,progress:ce})=>r.jsx(Of,{article:Y,folio:zf(re,F),onOpen:()=>d(Y.id),onDelete:Y.custom?()=>C(Y.id):null,status:le,progress:ce},Y.id))]})]}),r.jsxs("aside",{className:"library-side-stack",children:[r.jsxs("div",{className:"shelf-panel rise",children:[r.jsx("div",{className:"shelf-panel__label",children:"Library State"}),r.jsxs("div",{className:"shelf-stats","aria-label":"Library reading summary",children:[r.jsxs("div",{className:"shelf-stat",children:[r.jsx("strong",{children:La(c.length,!1)}),r.jsx("span",{children:"Total"})]}),r.jsxs("div",{className:"shelf-stat",children:[r.jsx("strong",{children:La(B,!1)}),r.jsx("span",{children:"Active"})]}),r.jsxs("div",{className:"shelf-stat",children:[r.jsx("strong",{children:La(O,!1)}),r.jsx("span",{children:"Read"})]})]}),g?r.jsx(Df,{label:g.progress>0?"Continue Reading":"Begin Here",article:g.article,progress:g.progress,onOpen:()=>d(g.article.id)}):r.jsx("p",{className:"shelf-panel__copy",children:"Your reading queue will appear here once this section has texts."})]}),D&&r.jsxs("div",{className:"shelf-panel rise",style:{animationDelay:"0.08s"},children:[r.jsx("div",{className:"shelf-panel__label",children:"Today's Reading"}),r.jsx("h3",{className:"shelf-panel__title",children:D.title}),r.jsx("p",{className:"shelf-panel__copy",children:"A rotating shelf pick for the day, chosen from the current library view."}),r.jsxs("button",{onClick:()=>d(D.id),className:"pill-light",children:[r.jsx(Uu,{size:13})," Open Pick"]})]}),r.jsxs("div",{className:"shelf-panel rise",style:{animationDelay:"0.12s"},children:[r.jsxs("div",{className:"flex items-center justify-between mb-3",children:[r.jsx("h3",{className:"shelf-panel__title",style:{margin:0},children:"Add Text"}),r.jsx("span",{className:"tag",children:"Full Page"})]}),r.jsx("p",{className:"shelf-panel__copy",children:"Paste your own articles, notes, or chapters. They enter the archive with the same highlights, quotes, definitions, and reading progress."}),r.jsxs("button",{onClick:T,className:"pill-light",children:[r.jsx(Sl,{size:13})," Open Editor"]})]})]})]})}function Df({label:c,article:x,progress:b,onOpen:d}){return r.jsxs("div",{className:"shelf-mini-card",children:[r.jsxs("div",{className:"shelf-mini-card__meta",children:[r.jsx("span",{className:"shelf-mini-card__detail",children:c}),r.jsx("span",{className:"tag",children:Rs[x.category]||"Misc"})]}),r.jsx("h3",{className:"shelf-mini-card__title",children:x.title}),r.jsx("div",{className:"mini-progress","aria-hidden":"true",style:{"--progress":`${Math.round(b*100)}%`},children:r.jsx("span",{})}),r.jsxs("div",{className:"flex items-center justify-between gap-3 mt-3",children:[r.jsx("span",{className:"shelf-mini-card__detail",children:Zu(b>=1?"done":b>0?"reading":"new",b)}),r.jsxs("button",{onClick:d,className:"reader-btn archive-open-btn",children:[r.jsx(Di,{size:12})," Read"]})]})]})}function Of({article:c,folio:x,onOpen:b,onDelete:d,status:T="new",progress:C=0}){const z=so(c.category),F=z?{direction:"rtl",fontFamily:"'Noto Naskh Arabic', serif",textAlign:"right"}:null,M=Math.round(C*100);return r.jsxs("div",{className:"archive-row",onClick:b,style:{direction:z?"rtl":"ltr"},children:[r.jsxs("div",{className:"archive-row__folio",children:[r.jsx("span",{className:"archive-row__number",children:x}),r.jsx("span",{className:"archive-row__category",children:Rs[c.category]||"Misc"})]}),r.jsxs("div",{className:"archive-row__body",children:[r.jsxs("div",{className:"archive-row__meta",children:[r.jsx(tf,{status:T,percent:C}),r.jsxs("span",{className:"ui text-[9px] tracking-[0.2em] uppercase",style:{color:"var(--ink-3)"},children:[c.readTime," / ",c.date]}),d&&r.jsx("button",{onClick:g=>{g.stopPropagation(),confirm("Delete this article?")&&d()},className:"opacity-55 hover:opacity-100",title:"Delete",children:r.jsx(Al,{size:14,style:{color:"var(--ink-3)"}})})]}),r.jsx("h3",{className:"archive-row__title",style:{fontFamily:z?"'Noto Naskh Arabic', serif":void 0,fontStyle:z?"normal":void 0,fontWeight:z?700:void 0,...F},children:c.title}),r.jsxs("p",{className:"archive-row__excerpt",style:F,children:[c.author,c.excerpt?` - ${c.excerpt}`:""]})]}),r.jsxs("div",{className:"archive-row__progress",children:[r.jsxs("div",{className:"archive-row__progress-label",children:[r.jsx("span",{children:Zu(T,C)}),r.jsxs("span",{children:[M,"%"]})]}),r.jsx("div",{className:"mini-progress","aria-hidden":"true",style:{"--progress":`${M}%`},children:r.jsx("span",{})}),r.jsxs("button",{onClick:g=>{g.stopPropagation(),b()},className:"reader-btn archive-open-btn",children:[r.jsx(Di,{size:12})," Open Reader"]})]})]})}function Rf(c,x,b,d,T=!1){const C=`
 <style id="boox-eink-override">
   @import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap');
 
@@ -10971,7 +10324,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
   body {
     background: #F2EAD0 !important;
     color: #0A0A0A !important;
-    zoom: ${fontMultiplier};
+    zoom: ${x};
   }
 
   /* Invert all common dark sections */
@@ -11211,7 +10564,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
     background: #FAF5E1 !important;
     border: 2px solid #1A1A1A !important;
     color: #0A0A0A !important;
-    font-family: \'DM Mono\', \'Cormorant Garamond\', monospace !important;
+    font-family: 'DM Mono', 'Cormorant Garamond', monospace !important;
     font-size: 11px !important;
     letter-spacing: 0.18em !important;
     font-weight: 700 !important;
@@ -11238,7 +10591,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
   .athenaeum-mark-footer.is-whole::before {
     content: "End of summary";
     display: block;
-    font-family: \'Cormorant Garamond\', \'DM Mono\', serif !important;
+    font-family: 'Cormorant Garamond', 'DM Mono', serif !important;
     font-style: italic;
     font-size: 13px;
     letter-spacing: 0.3em;
@@ -11377,9 +10730,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
       grid-template-columns: 1fr !important;
     }
   }
-</style>`;
-
-  const plainInkCss = plainInk ? `
+</style>`,z=T?`
 <style id="boox-plain-reader-override">
   html, body, .wrap {
     background: #FFFFFF !important;
@@ -11432,26 +10783,19 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
     background: #000000 !important;
     color: #FFFFFF !important;
   }
-</style>` : "";
-
-  // Manual mark-as-read system:
-  // - Seeds tabs/buttons from prior readSections.
-  // - Appends a "Mark as read" button at the end of each .panel (or the whole
-  //   body if the book has no panel structure).
-  // - Toggling the button updates the corresponding tab's ✓ and posts a message.
-  const trackerJs = `
+</style>`:"",F=`
 <script>
 (function() {
   try {
-    var ARTICLE_ID = ${JSON.stringify(articleId || "")};
-    var READ_SECTIONS = ${JSON.stringify(Array.from(readSections || []))};
+    var ARTICLE_ID = ${JSON.stringify(b||"")};
+    var READ_SECTIONS = ${JSON.stringify(Array.from(d||[]))};
 
     function getPanels() {
       return Array.from(document.querySelectorAll(".panel"));
     }
     function getPanelIdFromTab(tab) {
       var oc = tab.getAttribute("onclick") || "";
-      var m = oc.match(/show\s*\(\s*['\"]([^'\"]+)['\"]/);
+      var m = oc.match(/shows*(s*['"]([^'"]+)['"]/);
       return m ? m[1] : null;
     }
     function getTabByPanelId(id) {
@@ -11468,7 +10812,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
         else tab.classList.remove("tab-read");
       }
       var btns = document.querySelectorAll(
-        ".athenaeum-mark-btn[data-panel-id=\"" + panelId + "\"]"
+        ".athenaeum-mark-btn[data-panel-id="" + panelId + ""]"
       );
       var isWhole = panelId === "_whole";
       Array.prototype.forEach.call(btns, function(b){
@@ -11568,725 +10912,10 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
     }
   } catch(e) { /* no-op */ }
 })();
-</script>`;
+<\/script>`,M=C+z,g=F;let D=c;return D.includes("</head>")?D=D.replace("</head>",M+"</head>"):/<body[^>]*>/i.test(D)?D=D.replace(/<body([^>]*)>/i,"<body$1>"+M):D=M+D,D.includes("</body>")?D=D.replace("</body>",g+"</body>"):D=D+g,D}function Hf(c){if(!c)return[];if(c.richHtml&&typeof DOMParser<"u")try{const x=new DOMParser().parseFromString(c.richHtml,"text/html"),b=Array.from(x.querySelectorAll(".tab, .section-title, h2, h3")),d=[];if(b.forEach(T=>{const C=(T.textContent||"").replace(/\s+/g," ").trim();!C||C.length>48||d.includes(C)||d.push(C)}),d.length)return d.slice(0,10)}catch{}return c.body?.length>6?["Opening","Core argument","Second movement","Close"]:["Opening","Reading body","End"]}function Fu({article:c,toc:x,highlights:b,quotes:d,progress:T}){const C=Math.round(T||0);return r.jsxs("aside",{className:"reader-side-rail","aria-label":"Reader tools",children:[r.jsxs("section",{className:"reader-rail-panel",children:[r.jsx("div",{className:"reader-rail-label",children:"Contents"}),r.jsx("ul",{className:"reader-rail-list",children:x.map((z,F)=>r.jsxs("li",{children:[r.jsx("b",{children:String(F+1).padStart(2,"0")}),r.jsx("span",{children:z})]},`${z}-${F}`))})]}),r.jsxs("section",{className:"reader-rail-panel",children:[r.jsx("div",{className:"reader-rail-label",children:"Reader Notes"}),r.jsxs("div",{className:"reader-note-stack",children:[r.jsxs("div",{className:"reader-note-stat",children:[r.jsx("span",{children:"Progress"}),r.jsxs("strong",{children:[C,"%"]})]}),r.jsxs("div",{className:"reader-note-stat",children:[r.jsx("span",{children:"Highlights"}),r.jsx("strong",{children:String(b.length).padStart(2,"0")})]}),r.jsxs("div",{className:"reader-note-stat",children:[r.jsx("span",{children:"Quotes"}),r.jsx("strong",{children:String(d.length).padStart(2,"0")})]})]}),r.jsx("p",{className:"shelf-panel__copy",style:{marginTop:"0.85rem",marginBottom:0},children:"Select text in the article to save highlights, quotes, or vocabulary."}),(b[0]||d[0])&&r.jsx("div",{className:"reader-snippet",children:d[0]?.text||b[0]?.text})]}),r.jsxs("section",{className:"reader-rail-panel",children:[r.jsx("div",{className:"reader-rail-label",children:"Archive Slip"}),r.jsx("h3",{className:"shelf-mini-card__title",children:c.title}),r.jsxs("div",{className:"shelf-mini-card__detail",children:[c.readTime," / ",c.date]})]})]})}function Gf({article:c,onBack:x,articleRef:b,renderParagraph:d,fontPx:T,onEdit:C,library:z,onToggleMarkRead:F,booxPlain:M=!1}){const g=_.useRef(null),[D,O]=_.useState(2400),[B,Y]=_.useState(!0),re=_.useMemo(()=>z?.reading?.[c?.id]?.readSections||[],[c?.id]),le=c?Qu(c,z)*100:0,ce=!!z?.reading?.[c?.id]?.marked,V=c?so(c.category):!1,at=_.useMemo(()=>(z?.highlights||[]).filter(U=>U.articleId===c?.id),[z?.highlights,c?.id]),Ne=_.useMemo(()=>(z?.quotes||[]).filter(U=>U.articleId===c?.id),[z?.quotes,c?.id]),Pe=_.useMemo(()=>Hf(c),[c]),st=_.useMemo(()=>c?.richHtml?Rf(c.richHtml,T,c.id,re,M):null,[c?.id,c?.richHtml,T,M]);if(_.useEffect(()=>{if(!c?.richHtml)return;O(2400);const je=setInterval(()=>{const _e=g.current;if(_e)try{const xt=_e.contentDocument;if(xt?.body){const Ye=Math.max(xt.body.scrollHeight,xt.documentElement.scrollHeight);Ye&&Math.abs(Ye-D)>4&&O(Ye+32)}}catch{}},400);return()=>clearInterval(je)},[c?.id,T,M]),!c)return null;const Ce=r.jsxs("div",{className:"reader-control-bar",children:[r.jsxs("div",{className:"reader-control-group",children:[r.jsxs("button",{onClick:x,className:"reader-mode-btn",type:"button",children:[r.jsx(Wu,{size:14})," Library"]}),r.jsx("span",{className:"tag",children:Rs[c.category]||"Misc"})]}),r.jsxs("div",{className:"reader-progress-text",children:[r.jsxs("span",{children:[Math.round(le),"% Read"]}),r.jsx("span",{children:"/"}),r.jsxs("span",{children:[at.length," Highlights"]}),r.jsx("span",{children:"/"}),r.jsxs("span",{children:[Ne.length," Quotes"]})]}),r.jsxs("div",{className:"reader-control-group",children:[r.jsxs("button",{type:"button",className:"reader-mode-btn","data-active":B,"aria-pressed":B,onClick:()=>Y(U=>!U),children:[r.jsx(Pu,{size:14})," Notes"]}),c.custom&&C&&r.jsx("button",{type:"button",onClick:C,className:"reader-mode-btn",children:"Edit"})]})]});return c.richHtml?r.jsxs(r.Fragment,{children:[r.jsx(Gu,{percent:le}),r.jsxs("article",{className:"reader-rich-article px-2 md:px-4 py-6 max-w-[1500px] mx-auto rise",children:[Ce,r.jsxs("div",{className:"reader-workbench",children:[r.jsxs("div",{className:"reader-primary",children:[r.jsx("div",{className:"reader-frame",style:{border:"1.5px solid var(--rule)",borderRadius:10,overflow:"hidden",background:"var(--cream-3)"},children:r.jsx("iframe",{ref:g,srcDoc:st,title:c.title,sandbox:"allow-same-origin allow-scripts",style:{width:"100%",height:D,border:"none",display:"block",background:"transparent"}})}),r.jsxs("div",{className:"mt-8 ui text-[10px] tracking-[0.25em] uppercase text-center",style:{color:"var(--ink-3)"},children:["By ",c.author," · ",c.readTime," · ",c.date]})]}),B&&r.jsx(Fu,{article:c,toc:Pe,highlights:at,quotes:Ne,progress:le})]})]})]}):r.jsxs(r.Fragment,{children:[r.jsx(Gu,{percent:le}),r.jsxs("article",{className:"reader-standard-article px-4 md:px-8 py-8 max-w-[1400px] mx-auto rise",children:[Ce,r.jsxs("div",{className:"reader-workbench",children:[r.jsxs("div",{className:"reader-primary",children:[r.jsxs("header",{className:"max-w-3xl mx-auto mb-12 pb-8 border-b",style:{borderColor:"var(--rule)",...V?{direction:"rtl",textAlign:"right"}:{}},children:[r.jsx("span",{className:"tag mb-5 inline-block",children:Rs[c.category]||"Misc"}),r.jsx("h1",{className:V?"leading-[1.15] mb-4 mt-2":"display leading-[1.05] mb-4 mt-2",style:{fontSize:"clamp(2rem, 5vw, 3.4rem)",fontWeight:V?700:600,color:"var(--ink)",fontFamily:V?"'Noto Naskh Arabic', serif":void 0},children:c.title}),c.excerpt&&r.jsx("p",{className:V?"text-xl md:text-2xl mb-5":"display text-xl md:text-2xl italic mb-5",style:{color:"var(--ink-2)",fontWeight:400,fontFamily:V?"'Noto Naskh Arabic', serif":void 0},children:c.excerpt}),r.jsxs("div",{className:"ui text-[10px] tracking-[0.25em] uppercase flex items-center gap-3 flex-wrap",style:{color:"var(--ink-3)"},children:[r.jsxs("span",{children:[V?"بقلم":"By"," ",c.author]}),r.jsx("span",{children:"·"}),r.jsx("span",{children:c.readTime}),r.jsx("span",{children:"·"}),r.jsx("span",{children:c.date})]})]}),c.corePrinciple&&r.jsx("div",{className:"max-w-3xl mx-auto",children:(Array.isArray(c.corePrinciple)?c.corePrinciple:[c.corePrinciple]).map((U,je)=>r.jsxs("div",{className:"core-principle"+(V?"":" ltr"),children:[r.jsx("div",{className:"core-principle__label",children:V?"المبدأ":"The Principle"}),r.jsx("p",{className:"core-principle__text",children:U.text}),U.source&&r.jsx("div",{className:"core-principle__source",children:U.source})]},je))}),r.jsx("div",{ref:b,className:V?"reading-column article-body rtl-arabic mx-auto":"reading-column article-body mx-auto",style:{fontSize:`${T}rem`},children:c.body.map((U,je)=>r.jsxs(Tv.Fragment,{children:[r.jsx("p",{children:d(U,c.id)}),je===Math.floor(c.body.length/2)-1&&c.body.length>4&&r.jsx("div",{className:"gold-rule",children:r.jsx("span",{className:"gold-rule__mark"})})]},je))}),r.jsx("div",{className:"max-w-3xl mx-auto mt-12 mb-2 text-center",children:r.jsx("button",{onClick:()=>F?.(c.id),style:{display:"inline-flex",alignItems:"center",gap:8,padding:"11px 26px",background:ce?"#2A6B3A":"var(--cream-3)",border:`2px solid ${ce?"#2A6B3A":"var(--ink)"}`,color:ce?"var(--cream-3)":"var(--ink)",fontFamily:"DM Mono, monospace",fontSize:11,letterSpacing:"0.18em",fontWeight:700,textTransform:"uppercase",borderRadius:999,cursor:"pointer"},children:ce?"✓ Read · Click to mark as pending":"Mark as read"})}),r.jsxs("div",{className:"max-w-3xl mx-auto mt-12 pt-8 border-t text-center",style:{borderColor:"var(--rule)"},children:[r.jsx("div",{className:"display text-3xl italic",style:{color:"var(--gold)"},children:"◆"}),r.jsx("div",{className:"ui text-[10px] tracking-[0.3em] uppercase mt-2",style:{color:"var(--ink-3)"},children:"End"})]})]}),B&&r.jsx(Fu,{article:c,toc:Pe,highlights:at,quotes:Ne,progress:le})]})]})]})}function Bf({existing:c,onSave:x,onCancel:b}){const[d,T]=_.useState(c?.title||""),[C,z]=_.useState(c?.author||""),[F,M]=_.useState(c?.category||"philosophy"),g=so(F),[D,O]=_.useState(c?.excerpt||""),[B,Y]=_.useState(c?.body?.join(`
 
+`)||""),re=B.trim().split(/\s+/).filter(Boolean).length,le=Math.max(1,Math.round(re/230)),ce=()=>{if(!d.trim()||!B.trim()){alert("Please give the piece a title and some body text.");return}x({id:c?.id,title:d.trim(),author:C.trim()||"Unknown",category:F,excerpt:D.trim()||B.trim().slice(0,140)+"…",body:B.split(/\n{2,}/).map(V=>V.trim()).filter(Boolean),date:c?.date||new Date().toLocaleDateString("en-US",{month:"short",year:"numeric"}),readTime:`${le} min`})};return r.jsxs("div",{className:"px-4 md:px-8 py-6 md:py-10 max-w-[1100px] mx-auto rise",children:[r.jsxs("div",{className:"flex items-center justify-between mb-8",children:[r.jsxs("button",{onClick:b,className:"ui text-[11px] tracking-[0.2em] uppercase flex items-center gap-2",style:{color:"var(--ink-3)"},children:[r.jsx(Wu,{size:14})," Cancel"]}),r.jsxs("button",{onClick:ce,className:"reader-btn",children:[r.jsx(Wv,{size:13})," Save Article"]})]}),r.jsxs("div",{className:"mb-6",children:[r.jsxs("div",{className:"flex items-center gap-3 mb-2",children:[r.jsx("span",{className:"tag",children:"Editor"}),r.jsxs("span",{className:"ui text-[10px] tracking-[0.25em] uppercase",style:{color:"var(--ink-3)"},children:[re," words · ",le," min read"]})]}),r.jsx("h2",{className:"display text-3xl md:text-4xl italic",style:{fontWeight:600,color:"var(--ink)"},children:c?"Edit your article":"Add your own article"}),r.jsx("p",{className:"body text-sm mt-2",style:{color:"var(--ink-3)"},children:"Paste any text — a chapter, an essay, a research note. Separate paragraphs with a blank line."})]}),r.jsxs("div",{className:"grid grid-cols-12 gap-4 mb-4",children:[r.jsxs("div",{className:"col-span-12 md:col-span-7",children:[r.jsx("label",{className:"ui text-[10px] tracking-[0.25em] uppercase block mb-1.5",style:{color:"var(--ink-3)"},children:"Title"}),r.jsx("input",{value:d,onChange:V=>T(V.target.value),className:"editor-input"+(g?" rtl-arabic":""),placeholder:g?"مثال: ملاحظات على رسالة لوك الثانية":"e.g. Notes on Locke's Second Treatise"})]}),r.jsxs("div",{className:"col-span-12 md:col-span-5",children:[r.jsx("label",{className:"ui text-[10px] tracking-[0.25em] uppercase block mb-1.5",style:{color:"var(--ink-3)"},children:"Author"}),r.jsx("input",{value:C,onChange:V=>z(V.target.value),className:"editor-input"+(g?" rtl-arabic":""),placeholder:g?"المؤلف أو المصدر":"Author or source"})]}),r.jsxs("div",{className:"col-span-12 md:col-span-5",children:[r.jsx("label",{className:"ui text-[10px] tracking-[0.25em] uppercase block mb-1.5",style:{color:"var(--ink-3)"},children:"Category"}),r.jsxs("div",{className:"relative",children:[r.jsx("select",{value:F,onChange:V=>M(V.target.value),className:"editor-input appearance-none pr-10",children:Hs.map(V=>r.jsx("option",{value:V.id,children:V.name},V.id))}),r.jsx(Dv,{size:14,className:"absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",style:{color:"var(--ink-3)"}})]})]}),r.jsxs("div",{className:"col-span-12 md:col-span-7",children:[r.jsx("label",{className:"ui text-[10px] tracking-[0.25em] uppercase block mb-1.5",style:{color:"var(--ink-3)"},children:"Excerpt (optional)"}),r.jsx("input",{value:D,onChange:V=>O(V.target.value),className:"editor-input"+(g?" rtl-arabic":""),placeholder:g?"ملخص قصير أو عنوان فرعي":"A one-line summary or subtitle"})]})]}),r.jsxs("div",{className:"mb-6",children:[r.jsx("label",{className:"ui text-[10px] tracking-[0.25em] uppercase block mb-1.5",style:{color:"var(--ink-3)"},children:"Body"}),r.jsx("textarea",{value:B,onChange:V=>Y(V.target.value),className:"editor-input editor-textarea body"+(g?" rtl-arabic":""),placeholder:g?`الصق نصك هنا.
 
-  // Build the head additions (CSS) and body tail additions (script)
-  const headPayload = overrideCss + plainInkCss;
-  const bodyTail    = trackerJs;
+افصل الفقرات بسطر فارغ مثل هذا.
 
-  let out = rawHtml;
-  if (out.includes("</head>")) {
-    out = out.replace("</head>", headPayload + "</head>");
-  } else if (/<body[^>]*>/i.test(out)) {
-    out = out.replace(/<body([^>]*)>/i, "<body$1>" + headPayload);
-  } else {
-    out = headPayload + out;
-  }
-  // Append tracker script before </body> so DOM is ready
-  if (out.includes("</body>")) {
-    out = out.replace("</body>", bodyTail + "</body>");
-  } else {
-    out = out + bodyTail;
-  }
-  return out;
-}
-
-function getReaderToc(article) {
-  if (!article) return [];
-  if (article.richHtml && typeof DOMParser !== "undefined") {
-    try {
-      const doc = new DOMParser().parseFromString(article.richHtml, "text/html");
-      const candidates = Array.from(doc.querySelectorAll(".tab, .section-title, h2, h3"));
-      const labels = [];
-      candidates.forEach(node => {
-        const text = (node.textContent || "").replace(/\s+/g, " ").trim();
-        if (!text || text.length > 48 || labels.includes(text)) return;
-        labels.push(text);
-      });
-      if (labels.length) return labels.slice(0, 10);
-    } catch {}
-  }
-  if (article.body?.length > 6) return ["Opening", "Core argument", "Second movement", "Close"];
-  return ["Opening", "Reading body", "End"];
-}
-
-function ReaderSideRail({ article, toc, highlights, quotes, progress }) {
-  const progressPct = Math.round(progress || 0);
-  return (
-    <aside className="reader-side-rail" aria-label="Reader tools">
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Contents</div>
-        <ul className="reader-rail-list">
-          {toc.map((item, index) => (
-            <li key={`${item}-${index}`}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Reader Notes</div>
-        <div className="reader-note-stack">
-          <div className="reader-note-stat">
-            <span>Progress</span>
-            <strong>{progressPct}%</strong>
-          </div>
-          <div className="reader-note-stat">
-            <span>Highlights</span>
-            <strong>{String(highlights.length).padStart(2, "0")}</strong>
-          </div>
-          <div className="reader-note-stat">
-            <span>Quotes</span>
-            <strong>{String(quotes.length).padStart(2, "0")}</strong>
-          </div>
-        </div>
-        <p className="shelf-panel__copy" style={{ marginTop: "0.85rem", marginBottom: 0 }}>
-          Select text in the article to save highlights, quotes, or vocabulary.
-        </p>
-        {(highlights[0] || quotes[0]) && (
-          <div className="reader-snippet">
-            {quotes[0]?.text || highlights[0]?.text}
-          </div>
-        )}
-      </section>
-
-      <section className="reader-rail-panel">
-        <div className="reader-rail-label">Archive Slip</div>
-        <h3 className="shelf-mini-card__title">{article.title}</h3>
-        <div className="shelf-mini-card__detail">{article.readTime} / {article.date}</div>
-      </section>
-    </aside>
-  );
-}
-
-function ReaderView({
-  article: a,
-  onBack,
-  articleRef,
-  renderParagraph,
-  fontPx,
-  onEdit,
-  library,
-  onToggleMarkRead,
-  booxPlain = false,
-}) {
-  const iframeRef = useRef(null);
-  const [iframeHeight, setIframeHeight] = useState(2400);
-  const [showRail, setShowRail] = useState(true);
-  const initialReadSections = useMemo(
-    () => (library?.reading?.[a?.id]?.readSections || []),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [a?.id]
-  );
-  const readPct = a ? getReadProgress(a, library) * 100 : 0;
-  const isMarkedRead = !!library?.reading?.[a?.id]?.marked;
-  const isRtl = a ? isRtlCategory(a.category) : false;
-  const articleHighlights = useMemo(
-    () => (library?.highlights || []).filter(item => item.articleId === a?.id),
-    [library?.highlights, a?.id]
-  );
-  const articleQuotes = useMemo(
-    () => (library?.quotes || []).filter(item => item.articleId === a?.id),
-    [library?.quotes, a?.id]
-  );
-  const toc = useMemo(() => getReaderToc(a), [a]);
-
-  // Build the e-ink-styled iframe HTML with current font scale.
-  // Re-runs when article or fontPx changes, causing the iframe to reload.
-  const enhancedHtml = useMemo(
-    () => (a?.richHtml
-      ? buildEinkRichHtml(a.richHtml, fontPx, a.id, initialReadSections, booxPlain)
-      : null),
-    // Intentionally NOT depending on readSections after mount — iframe handles
-    // updates locally, parent only seeds initial state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [a?.id, a?.richHtml, fontPx, booxPlain]
-  );
-
-  // Auto-size iframe to its content
-  useEffect(() => {
-    if (!a?.richHtml) return;
-    setIframeHeight(2400); // reset on article/font change so we re-measure
-    const tick = () => {
-      const f = iframeRef.current;
-      if (!f) return;
-      try {
-        const doc = f.contentDocument;
-        if (doc?.body) {
-          const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-          if (h && Math.abs(h - iframeHeight) > 4) setIframeHeight(h + 32);
-        }
-      } catch {}
-    };
-    const iv = setInterval(tick, 400);
-    return () => clearInterval(iv);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [a?.id, fontPx, booxPlain]);
-
-  if (!a) return null;
-
-  const readerControls = (
-    <div className="reader-control-bar">
-      <div className="reader-control-group">
-        <button onClick={onBack} className="reader-mode-btn" type="button">
-          <ArrowLeft size={14}/> Library
-        </button>
-        <span className="tag">{CATEGORY_LABELS[a.category] || "Misc"}</span>
-      </div>
-      <div className="reader-progress-text">
-        <span>{Math.round(readPct)}% Read</span>
-        <span>/</span>
-        <span>{articleHighlights.length} Highlights</span>
-        <span>/</span>
-        <span>{articleQuotes.length} Quotes</span>
-      </div>
-      <div className="reader-control-group">
-        <button type="button" className="reader-mode-btn" data-active={showRail} aria-pressed={showRail} onClick={() => setShowRail(v => !v)}>
-          <Bookmark size={14}/> Notes
-        </button>
-        {a.custom && onEdit && (
-          <button type="button" onClick={onEdit} className="reader-mode-btn">
-            Edit
-          </button>
-        )}
-      </div>
-    </div>
-  );
-
-  // ── RICH HTML ARTICLE (book summaries with original styling, e-ink retuned) ──
-  if (a.richHtml) {
-    return (
-      <>
-      <ProgressBar percent={readPct}/>
-      <article className="reader-rich-article px-2 md:px-4 py-6 max-w-[1500px] mx-auto rise">
-        {readerControls}
-
-        <div className="reader-workbench">
-          <div className="reader-primary">
-        <div className="reader-frame" style={{
-          border: "1.5px solid var(--rule)",
-          borderRadius: 10,
-          overflow: "hidden",
-          background: "var(--cream-3)",
-        }}>
-          <iframe
-            ref={iframeRef}
-            srcDoc={enhancedHtml}
-            title={a.title}
-            sandbox="allow-same-origin allow-scripts"
-            style={{
-              width: "100%",
-              height: iframeHeight,
-              border: "none",
-              display: "block",
-              background: "transparent",
-            }}
-          />
-        </div>
-
-        <div className="mt-8 ui text-[10px] tracking-[0.25em] uppercase text-center" style={{ color: "var(--ink-3)" }}>
-          By {a.author} · {a.readTime} · {a.date}
-        </div>
-          </div>
-
-          {showRail && (
-            <ReaderSideRail
-              article={a}
-              toc={toc}
-              highlights={articleHighlights}
-              quotes={articleQuotes}
-              progress={readPct}
-            />
-          )}
-        </div>
-      </article>
-      </>
-    );
-  }
-
-  // ── STANDARD ARTICLE ──
-  return (
-    <>
-    <ProgressBar percent={readPct}/>
-    <article className="reader-standard-article px-4 md:px-8 py-8 max-w-[1400px] mx-auto rise">
-      {readerControls}
-
-      <div className="reader-workbench">
-        <div className="reader-primary">
-      <header className={isRtl ? "max-w-3xl mx-auto mb-12 pb-8 border-b" : "max-w-3xl mx-auto mb-12 pb-8 border-b"}
-        style={{ borderColor: "var(--rule)", ...(isRtl ? { direction: "rtl", textAlign: "right" } : {}) }}>
-        <span className="tag mb-5 inline-block">{CATEGORY_LABELS[a.category] || "Misc"}</span>
-        <h1 className={isRtl ? "leading-[1.15] mb-4 mt-2" : "display leading-[1.05] mb-4 mt-2"}
-          style={{
-            fontSize: "clamp(2rem, 5vw, 3.4rem)",
-            fontWeight: isRtl ? 700 : 600,
-            color: "var(--ink)",
-            fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : undefined,
-          }}>
-          {a.title}
-        </h1>
-        {a.excerpt && (
-          <p className={isRtl ? "text-xl md:text-2xl mb-5" : "display text-xl md:text-2xl italic mb-5"}
-            style={{
-              color: "var(--ink-2)",
-              fontWeight: 400,
-              fontFamily: isRtl ? "'Noto Naskh Arabic', serif" : undefined,
-            }}>
-            {a.excerpt}
-          </p>
-        )}
-        <div className="ui text-[10px] tracking-[0.25em] uppercase flex items-center gap-3 flex-wrap" style={{ color: "var(--ink-3)" }}>
-          <span>{isRtl ? "بقلم" : "By"} {a.author}</span><span>·</span><span>{a.readTime}</span><span>·</span><span>{a.date}</span>
-        </div>
-      </header>
-
-      {/* Core legal principle — headnote-style pull quote */}
-      {a.corePrinciple && (
-        <div className="max-w-3xl mx-auto">
-          {(Array.isArray(a.corePrinciple) ? a.corePrinciple : [a.corePrinciple]).map((cp, i) => (
-            <div key={i} className={"core-principle" + (isRtl ? "" : " ltr")}>
-              <div className="core-principle__label">{isRtl ? "المبدأ" : "The Principle"}</div>
-              <p className="core-principle__text">{cp.text}</p>
-              {cp.source && <div className="core-principle__source">{cp.source}</div>}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div ref={articleRef}
-        className={isRtl ? "reading-column article-body rtl-arabic mx-auto" : "reading-column article-body mx-auto"}
-        style={{ fontSize: `${fontPx}rem` }}>
-        {a.body.map((p, i) => (
-          <React.Fragment key={i}>
-            <p>{renderParagraph(p, a.id)}</p>
-            {i === Math.floor(a.body.length / 2) - 1 && a.body.length > 4 && (
-              <div className="gold-rule"><span className="gold-rule__mark"/></div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-
-      {/* Manual mark-as-read */}
-      <div className="max-w-3xl mx-auto mt-12 mb-2 text-center">
-        <button onClick={() => onToggleMarkRead?.(a.id)}
-          style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "11px 26px",
-            background: isMarkedRead ? "#2A6B3A" : "var(--cream-3)",
-            border: `2px solid ${isMarkedRead ? "#2A6B3A" : "var(--ink)"}`,
-            color: isMarkedRead ? "var(--cream-3)" : "var(--ink)",
-            fontFamily: "DM Mono, monospace",
-            fontSize: 11,
-            letterSpacing: "0.18em",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            borderRadius: 999,
-            cursor: "pointer",
-          }}>
-          {isMarkedRead ? "✓ Read · Click to mark as pending" : "Mark as read"}
-        </button>
-      </div>
-
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t text-center"
-        style={{ borderColor: "var(--rule)" }}>
-        <div className="display text-3xl italic" style={{ color: "var(--gold)" }}>◆</div>
-        <div className="ui text-[10px] tracking-[0.3em] uppercase mt-2" style={{ color: "var(--ink-3)" }}>End</div>
-      </div>
-        </div>
-
-        {showRail && (
-          <ReaderSideRail
-            article={a}
-            toc={toc}
-            highlights={articleHighlights}
-            quotes={articleQuotes}
-            progress={readPct}
-          />
-        )}
-      </div>
-    </article>
-    </>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   EDITOR VIEW — add or edit your own article
-   ════════════════════════════════════════════════════════════════ */
-function EditorView({ existing, onSave, onCancel }) {
-  const [title, setTitle] = useState(existing?.title || "");
-  const [author, setAuthor] = useState(existing?.author || "");
-  const [category, setCategory] = useState(existing?.category || "philosophy");
-  const isRtl = isRtlCategory(category);
-  const [excerpt, setExcerpt] = useState(existing?.excerpt || "");
-  const [bodyText, setBodyText] = useState(existing?.body?.join("\n\n") || "");
-
-  const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
-  const readMinutes = Math.max(1, Math.round(wordCount / 230));
-
-  const handleSave = () => {
-    if (!title.trim() || !bodyText.trim()) {
-      alert("Please give the piece a title and some body text.");
-      return;
-    }
-    onSave({
-      id: existing?.id,
-      title: title.trim(),
-      author: author.trim() || "Unknown",
-      category,
-      excerpt: excerpt.trim() || bodyText.trim().slice(0, 140) + "…",
-      body: bodyText.split(/\n{2,}/).map(p => p.trim()).filter(Boolean),
-      date: existing?.date || new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }),
-      readTime: `${readMinutes} min`,
-    });
-  };
-
-  return (
-    <div className="px-4 md:px-8 py-6 md:py-10 max-w-[1100px] mx-auto rise">
-      <div className="flex items-center justify-between mb-8">
-        <button onClick={onCancel}
-          className="ui text-[11px] tracking-[0.2em] uppercase flex items-center gap-2"
-          style={{ color: "var(--ink-3)" }}>
-          <ArrowLeft size={14}/> Cancel
-        </button>
-        <button onClick={handleSave} className="reader-btn">
-          <Save size={13}/> Save Article
-        </button>
-      </div>
-
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="tag">Editor</span>
-          <span className="ui text-[10px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
-            {wordCount} words · {readMinutes} min read
-          </span>
-        </div>
-        <h2 className="display text-3xl md:text-4xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
-          {existing ? "Edit your article" : "Add your own article"}
-        </h2>
-        <p className="body text-sm mt-2" style={{ color: "var(--ink-3)" }}>
-          Paste any text — a chapter, an essay, a research note. Separate paragraphs with a blank line.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-12 gap-4 mb-4">
-        <div className="col-span-12 md:col-span-7">
-          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Title</label>
-          <input value={title} onChange={e => setTitle(e.target.value)}
-            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
-            placeholder={isRtl ? "مثال: ملاحظات على رسالة لوك الثانية" : "e.g. Notes on Locke's Second Treatise"}/>
-        </div>
-        <div className="col-span-12 md:col-span-5">
-          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Author</label>
-          <input value={author} onChange={e => setAuthor(e.target.value)}
-            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
-            placeholder={isRtl ? "المؤلف أو المصدر" : "Author or source"}/>
-        </div>
-        <div className="col-span-12 md:col-span-5">
-          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Category</label>
-          <div className="relative">
-            <select value={category} onChange={e => setCategory(e.target.value)}
-              className="editor-input appearance-none pr-10">
-              {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              style={{ color: "var(--ink-3)" }}/>
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-7">
-          <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Excerpt (optional)</label>
-          <input value={excerpt} onChange={e => setExcerpt(e.target.value)}
-            className={"editor-input" + (isRtl ? " rtl-arabic" : "")}
-            placeholder={isRtl ? "ملخص قصير أو عنوان فرعي" : "A one-line summary or subtitle"}/>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <label className="ui text-[10px] tracking-[0.25em] uppercase block mb-1.5" style={{ color: "var(--ink-3)" }}>Body</label>
-        <textarea value={bodyText} onChange={e => setBodyText(e.target.value)}
-          className={"editor-input editor-textarea body" + (isRtl ? " rtl-arabic" : "")}
-          placeholder={isRtl
-            ? "الصق نصك هنا.\n\nافصل الفقرات بسطر فارغ مثل هذا.\n\nسيتم عرض كل فقرة بطباعة كتابية أنيقة."
-            : "Paste your text here.&#10;&#10;Separate paragraphs with a blank line, like this.&#10;&#10;Each paragraph will be rendered with proper book typography."}/>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   COLLECTION VIEW (Quotes, Vocabulary)
-   ════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   DAILY QUOTE VIEW
-   ════════════════════════════════════════════════════════════════ */
-function DailyQuoteView({ library, allArticles, onJump, onGoToQuotes }) {
-  const pick = getDailyQuote(library?.quotes || []);
-  const today = formatTodayDate();
-  const sourceArticle = pick && pick.quote.articleId
-    ? allArticles.find(a => a.id === pick.quote.articleId)
-    : null;
-
-  return (
-    <div className="px-4 md:px-8 py-8 md:py-12 max-w-[1100px] mx-auto rise">
-      {/* Eyebrow */}
-      <div className="flex items-center gap-3 mb-3">
-        <Sparkles size={14} style={{ color: "var(--gold)" }}/>
-        <span className="ui text-[10px] tracking-[0.35em] uppercase" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
-          Quote of the Day
-        </span>
-      </div>
-      <div className="ui text-[10px] tracking-[0.25em] uppercase mb-10" style={{ color: "var(--ink-3)" }}>
-        {today}
-      </div>
-
-      {pick ? (
-        <>
-          {/* Bookplate-style quote card */}
-          <div className="card p-8 md:p-14 relative" style={{ minHeight: 320 }}>
-            {/* Big opening quote mark */}
-            <div className="display absolute" style={{
-              top: "0.2rem", left: "1rem",
-              fontSize: "9rem", lineHeight: 1, color: "var(--gold)", opacity: 0.45,
-              fontStyle: "italic",
-            }}>
-              "
-            </div>
-
-            <div className="relative" style={{ paddingTop: "3rem" }}>
-              <p className="display italic mb-8"
-                style={{
-                  fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
-                  lineHeight: 1.45,
-                  color: "var(--ink)",
-                  fontWeight: 500,
-                }}>
-                {pick.quote.text}
-              </p>
-
-              <div className="flex items-center gap-3 mb-2">
-                <div style={{ width: 30, height: 1, background: "var(--gold)" }}/>
-                <span className="ui text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
-                  Source
-                </span>
-              </div>
-              <p className="body italic" style={{ fontSize: "1.05rem", color: "var(--ink-2)" }}>
-                {pick.quote.source}
-              </p>
-
-              {sourceArticle && (
-                <button onClick={() => onJump(sourceArticle.id)}
-                  className="reader-btn mt-6">
-                  <BookOpen size={12}/> Open Source
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Footer meta */}
-          <div className="flex items-center justify-between mt-6 ui text-[10px] tracking-[0.25em] uppercase" style={{ color: "var(--ink-3)" }}>
-            <span>Quote {pick.index + 1} of {pick.total}</span>
-            <button onClick={onGoToQuotes} style={{ color: "var(--gold-deep)", fontWeight: 700 }}>
-              Browse all quotes →
-            </button>
-          </div>
-
-          {/* About the rotation */}
-          <div className="card p-6 mt-8">
-            <div className="ui text-[10px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--gold-deep)" }}>
-              About this rotation
-            </div>
-            <p className="body text-[0.95rem] leading-relaxed" style={{ color: "var(--ink-2)" }}>
-              Each day, Athenaeum surfaces one quote from your saved collection — the same quote stays for the whole calendar day, then rotates at midnight. The selection is deterministic (based on the date), not random, so reloading the page won't change it.
-            </p>
-            <p className="body text-[0.95rem] leading-relaxed mt-3" style={{ color: "var(--ink-2)" }}>
-              Save more quotes by selecting any text in a reading view and tapping <em>Save Quote</em> in the toolbar — they'll all enter the rotation.
-            </p>
-          </div>
-        </>
-      ) : (
-        /* Empty state */
-        <div className="card p-10 md:p-16 text-center">
-          <div className="display text-6xl mb-4 italic" style={{ color: "var(--gold)" }}>"</div>
-          <h2 className="display text-3xl italic mb-3" style={{ fontWeight: 600, color: "var(--ink)" }}>
-            No quotes saved yet
-          </h2>
-          <p className="body text-[1rem] leading-relaxed mb-8 max-w-md mx-auto" style={{ color: "var(--ink-3)" }}>
-            Open any article, select a passage, and tap <em>Save Quote</em> in the toolbar.
-            Once you've saved a few, a different one will appear here every day.
-          </p>
-          <button onClick={() => onJump && (allArticles[0] && onJump(allArticles[0].id))}
-            className="reader-btn">
-            <BookOpen size={12}/> Start reading
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CollectionView({ kind, library, allArticles, onRemove, onJump }) {
-  const items = kind === "quotes" ? library.quotes : library.vocabulary;
-  const heading = kind === "quotes" ? "My Quotes" : "My Vocabulary";
-  const subhead = kind === "quotes" ? "Citations you've saved." : "Words you've looked up.";
-
-  const findArticle = (id) => allArticles.find(a => a.id === id);
-
-  return (
-    <div className="px-4 md:px-8 py-6 md:py-8 max-w-[1100px] mx-auto rise">
-      <div className="card flex items-center justify-between px-6 py-5 mb-5">
-        <div>
-          <h2 className="display text-2xl md:text-3xl italic" style={{ fontWeight: 600, color: "var(--ink)" }}>
-            {heading}
-          </h2>
-          <p className="body text-sm italic" style={{ color: "var(--ink-3)" }}>{subhead}</p>
-        </div>
-        <span className="tag">{items.length} item{items.length !== 1 ? "s" : ""}</span>
-      </div>
-
-      {items.length === 0 ? (
-        <div className="card px-8 py-16 text-center">
-          <div className="display text-5xl mb-3 italic" style={{ color: "var(--gold)" }}>◆</div>
-          <p className="display text-xl italic" style={{ color: "var(--ink-2)" }}>
-            Nothing saved here yet.
-          </p>
-          <p className="body text-sm mt-1" style={{ color: "var(--ink-3)" }}>
-            Open any article and select text to begin.
-          </p>
-        </div>
-      ) : kind === "quotes" ? (
-        <div className="space-y-4">
-          {library.quotes.map(q => {
-            const a = findArticle(q.articleId);
-            return (
-              <div key={q.id} className="card p-6">
-                <div className="display text-5xl leading-none mb-1" style={{ color: "var(--gold)", opacity: 0.7 }}>“</div>
-                <p className="body italic text-[1.05rem] leading-relaxed mb-4" style={{ color: "var(--ink)" }}>
-                  {q.text}
-                </p>
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  {a ? (
-                    <button onClick={() => onJump(q.articleId)}
-                      className="ui text-[10px] tracking-[0.2em] uppercase flex items-center gap-1.5"
-                      style={{ color: "var(--gold-deep)" }}>
-                      → {q.source}
-                    </button>
-                  ) : (
-                    <span className="ui text-[10px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
-                      — {q.source}
-                    </span>
-                  )}
-                  <div className="flex items-center gap-3 ui text-[10px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
-                    <span>{q.when}</span>
-                    <button onClick={() => onRemove("quotes", q.id)}><Trash2 size={12}/></button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {library.vocabulary.map(v => (
-            <div key={v.id} className="card p-5 flex justify-between items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="display text-2xl leading-tight" style={{ fontWeight: 600, color: "var(--ink)" }}>{v.word}</div>
-                <div className="ui text-[10px] mt-1" style={{ color: "var(--ink-3)" }}>{v.ipa}</div>
-                <div className="body text-sm italic mt-2" style={{ color: "var(--ink-2)" }}>{v.def}</div>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="arabic-font text-2xl" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>{v.ar}</div>
-                <button onClick={() => onRemove("vocabulary", v.id)} className="mt-3 opacity-50 hover:opacity-100">
-                  <Trash2 size={12} style={{ color: "var(--ink-3)" }}/>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   TOOLBAR BUTTON + DICTIONARY CARD
-   ════════════════════════════════════════════════════════════════ */
-function ToolBtn({ icon, label, onClick }) {
-  return (
-    <button onClick={onClick}
-      className="flex items-center gap-1.5 px-3 py-2 rounded-lg ui text-[10px] tracking-[0.18em] uppercase transition"
-      style={{ color: "var(--ink)" }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--cream-tag)"; e.currentTarget.style.color = "var(--gold-deep)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--ink)"; }}>
-      {icon}<span>{label}</span>
-    </button>
-  );
-}
-
-function DictionaryCard({ word, x, y, onClose, onSave, saved }) {
-  const entry = DICTIONARY[word];
-  const speak = () => {
-    try {
-      const u = new SpeechSynthesisUtterance(word);
-      u.rate = 0.9;
-      window.speechSynthesis.speak(u);
-    } catch {}
-  };
-  const ww = typeof window !== "undefined" ? window.innerWidth : 1024;
-  const wh = typeof window !== "undefined" ? window.innerHeight : 768;
-
-  return (
-    <>
-      <div onClick={onClose} className="fixed inset-0 z-40 fade" style={{ background: "rgba(0,0,0,0.55)" }}/>
-      <div className="fixed z-50 fade glow-card w-[340px] max-w-[92vw]"
-        style={{
-          left: Math.max(180, Math.min(ww - 180, x)),
-          top: Math.min(wh - 320, y + 28),
-          transform: "translateX(-50%)",
-        }}>
-        <div className="p-5">
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <div className="ui text-[9px] tracking-[0.32em] uppercase" style={{ color: "var(--gold-deep)" }}>EN ↔ AR</div>
-              <h3 className="display text-3xl leading-none mt-1" style={{ fontWeight: 600, color: "var(--ink)" }}>{word}</h3>
-              {entry && <div className="ui text-[10px] mt-2" style={{ color: "var(--ink-3)" }}>{entry.ipa}</div>}
-            </div>
-            <button onClick={onClose} className="p-1" style={{ color: "var(--ink-3)" }}><X size={16}/></button>
-          </div>
-
-          {entry ? (
-            <>
-              <div className="my-4 py-3 border-y text-right" style={{ borderColor: "var(--rule)" }}>
-                <div className="arabic-font text-3xl" style={{ color: "var(--gold-deep)", fontWeight: 700 }}>{entry.ar}</div>
-              </div>
-              <p className="body text-sm leading-relaxed italic mb-4" style={{ color: "var(--ink-2)" }}>
-                {entry.def}
-              </p>
-              <div className="flex items-center gap-2">
-                <button onClick={speak}
-                  className="flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full"
-                  style={{ border: "1px solid var(--rule)", color: "var(--ink)" }}>
-                  <Volume2 size={11}/> Hear
-                </button>
-                <button disabled={saved} onClick={() => onSave(word, entry)}
-                  className="flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full"
-                  style={{
-                    background: saved ? "transparent" : "var(--navy)",
-                    color: saved ? "var(--gold-deep)" : "var(--cream)",
-                    border: saved ? "1px solid var(--gold)" : "none",
-                  }}>
-                  <Bookmark size={11}/> {saved ? "Saved" : "Save"}
-                </button>
-              </div>
-            </>
-          ) : (
-            <p className="body text-sm italic py-3" style={{ color: "var(--ink-3)" }}>
-              No entry for <em>{word}</em>. Try a single full word.
-            </p>
-          )}
-        </div>
-      </div>
-    </>
-  );
-}
+سيتم عرض كل فقرة بطباعة كتابية أنيقة.`:"Paste your text here.&#10;&#10;Separate paragraphs with a blank line, like this.&#10;&#10;Each paragraph will be rendered with proper book typography."})]})]})}function Lf({library:c,allArticles:x,onJump:b,onGoToQuotes:d}){const T=af(c?.quotes||[]),C=sf(),z=T&&T.quote.articleId?x.find(F=>F.id===T.quote.articleId):null;return r.jsxs("div",{className:"px-4 md:px-8 py-8 md:py-12 max-w-[1100px] mx-auto rise",children:[r.jsxs("div",{className:"flex items-center gap-3 mb-3",children:[r.jsx(Vu,{size:14,style:{color:"var(--gold)"}}),r.jsx("span",{className:"ui text-[10px] tracking-[0.35em] uppercase",style:{color:"var(--gold-deep)",fontWeight:700},children:"Quote of the Day"})]}),r.jsx("div",{className:"ui text-[10px] tracking-[0.25em] uppercase mb-10",style:{color:"var(--ink-3)"},children:C}),T?r.jsxs(r.Fragment,{children:[r.jsxs("div",{className:"card p-8 md:p-14 relative",style:{minHeight:320},children:[r.jsx("div",{className:"display absolute",style:{top:"0.2rem",left:"1rem",fontSize:"9rem",lineHeight:1,color:"var(--gold)",opacity:.45,fontStyle:"italic"},children:'"'}),r.jsxs("div",{className:"relative",style:{paddingTop:"3rem"},children:[r.jsx("p",{className:"display italic mb-8",style:{fontSize:"clamp(1.4rem, 2.6vw, 2rem)",lineHeight:1.45,color:"var(--ink)",fontWeight:500},children:T.quote.text}),r.jsxs("div",{className:"flex items-center gap-3 mb-2",children:[r.jsx("div",{style:{width:30,height:1,background:"var(--gold)"}}),r.jsx("span",{className:"ui text-[10px] tracking-[0.3em] uppercase",style:{color:"var(--gold-deep)",fontWeight:700},children:"Source"})]}),r.jsx("p",{className:"body italic",style:{fontSize:"1.05rem",color:"var(--ink-2)"},children:T.quote.source}),z&&r.jsxs("button",{onClick:()=>b(z.id),className:"reader-btn mt-6",children:[r.jsx(Di,{size:12})," Open Source"]})]})]}),r.jsxs("div",{className:"flex items-center justify-between mt-6 ui text-[10px] tracking-[0.25em] uppercase",style:{color:"var(--ink-3)"},children:[r.jsxs("span",{children:["Quote ",T.index+1," of ",T.total]}),r.jsx("button",{onClick:d,style:{color:"var(--gold-deep)",fontWeight:700},children:"Browse all quotes →"})]}),r.jsxs("div",{className:"card p-6 mt-8",children:[r.jsx("div",{className:"ui text-[10px] tracking-[0.3em] uppercase mb-3",style:{color:"var(--gold-deep)"},children:"About this rotation"}),r.jsx("p",{className:"body text-[0.95rem] leading-relaxed",style:{color:"var(--ink-2)"},children:"Each day, Athenaeum surfaces one quote from your saved collection — the same quote stays for the whole calendar day, then rotates at midnight. The selection is deterministic (based on the date), not random, so reloading the page won't change it."}),r.jsxs("p",{className:"body text-[0.95rem] leading-relaxed mt-3",style:{color:"var(--ink-2)"},children:["Save more quotes by selecting any text in a reading view and tapping ",r.jsx("em",{children:"Save Quote"})," in the toolbar — they'll all enter the rotation."]})]})]}):r.jsxs("div",{className:"card p-10 md:p-16 text-center",children:[r.jsx("div",{className:"display text-6xl mb-4 italic",style:{color:"var(--gold)"},children:'"'}),r.jsx("h2",{className:"display text-3xl italic mb-3",style:{fontWeight:600,color:"var(--ink)"},children:"No quotes saved yet"}),r.jsxs("p",{className:"body text-[1rem] leading-relaxed mb-8 max-w-md mx-auto",style:{color:"var(--ink-3)"},children:["Open any article, select a passage, and tap ",r.jsx("em",{children:"Save Quote"})," in the toolbar. Once you've saved a few, a different one will appear here every day."]}),r.jsxs("button",{onClick:()=>b&&x[0]&&b(x[0].id),className:"reader-btn",children:[r.jsx(Di,{size:12})," Start reading"]})]})]})}function Ff({kind:c,library:x,allArticles:b,onRemove:d,onJump:T}){const C=c==="quotes"?x.quotes:x.vocabulary,z=c==="quotes"?"My Quotes":"My Vocabulary",F=c==="quotes"?"Citations you've saved.":"Words you've looked up.",M=g=>b.find(D=>D.id===g);return r.jsxs("div",{className:"px-4 md:px-8 py-6 md:py-8 max-w-[1100px] mx-auto rise",children:[r.jsxs("div",{className:"card flex items-center justify-between px-6 py-5 mb-5",children:[r.jsxs("div",{children:[r.jsx("h2",{className:"display text-2xl md:text-3xl italic",style:{fontWeight:600,color:"var(--ink)"},children:z}),r.jsx("p",{className:"body text-sm italic",style:{color:"var(--ink-3)"},children:F})]}),r.jsxs("span",{className:"tag",children:[C.length," item",C.length!==1?"s":""]})]}),C.length===0?r.jsxs("div",{className:"card px-8 py-16 text-center",children:[r.jsx("div",{className:"display text-5xl mb-3 italic",style:{color:"var(--gold)"},children:"◆"}),r.jsx("p",{className:"display text-xl italic",style:{color:"var(--ink-2)"},children:"Nothing saved here yet."}),r.jsx("p",{className:"body text-sm mt-1",style:{color:"var(--ink-3)"},children:"Open any article and select text to begin."})]}):c==="quotes"?r.jsx("div",{className:"space-y-4",children:x.quotes.map(g=>{const D=M(g.articleId);return r.jsxs("div",{className:"card p-6",children:[r.jsx("div",{className:"display text-5xl leading-none mb-1",style:{color:"var(--gold)",opacity:.7},children:"“"}),r.jsx("p",{className:"body italic text-[1.05rem] leading-relaxed mb-4",style:{color:"var(--ink)"},children:g.text}),r.jsxs("div",{className:"flex items-center justify-between gap-3 flex-wrap",children:[D?r.jsxs("button",{onClick:()=>T(g.articleId),className:"ui text-[10px] tracking-[0.2em] uppercase flex items-center gap-1.5",style:{color:"var(--gold-deep)"},children:["→ ",g.source]}):r.jsxs("span",{className:"ui text-[10px] tracking-[0.2em] uppercase",style:{color:"var(--ink-3)"},children:["— ",g.source]}),r.jsxs("div",{className:"flex items-center gap-3 ui text-[10px] tracking-[0.2em] uppercase",style:{color:"var(--ink-3)"},children:[r.jsx("span",{children:g.when}),r.jsx("button",{onClick:()=>d("quotes",g.id),children:r.jsx(Al,{size:12})})]})]})]},g.id)})}):r.jsx("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4",children:x.vocabulary.map(g=>r.jsxs("div",{className:"card p-5 flex justify-between items-start gap-3",children:[r.jsxs("div",{className:"flex-1 min-w-0",children:[r.jsx("div",{className:"display text-2xl leading-tight",style:{fontWeight:600,color:"var(--ink)"},children:g.word}),r.jsx("div",{className:"ui text-[10px] mt-1",style:{color:"var(--ink-3)"},children:g.ipa}),r.jsx("div",{className:"body text-sm italic mt-2",style:{color:"var(--ink-2)"},children:g.def})]}),r.jsxs("div",{className:"text-right shrink-0",children:[r.jsx("div",{className:"arabic-font text-2xl",style:{color:"var(--gold-deep)",fontWeight:700},children:g.ar}),r.jsx("button",{onClick:()=>d("vocabulary",g.id),className:"mt-3 opacity-50 hover:opacity-100",children:r.jsx(Al,{size:12,style:{color:"var(--ink-3)"}})})]})]},g.id))})]})}function ql({icon:c,label:x,onClick:b}){return r.jsxs("button",{onClick:b,className:"flex items-center gap-1.5 px-3 py-2 rounded-lg ui text-[10px] tracking-[0.18em] uppercase transition",style:{color:"var(--ink)"},onMouseEnter:d=>{d.currentTarget.style.background="var(--cream-tag)",d.currentTarget.style.color="var(--gold-deep)"},onMouseLeave:d=>{d.currentTarget.style.background="transparent",d.currentTarget.style.color="var(--ink)"},children:[c,r.jsx("span",{children:x})]})}function _f({word:c,x,y:b,onClose:d,onSave:T,saved:C}){const z=$v[c],F=()=>{try{const D=new SpeechSynthesisUtterance(c);D.rate=.9,window.speechSynthesis.speak(D)}catch{}},M=typeof window<"u"?window.innerWidth:1024,g=typeof window<"u"?window.innerHeight:768;return r.jsxs(r.Fragment,{children:[r.jsx("div",{onClick:d,className:"fixed inset-0 z-40 fade",style:{background:"rgba(0,0,0,0.55)"}}),r.jsx("div",{className:"fixed z-50 fade glow-card w-[340px] max-w-[92vw]",style:{left:Math.max(180,Math.min(M-180,x)),top:Math.min(g-320,b+28),transform:"translateX(-50%)"},children:r.jsxs("div",{className:"p-5",children:[r.jsxs("div",{className:"flex items-start justify-between mb-3",children:[r.jsxs("div",{children:[r.jsx("div",{className:"ui text-[9px] tracking-[0.32em] uppercase",style:{color:"var(--gold-deep)"},children:"EN ↔ AR"}),r.jsx("h3",{className:"display text-3xl leading-none mt-1",style:{fontWeight:600,color:"var(--ink)"},children:c}),z&&r.jsx("div",{className:"ui text-[10px] mt-2",style:{color:"var(--ink-3)"},children:z.ipa})]}),r.jsx("button",{onClick:d,className:"p-1",style:{color:"var(--ink-3)"},children:r.jsx(Cl,{size:16})})]}),z?r.jsxs(r.Fragment,{children:[r.jsx("div",{className:"my-4 py-3 border-y text-right",style:{borderColor:"var(--rule)"},children:r.jsx("div",{className:"arabic-font text-3xl",style:{color:"var(--gold-deep)",fontWeight:700},children:z.ar})}),r.jsx("p",{className:"body text-sm leading-relaxed italic mb-4",style:{color:"var(--ink-2)"},children:z.def}),r.jsxs("div",{className:"flex items-center gap-2",children:[r.jsxs("button",{onClick:F,className:"flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full",style:{border:"1px solid var(--rule)",color:"var(--ink)"},children:[r.jsx(Qv,{size:11})," Hear"]}),r.jsxs("button",{disabled:C,onClick:()=>T(c,z),className:"flex items-center gap-1.5 px-3 py-2 ui text-[9px] tracking-[0.2em] uppercase rounded-full",style:{background:C?"transparent":"var(--navy)",color:C?"var(--gold-deep)":"var(--cream)",border:C?"1px solid var(--gold)":"none"},children:[r.jsx(Pu,{size:11})," ",C?"Saved":"Save"]})]})]}):r.jsxs("p",{className:"body text-sm italic py-3",style:{color:"var(--ink-3)"},children:["No entry for ",r.jsx("em",{children:c}),". Try a single full word."]})]})})]})}window.storage||(window.storage={async get(c){return window.localStorage.getItem(c)},async set(c,x){window.localStorage.setItem(c,x)}});Mv.createRoot(document.getElementById("root")).render(r.jsx(qf,{}));"serviceWorker"in navigator&&window.addEventListener("load",()=>{navigator.serviceWorker.register("/Antenaeum/sw.js").catch(()=>{})});
