@@ -209,10 +209,11 @@ const GlobalStyles = () => (
 
     /* Highlight mark */
     mark.user-highlight {
-      background: var(--highlight);
+      background: linear-gradient(180deg, transparent 42%, var(--highlight) 42%);
       color: var(--ink);
-      padding: 0 1px;
-      border-radius: 1px;
+      padding: 0 0.04em;
+      border-bottom: 1.5px solid var(--gold-deep);
+      border-radius: 2px;
     }
 
     ::selection { background: var(--gold); color: var(--cream-3); }
@@ -1636,6 +1637,69 @@ const GlobalStyles = () => (
       background: var(--cream-3);
       border: 2px solid var(--ink);
       border-radius: 10px;
+    }
+
+    .selection-popover {
+      min-width: min(92vw, 420px);
+      padding: 7px;
+      background: color-mix(in srgb, var(--cream-3) 94%, white);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: 0 18px 40px rgba(10,10,10,0.16);
+    }
+    .selection-popover::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      transform: translateX(-50%) rotate(45deg);
+      background: color-mix(in srgb, var(--cream-3) 94%, white);
+      border-right: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+    }
+    .selection-popover__label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.2rem 0.45rem 0.45rem;
+      color: var(--gold-deep);
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    .selection-popover__label::before {
+      content: "";
+      width: 0.45rem;
+      height: 0.45rem;
+      background: var(--gold);
+      border: 1px solid var(--gold-deep);
+      transform: rotate(45deg);
+      flex: 0 0 auto;
+    }
+    .selection-popover__actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .selection-tool-btn {
+      min-height: 42px;
+      justify-content: center;
+      border: 1px solid var(--rule);
+      background: var(--cream);
+      color: var(--ink);
+    }
+    .selection-tool-btn:hover {
+      background: var(--ink);
+      color: var(--cream-3);
+      border-color: var(--ink);
+    }
+    @media (max-width: 540px) {
+      .selection-popover { min-width: min(94vw, 340px); }
+      .selection-popover__actions { grid-template-columns: 1fr; }
     }
 
     /* Editor textarea */
@@ -9689,7 +9753,8 @@ export default function Athenaeum() {
 
   /* Selection handler */
   useEffect(() => {
-    const handler = () => {
+    const handler = (event) => {
+      if (event?.target?.closest?.(".selection-popover")) return;
       const sel = window.getSelection();
       const text = sel?.toString().trim();
       if (!text || text.length < 2) { setSelection(null); return; }
@@ -9720,6 +9785,39 @@ export default function Athenaeum() {
     const close = () => { setSelection(null); setDictPopup(null); };
     window.addEventListener("scroll", close, true);
     return () => window.removeEventListener("scroll", close, true);
+  }, []);
+
+  const handleRichSelection = useCallback((payload, frame) => {
+    if (payload?.clear) {
+      setSelection(null);
+      return;
+    }
+    if (!payload?.text || !frame) return;
+    const activeArticle = allArticles.find(a => a.id === payload.articleId);
+    const frameRect = frame.getBoundingClientRect();
+    const rect = payload.rect || {};
+    setSelection({
+      text: payload.text,
+      x: frameRect.left + (rect.left || 0) + (rect.width || 0) / 2,
+      y: frameRect.top + (rect.top || 0) - 8,
+      articleId: payload.articleId || null,
+      articleTitle: activeArticle?.title || "",
+      sourceUrl: cleanSourceUrl(),
+      sourceSection: payload.sourceSection || activeArticle?.title || "Athenaeum",
+      rich: true,
+    });
+  }, [allArticles]);
+
+  const clearRichSelection = useCallback((articleId) => {
+    if (!articleId) return;
+    document.querySelectorAll("iframe").forEach((frame) => {
+      try {
+        frame.contentWindow?.postMessage({
+          type: "athenaeum-clear-rich-selection",
+          articleId,
+        }, "*");
+      } catch {}
+    });
   }, []);
 
   // Listen for "mark as read" toggles from the iframe books
@@ -9798,6 +9896,7 @@ export default function Athenaeum() {
         })
         .catch(error => setSyncStatus(error.message || "Highlight saved locally"));
     }
+    if (selection.rich) clearRichSelection(selection.articleId);
     setSelection(null); window.getSelection()?.removeAllRanges();
   };
 
@@ -9840,6 +9939,7 @@ export default function Athenaeum() {
         })
         .catch(error => setSyncStatus(error.message || "Quote saved locally"));
     }
+    if (selection.rich) clearRichSelection(selection.articleId);
     setSelection(null); window.getSelection()?.removeAllRanges();
   };
 
@@ -9847,6 +9947,7 @@ export default function Athenaeum() {
     if (!selection) return;
     const word = selection.text.toLowerCase().replace(/[^a-z]/g, "");
     setDictPopup({ word, x: selection.x, y: selection.y });
+    if (selection.rich) clearRichSelection(selection.articleId);
     setSelection(null);
   };
 
@@ -10027,6 +10128,7 @@ export default function Athenaeum() {
               library={library}
               onToggleMarkRead={toggleMarkRead}
               booxPlain={inkModeActive}
+              onRichSelection={handleRichSelection}
               onEdit={() => {
                 const a = allArticles.find(a => a.id === view.articleId);
                 if (a?.custom) setView({ kind: "editor", editingId: a.id });
@@ -10063,16 +10165,24 @@ export default function Athenaeum() {
 
       {/* SELECTION TOOLBAR */}
       {selection && (
-        <div className="fixed z-50 fade tooltail glow-card"
+        <div className="selection-popover fixed z-50 fade"
           style={{
-            left: Math.max(140, Math.min(typeof window !== "undefined" ? window.innerWidth - 140 : 800, selection.x)),
+            left: Math.max(210, Math.min(typeof window !== "undefined" ? window.innerWidth - 210 : 800, selection.x)),
             top: Math.max(60, selection.y - 56),
             transform: "translateX(-50%)",
-            padding: 4, display: "flex", gap: 0,
           }}>
-          <ToolBtn onClick={addHighlight} icon={<Highlighter size={13}/>} label="Highlight"/>
-          {selection.articleId && <ToolBtn onClick={addQuote} icon={<Quote size={13}/>} label="Save Quote"/>}
-          <ToolBtn onClick={lookup} icon={<Languages size={13}/>} label="Define"/>
+          <div className="selection-popover__label">Save Selection</div>
+          <div
+            className="selection-popover__actions"
+            style={{
+              gridTemplateColumns: selection.articleId
+                ? "repeat(3, minmax(0, 1fr))"
+                : "repeat(2, minmax(0, 1fr))",
+            }}>
+            <ToolBtn onClick={addHighlight} icon={<Highlighter size={13}/>} label="Highlight"/>
+            {selection.articleId && <ToolBtn onClick={addQuote} icon={<Quote size={13}/>} label="Quote"/>}
+            <ToolBtn onClick={lookup} icon={<Languages size={13}/>} label="Define"/>
+          </div>
         </div>
       )}
 
@@ -10955,7 +11065,14 @@ function ArticleCard({ article: a, folio, onOpen, onDelete, status = "new", prog
   );
 }
 
-function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, plainInk = false) {
+function safeScriptJson(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003C");
+}
+
+function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, plainInk = false, savedHighlights = []) {
+  const richHighlightTexts = savedHighlights
+    .map(item => item?.text || "")
+    .filter(text => text.trim().length > 1);
   const overrideCss = `
 <style id="boox-eink-override">
   @import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap');
@@ -11235,6 +11352,18 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
     font-size: 0.95em;
   }
 
+  mark.athenaeum-rich-highlight {
+    background: linear-gradient(180deg, transparent 45%, rgba(232, 199, 112, 0.66) 45%) !important;
+    color: inherit !important;
+    border-bottom: 1.5px solid #9E6F1A !important;
+    border-radius: 2px !important;
+    padding: 0 0.04em !important;
+  }
+  ::selection {
+    background: #9E6F1A !important;
+    color: #FAF5E1 !important;
+  }
+
   /* Manual "Mark as read" footer that we append to each panel */
   .athenaeum-mark-footer {
     margin: 2.5rem 0 0.5rem !important;
@@ -11482,16 +11611,164 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
 <script>
 (function() {
   try {
-    var ARTICLE_ID = ${JSON.stringify(articleId || "")};
-    var READ_SECTIONS = ${JSON.stringify(Array.from(readSections || []))};
+    var ARTICLE_ID = ${safeScriptJson(articleId || "")};
+    var READ_SECTIONS = ${safeScriptJson(Array.from(readSections || []))};
+    var SAVED_HIGHLIGHTS = ${safeScriptJson(richHighlightTexts)};
+
+    function compactText(text) {
+      return String(text || "").replace(/\\s+/g, " ").trim();
+    }
+    function shouldSkipTextNode(node) {
+      if (!node || !node.nodeValue || !node.nodeValue.trim()) return true;
+      var el = node.parentElement;
+      while (el && el !== document.body) {
+        var tag = el.tagName;
+        if (
+          tag === "SCRIPT" ||
+          tag === "STYLE" ||
+          tag === "NOSCRIPT" ||
+          tag === "TEXTAREA" ||
+          tag === "INPUT" ||
+          tag === "BUTTON" ||
+          tag === "MARK"
+        ) return true;
+        if (
+          el.classList &&
+          (
+            el.classList.contains("athenaeum-mark-footer") ||
+            el.classList.contains("athenaeum-mark-btn") ||
+            el.classList.contains("tab")
+          )
+        ) return true;
+        el = el.parentElement;
+      }
+      return false;
+    }
+    function wrapNeedleInNode(node, needle) {
+      var value = node.nodeValue || "";
+      var haystack = value.toLowerCase();
+      var target = String(needle || "").toLowerCase();
+      var index = haystack.indexOf(target);
+      if (index === -1) return false;
+
+      var doc = node.ownerDocument;
+      var frag = doc.createDocumentFragment();
+      var cursor = 0;
+      while (index !== -1) {
+        if (cursor < index) frag.appendChild(doc.createTextNode(value.slice(cursor, index)));
+        var mark = doc.createElement("mark");
+        mark.className = "athenaeum-rich-highlight";
+        mark.textContent = value.slice(index, index + target.length);
+        frag.appendChild(mark);
+        cursor = index + target.length;
+        index = haystack.indexOf(target, cursor);
+      }
+      if (cursor < value.length) frag.appendChild(doc.createTextNode(value.slice(cursor)));
+      if (node.parentNode) node.parentNode.replaceChild(frag, node);
+      return true;
+    }
+    function applySavedHighlights() {
+      var SHOW_TEXT = 4;
+      var FILTER_ACCEPT = 1;
+      var FILTER_REJECT = 2;
+      var seen = {};
+      var needles = SAVED_HIGHLIGHTS
+        .map(compactText)
+        .filter(function(text) {
+          var key = text.toLowerCase();
+          if (text.length < 2 || seen[key]) return false;
+          seen[key] = true;
+          return true;
+        })
+        .sort(function(a, b) { return b.length - a.length; })
+        .slice(0, 160);
+
+      needles.forEach(function(needle) {
+        var walker = document.createTreeWalker(
+          document.body,
+          SHOW_TEXT,
+          {
+            acceptNode: function(node) {
+              return shouldSkipTextNode(node)
+                ? FILTER_REJECT
+                : FILTER_ACCEPT;
+            }
+          }
+        );
+        var nodes = [];
+        var current = walker.nextNode();
+        while (current) {
+          nodes.push(current);
+          current = walker.nextNode();
+        }
+        nodes.forEach(function(node) { wrapNeedleInNode(node, needle); });
+      });
+    }
+    function selectionSourceLabel(range) {
+      var el = range && range.commonAncestorContainer;
+      if (el && el.nodeType === 3) el = el.parentElement;
+      if (!el) return document.title || "Athenaeum";
+      var scope = (el.closest && el.closest(".panel, .content-area, .ca, .wrap")) || document.body;
+      var selectedTop = 0;
+      try { selectedTop = el.getBoundingClientRect().top; } catch(e) {}
+      var headings = Array.from(scope.querySelectorAll(".section-title, .tip-name, .p-title, .st, h1, h2, h3, .tab.active"));
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var heading = headings[i];
+        var headingTop = 0;
+        try { headingTop = heading.getBoundingClientRect().top; } catch(e) {}
+        if (headingTop <= selectedTop + 10) {
+          var label = compactText(heading.textContent);
+          if (label) return label;
+        }
+      }
+      return document.title || "Athenaeum";
+    }
+    function reportSelection() {
+      try {
+        var sel = window.getSelection();
+        var text = compactText(sel && sel.toString());
+        if (!text || text.length < 2) {
+          parent.postMessage({ type: "athenaeum-rich-selection-clear", articleId: ARTICLE_ID }, "*");
+          return;
+        }
+        if (!sel.rangeCount) return;
+        var range = sel.getRangeAt(0);
+        var rect = range.getBoundingClientRect();
+        if (!rect || (!rect.width && !rect.height)) return;
+        parent.postMessage({
+          type: "athenaeum-rich-selection",
+          articleId: ARTICLE_ID,
+          text: text,
+          rect: {
+            left: rect.left,
+            top: rect.top,
+            width: rect.width,
+            height: rect.height
+          },
+          sourceSection: selectionSourceLabel(range)
+        }, "*");
+      } catch(e) {}
+    }
+    function reportSelectionSoon(delay) {
+      window.setTimeout(reportSelection, delay || 0);
+    }
 
     function getPanels() {
       return Array.from(document.querySelectorAll(".panel"));
     }
     function getPanelIdFromTab(tab) {
       var oc = tab.getAttribute("onclick") || "";
-      var m = oc.match(/show\s*\(\s*['\"]([^'\"]+)['\"]/);
-      return m ? m[1] : null;
+      var single = oc.indexOf("'");
+      var double = oc.indexOf('"');
+      var start = single;
+      var quote = "'";
+      if (double !== -1 && (single === -1 || double < single)) {
+        start = double;
+        quote = '"';
+      }
+      if (start === -1) return null;
+      var end = oc.indexOf(quote, start + 1);
+      return end === -1 ? null : oc.slice(start + 1, end);
     }
     function getTabByPanelId(id) {
       var tabs = document.querySelectorAll(".tab");
@@ -11507,7 +11784,7 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
         else tab.classList.remove("tab-read");
       }
       var btns = document.querySelectorAll(
-        ".athenaeum-mark-btn[data-panel-id=\"" + panelId + "\"]"
+        '.athenaeum-mark-btn[data-panel-id="' + panelId + '"]'
       );
       var isWhole = panelId === "_whole";
       Array.prototype.forEach.call(btns, function(b){
@@ -11599,6 +11876,21 @@ function buildEinkRichHtml(rawHtml, fontMultiplier, articleId, readSections, pla
       var panels = getPanels();
       if (panels.length > 0) addPerPanelButtons();
       addWholeBookButton(panels.length > 0);
+      applySavedHighlights();
+      if (!window.__athenaeumSelectionBridge) {
+        window.__athenaeumSelectionBridge = true;
+        document.addEventListener("mouseup", function(){ reportSelectionSoon(0); });
+        document.addEventListener("touchend", function(){ reportSelectionSoon(80); });
+        document.addEventListener("keyup", function(event){
+          if (event && event.key && event.key.indexOf("Arrow") === 0) reportSelectionSoon(0);
+        });
+        window.addEventListener("message", function(event) {
+          var data = event.data || {};
+          if (data.type !== "athenaeum-clear-rich-selection" || data.articleId !== ARTICLE_ID) return;
+          var sel = window.getSelection();
+          if (sel) sel.removeAllRanges();
+        });
+      }
     }
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", init);
@@ -11641,6 +11933,7 @@ function ReaderView({
   library,
   onToggleMarkRead,
   booxPlain = false,
+  onRichSelection,
 }) {
   const iframeRef = useRef(null);
   const [iframeHeight, setIframeHeight] = useState(900);
@@ -11665,12 +11958,12 @@ function ReaderView({
   // Re-runs when article or fontPx changes, causing the iframe to reload.
   const enhancedHtml = useMemo(
     () => (a?.richHtml
-      ? buildEinkRichHtml(a.richHtml, fontPx, a.id, initialReadSections, booxPlain)
+      ? buildEinkRichHtml(a.richHtml, fontPx, a.id, initialReadSections, booxPlain, articleHighlights)
       : null),
     // Intentionally NOT depending on readSections after mount — iframe handles
     // updates locally, parent only seeds initial state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [a?.id, a?.richHtml, fontPx, booxPlain]
+    [a?.id, a?.richHtml, fontPx, booxPlain, articleHighlights]
   );
 
   // Auto-size iframe to its content
@@ -11708,6 +12001,21 @@ function ReaderView({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [a?.id, fontPx, booxPlain]);
+
+  useEffect(() => {
+    if (!a?.richHtml) return;
+    const onMessage = (event) => {
+      const payload = event.data;
+      if (!payload || payload.articleId !== a.id) return;
+      if (payload.type === "athenaeum-rich-selection") {
+        onRichSelection?.(payload, iframeRef.current);
+      } else if (payload.type === "athenaeum-rich-selection-clear") {
+        onRichSelection?.({ clear: true, articleId: payload.articleId }, iframeRef.current);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [a?.id, a?.richHtml, onRichSelection]);
 
   if (!a) return null;
 
@@ -12267,10 +12575,7 @@ function HighlightEditorCard({ item, article, onJump, onSave, onRemove }) {
 function ToolBtn({ icon, label, onClick }) {
   return (
     <button onClick={onClick}
-      className="flex items-center gap-1.5 px-3 py-2 rounded-lg ui text-[10px] tracking-[0.18em] uppercase transition"
-      style={{ color: "var(--ink)" }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--cream-tag)"; e.currentTarget.style.color = "var(--gold-deep)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--ink)"; }}>
+      className="selection-tool-btn flex items-center gap-1.5 px-3 py-2 rounded-lg ui text-[10px] tracking-[0.18em] uppercase transition">
       {icon}<span>{label}</span>
     </button>
   );
