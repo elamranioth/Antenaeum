@@ -11,8 +11,10 @@ import {
   getApiBaseUrl,
   getStoredAuth,
   highlightApi,
+  isLocalOnlySession,
   setApiBaseUrl,
   setStoredAuth,
+  signInLocally,
   signInWithPassword,
   signOutSession,
   signUpWithPassword,
@@ -762,30 +764,33 @@ const GlobalStyles = () => (
       min-height: 44px;
       display: inline-flex;
       align-items: center;
-      gap: 0.65rem;
-      padding: 0.45rem 0.7rem;
-      background: var(--cream-3);
-      border: 1.5px solid var(--rule);
+      gap: 0.55rem;
+      padding: 0.36rem 0.5rem 0.36rem 0.4rem;
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
       border-radius: 999px;
-      color: var(--ink);
+      color: var(--cream-3);
       cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
     }
     .account-trigger:hover {
+      transform: translateY(-1px);
       border-color: var(--gold-deep);
-      background: var(--cream-2);
+      background: var(--navy-soft);
     }
     .account-avatar {
       width: 30px;
       height: 30px;
-      border-radius: 999px;
-      border: 1.5px solid var(--rule);
-      background: var(--cream);
+      border-radius: 50%;
+      border: 1px solid rgba(242,234,208,0.55);
+      background: var(--cream-3);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       flex: 0 0 auto;
-      color: var(--gold-deep);
+      color: var(--ink);
       font-family: 'DM Mono', monospace;
       font-size: 12px;
       font-weight: 700;
@@ -807,29 +812,6 @@ const GlobalStyles = () => (
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-    .account-menu {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-      width: min(340px, calc(100vw - 2rem));
-      padding: 1rem;
-      background: var(--cream-3);
-      border: 1.5px solid var(--rule);
-      border-radius: 8px;
-      z-index: 60;
-    }
-    .account-menu::before {
-      content: "";
-      position: absolute;
-      top: -7px;
-      right: 26px;
-      width: 12px;
-      height: 12px;
-      background: var(--cream-3);
-      border-left: 1.5px solid var(--rule);
-      border-top: 1.5px solid var(--rule);
-      transform: rotate(45deg);
-    }
     .account-kicker {
       display: flex;
       align-items: center;
@@ -845,7 +827,7 @@ const GlobalStyles = () => (
     .account-name {
       color: var(--ink);
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
       font-style: italic;
       font-weight: 600;
       line-height: 1.05;
@@ -855,24 +837,27 @@ const GlobalStyles = () => (
     .account-note {
       color: var(--ink-3);
       font-family: 'Literata', serif;
-      font-size: 0.86rem;
+      font-size: 0.92rem;
       line-height: 1.45;
       margin: 0.35rem 0 0;
     }
     .account-field {
       width: 100%;
-      margin-top: 0.85rem;
-      background: var(--cream);
+      min-height: 48px;
+      background: #FFF9E8;
       border: 1.5px solid var(--rule);
-      border-radius: 6px;
+      border-radius: 8px;
       color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      padding: 0.75rem 0.8rem;
+      font-family: 'Literata', Georgia, serif;
+      font-size: 0.98rem;
+      padding: 0.78rem 0.9rem;
       outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
     .account-field:focus {
       border-color: var(--gold-deep);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(158, 111, 26, 0.12);
     }
     .account-actions {
       display: flex;
@@ -884,12 +869,13 @@ const GlobalStyles = () => (
     .account-secondary {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.45rem;
       border: 1.5px solid var(--rule);
       background: var(--cream);
       color: var(--ink);
-      border-radius: 999px;
-      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      padding: 0.72rem 1rem;
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       font-weight: 700;
@@ -901,16 +887,16 @@ const GlobalStyles = () => (
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.35rem;
-      margin-bottom: 0.3rem;
+      margin-bottom: 1rem;
       padding: 0.3rem;
       border: 1.5px solid var(--rule);
-      border-radius: 999px;
-      background: var(--cream);
+      border-radius: 10px;
+      background: #E8DDB8;
     }
     .auth-tabs button {
-      min-height: 34px;
+      min-height: 38px;
       border: 0;
-      border-radius: 999px;
+      border-radius: 7px;
       background: transparent;
       color: var(--ink-3);
       font-family: 'DM Mono', monospace;
@@ -926,7 +912,7 @@ const GlobalStyles = () => (
     }
     .auth-form {
       display: grid;
-      gap: 0.65rem;
+      gap: 0.75rem;
     }
     @media (max-width: 760px) {
       .account-label {
@@ -1297,149 +1283,210 @@ const GlobalStyles = () => (
       display: grid;
       place-items: center;
       padding: 1.25rem;
-      background: rgba(10, 10, 10, 0.35);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(232,199,112,0.18), transparent 26rem),
+        rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(4px);
     }
     .login-card {
-      width: min(760px, 100%);
-      background: #FFFFFF;
-      color: #061A2F;
-      border: 1.5px solid #CBD3DF;
-      border-radius: 8px;
-      padding: clamp(1.5rem, 4vw, 2.25rem);
+      width: min(820px, 100%);
+      min-height: 520px;
+      display: grid;
+      grid-template-columns: minmax(230px, 0.82fr) minmax(0, 1.18fr);
+      background: var(--cream);
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      padding: 0;
       position: relative;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.42);
     }
     .login-card::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 50%;
-      height: 3px;
-      background: #1769E8;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold-deep), var(--maroon), var(--ink));
     }
     .login-card::after {
       content: "";
       position: absolute;
-      top: 0;
-      left: 50%;
-      right: 0;
-      height: 1px;
-      background: #E4E8EF;
+      inset: 12px;
+      border: 1px solid rgba(26,26,26,0.18);
+      pointer-events: none;
+    }
+    .login-brand-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: clamp(1.5rem, 4vw, 2.1rem);
+      background: var(--ink);
+      color: var(--cream-3);
+      border-right: 1.5px solid var(--ink);
+    }
+    .login-brand-panel::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(242,234,208,0.22);
+      pointer-events: none;
+    }
+    .login-monogram {
+      width: 62px;
+      height: 62px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream-3);
+      color: var(--ink);
+      border-radius: 8px;
+      border: 1px solid rgba(242,234,208,0.65);
+      margin-bottom: 1.25rem;
+    }
+    .login-brand-word {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 2.65rem);
+      font-style: italic;
+      font-weight: 600;
+      line-height: 0.95;
+      color: var(--cream-3);
+    }
+    .login-brand-copy {
+      max-width: 15rem;
+      margin: 0.9rem 0 0;
+      color: #D8CDA8;
+      font-family: 'Literata', Georgia, serif;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .login-brand-meta {
+      color: #C8BD9A;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    .login-form-panel {
+      position: relative;
+      z-index: 1;
+      padding: clamp(1.65rem, 4vw, 2.6rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     .login-title {
-      margin: 2.2rem 0 1.9rem;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: clamp(1.85rem, 4vw, 2.15rem);
-      font-weight: 750;
+      margin: 0 0 0.4rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-style: italic;
+      font-weight: 600;
       letter-spacing: 0;
-      color: #061A2F;
+      line-height: 0.95;
+      color: var(--ink);
+    }
+    .login-subtitle {
+      margin: 0 0 1.45rem;
+      max-width: 31rem;
+      color: var(--ink-3);
+      font-family: 'Literata', Georgia, serif;
+      font-size: 0.96rem;
+      line-height: 1.55;
     }
     .login-social-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.75rem;
+      gap: 0.75rem;
     }
     .login-social-btn {
-      height: 96px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #FFFFFF;
-      border: 1.5px solid #CBD3DF;
-      border-radius: 7px;
+      gap: 0.65rem;
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      color: var(--cream-3);
       cursor: pointer;
       transition: border-color 0.16s ease, transform 0.16s ease, background 0.16s ease;
     }
     .login-social-btn.auth-primary {
-      gap: 1rem;
-      min-height: 96px;
+      min-height: 52px;
     }
     .login-social-btn:hover {
-      border-color: #1769E8;
-      background: #F8FBFF;
+      border-color: var(--gold-deep);
+      background: var(--navy-soft);
       transform: translateY(-1px);
     }
     .login-social-btn svg {
-      width: 42px;
-      height: 42px;
-    }
-    .login-social-btn.github svg,
-    .login-social-btn.apple svg {
-      color: #000000;
-      fill: #000000;
-      stroke-width: 1.7;
+      width: 16px;
+      height: 16px;
     }
     .login-social-label {
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      color: #061A2F;
-      font-size: 1.05rem;
-      font-weight: 750;
+      font-family: 'DM Mono', monospace;
+      color: inherit;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
-    .login-divider {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 0.8rem;
-      align-items: center;
-      margin: 2.45rem 0 2.1rem;
-      color: #061A2F;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 1.25rem;
-      font-weight: 500;
-    }
-    .login-divider::before,
-    .login-divider::after {
-      content: "";
-      height: 1.5px;
-      background: #E4E8EF;
-    }
-    .login-label {
-      display: block;
-      margin-bottom: 0.65rem;
-      color: #34445C;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-    }
-    .login-field-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.8rem;
-      align-items: center;
-    }
-    .login-input {
+    .login-local-btn {
       min-height: 48px;
-      width: 100%;
-      border: 1.5px solid #CBD3DF;
-      border-radius: 7px;
-      padding: 0.75rem 0.9rem;
-      color: #061A2F;
-      background: #FFFFFF;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 1rem;
-      outline: none;
-    }
-    .login-input:focus {
-      border-color: #1769E8;
-      box-shadow: 0 0 0 3px rgba(23, 105, 232, 0.12);
-    }
-    .login-submit {
-      min-height: 48px;
-      border: 1.5px solid #1769E8;
-      border-radius: 7px;
-      background: #1769E8;
-      color: #FFFFFF;
-      padding: 0 1.1rem;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 0.92rem;
-      font-weight: 750;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 8px;
+      background: #FFF9E8;
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       cursor: pointer;
+    }
+    .login-local-btn:hover {
+      border-color: var(--gold-deep);
+      background: var(--cream-tag);
     }
     .login-status {
       margin: 0.85rem 0 0;
-      color: #34445C;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      color: var(--ink-2);
+      font-family: 'Literata', Georgia, serif;
       font-size: 0.86rem;
       line-height: 1.45;
+    }
+    .login-status.is-error {
+      color: var(--maroon);
+      font-weight: 700;
+    }
+    .login-advanced {
+      margin-top: 0.9rem;
+      border-top: 1px solid var(--rule);
+      padding-top: 0.85rem;
+    }
+    .login-advanced summary {
+      cursor: pointer;
+      color: var(--gold-deep);
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .login-advanced .account-field {
+      margin-top: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
     }
     .login-close {
       position: absolute;
@@ -1447,24 +1494,38 @@ const GlobalStyles = () => (
       right: 1rem;
       width: 36px;
       height: 36px;
-      border: 1.5px solid #CBD3DF;
+      z-index: 3;
+      border: 1.5px solid var(--rule);
       border-radius: 999px;
-      background: #FFFFFF;
-      color: #061A2F;
+      background: var(--cream-3);
+      color: var(--ink);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
     }
-    @media (max-width: 680px) {
-      .login-social-grid {
-        gap: 0.85rem;
-      }
-      .login-social-btn {
-        height: 78px;
-      }
-      .login-field-row {
+    .login-close:hover {
+      background: var(--ink);
+      color: var(--cream-3);
+    }
+    .login-account-card {
+      border: 1.5px solid var(--rule);
+      border-radius: 10px;
+      background: #FFF9E8;
+      padding: 1rem;
+    }
+    @media (max-width: 760px) {
+      .login-card {
         grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .login-brand-panel {
+        min-height: 190px;
+        border-right: 0;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .login-brand-copy {
+        max-width: 100%;
       }
     }
 
@@ -9463,6 +9524,11 @@ function mergeRemoteHighlights(library, remoteRows) {
   };
 }
 
+function isAuthNetworkError(error) {
+  if (!error?.status) return true;
+  return /failed to fetch|network|load failed|offline|refused/i.test(String(error.message || ""));
+}
+
 /* ════════════════════════════════════════════════════════════════
    APP
    ════════════════════════════════════════════════════════════════ */
@@ -9536,6 +9602,10 @@ export default function Athenaeum() {
 
   const loadRemoteHighlights = useCallback(async (session = authSessionRef.current) => {
     if (!session?.accessToken) return;
+    if (isLocalOnlySession(session)) {
+      setSyncStatus("Local profile active. Add a sync server for cross-device sync.");
+      return;
+    }
     setSyncStatus("Syncing highlights...");
     try {
       const data = await highlightApi.list(session, applyAuthSession);
@@ -9551,7 +9621,7 @@ export default function Athenaeum() {
   }, [applyAuthSession, customArticles, fontSize]);
 
   const pushLocalHighlights = useCallback(async (session, sourceLibrary = library) => {
-    if (!session?.accessToken) return;
+    if (!session?.accessToken || isLocalOnlySession(session)) return;
     const items = [
       ...(sourceLibrary.highlights || []).map(item => ({ item, kind: "highlight" })),
       ...(sourceLibrary.quotes || []).map(item => ({ item, kind: "quote" })),
@@ -9567,6 +9637,10 @@ export default function Athenaeum() {
   }, [allArticles, applyAuthSession, library]);
 
   const syncAfterAuth = useCallback(async (session) => {
+    if (isLocalOnlySession(session)) {
+      setSyncStatus("Local profile active. Highlights stay on this device.");
+      return;
+    }
     try {
       setSyncStatus("Uploading local highlights...");
       await pushLocalHighlights(session, library);
@@ -9577,12 +9651,27 @@ export default function Athenaeum() {
   }, [library, loadRemoteHighlights, pushLocalHighlights]);
 
   const handleAuthSubmit = useCallback(async ({ mode, email, password, name }) => {
+    if (mode === "local") {
+      const session = await signInLocally(email, name);
+      applyAuthSession(session);
+      setSyncStatus("Local profile active. Highlights stay on this device.");
+      return session;
+    }
     setSyncStatus(mode === "signup" ? "Creating account..." : "Signing in...");
-    const session = mode === "signup"
-      ? await signUpWithPassword(email, password, name)
-      : await signInWithPassword(email, password);
-    applyAuthSession(session);
-    await syncAfterAuth(session);
+    try {
+      const session = mode === "signup"
+        ? await signUpWithPassword(email, password, name)
+        : await signInWithPassword(email, password);
+      applyAuthSession(session);
+      await syncAfterAuth(session);
+      return session;
+    } catch (error) {
+      if (!isAuthNetworkError(error)) throw error;
+      const session = await signInLocally(email, name);
+      applyAuthSession(session);
+      setSyncStatus("Sync server unavailable. Signed in locally on this device.");
+      return session;
+    }
   }, [applyAuthSession, syncAfterAuth]);
 
   const handleSignOut = useCallback(async () => {
@@ -9593,7 +9682,7 @@ export default function Athenaeum() {
   }, [applyAuthSession]);
 
   useEffect(() => {
-    if (!localLoaded || !authSession?.accessToken || didInitialSyncRef.current) return;
+    if (!localLoaded || !authSession?.accessToken || isLocalOnlySession(authSession) || didInitialSyncRef.current) return;
     didInitialSyncRef.current = true;
     loadRemoteHighlights(authSession);
   }, [authSession, loadRemoteHighlights, localLoaded]);
@@ -9696,7 +9785,7 @@ export default function Athenaeum() {
       highlights: [...library.highlights, item],
     };
     setLibrary(next); persist({ library: next });
-    if (authSessionRef.current?.accessToken) {
+    if (authSessionRef.current?.accessToken && !isLocalOnlySession(authSessionRef.current)) {
       highlightApi.create(authSessionRef.current, localHighlightToRemote(item, "highlight", allArticles), applyAuthSession)
         .then(({ highlight }) => {
           const saved = remoteHighlightToLocal(highlight);
@@ -9738,7 +9827,7 @@ export default function Athenaeum() {
       quotes: [...library.quotes, item],
     };
     setLibrary(next); persist({ library: next });
-    if (authSessionRef.current?.accessToken) {
+    if (authSessionRef.current?.accessToken && !isLocalOnlySession(authSessionRef.current)) {
       highlightApi.create(authSessionRef.current, localHighlightToRemote(item, "quote", allArticles), applyAuthSession)
         .then(({ highlight }) => {
           const saved = remoteHighlightToLocal(highlight);
@@ -9774,7 +9863,7 @@ export default function Athenaeum() {
     const item = library[kind]?.find(x => x.id === id);
     const next = { ...library, [kind]: library[kind].filter(x => x.id !== id) };
     setLibrary(next); persist({ library: next });
-    if ((kind === "highlights" || kind === "quotes") && item?.serverId && authSessionRef.current?.accessToken) {
+    if ((kind === "highlights" || kind === "quotes") && item?.serverId && authSessionRef.current?.accessToken && !isLocalOnlySession(authSessionRef.current)) {
       highlightApi.remove(authSessionRef.current, item.serverId, applyAuthSession)
         .then(() => setSyncStatus("Deleted from sync"))
         .catch(error => setSyncStatus(error.message || "Deleted locally"));
@@ -9790,7 +9879,7 @@ export default function Athenaeum() {
       highlights: library.highlights.map(x => x.id === id ? updated : x),
     };
     setLibrary(next); persist({ library: next });
-    if (updated.serverId && authSessionRef.current?.accessToken) {
+    if (updated.serverId && authSessionRef.current?.accessToken && !isLocalOnlySession(authSessionRef.current)) {
       highlightApi.update(authSessionRef.current, updated.serverId, {
         text: updated.text,
         note: updated.note || "",
@@ -10134,7 +10223,7 @@ function Header({
 }) {
   return (
     <header className="sticky top-0 z-20 px-4 md:px-8 py-4 flex items-center gap-4"
-      style={{ background: "var(--cream)", borderBottom: "1.5px solid var(--rule)" }}>
+      style={{ background: "var(--cream)", borderBottom: "1.5px solid var(--rule)", zIndex: 90 }}>
       <button onClick={onToggleSidebar}
         className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg"
         style={{ background: "var(--cream-3)", border: "1px solid var(--rule)" }}>
@@ -10251,11 +10340,30 @@ function AccountMenu({ account, syncStatus, onAuthSubmit, onSignOut }) {
     setStatus("");
     try {
       setApiBaseUrl(apiUrl);
-      await onAuthSubmit?.({ mode, name, email, password });
+      const session = await onAuthSubmit?.({ mode, name, email, password });
       setPassword("");
+      setStatus(session?.localOnly
+        ? "Signed in locally. Sync will start when a server is connected."
+        : "Signed in. Sync is ready.");
       setOpen(false);
     } catch (error) {
       setStatus(error.message || "Could not sign in.");
+    }
+  };
+
+  const continueLocal = async () => {
+    setStatus("");
+    try {
+      setApiBaseUrl(apiUrl);
+      await onAuthSubmit?.({
+        mode: "local",
+        name: name || "Reader",
+        email: email || "reader@athenaeum.local",
+        password: "local-profile",
+      });
+      setOpen(false);
+    } catch (error) {
+      setStatus(error.message || "Could not create a local profile.");
     }
   };
 
@@ -10276,7 +10384,7 @@ function AccountMenu({ account, syncStatus, onAuthSubmit, onSignOut }) {
         <span className="account-avatar">
           {account ? initial : <LogIn size={15}/>}
         </span>
-        <span className="account-label">{account ? (account.name || "Account") : "Login"}</span>
+        <span className="account-label">{account ? (account.name || "Account") : "Sign in"}</span>
       </button>
 
       {open && (
@@ -10286,78 +10394,118 @@ function AccountMenu({ account, syncStatus, onAuthSubmit, onSignOut }) {
               <X size={17}/>
             </button>
 
-            <h2 className="login-title">Login</h2>
+            <section className="login-brand-panel">
+              <div>
+                <div className="login-monogram"><AthenaeumMark size={34}/></div>
+                <h2 className="login-brand-word">Athenaeum</h2>
+                <p className="login-brand-copy">
+                  Your highlights, notes, and quotes in one private reading desk.
+                </p>
+              </div>
+              <div className="login-brand-meta">
+                Private archive / e-ink ready
+              </div>
+            </section>
 
-            {account ? (
-              <>
-                <div className="flex items-center gap-3">
-                  <span className="account-avatar" style={{ width: 48, height: 48 }}>
-                    {initial}
-                  </span>
-                  <div style={{ minWidth: 0 }}>
-                    <p className="account-name">{account.name || "Signed in"}</p>
-                    {account.email && <p className="account-email">{account.email}</p>}
-                    <span className="account-sync-status">{syncStatus || "Sync enabled"}</span>
+            <section className="login-form-panel">
+              <h2 className="login-title">{account ? "Account" : "Enter the library"}</h2>
+              <p className="login-subtitle">
+                {account
+                  ? "Your reading profile is active on this browser."
+                  : "Use the self-hosted sync server when it is available, or continue locally on this device."}
+              </p>
+
+              {account ? (
+                <div className="login-account-card">
+                  <div className="flex items-center gap-3">
+                    <span className="account-avatar" style={{ width: 52, height: 52 }}>
+                      {initial}
+                    </span>
+                    <div style={{ minWidth: 0 }}>
+                      <p className="account-name">{account.name || "Signed in"}</p>
+                      {account.email && <p className="account-email">{account.email}</p>}
+                      <span className="account-sync-status">
+                        {account.localOnly ? "Local profile" : (syncStatus || "Sync enabled")}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="account-note">
+                    {account.localOnly
+                      ? "Local profile is working now. Cross-device sync needs the self-hosted API server."
+                      : "Your highlights will sync through the configured self-hosted API."}
+                  </p>
+                  <div className="account-actions">
+                    <button type="button" className="account-secondary" onClick={signOut}>
+                      <LogOut size={13}/> Sign out
+                    </button>
                   </div>
                 </div>
-                <div className="account-actions">
-                  <button type="button" className="account-secondary" onClick={signOut}>
-                    <LogOut size={13}/> Sign out
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="auth-tabs" role="tablist" aria-label="Authentication mode">
-                  <button type="button" data-active={mode === "login"} onClick={() => setMode("login")}>Login</button>
-                  <button type="button" data-active={mode === "signup"} onClick={() => setMode("signup")}>Sign up</button>
-                </div>
-                <form className="auth-form" onSubmit={submit}>
-                  {mode === "signup" && (
+              ) : (
+                <>
+                  <div className="auth-tabs" role="tablist" aria-label="Authentication mode">
+                    <button type="button" data-active={mode === "login"} onClick={() => setMode("login")}>Login</button>
+                    <button type="button" data-active={mode === "signup"} onClick={() => setMode("signup")}>Sign up</button>
+                  </div>
+                  <form className="auth-form" onSubmit={submit}>
+                    {mode === "signup" && (
+                      <input
+                        className="account-field"
+                        value={name}
+                        onChange={event => setName(event.target.value)}
+                        placeholder="Name"
+                        autoComplete="name"
+                      />
+                    )}
                     <input
                       className="account-field"
-                      value={name}
-                      onChange={event => setName(event.target.value)}
-                      placeholder="Name"
-                      autoComplete="name"
+                      value={email}
+                      onChange={event => setEmail(event.target.value)}
+                      placeholder="Email"
+                      type="text"
+                      inputMode="email"
+                      autoComplete="email"
+                      required
                     />
-                  )}
-                  <input
-                    className="account-field"
-                    value={email}
-                    onChange={event => setEmail(event.target.value)}
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                  />
-                  <input
-                    className="account-field"
-                    value={password}
-                    onChange={event => setPassword(event.target.value)}
-                    placeholder="Password"
-                    type="password"
-                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                    required
-                    minLength={8}
-                  />
-                  <input
-                    className="account-field"
-                    value={apiUrl}
-                    onChange={event => setApiUrl(event.target.value)}
-                    placeholder="Sync server URL"
-                    type="url"
-                  />
-                  <button type="submit" className="login-social-btn auth-primary" aria-label={mode === "signup" ? "Create account" : "Login with email"}>
-                    <LogIn size={15}/>
-                    <span className="login-social-label">{mode === "signup" ? "Create Account" : "Login with Email"}</span>
-                  </button>
-                </form>
-                <span className="account-sync-status">Self-hosted sync / {apiUrl || getApiBaseUrl()}</span>
-                {status && <p className="login-status">{status}</p>}
-                {syncStatus && <p className="login-status">{syncStatus}</p>}
-              </>
-            )}
+                    <input
+                      className="account-field"
+                      value={password}
+                      onChange={event => setPassword(event.target.value)}
+                      placeholder="Password"
+                      type="password"
+                      autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                      required
+                      minLength={8}
+                    />
+                    <button type="submit" className="login-social-btn auth-primary" aria-label={mode === "signup" ? "Create account" : "Login with email"}>
+                      <LogIn size={15}/>
+                      <span className="login-social-label">{mode === "signup" ? "Create Account" : "Login with Email"}</span>
+                    </button>
+                  </form>
+
+                  <div className="login-social-grid" style={{ marginTop: "0.75rem" }}>
+                    <button type="button" className="login-local-btn" onClick={continueLocal}>
+                      <BookOpen size={15}/>
+                      Continue locally
+                    </button>
+                  </div>
+
+                  <details className="login-advanced">
+                    <summary>Sync server</summary>
+                    <input
+                      className="account-field"
+                      value={apiUrl}
+                      onChange={event => setApiUrl(event.target.value)}
+                      placeholder="http://localhost:8787"
+                      type="url"
+                    />
+                  </details>
+
+                  <span className="account-sync-status">Self-hosted sync / {apiUrl || getApiBaseUrl()}</span>
+                  {status && <p className="login-status is-error">{status}</p>}
+                  {syncStatus && <p className="login-status">{syncStatus}</p>}
+                </>
+              )}
+            </section>
           </div>
         </div>
       )}

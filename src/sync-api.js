@@ -38,6 +38,34 @@ export function clearStoredAuth() {
   setStoredAuth(null);
 }
 
+export function isLocalOnlySession(session) {
+  return !!session?.localOnly || String(session?.accessToken || "").startsWith("local:");
+}
+
+function makeLocalUser(email = "", name = "") {
+  const cleanEmail = String(email || "reader@athenaeum.local").trim().toLowerCase();
+  const fallbackName = cleanEmail.split("@")[0]?.replace(/[._-]+/g, " ") || "Reader";
+  return {
+    id: `local:${cleanEmail}`,
+    email: cleanEmail,
+    name: String(name || fallbackName).trim(),
+    localOnly: true,
+  };
+}
+
+export async function signInLocally(email = "", name = "") {
+  const user = makeLocalUser(email, name);
+  const session = {
+    accessToken: `local:${globalThis.crypto?.randomUUID?.() || Date.now()}`,
+    refreshToken: "",
+    user,
+    localOnly: true,
+    issuedAt: Date.now(),
+  };
+  setStoredAuth(session);
+  return session;
+}
+
 class ApiError extends Error {
   constructor(message, status, payload) {
     super(message);
@@ -108,7 +136,7 @@ export async function signInWithPassword(email, password) {
 }
 
 export async function signOutSession(session) {
-  if (!session?.refreshToken) {
+  if (!session?.refreshToken || isLocalOnlySession(session)) {
     clearStoredAuth();
     return;
   }
