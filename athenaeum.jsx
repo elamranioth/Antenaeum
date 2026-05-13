@@ -6,6 +6,17 @@ import {
   LogIn, LogOut
 } from "lucide-react";
 import CRYPTOGRAPHY_COMPLETE_DEEP_RESEARCH_HTML from "./content/cryptography_complete_deep_research.html?raw";
+import {
+  clearStoredAuth,
+  getApiBaseUrl,
+  getStoredAuth,
+  highlightApi,
+  setApiBaseUrl,
+  setStoredAuth,
+  signInWithPassword,
+  signOutSession,
+  signUpWithPassword,
+} from "./src/sync-api.js";
 
 /* ════════════════════════════════════════════════════════════════
    ATHENAEUM — Personal Knowledge Library
@@ -749,7 +760,7 @@ const GlobalStyles = () => (
       }
     }
 
-    /* Google account control */
+    /* Account + sync control */
     .account-shell {
       position: relative;
       flex: 0 0 auto;
@@ -893,11 +904,36 @@ const GlobalStyles = () => (
       text-transform: uppercase;
       cursor: pointer;
     }
-    .google-slot {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      margin-top: 0.85rem;
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      margin-bottom: 0.3rem;
+      padding: 0.3rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 999px;
+      background: var(--cream);
+    }
+    .auth-tabs button {
+      min-height: 34px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink-3);
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .auth-tabs button[data-active="true"] {
+      background: var(--ink);
+      color: var(--cream-3);
+    }
+    .auth-form {
+      display: grid;
+      gap: 0.65rem;
     }
     @media (max-width: 760px) {
       .account-label {
@@ -1399,7 +1435,7 @@ const GlobalStyles = () => (
       cursor: pointer;
       transition: border-color 0.16s ease, transform 0.16s ease, background 0.16s ease;
     }
-    .login-social-btn.google {
+    .login-social-btn.auth-primary {
       gap: 1rem;
       min-height: 96px;
     }
@@ -1417,20 +1453,6 @@ const GlobalStyles = () => (
       color: #000000;
       fill: #000000;
       stroke-width: 1.7;
-    }
-    .google-mark {
-      width: 47px;
-      height: 47px;
-      display: grid;
-      place-items: center;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 3rem;
-      font-weight: 800;
-      line-height: 1;
-      background: conic-gradient(from -45deg, #4285F4 0 25%, #34A853 0 45%, #FBBC05 0 67%, #EA4335 0 84%, #4285F4 0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
     }
     .login-social-label {
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
@@ -1874,6 +1896,7 @@ const CATEGORIES = [
 const isRtlCategory = (id) => CATEGORIES.find(c => c.id === id)?.rtl === true;
 
 const COLLECTIONS = [
+  { id: "highlights", name: "Highlights", icon: Highlighter },
   { id: "quotes",     name: "Quotes",     icon: Quote },
   { id: "vocabulary", name: "Vocabulary", icon: BookMarked },
 ];
@@ -9437,71 +9460,92 @@ const STORAGE_KEY = "athenaeum-v1";
 const safeGet = async () => {
   try {
     const r = await window.storage?.get(STORAGE_KEY);
-    return r ? JSON.parse(r.value) : null;
+    const raw = typeof r === "string" ? r : r?.value;
+    return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 };
 const safeSet = async (data) => {
   try { await window.storage?.set(STORAGE_KEY, JSON.stringify(data)); } catch {}
 };
 
-const GOOGLE_CLIENT_ID_STORAGE_KEY = "athenaeum-google-client-id";
-const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client";
-
-function getConfiguredGoogleClientId() {
-  const envClientId = import.meta.env?.VITE_GOOGLE_CLIENT_ID || "";
-  if (envClientId) return envClientId;
-  try { return window.localStorage?.getItem(GOOGLE_CLIENT_ID_STORAGE_KEY) || ""; }
-  catch { return ""; }
+function makeLocalId(prefix = "item") {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) return `${prefix}-${crypto.randomUUID()}`;
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-function storeGoogleClientId(clientId) {
+function formatSavedDate(value) {
+  if (!value) return new Date().toLocaleDateString();
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString();
+}
+
+function cleanSourceUrl() {
   try {
-    if (clientId) window.localStorage?.setItem(GOOGLE_CLIENT_ID_STORAGE_KEY, clientId);
-    else window.localStorage?.removeItem(GOOGLE_CLIENT_ID_STORAGE_KEY);
-  } catch {}
-}
-
-function loadGoogleIdentityScript() {
-  if (window.google?.accounts?.id) return Promise.resolve();
-  const existing = document.querySelector(`script[src="${GOOGLE_IDENTITY_SCRIPT}"]`);
-  if (existing) {
-    return new Promise((resolve, reject) => {
-      existing.addEventListener("load", resolve, { once: true });
-      existing.addEventListener("error", reject, { once: true });
-    });
-  }
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = GOOGLE_IDENTITY_SCRIPT;
-    script.async = true;
-    script.defer = true;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
-
-function decodeGoogleCredential(credential) {
-  try {
-    const encoded = credential.split(".")[1];
-    const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
-    const json = decodeURIComponent(
-      Array.from(atob(normalized))
-        .map(ch => `%${(`00${ch.charCodeAt(0).toString(16)}`).slice(-2)}`)
-        .join("")
-    );
-    const payload = JSON.parse(json);
-    return {
-      provider: "google",
-      id: payload.sub,
-      name: payload.name || payload.email || "Google Reader",
-      email: payload.email || "",
-      picture: payload.picture || "",
-      signedInAt: Date.now(),
-    };
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    return url.toString();
   } catch {
-    return null;
+    return "";
   }
+}
+
+function remoteHighlightToLocal(row) {
+  const base = {
+    id: row.clientId || row.id,
+    clientId: row.clientId || row.id,
+    serverId: row.id,
+    text: row.text,
+    articleId: row.articleId || null,
+    articleTitle: row.articleTitle || "",
+    sourceUrl: row.sourceUrl || "",
+    sourceSection: row.sourceSection || "",
+    note: row.note || "",
+    tag: row.tag || "",
+    color: row.color || "#E8C770",
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    when: formatSavedDate(row.createdAt),
+    syncedAt: Date.now(),
+  };
+  if (row.kind === "quote") {
+    return {
+      ...base,
+      source: row.sourceSection || row.articleTitle || row.sourceUrl || "Unknown",
+    };
+  }
+  return base;
+}
+
+function localHighlightToRemote(item, kind, allArticles) {
+  const article = allArticles.find(a => a.id === item.articleId);
+  const clientId = String(item.clientId || item.id || makeLocalId(kind));
+  return {
+    clientId,
+    kind,
+    text: item.text,
+    sourceUrl: item.sourceUrl || cleanSourceUrl(),
+    sourceSection: item.sourceSection || article?.title || item.source || "Athenaeum",
+    articleId: item.articleId || "",
+    articleTitle: item.articleTitle || article?.title || "",
+    note: item.note || "",
+    tag: item.tag || "",
+    color: item.color || "#E8C770",
+  };
+}
+
+function mergeRemoteHighlights(library, remoteRows) {
+  const remoteHighlights = remoteRows
+    .filter(row => row.kind !== "quote")
+    .map(remoteHighlightToLocal);
+  const remoteQuotes = remoteRows
+    .filter(row => row.kind === "quote")
+    .map(remoteHighlightToLocal);
+  return {
+    ...library,
+    highlights: remoteHighlights,
+    quotes: remoteQuotes,
+  };
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -9518,9 +9562,18 @@ export default function Athenaeum() {
   const [selection, setSelection] = useState(null);
   const [dictPopup, setDictPopup] = useState(null);
   const [account, setAccount] = useState(null);
+  const [authSession, setAuthSession] = useState(() => getStoredAuth());
+  const [syncStatus, setSyncStatus] = useState("");
+  const [localLoaded, setLocalLoaded] = useState(false);
   const [readingMode, setReadingMode] = useState(false);
   const [booxPlain, setBooxPlain] = useState(false);
   const articleRef = useRef(null);
+  const authSessionRef = useRef(authSession);
+  const didInitialSyncRef = useRef(false);
+
+  useEffect(() => {
+    authSessionRef.current = authSession;
+  }, [authSession]);
 
   /* Load persisted data */
   useEffect(() => {
@@ -9533,19 +9586,26 @@ export default function Athenaeum() {
           vocabulary: d.library?.vocabulary || [],
           reading:    d.library?.reading    || {},
         });
-        setAccount(d.account || null);
+        setAccount(authSessionRef.current?.user || d.account || null);
         if (d.fontSize !== undefined) setFontSize(d.fontSize);
       }
+      setLocalLoaded(true);
     });
+    if (authSessionRef.current?.user) {
+      setAccount(authSessionRef.current.user);
+    }
   }, []);
 
   const persist = useCallback((next) => {
     safeSet({ customArticles, library, fontSize, account, ...next });
   }, [customArticles, library, fontSize, account]);
 
-  const updateAccount = useCallback((nextAccount) => {
-    setAccount(nextAccount);
-    safeSet({ customArticles, library, fontSize, account: nextAccount });
+  const applyAuthSession = useCallback((nextSession) => {
+    if (nextSession) setStoredAuth(nextSession);
+    else clearStoredAuth();
+    setAuthSession(nextSession);
+    setAccount(nextSession?.user || null);
+    safeSet({ customArticles, library, fontSize, account: nextSession?.user || null });
   }, [customArticles, library, fontSize]);
 
   const updateFontSize = useCallback((n) => {
@@ -9559,20 +9619,89 @@ export default function Athenaeum() {
     [customArticles]
   );
 
+  const loadRemoteHighlights = useCallback(async (session = authSessionRef.current) => {
+    if (!session?.accessToken) return;
+    setSyncStatus("Syncing highlights...");
+    try {
+      const data = await highlightApi.list(session, applyAuthSession);
+      setLibrary(prev => {
+        const next = mergeRemoteHighlights(prev, data.highlights || []);
+        safeSet({ customArticles, library: next, fontSize, account: session.user });
+        return next;
+      });
+      setSyncStatus("Highlights synced");
+    } catch (error) {
+      setSyncStatus(error.message || "Sync failed");
+    }
+  }, [applyAuthSession, customArticles, fontSize]);
+
+  const pushLocalHighlights = useCallback(async (session, sourceLibrary = library) => {
+    if (!session?.accessToken) return;
+    const items = [
+      ...(sourceLibrary.highlights || []).map(item => ({ item, kind: "highlight" })),
+      ...(sourceLibrary.quotes || []).map(item => ({ item, kind: "quote" })),
+    ].filter(({ item }) => !item.serverId);
+
+    for (const { item, kind } of items) {
+      await highlightApi.create(
+        authSessionRef.current || session,
+        localHighlightToRemote(item, kind, allArticles),
+        applyAuthSession
+      );
+    }
+  }, [allArticles, applyAuthSession, library]);
+
+  const syncAfterAuth = useCallback(async (session) => {
+    try {
+      setSyncStatus("Uploading local highlights...");
+      await pushLocalHighlights(session, library);
+      await loadRemoteHighlights(authSessionRef.current || session);
+    } catch (error) {
+      setSyncStatus(error.message || "Sync failed");
+    }
+  }, [library, loadRemoteHighlights, pushLocalHighlights]);
+
+  const handleAuthSubmit = useCallback(async ({ mode, email, password, name }) => {
+    setSyncStatus(mode === "signup" ? "Creating account..." : "Signing in...");
+    const session = mode === "signup"
+      ? await signUpWithPassword(email, password, name)
+      : await signInWithPassword(email, password);
+    applyAuthSession(session);
+    await syncAfterAuth(session);
+  }, [applyAuthSession, syncAfterAuth]);
+
+  const handleSignOut = useCallback(async () => {
+    const session = authSessionRef.current;
+    await signOutSession(session);
+    applyAuthSession(null);
+    setSyncStatus("Signed out. Highlights are local on this device.");
+  }, [applyAuthSession]);
+
+  useEffect(() => {
+    if (!localLoaded || !authSession?.accessToken || didInitialSyncRef.current) return;
+    didInitialSyncRef.current = true;
+    loadRemoteHighlights(authSession);
+  }, [authSession, loadRemoteHighlights, localLoaded]);
+
   /* Selection handler */
   useEffect(() => {
     const handler = () => {
       const sel = window.getSelection();
       const text = sel?.toString().trim();
       if (!text || text.length < 2) { setSelection(null); return; }
-      if (!articleRef.current?.contains(sel.anchorNode)) { setSelection(null); return; }
+      const appMain = document.querySelector("main");
+      if (!appMain?.contains(sel.anchorNode)) { setSelection(null); return; }
       const range = sel.getRangeAt(0);
       const rect = range.getBoundingClientRect();
+      const activeArticle = view.kind === "reader" ? allArticles.find(a => a.id === view.articleId) : null;
       setSelection({
         text,
         x: rect.left + rect.width / 2,
         y: rect.top - 8,
         articleId: view.kind === "reader" ? view.articleId : null,
+        articleTitle: activeArticle?.title || "",
+        sourceUrl: cleanSourceUrl(),
+        sourceSection: activeArticle?.title || (view.kind === "list" ? `${view.category || "all"} list` : view.kind),
       });
     };
     document.addEventListener("mouseup", handler);
@@ -9581,7 +9710,7 @@ export default function Athenaeum() {
       document.removeEventListener("mouseup", handler);
       document.removeEventListener("touchend", handler);
     };
-  }, [view]);
+  }, [view, allArticles]);
 
   useEffect(() => {
     const close = () => { setSelection(null); setDictPopup(null); };
@@ -9630,29 +9759,83 @@ export default function Athenaeum() {
   /* Actions */
   const addHighlight = () => {
     if (!selection) return;
+    const id = makeLocalId("highlight");
+    const createdAt = new Date().toISOString();
+    const item = {
+      id,
+      clientId: id,
+      text: selection.text,
+      articleId: selection.articleId,
+      articleTitle: selection.articleTitle || "",
+      sourceUrl: selection.sourceUrl || cleanSourceUrl(),
+      sourceSection: selection.sourceSection || "Athenaeum",
+      note: "",
+      tag: "",
+      color: "#E8C770",
+      createdAt,
+      updatedAt: createdAt,
+      when: formatSavedDate(createdAt),
+    };
     const next = {
       ...library,
-      highlights: [...library.highlights, {
-        id: Date.now(), text: selection.text, articleId: selection.articleId,
-        when: new Date().toLocaleDateString(),
-      }],
+      highlights: [...library.highlights, item],
     };
     setLibrary(next); persist({ library: next });
+    if (authSessionRef.current?.accessToken) {
+      highlightApi.create(authSessionRef.current, localHighlightToRemote(item, "highlight", allArticles), applyAuthSession)
+        .then(({ highlight }) => {
+          const saved = remoteHighlightToLocal(highlight);
+          setLibrary(prev => {
+            const synced = { ...prev, highlights: prev.highlights.map(h => h.clientId === saved.clientId ? saved : h) };
+            safeSet({ customArticles, library: synced, fontSize, account: authSessionRef.current?.user || account });
+            return synced;
+          });
+          setSyncStatus("Highlight synced");
+        })
+        .catch(error => setSyncStatus(error.message || "Highlight saved locally"));
+    }
     setSelection(null); window.getSelection()?.removeAllRanges();
   };
 
   const addQuote = () => {
     if (!selection) return;
     const a = allArticles.find(x => x.id === selection.articleId);
+    const id = makeLocalId("quote");
+    const createdAt = new Date().toISOString();
+    const item = {
+      id,
+      clientId: id,
+      text: selection.text,
+      articleId: selection.articleId,
+      articleTitle: a?.title || selection.articleTitle || "",
+      sourceUrl: selection.sourceUrl || cleanSourceUrl(),
+      sourceSection: a ? `${a.author}, "${a.title}"` : (selection.sourceSection || "Athenaeum"),
+      source: a ? `${a.author}, "${a.title}"` : (selection.sourceSection || "Unknown"),
+      note: "",
+      tag: "",
+      color: "#E8C770",
+      createdAt,
+      updatedAt: createdAt,
+      when: formatSavedDate(createdAt),
+    };
     const next = {
       ...library,
-      quotes: [...library.quotes, {
-        id: Date.now(), text: selection.text, articleId: selection.articleId,
-        source: a ? `${a.author}, "${a.title}"` : "Unknown",
-        when: new Date().toLocaleDateString(),
-      }],
+      quotes: [...library.quotes, item],
     };
     setLibrary(next); persist({ library: next });
+    if (authSessionRef.current?.accessToken) {
+      highlightApi.create(authSessionRef.current, localHighlightToRemote(item, "quote", allArticles), applyAuthSession)
+        .then(({ highlight }) => {
+          const saved = remoteHighlightToLocal(highlight);
+          setLibrary(prev => {
+            const synced = { ...prev, quotes: prev.quotes.map(q => q.clientId === saved.clientId ? saved : q) };
+            safeSet({ customArticles, library: synced, fontSize, account: authSessionRef.current?.user || account });
+            return synced;
+          });
+          setSyncStatus("Quote synced");
+        })
+        .catch(error => setSyncStatus(error.message || "Quote saved locally"));
+    }
     setSelection(null); window.getSelection()?.removeAllRanges();
   };
 
@@ -9673,8 +9856,48 @@ export default function Athenaeum() {
   };
 
   const removeFrom = (kind, id) => {
+    const item = library[kind]?.find(x => x.id === id);
     const next = { ...library, [kind]: library[kind].filter(x => x.id !== id) };
     setLibrary(next); persist({ library: next });
+    if ((kind === "highlights" || kind === "quotes") && item?.serverId && authSessionRef.current?.accessToken) {
+      highlightApi.remove(authSessionRef.current, item.serverId, applyAuthSession)
+        .then(() => setSyncStatus("Deleted from sync"))
+        .catch(error => setSyncStatus(error.message || "Deleted locally"));
+    }
+  };
+
+  const updateSavedHighlight = (id, patch) => {
+    const item = library.highlights.find(x => x.id === id);
+    if (!item) return;
+    const updated = { ...item, ...patch, updatedAt: new Date().toISOString() };
+    const next = {
+      ...library,
+      highlights: library.highlights.map(x => x.id === id ? updated : x),
+    };
+    setLibrary(next); persist({ library: next });
+    if (updated.serverId && authSessionRef.current?.accessToken) {
+      highlightApi.update(authSessionRef.current, updated.serverId, {
+        text: updated.text,
+        note: updated.note || "",
+        tag: updated.tag || "",
+        color: updated.color || "#E8C770",
+        sourceUrl: updated.sourceUrl || "",
+        sourceSection: updated.sourceSection || "",
+        articleId: updated.articleId || "",
+        articleTitle: updated.articleTitle || "",
+        kind: "highlight",
+      }, applyAuthSession)
+        .then(({ highlight }) => {
+          const saved = remoteHighlightToLocal(highlight);
+          setLibrary(prev => {
+            const synced = { ...prev, highlights: prev.highlights.map(h => h.id === id ? saved : h) };
+            safeSet({ customArticles, library: synced, fontSize, account: authSessionRef.current?.user || account });
+            return synced;
+          });
+          setSyncStatus("Highlight updated");
+        })
+        .catch(error => setSyncStatus(error.message || "Updated locally"));
+    }
   };
 
   const saveCustomArticle = (article) => {
@@ -9774,7 +9997,9 @@ export default function Athenaeum() {
           onToggleInk={() => setBooxPlain(v => !v)}
           onToggleReadingMode={() => setReadingMode(v => !v)}
           account={account}
-          onAccountChange={updateAccount}
+          syncStatus={syncStatus}
+          onAuthSubmit={handleAuthSubmit}
+          onSignOut={handleSignOut}
         />
 
         <main className={"flex-1 overflow-y-auto thin-scroll" + (readerModeActive ? " reader-main-immersive" : "")}>
@@ -9817,6 +10042,7 @@ export default function Athenaeum() {
               library={library}
               allArticles={allArticles}
               onRemove={removeFrom}
+              onUpdateHighlight={updateSavedHighlight}
               onJump={(articleId) => setView({ kind: "reader", articleId })}
             />
           )}
@@ -9987,7 +10213,9 @@ function Header({
   onToggleInk,
   onToggleReadingMode,
   account,
-  onAccountChange,
+  syncStatus,
+  onAuthSubmit,
+  onSignOut,
 }) {
   return (
     <header className="sticky top-0 z-20 px-4 md:px-8 py-4 flex items-center gap-4"
@@ -10084,55 +10312,44 @@ function Header({
         </button>
       </div>
 
-      <GoogleAccountMenu account={account} onAccountChange={onAccountChange}/>
+      <AccountMenu
+        account={account}
+        syncStatus={syncStatus}
+        onAuthSubmit={onAuthSubmit}
+        onSignOut={onSignOut}
+      />
     </header>
   );
 }
 
-function GoogleAccountMenu({ account, onAccountChange }) {
+function AccountMenu({ account, syncStatus, onAuthSubmit, onSignOut }) {
   const [open, setOpen] = useState(false);
-  const [clientId] = useState(() => getConfiguredGoogleClientId());
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [apiUrl, setApiUrl] = useState(() => getApiBaseUrl());
   const [status, setStatus] = useState("");
 
-  const handleCredential = useCallback((response) => {
-    const nextAccount = decodeGoogleCredential(response?.credential || "");
-    if (!nextAccount) {
-      setStatus("Could not read the Google account response.");
-      return;
-    }
-    onAccountChange?.(nextAccount);
-    setOpen(false);
+  const submit = async (event) => {
+    event.preventDefault();
     setStatus("");
-  }, [onAccountChange]);
-
-  const startGoogleSignIn = () => {
-    if (!clientId) {
-      setStatus("Google sign-in needs a Google OAuth Client ID configured for this site.");
-      return;
+    try {
+      setApiBaseUrl(apiUrl);
+      await onAuthSubmit?.({ mode, name, email, password });
+      setPassword("");
+      setOpen(false);
+    } catch (error) {
+      setStatus(error.message || "Could not sign in.");
     }
-    setStatus("Opening Google sign-in...");
-    loadGoogleIdentityScript()
-      .then(() => {
-        if (!window.google?.accounts?.id) throw new Error("Google unavailable");
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleCredential,
-          ux_mode: "popup",
-          auto_select: false,
-          use_fedcm_for_prompt: true,
-        });
-        window.google.accounts.id.prompt();
-      })
-      .catch(() => setStatus("Google sign-in could not load."));
   };
 
-  const signOut = () => {
-    try { window.google?.accounts?.id?.disableAutoSelect?.(); } catch {}
-    onAccountChange?.(null);
+  const signOut = async () => {
+    await onSignOut?.();
     setOpen(false);
   };
 
-  const initial = (account?.name || account?.email || "G").trim().charAt(0).toUpperCase();
+  const initial = (account?.name || account?.email || "A").trim().charAt(0).toUpperCase();
 
   return (
     <div className="account-shell">
@@ -10142,7 +10359,7 @@ function GoogleAccountMenu({ account, onAccountChange }) {
         onClick={() => setOpen(o => !o)}
         aria-label={account ? "Open account menu" : "Open login"}>
         <span className="account-avatar">
-          {account?.picture ? <img src={account.picture} alt=""/> : (account ? initial : <LogIn size={15}/>)}
+          {account ? initial : <LogIn size={15}/>}
         </span>
         <span className="account-label">{account ? (account.name || "Account") : "Login"}</span>
       </button>
@@ -10160,12 +10377,12 @@ function GoogleAccountMenu({ account, onAccountChange }) {
               <>
                 <div className="flex items-center gap-3">
                   <span className="account-avatar" style={{ width: 48, height: 48 }}>
-                    {account.picture ? <img src={account.picture} alt=""/> : initial}
+                    {initial}
                   </span>
                   <div style={{ minWidth: 0 }}>
                     <p className="account-name">{account.name || "Signed in"}</p>
                     {account.email && <p className="account-email">{account.email}</p>}
-                    <span className="account-sync-status">Google connected</span>
+                    <span className="account-sync-status">{syncStatus || "Sync enabled"}</span>
                   </div>
                 </div>
                 <div className="account-actions">
@@ -10176,14 +10393,54 @@ function GoogleAccountMenu({ account, onAccountChange }) {
               </>
             ) : (
               <>
-                <div className="login-social-grid">
-                  <button type="button" className="login-social-btn google" onClick={startGoogleSignIn} aria-label="Continue with Google">
-                    <span className="google-mark">G</span>
-                    <span className="login-social-label">Continue with Google</span>
-                  </button>
+                <div className="auth-tabs" role="tablist" aria-label="Authentication mode">
+                  <button type="button" data-active={mode === "login"} onClick={() => setMode("login")}>Login</button>
+                  <button type="button" data-active={mode === "signup"} onClick={() => setMode("signup")}>Sign up</button>
                 </div>
-                <span className="account-sync-status">Google only</span>
+                <form className="auth-form" onSubmit={submit}>
+                  {mode === "signup" && (
+                    <input
+                      className="account-field"
+                      value={name}
+                      onChange={event => setName(event.target.value)}
+                      placeholder="Name"
+                      autoComplete="name"
+                    />
+                  )}
+                  <input
+                    className="account-field"
+                    value={email}
+                    onChange={event => setEmail(event.target.value)}
+                    placeholder="Email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                  />
+                  <input
+                    className="account-field"
+                    value={password}
+                    onChange={event => setPassword(event.target.value)}
+                    placeholder="Password"
+                    type="password"
+                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                    required
+                    minLength={8}
+                  />
+                  <input
+                    className="account-field"
+                    value={apiUrl}
+                    onChange={event => setApiUrl(event.target.value)}
+                    placeholder="Sync server URL"
+                    type="url"
+                  />
+                  <button type="submit" className="login-social-btn auth-primary" aria-label={mode === "signup" ? "Create account" : "Login with email"}>
+                    <LogIn size={15}/>
+                    <span className="login-social-label">{mode === "signup" ? "Create Account" : "Login with Email"}</span>
+                  </button>
+                </form>
+                <span className="account-sync-status">Self-hosted sync / {apiUrl || getApiBaseUrl()}</span>
                 {status && <p className="login-status">{status}</p>}
+                {syncStatus && <p className="login-status">{syncStatus}</p>}
               </>
             )}
           </div>
@@ -11845,10 +12102,18 @@ function DailyQuoteView({ library, allArticles, onJump, onGoToQuotes }) {
   );
 }
 
-function CollectionView({ kind, library, allArticles, onRemove, onJump }) {
-  const items = kind === "quotes" ? library.quotes : library.vocabulary;
-  const heading = kind === "quotes" ? "My Quotes" : "My Vocabulary";
-  const subhead = kind === "quotes" ? "Citations you've saved." : "Words you've looked up.";
+function CollectionView({ kind, library, allArticles, onRemove, onUpdateHighlight, onJump }) {
+  const items = kind === "highlights"
+    ? library.highlights
+    : kind === "quotes"
+      ? library.quotes
+      : library.vocabulary;
+  const heading = kind === "highlights" ? "My Highlights" : kind === "quotes" ? "My Quotes" : "My Vocabulary";
+  const subhead = kind === "highlights"
+    ? "Words and sentences you've marked, synced to your account."
+    : kind === "quotes"
+      ? "Citations you've saved."
+      : "Words you've looked up.";
 
   const findArticle = (id) => allArticles.find(a => a.id === id);
 
@@ -11873,6 +12138,19 @@ function CollectionView({ kind, library, allArticles, onRemove, onJump }) {
           <p className="body text-sm mt-1" style={{ color: "var(--ink-3)" }}>
             Open any article and select text to begin.
           </p>
+        </div>
+      ) : kind === "highlights" ? (
+        <div className="space-y-4">
+          {library.highlights.map(h => (
+            <HighlightEditorCard
+              key={h.id}
+              item={h}
+              article={findArticle(h.articleId)}
+              onJump={h.articleId ? () => onJump(h.articleId) : null}
+              onSave={(patch) => onUpdateHighlight?.(h.id, patch)}
+              onRemove={() => onRemove("highlights", h.id)}
+            />
+          ))}
         </div>
       ) : kind === "quotes" ? (
         <div className="space-y-4">
@@ -11924,6 +12202,77 @@ function CollectionView({ kind, library, allArticles, onRemove, onJump }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function HighlightEditorCard({ item, article, onJump, onSave, onRemove }) {
+  const [note, setNote] = useState(item.note || "");
+  const [tag, setTag] = useState(item.tag || "");
+  const source = item.articleTitle || article?.title || item.sourceSection || item.sourceUrl || "Athenaeum";
+
+  useEffect(() => {
+    setNote(item.note || "");
+    setTag(item.tag || "");
+  }, [item.note, item.tag]);
+
+  return (
+    <div className="card p-6">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <span className="tag">{tag || "Highlight"}</span>
+          <p className="ui text-[9px] tracking-[0.2em] uppercase mt-2" style={{ color: "var(--ink-3)" }}>
+            {item.when || formatSavedDate(item.createdAt)}
+          </p>
+        </div>
+        <button onClick={onRemove} className="opacity-55 hover:opacity-100" aria-label="Delete highlight">
+          <Trash2 size={14} style={{ color: "var(--ink-3)" }}/>
+        </button>
+      </div>
+
+      <p className="body text-[1.05rem] leading-relaxed mb-4" style={{ color: "var(--ink)" }}>
+        <mark className="user-highlight">{item.text}</mark>
+      </p>
+
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+        {onJump ? (
+          <button onClick={onJump}
+            className="ui text-[10px] tracking-[0.2em] uppercase flex items-center gap-1.5"
+            style={{ color: "var(--gold-deep)" }}>
+            {"-> "}{source}
+          </button>
+        ) : (
+          <span className="ui text-[10px] tracking-[0.2em] uppercase" style={{ color: "var(--ink-3)" }}>
+            {source}
+          </span>
+        )}
+        {item.syncedAt && (
+          <span className="account-sync-status">Synced</span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-3 items-start">
+        <input
+          className="account-field"
+          style={{ marginTop: 0 }}
+          value={tag}
+          onChange={event => setTag(event.target.value)}
+          placeholder="Tag"
+        />
+        <textarea
+          className="account-field"
+          style={{ marginTop: 0, minHeight: 44, resize: "vertical" }}
+          value={note}
+          onChange={event => setNote(event.target.value)}
+          placeholder="Note"
+        />
+        <button
+          type="button"
+          className="reader-btn"
+          onClick={() => onSave({ note, tag })}>
+          <Save size={12}/> Save
+        </button>
+      </div>
     </div>
   );
 }
