@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 await copyFile("dist/src/index.html", "dist/index.html");
@@ -13,6 +13,12 @@ await writeFile("dist/index.html", portableIndex);
 await writeFile("index.html", portableIndex);
 
 await mkdir("assets", { recursive: true });
+const existingAssets = await readdir("assets").catch(() => []);
+await Promise.all(
+  existingAssets
+    .filter((name) => name.startsWith("index-") && name.endsWith(".js"))
+    .map((name) => rm(join("assets", name), { force: true }))
+);
 
 const builtAssets = await readdir("dist/assets");
 await Promise.all(

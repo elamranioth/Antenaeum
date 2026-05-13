@@ -3,7 +3,7 @@ import {
   Scale, TrendingUp, Lightbulb, BookOpen, Quote, BookMarked,
   Plus, Menu, Search, Highlighter, Languages, X, Trash2, Volume2,
   ArrowLeft, Save, Type, ChevronDown, Bookmark, Sparkles, Cpu,
-  LogIn, LogOut, Download, Smartphone
+  LogIn, LogOut
 } from "lucide-react";
 import CRYPTOGRAPHY_COMPLETE_DEEP_RESEARCH_HTML from "./content/cryptography_complete_deep_research.html?raw";
 
@@ -1256,9 +1256,6 @@ const GlobalStyles = () => (
     .ink-mode-shell .tooltail,
     .ink-mode-shell .login-card,
     .ink-mode-shell .login-social-btn,
-    .ink-mode-shell .install-app-prompt,
-    .ink-mode-shell .install-app-prompt__icon,
-    .ink-mode-shell .install-app-prompt__close,
     .ink-mode-shell .account-trigger,
     .ink-mode-shell .account-sync-status,
     .ink-mode-shell .account-avatar,
@@ -1622,86 +1619,6 @@ const GlobalStyles = () => (
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-    }
-    .install-app-prompt {
-      position: fixed;
-      right: 1.25rem;
-      bottom: 1.25rem;
-      z-index: 60;
-      width: min(370px, calc(100vw - 2rem));
-      background: var(--cream-3);
-      border: 2px solid var(--rule);
-      border-radius: 10px;
-      padding: 1rem;
-      display: grid;
-      gap: 0.85rem;
-    }
-    .install-app-prompt__top {
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr) auto;
-      gap: 0.8rem;
-      align-items: start;
-    }
-    .install-app-prompt__icon {
-      width: 42px;
-      height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1.5px solid var(--rule);
-      border-radius: 8px;
-      background: var(--cream);
-      color: var(--ink);
-    }
-    .install-app-prompt__title {
-      margin: 0 0 0.2rem;
-      color: var(--ink);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.45rem;
-      font-style: italic;
-      font-weight: 600;
-      line-height: 1;
-    }
-    .install-app-prompt__copy {
-      margin: 0;
-      color: var(--ink-3);
-      font-size: 0.9rem;
-      line-height: 1.45;
-    }
-    .install-app-prompt__close {
-      width: 30px;
-      height: 30px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--rule);
-      border-radius: 999px;
-      background: var(--cream-3);
-      color: var(--ink);
-      cursor: pointer;
-    }
-    .install-app-prompt__actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .install-app-prompt__status {
-      margin: 0;
-      color: var(--gold-deep);
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      line-height: 1.45;
-    }
-    @media (max-width: 700px) {
-      .install-app-prompt {
-        right: 1rem;
-        bottom: 1rem;
-      }
     }
 
     /* Toolbar arrow */
@@ -9590,14 +9507,6 @@ function decodeGoogleCredential(credential) {
 /* ════════════════════════════════════════════════════════════════
    APP
    ════════════════════════════════════════════════════════════════ */
-function isAthenaeumStandalone() {
-  try {
-    return window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator?.standalone === true;
-  } catch {
-    return false;
-  }
-}
-
 export default function Athenaeum() {
   // view: { kind: 'list' | 'reader' | 'editor' | 'collection', ... }
   const [view, setView] = useState({ kind: "list", category: "all" });
@@ -9611,13 +9520,6 @@ export default function Athenaeum() {
   const [account, setAccount] = useState(null);
   const [readingMode, setReadingMode] = useState(false);
   const [booxPlain, setBooxPlain] = useState(false);
-  const [installPromptEvent, setInstallPromptEvent] = useState(null);
-  const [installStatus, setInstallStatus] = useState("");
-  const [isStandalone, setIsStandalone] = useState(() => isAthenaeumStandalone());
-  const [installDismissed, setInstallDismissed] = useState(() => {
-    try { return window.localStorage?.getItem("athenaeum-install-dismissed") === "1"; }
-    catch { return false; }
-  });
   const articleRef = useRef(null);
 
   /* Load persisted data */
@@ -9637,31 +9539,6 @@ export default function Athenaeum() {
     });
   }, []);
 
-  useEffect(() => {
-    const onBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      setInstallPromptEvent(event);
-      setInstallStatus("");
-    };
-    const onAppInstalled = () => {
-      setIsStandalone(true);
-      setInstallDismissed(true);
-      try { window.localStorage?.setItem("athenaeum-install-dismissed", "1"); } catch {}
-    };
-    const media = window.matchMedia?.("(display-mode: standalone)");
-    const onDisplayModeChange = () => setIsStandalone(isAthenaeumStandalone());
-
-    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-    window.addEventListener("appinstalled", onAppInstalled);
-    media?.addEventListener?.("change", onDisplayModeChange);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", onAppInstalled);
-      media?.removeEventListener?.("change", onDisplayModeChange);
-    };
-  }, []);
-
   const persist = useCallback((next) => {
     safeSet({ customArticles, library, fontSize, account, ...next });
   }, [customArticles, library, fontSize, account]);
@@ -9675,30 +9552,6 @@ export default function Athenaeum() {
     setFontSize(n);
     safeSet({ customArticles, library, fontSize: n, account });
   }, [customArticles, library, account]);
-
-  const dismissInstallPrompt = useCallback(() => {
-    setInstallDismissed(true);
-    try { window.localStorage?.setItem("athenaeum-install-dismissed", "1"); } catch {}
-  }, []);
-
-  const installApp = useCallback(async () => {
-    if (!installPromptEvent) {
-      setInstallStatus("Use the browser menu and choose Install app or Add to Home Screen.");
-      return;
-    }
-    try {
-      installPromptEvent.prompt();
-      const choice = await installPromptEvent.userChoice;
-      setInstallPromptEvent(null);
-      if (choice?.outcome === "accepted") {
-        dismissInstallPrompt();
-      } else {
-        setInstallStatus("You can save the app later from this prompt or the browser menu.");
-      }
-    } catch {
-      setInstallStatus("Use the browser menu and choose Install app or Add to Home Screen.");
-    }
-  }, [installPromptEvent, dismissInstallPrompt]);
 
   /* All articles combined */
   const allArticles = useMemo(
@@ -10002,14 +9855,6 @@ export default function Athenaeum() {
         />
       )}
 
-      {!isStandalone && !installDismissed && (
-        <InstallAppPrompt
-          canInstall={!!installPromptEvent}
-          status={installStatus}
-          onInstall={installApp}
-          onDismiss={dismissInstallPrompt}
-        />
-      )}
     </div>
   );
 }
@@ -10017,37 +9862,6 @@ export default function Athenaeum() {
 /* ════════════════════════════════════════════════════════════════
    SIDEBAR
    ════════════════════════════════════════════════════════════════ */
-function InstallAppPrompt({ canInstall, status, onInstall, onDismiss }) {
-  return (
-    <aside className="install-app-prompt fade" aria-label="Save Athenaeum as an app">
-      <div className="install-app-prompt__top">
-        <div className="install-app-prompt__icon" aria-hidden="true">
-          <Smartphone size={21}/>
-        </div>
-        <div>
-          <h2 className="install-app-prompt__title">Save Athenaeum as an app</h2>
-          <p className="install-app-prompt__copy">
-            Open it from your home screen or desktop with a cleaner app window for reading.
-          </p>
-        </div>
-        <button type="button" className="install-app-prompt__close" onClick={onDismiss} aria-label="Dismiss install message">
-          <X size={15}/>
-        </button>
-      </div>
-
-      <div className="install-app-prompt__actions">
-        <button type="button" className="reader-btn" onClick={onInstall}>
-          <Download size={13}/> {canInstall ? "Install App" : "How to Save"}
-        </button>
-        <button type="button" className="reader-mode-btn" onClick={onDismiss}>
-          Not now
-        </button>
-      </div>
-      {status && <p className="install-app-prompt__status">{status}</p>}
-    </aside>
-  );
-}
-
 function Sidebar({ view, setView, open, onClose, onAddText }) {
   const isActive = (kind, val) => {
     if (kind === "daily")        return view.kind === "daily";
