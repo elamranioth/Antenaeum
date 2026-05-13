@@ -229,8 +229,8 @@ const GlobalStyles = () => (
 
     .library-board {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
-      gap: clamp(1.25rem, 2vw, 1.75rem);
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
       align-items: start;
     }
     .library-main-stack {
@@ -10520,32 +10520,14 @@ function getProgressLabel(status, progress) {
   return "Unread";
 }
 
-function getTodayArticle(articles) {
-  if (!articles.length) return null;
-  const idx = getDailyQuoteIndex(articles.length, new Date());
-  return articles[idx < 0 ? 0 : idx];
-}
-
 function ListView({ articles, category, library, onOpen, onAddText, onDelete }) {
   const heading = category === "all" ? "Articles & Summaries" : CATEGORY_LABELS[category];
   const isRtl = isRtlCategory(category);
   const articleStates = articles.map((article, index) => {
     const progress = getReadProgress(article, library);
     const status = getReadStatus(article, library);
-    const lastSeen = library?.reading?.[article.id]?.lastSeen || 0;
-    return { article, index, progress, status, lastSeen };
+    return { article, index, progress, status };
   });
-  const continueItem =
-    articleStates
-      .filter(item => item.progress > 0 && item.progress < 1)
-      .sort((a, b) => b.lastSeen - a.lastSeen)[0] ||
-    articleStates
-      .filter(item => item.status !== "done")
-      .sort((a, b) => a.index - b.index)[0] ||
-    articleStates[0];
-  const todayArticle = getTodayArticle(articles);
-  const completedCount = articleStates.filter(item => item.status === "done").length;
-  const readingCount = articleStates.filter(item => item.progress > 0 && item.progress < 1).length;
 
   return (
     <div className="px-4 md:px-8 py-6 md:py-8 library-board">
@@ -10590,83 +10572,6 @@ function ListView({ articles, category, library, onOpen, onAddText, onDelete }) 
             ))}
           </div>
         )}
-      </div>
-
-      <aside className="library-side-stack">
-        <div className="shelf-panel rise">
-          <div className="shelf-panel__label">Library State</div>
-          <div className="shelf-stats" aria-label="Library reading summary">
-            <div className="shelf-stat">
-              <strong>{formatCount(articles.length, false)}</strong>
-              <span>Total</span>
-            </div>
-            <div className="shelf-stat">
-              <strong>{formatCount(readingCount, false)}</strong>
-              <span>Active</span>
-            </div>
-            <div className="shelf-stat">
-              <strong>{formatCount(completedCount, false)}</strong>
-              <span>Read</span>
-            </div>
-          </div>
-          {continueItem ? (
-            <ShelfMiniCard
-              label={continueItem.progress > 0 ? "Continue Reading" : "Begin Here"}
-              article={continueItem.article}
-              progress={continueItem.progress}
-              onOpen={() => onOpen(continueItem.article.id)}
-            />
-          ) : (
-            <p className="shelf-panel__copy">Your reading queue will appear here once this section has texts.</p>
-          )}
-        </div>
-
-        {todayArticle && (
-          <div className="shelf-panel rise" style={{ animationDelay: "0.08s" }}>
-            <div className="shelf-panel__label">Today's Reading</div>
-            <h3 className="shelf-panel__title">{todayArticle.title}</h3>
-            <p className="shelf-panel__copy">
-              A rotating shelf pick for the day, chosen from the current library view.
-            </p>
-            <button onClick={() => onOpen(todayArticle.id)} className="pill-light">
-              <BookMarked size={13}/> Open Pick
-            </button>
-          </div>
-        )}
-
-        <div className="shelf-panel rise" style={{ animationDelay: "0.12s" }}>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="shelf-panel__title" style={{ margin: 0 }}>Add Text</h3>
-            <span className="tag">Full Page</span>
-          </div>
-          <p className="shelf-panel__copy">
-            Paste your own articles, notes, or chapters. They enter the archive with the same highlights, quotes, definitions, and reading progress.
-          </p>
-          <button onClick={onAddText} className="pill-light">
-            <Plus size={13}/> Open Editor
-          </button>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function ShelfMiniCard({ label, article, progress, onOpen }) {
-  return (
-    <div className="shelf-mini-card">
-      <div className="shelf-mini-card__meta">
-        <span className="shelf-mini-card__detail">{label}</span>
-        <span className="tag">{CATEGORY_LABELS[article.category] || "Misc"}</span>
-      </div>
-      <h3 className="shelf-mini-card__title">{article.title}</h3>
-      <div className="mini-progress" aria-hidden="true" style={{ "--progress": `${Math.round(progress * 100)}%` }}>
-        <span/>
-      </div>
-      <div className="flex items-center justify-between gap-3 mt-3">
-        <span className="shelf-mini-card__detail">{getProgressLabel(progress >= 1 ? "done" : progress > 0 ? "reading" : "new", progress)}</span>
-        <button onClick={onOpen} className="reader-btn archive-open-btn">
-          <BookOpen size={12}/> Read
-        </button>
       </div>
     </div>
   );
