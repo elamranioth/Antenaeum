@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Human Behaviour Changes Across Power and Powerlessness</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --ink-muted: #5a5550;
+    --ink-faint: #9a948e;
+    --paper: #faf8f4;
+    --paper-warm: #f4f0e8;
+    --paper-card: #ffffff;
+    --border: #e4ddd4;
+    --border-strong: #c8bfb2;
+    --accent-power: #8B2E00;
+    --accent-power-light: #F5E8DE;
+    --accent-power-mid: #C4571A;
+    --accent-low: #0D4A6B;
+    --accent-low-light: #DFF0F8;
+    --accent-low-mid: #1A7AAF;
+    --accent-good: #1A5C2E;
+    --accent-good-light: #E3F2E8;
+    --accent-warn: #7A4500;
+    --accent-warn-light: #FFF0DC;
+    --gold: #B8860B;
+    --gold-light: #FFF8DC;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* LAYOUT */
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 80px,
+      rgba(255,255,255,0.025) 80px,
+      rgba(255,255,255,0.025) 81px
+    );
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 500;
+    line-height: 1.15;
+    max-width: 720px;
+    margin: 0 auto 1.5rem;
+    color: #faf8f4;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 540px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    font-size: 0.78rem; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+  }
+  .hero-meta span::before { content: '— '; }
+  /* NAV */
+  .toc-strip {
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 2rem;
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-strip::-webkit-scrollbar { display: none; }
+  .toc-link {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-faint);
+    text-decoration: none; padding: 0.9rem 1rem;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+  }
+  .toc-link:hover { color: var(--ink); border-color: var(--border-strong); }
+  .toc-link.active { color: var(--accent-power); border-color: var(--accent-power); }
+  /* MAIN CONTENT */
+  .content { padding: 4rem 0 6rem; }
+  .section { margin-bottom: 5rem; }
+  .section-header { margin-bottom: 2.5rem; }
+  .section-number {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 0.6rem;
+    display: block;
+  }
+  .section-title {
+    font-family: var(--serif); font-size: 2rem; font-weight: 500;
+    line-height: 1.2; color: var(--ink);
+  }
+  .section-rule {
+    width: 40px; height: 2px;
+    background: var(--accent-power); margin-top: 1rem;
+  }
+  /* PROSE */
+  p { margin-bottom: 1.35rem; font-size: 1rem; }
+  p:last-child { margin-bottom: 0; }
+  .lead {
+    font-family: var(--serif); font-size: 1.25rem;
+    font-weight: 400; line-height: 1.65; color: var(--ink);
+    margin-bottom: 1.75rem;
+  }
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 3px solid var(--accent-power);
+    padding: 1.25rem 0 1.25rem 1.75rem;
+    margin: 2.5rem 0;
+  }
+  .pull-quote p {
+    font-family: var(--serif); font-size: 1.3rem;
+    font-weight: 400; font-style: italic;
+    line-height: 1.55; color: var(--ink);
+    margin: 0;
+  }
+  /* FRAMEWORK CARDS */
+  .frameworks-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+    margin: 2.5rem 0;
+  }
+  .framework-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .framework-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+  }
+  .framework-card.theory1::before { background: var(--accent-power); }
+  .framework-card.theory2::before { background: var(--gold); }
+  .framework-card.theory3::before { background: var(--accent-low); }
+  .fc-label {
+    font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.6rem;
+  }
+  .fc-title {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 0.75rem; line-height: 1.3;
+  }
+  .fc-body { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.65; }
+  /* FLOWCHART */
+  .diagram-wrap {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin: 2.5rem 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 0.8rem; color: var(--ink-faint);
+    text-align: center; margin-top: 1.25rem;
+    font-style: italic;
+  }
+  /* BEHAVIOUR TRAJECTORIES */
+  .trajectory-block { margin: 2.5rem 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .traj-header { padding: 1.25rem 1.75rem; display: flex; align-items: baseline; gap: 1rem; }
+  .power-header { background: var(--accent-power-light); border-bottom: 1px solid #e0c4b4; }
+  .low-header { background: var(--accent-low-light); border-bottom: 1px solid #aed0e8; }
+  .traj-label { font-family: var(--sans); font-size: 0.9rem; font-weight: 500; }
+  .power-header .traj-label { color: var(--accent-power); }
+  .low-header .traj-label { color: var(--accent-low); }
+  .traj-sub { font-size: 0.82rem; color: var(--ink-faint); }
+  .traj-cols { display: grid; grid-template-columns: 1fr 1fr; }
+  .traj-col { padding: 1.5rem 1.75rem; }
+  .traj-adaptive { border-right: 1px solid var(--border); background: #f9fdf9; }
+  .traj-maladaptive { background: #fdf9f9; }
+  .traj-col-title { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1.25rem; }
+  .traj-entry { margin-bottom: 1.25rem; }
+  .traj-entry:last-child { margin-bottom: 0; }
+  .traj-entry p { font-size: 0.86rem; color: var(--ink-muted); line-height: 1.65; margin-top: 0.4rem; margin-bottom: 0; }
+  /* MODERATORS LIST */
+  .moderators-list { margin: 2rem 0; }
+  .mod-entry { border-bottom: 1px solid var(--border); padding: 1.75rem 0; }
+  .mod-entry:first-child { border-top: 1px solid var(--border); }
+  .mod-name { font-family: var(--sans); font-size: 1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; }
+  .mod-body p { font-size: 0.92rem; color: var(--ink-muted); line-height: 1.75; margin: 0; }
+  .trait-pill {
+    display: inline-block;
+    font-size: 0.72rem; font-weight: 500;
+    padding: 0.15rem 0.6rem; border-radius: 100px;
+    margin-bottom: 0.4rem; margin-right: 0.2rem;
+  }
+  .trait-pill.good { background: var(--accent-good-light); color: var(--accent-good); }
+  .trait-pill.bad { background: #fde8e8; color: #8B1A1A; }
+  .trait-pill.neutral { background: var(--paper-warm); color: var(--ink-muted); }
+  /* CASE STUDIES */
+  .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 2.5rem 0; }
+  .case-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem;
+    position: relative;
+  }
+  .case-card.positive { border-top: 3px solid var(--accent-good); }
+  .case-card.negative { border-top: 3px solid #B81A1A; }
+  .case-card.institutional { border-top: 3px solid var(--gold); }
+  .case-card.laboratory { border-top: 3px solid var(--accent-low); }
+  .case-type {
+    font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .case-card.positive .case-type { color: var(--accent-good); }
+  .case-card.negative .case-type { color: #B81A1A; }
+  .case-card.institutional .case-type { color: var(--gold); }
+  .case-card.laboratory .case-type { color: var(--accent-low); }
+  .case-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .case-body { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.65; }
+  .case-lesson {
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem; font-weight: 500;
+    color: var(--ink);
+  }
+  .case-lesson::before { content: 'Lesson: '; color: var(--ink-faint); }
+
+  /* INTERVENTIONS */
+  .interventions { display: flex; flex-direction: column; gap: 0; margin: 2.5rem 0; }
+  .intervention {
+    display: grid; grid-template-columns: 48px 1fr;
+    gap: 0; border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+    align-items: start;
+  }
+  .intervention:first-child { border-top: 1px solid var(--border); }
+  .iv-num {
+    font-family: var(--serif); font-size: 2rem; font-weight: 400;
+    color: var(--border-strong); line-height: 1; padding-top: 0.15rem;
+  }
+  .iv-body { padding-left: 1.25rem; }
+  .iv-title {
+    font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
+    color: var(--ink); margin-bottom: 0.5rem;
+  }
+  .iv-text { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.65; }
+  /* CLOSING ETHIC */
+  .ethic-box {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    padding: 3rem 3.5rem;
+    margin: 3rem 0;
+    position: relative; overflow: hidden;
+  }
+  .ethic-box::before {
+    content: '"';
+    position: absolute; top: -1rem; left: 2rem;
+    font-family: var(--serif); font-size: 14rem;
+    color: rgba(255,255,255,0.04); line-height: 1;
+    pointer-events: none;
+  }
+  .ethic-eyebrow {
+    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 1.25rem; font-weight: 500;
+  }
+  .ethic-text {
+    font-family: var(--serif); font-size: 1.3rem;
+    font-weight: 400; line-height: 1.65;
+    color: rgba(255,255,255,0.9);
+  }
+  .ethic-text strong { color: #fad97a; font-weight: 500; }
+  /* SOURCES */
+  .sources-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem; margin: 2rem 0;
+  }
+  .source-group h4 {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-faint);
+    margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .source-item { font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 0.5rem; line-height: 1.5; }
+  .source-item em { font-style: italic; color: var(--ink); }
+  /* SVG FLOWCHART */
+  svg text { font-family: var(--sans); }
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .frameworks-grid { grid-template-columns: 1fr; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .sources-grid { grid-template-columns: 1fr; }
+    .traj-cols { grid-template-columns: 1fr; }
+    .traj-adaptive { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero h1 { font-size: 2rem; }
+    .ethic-box { padding: 2rem 1.75rem; }
+  }
+  /* SCROLL FADE-IN */
+  .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Deep Research Report &nbsp;·&nbsp; Social Psychology &nbsp;·&nbsp; Organisational Behaviour</p>
+  <h1>How Human Behaviour Changes Across Power and Powerlessness</h1>
+  <p class="hero-subtitle">A synthesis of experimental findings, theoretical frameworks and real-world cases on the psychology of authority and its absence.</p>
+  <div class="hero-meta">
+    <span>Approach/Inhibition Theory</span>
+    <span>The Power Paradox</span>
+    <span>Learned Helplessness</span>
+    <span>Organisational Ethics</span>
+  </div>
+</header>
+
+<nav class="toc-strip" aria-label="Table of contents">
+  <a class="toc-link" href="#summary">Summary</a>
+  <a class="toc-link" href="#frameworks">Frameworks</a>
+  <a class="toc-link" href="#cognition">Cognition</a>
+  <a class="toc-link" href="#behaviour">Behaviour Matrix</a>
+  <a class="toc-link" href="#cases">Case Studies</a>
+  <a class="toc-link" href="#moderators">Moderators</a>
+  <a class="toc-link" href="#interventions">Interventions</a>
+  <a class="toc-link" href="#sources">Sources</a>
+</nav>
+
+<main class="content">
+<div class="page-wrap">
+
+<!-- EXECUTIVE SUMMARY -->
+<section class="section fade-in" id="summary">
+  <div class="section-header">
+    <span class="section-number">01 &nbsp;·&nbsp; Executive Summary</span>
+    <h2 class="section-title">Power as Amplifier, Not Poison</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="lead">Human behaviour does not simply become "better" when a person has little power and "worse" when they have more. The evidence points to a directional shift: power moves people towards approach, action, self-expression and goal pursuit; powerlessness moves people towards inhibition, vigilance, social monitoring and threat sensitivity.</p>
+  <p>In practical terms, more power typically produces greater confidence, faster decisions and more direct speech — but it also weakens spontaneous perspective-taking, compassion and attention to downstream consequences, unless the person is strongly moral, other-focused, or held tightly accountable. Low power can sharpen emotional accuracy and patience, but chronic lack of control slides towards frustration, resignation and learned helplessness.</p>
+
+  <div class="pull-quote">
+    <p>Power is less a moral poison than an amplifier and affordance-shifter. It changes what feels possible, safe and worthwhile — then magnifies whatever goals, values and incentives are already active.</p>
+  </div>
+
+  <p>That is why the same authority produces stewardship in one setting and abuse in another, and why the absence of power produces humility and strategic restraint in one person but fear, silence and self-diminishment in another. The key variables are not power itself, but the moral identity, accountability structures and situational norms that surround it.</p>
+</section>
+
+<!-- FRAMEWORKS -->
+<section class="section fade-in" id="frameworks">
+  <div class="section-header">
+    <span class="section-number">02 &nbsp;·&nbsp; Theoretical Frameworks</span>
+    <h2 class="section-title">Three Explanatory Traditions</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>Three frameworks account for the bulk of the experimental and field evidence. Together they cover the psychological mechanisms through which power alters thought, emotion and behaviour at both ends of the hierarchy.</p>
+
+  <div class="frameworks-grid">
+    <div class="framework-card theory1">
+      <div class="fc-label">Framework 01</div>
+      <div class="fc-title">Approach / Inhibition Theory of Power</div>
+      <div class="fc-body">High power activates the behavioural approach system: reward sensitivity rises, constraint falls, action and self-expression increase. Low power activates the inhibition system: threat sensitivity rises, vigilance and caution dominate. Later refinements emphasised that power energises goal-related approach — it amplifies and prioritises whatever objectives are already active, rather than simply making people bolder in all respects.</div>
+    </div>
+    <div class="framework-card theory2">
+      <div class="fc-label">Framework 02</div>
+      <div class="fc-title">The Power Paradox</div>
+      <div class="fc-body">People typically gain influence through prosocial means — cooperation, social intelligence, service. Yet the very experience of power gradually erodes the empathy, restraint and sensitivity to others that enabled the rise. The "paradox" is therefore developmental: the qualities that earn power are undermined by possessing it, creating an inherent instability that requires active counterforces — accountability, moral anchoring, institutional checks — to remain stable over time.</div>
+    </div>
+    <div class="framework-card theory3">
+      <div class="fc-label">Framework 03</div>
+      <div class="fc-title">Learned Helplessness Tradition</div>
+      <div class="fc-body">Repeated, uncontrollable exposure to negative outcomes teaches passivity: people stop believing that their actions have consequences. This manifests first as motivational deficit (not trying), then as cognitive deficit (not learning new contingencies), and finally as emotional drift towards depression. Crucially, controllability — the ability to influence outcomes — is the key variable, not the severity of outcomes alone. Restoring perceived agency interrupts and reverses the syndrome.</div>
+    </div>
+  </div>
+
+  <p>On cognition and decision-making, power typically boosts initiative. Experiments find that power increases action orientation, optimism about risk and willingness to move first; related work shows reduced loss aversion and greater overconfidence. These effects reduce paralysis in ambiguous environments, but create a governance problem: confidence can outrun calibration, and speed can crowd out consultation and error-checking.</p>
+
+  <!-- FLOWCHART DIAGRAM -->
+  <div class="diagram-wrap fade-in">
+    <svg width="100%" viewBox="0 0 780 560" role="img" aria-label="Flowchart showing how gaining or losing power leads to either adaptive or maladaptive behavioural trajectories depending on moderating factors">
+      <title>Power and Behaviour Pathways</title>
+      <desc>A flowchart showing that role or situational change splits into gaining or losing power, each then branching to adaptive or maladaptive outcomes depending on moderating variables such as moral identity, accountability, and controllability.</desc>
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <!-- Root node -->
+      <rect x="285" y="20" width="210" height="50" rx="8" fill="#1a1612" stroke="none"/>
+      <text x="390" y="50" text-anchor="middle" dominant-baseline="central" fill="#faf8f4" font-size="13" font-weight="500">Role or situation changes</text>
+      <!-- Root → branches -->
+      <line x1="340" y1="70" x2="200" y2="130" stroke="#9a948e" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="440" y1="70" x2="580" y2="130" stroke="#9a948e" stroke-width="1" marker-end="url(#arr)"/>
+      <!-- Gaining power node -->
+      <rect x="100" y="130" width="190" height="50" rx="8" fill="#F5E8DE" stroke="#C4571A" stroke-width="1"/>
+      <text x="195" y="159" text-anchor="middle" dominant-baseline="central" fill="#8B2E00" font-size="13" font-weight="500">Gaining power</text>
+      <!-- Losing power node -->
+      <rect x="490" y="130" width="190" height="50" rx="8" fill="#DFF0F8" stroke="#1A7AAF" stroke-width="1"/>
+      <text x="585" y="159" text-anchor="middle" dominant-baseline="central" fill="#0D4A6B" font-size="13" font-weight="500">Losing / lacking power</text>
+      <!-- Approach rises -->
+      <line x1="195" y1="180" x2="195" y2="230" stroke="#C4571A" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="100" y="230" width="190" height="64" rx="8" fill="#fff7f4" stroke="#e0c4b4" stroke-width="0.8"/>
+      <text x="195" y="250" text-anchor="middle" dominant-baseline="central" fill="#8B2E00" font-size="12" font-weight="500">Approach rises</text>
+      <text x="195" y="268" text-anchor="middle" dominant-baseline="central" fill="#9a948e" font-size="11">Confidence · direct speech</text>
+      <text x="195" y="283" text-anchor="middle" dominant-baseline="central" fill="#9a948e" font-size="11">less loss aversion</text>
+      <!-- Inhibition rises -->
+      <line x1="585" y1="180" x2="585" y2="230" stroke="#1A7AAF" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="490" y="230" width="190" height="64" rx="8" fill="#f4faff" stroke="#aed0e8" stroke-width="0.8"/>
+      <text x="585" y="250" text-anchor="middle" dominant-baseline="central" fill="#0D4A6B" font-size="12" font-weight="500">Inhibition rises</text>
+      <text x="585" y="268" text-anchor="middle" dominant-baseline="central" fill="#9a948e" font-size="11">Threat monitoring · caution</text>
+      <text x="585" y="283" text-anchor="middle" dominant-baseline="central" fill="#9a948e" font-size="11">gatekeeper dependence</text>
+      <!-- Moderator labels -->
+      <line x1="195" y1="294" x2="195" y2="340" stroke="#9a948e" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="585" y1="294" x2="585" y2="340" stroke="#9a948e" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="195" y="335" text-anchor="middle" fill="#9a948e" font-size="10">Moderators</text>
+      <text x="585" y="335" text-anchor="middle" fill="#9a948e" font-size="10">Moderators</text>
+      <!-- Adaptive power: STEWARDSHIP -->
+      <line x1="160" y1="350" x2="95" y2="400" stroke="#1A5C2E" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="20" y="400" width="160" height="80" rx="8" fill="#E3F2E8" stroke="#1A5C2E" stroke-width="1"/>
+      <text x="100" y="422" text-anchor="middle" dominant-baseline="central" fill="#1A5C2E" font-size="12" font-weight="500">Stewardship</text>
+      <text x="100" y="440" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">Fairness · accountability</text>
+      <text x="100" y="455" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">decisive empathy</text>
+      <text x="100" y="470" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">calm authority</text>
+      <!-- Maladaptive power: DOMINATION -->
+      <line x1="235" y1="350" x2="295" y2="400" stroke="#B81A1A" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="210" y="400" width="165" height="80" rx="8" fill="#fde8e8" stroke="#B81A1A" stroke-width="1"/>
+      <text x="292" y="422" text-anchor="middle" dominant-baseline="central" fill="#B81A1A" font-size="12" font-weight="500">Domination</text>
+      <text x="292" y="440" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">Overconfidence · hubris</text>
+      <text x="292" y="455" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">reduced empathy</text>
+      <text x="292" y="470" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">corruption risk</text>
+      <!-- Adaptive low power: RESILIENCE -->
+      <line x1="550" y1="350" x2="485" y2="400" stroke="#1A5C2E" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="400" y="400" width="160" height="80" rx="8" fill="#E3F2E8" stroke="#1A5C2E" stroke-width="1"/>
+      <text x="480" y="422" text-anchor="middle" dominant-baseline="central" fill="#1A5C2E" font-size="12" font-weight="500">Resilience</text>
+      <text x="480" y="440" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">Humility · patience</text>
+      <text x="480" y="455" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">accurate social reading</text>
+      <text x="480" y="470" text-anchor="middle" dominant-baseline="central" fill="#2e6642" font-size="10">strategic voice</text>
+      <!-- Maladaptive low power: HELPLESSNESS -->
+      <line x1="620" y1="350" x2="685" y2="400" stroke="#B81A1A" stroke-width="1" marker-end="url(#arr)"/>
+      <rect x="600" y="400" width="160" height="80" rx="8" fill="#fde8e8" stroke="#B81A1A" stroke-width="1"/>
+      <text x="680" y="422" text-anchor="middle" dominant-baseline="central" fill="#B81A1A" font-size="12" font-weight="500">Helplessness</text>
+      <text x="680" y="440" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">Fear · resignation</text>
+      <text x="680" y="455" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">depressive drift</text>
+      <text x="680" y="470" text-anchor="middle" dominant-baseline="central" fill="#9a2020" font-size="10">covert resistance</text>
+      <!-- Moderator labels on branches -->
+      <text x="120" y="382" text-anchor="middle" fill="#1A5C2E" font-size="9">moral identity</text>
+      <text x="270" y="382" text-anchor="middle" fill="#B81A1A" font-size="9">entitlement · weak oversight</text>
+      <text x="500" y="382" text-anchor="middle" fill="#1A5C2E" font-size="9">voice · support</text>
+      <text x="660" y="382" text-anchor="middle" fill="#B81A1A" font-size="9">chronic uncontrollability</text>
+      <!-- Legend -->
+      <rect x="20" y="500" width="12" height="12" rx="2" fill="#E3F2E8" stroke="#1A5C2E" stroke-width="1"/>
+      <text x="38" y="511" fill="#5a5550" font-size="11">Adaptive path</text>
+      <rect x="150" y="500" width="12" height="12" rx="2" fill="#fde8e8" stroke="#B81A1A" stroke-width="1"/>
+      <text x="168" y="511" fill="#5a5550" font-size="11">Maladaptive path</text>
+    </svg>
+    <p class="diagram-caption">Fig. 1 — Behavioural pathways under power and powerlessness, moderated by identity, accountability and controllability.</p>
+  </div>
+</section>
+
+<!-- COGNITION & MORALITY -->
+<section class="section fade-in" id="cognition">
+  <div class="section-header">
+    <span class="section-number">03 &nbsp;·&nbsp; Cognition, Empathy and Morality</span>
+    <h2 class="section-title">What Power Does to Thinking and Feeling</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <p class="lead">The psychological effects of power are neither uniformly positive nor negative. They are domain-specific: power tends to sharpen certain cognitive capacities while blunting others, and the moral consequences depend heavily on what is already present in the person.</p>
+
+  <p><strong style="font-weight:500">Cognition and decision-making.</strong> Power reduces loss aversion, increases action orientation and promotes optimism about ambiguous risks. Higher-power individuals are more likely to move first, commit under uncertainty and delegate detail. The upside is decisiveness; the downside is reduced consultation, premature closure and overconfident judgement that outpaces available evidence.</p>
+
+  <p><strong style="font-weight:500">Empathy and social perception.</strong> The evidence here is consistently cautionary. Power reduces spontaneous perspective-taking: high-power people are less likely to mentally simulate others' viewpoints unless explicitly prompted or personally motivated. Empathic accuracy falls; responsiveness to others' emotions drops except where those emotions are self-relevant. Research on social distancing suggests that power can shift how others are perceived — from full social partners to instruments for goal attainment.</p>
+
+  <p><strong style="font-weight:500">Language and communication.</strong> "Powerful" speech is more direct, less hedged, and uses fewer softeners and hesitations. "Powerless" speech uses more qualifications, tag questions and deferential signals. The first style increases perceived authority; the second can reduce it in hierarchical settings, though in interdependent or collaborative cultures it can increase perceived warmth and sometimes actually aid status conferral over time.</p>
+
+  <p><strong style="font-weight:500">Self-perception and moral licensing.</strong> Power often produces greater self-concept consistency: high-power people experience themselves as more coherent and "authentic." That can be stabilising — but it also creates a risk. Feeling more like one's "true self" can license bluntness, entitlement or moral exceptionalism. The evidence on corruption is therefore conditional: power increases self-interested behaviour when moral identity is weak, but can reduce it and generate prosocial outcomes when moral identity is strong or when authority is framed as responsibility rather than opportunity.</p>
+
+  <div class="pull-quote">
+    <p>The same authority produces stewardship in one institutional design and abuse in another. The variable is not the person — it is the architecture of accountability around them.</p>
+  </div>
+</section>
+
+<!-- BEHAVIOUR MATRIX -->
+<section class="section fade-in" id="behaviour">
+  <div class="section-header">
+    <span class="section-number">04 &nbsp;·&nbsp; Behavioural Profile</span>
+    <h2 class="section-title">Adaptive and Maladaptive Trajectories</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>The following profiles synthesise experimental and review evidence across twelve behavioural dimensions, tracing the most common trajectories for both more-power and less-power conditions. Each dimension can run in either direction depending on moderating variables.</p>
+
+  <div class="trajectory-block">
+    <div class="traj-header power-header">
+      <span class="traj-label">More Power</span>
+      <span class="traj-sub">How authority shapes behaviour at the top of a hierarchy</span>
+    </div>
+    <div class="traj-cols">
+      <div class="traj-col traj-adaptive">
+        <div class="traj-col-title">Adaptive trajectory</div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Confidence</span>
+          <p>Stronger belief in one's capacity to act; lower paralysis in ambiguous situations. Higher-power individuals move first and commit where others hesitate.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Decision-making</span>
+          <p>Quicker, less loss-averse, more willing to commit and move first. Risk tolerance increases in ways that can unlock action where caution would stall progress.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Communication</span>
+          <p>Clearer, more direct, less deferential and more easily understood as authoritative. Reduces ambiguity in instruction and enables faster organisational response.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Responsibility</span>
+          <p>Can widen into stewardship: when authority is construed as duty, the powerful feel answerable for dependants and naturally broaden their moral circle.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Self-perception</span>
+          <p>Greater coherence and goal-focus; a sense of authentic self-expression that provides psychological stability and makes values easier to act on consistently.</p>
+        </div>
+      </div>
+      <div class="traj-col traj-maladaptive">
+        <div class="traj-col-title">Maladaptive trajectory</div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Ego</span>
+          <p>Overconfidence, hubris and moral exceptionalism. The powerful begin to believe that ordinary rules do not apply to them — an entitlement frame that compounds over time.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Empathy</span>
+          <p>Lower spontaneous perspective-taking and reduced distress at others' suffering. Empathic accuracy falls unless explicitly prompted or personally motivated.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Treatment of others</span>
+          <p>More instrumental — others become means to ends rather than full social partners. Power can shift perception towards objectification when accountability is weak.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Communication</span>
+          <p>Blunt, interruptive or dominance-signalling. Dissent is silenced not always deliberately but because high-power communication patterns make challenge feel costly.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Responsibility</span>
+          <p>Narrows into self-interest, blame-shifting or unchecked discretion. The accountability mechanisms that would correct this are often weakened by the same power they should constrain.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trajectory-block">
+    <div class="traj-header low-header">
+      <span class="traj-label">Less Power</span>
+      <span class="traj-sub">How constraint and subordination shape behaviour at the base of a hierarchy</span>
+    </div>
+    <div class="traj-cols">
+      <div class="traj-col traj-adaptive">
+        <div class="traj-col-title">Adaptive trajectory</div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Fear management</span>
+          <p>Caution becomes prudent patience and careful timing rather than panic. Those with less power often develop a finely calibrated sense of when and how to act.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Humility</span>
+          <p>Better awareness of limits, consequences and the weight of others' views. Constraint forces genuine engagement with perspectives that power can afford to ignore.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Communication</span>
+          <p>Tact, softening and strategic timing preserve relationships and create openings. Skilled low-power actors often become expert at finding the moment when influence is possible.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Social reading</span>
+          <p>Greater emotional attunement and more accurate perception of others' states. The need to monitor and anticipate authority figures sharpens interpersonal sensitivity.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill good">Survival strategy</span>
+          <p>Coalition-building, selective voice, impression management and strategic timing. Low power can produce sophisticated political intelligence when agency is protected.</p>
+        </div>
+      </div>
+      <div class="traj-col traj-maladaptive">
+        <div class="traj-col-title">Maladaptive trajectory</div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Fear</span>
+          <p>High threat monitoring and anticipatory stress erode focus, creativity and energy. The nervous system stays in defensive mode rather than productive engagement.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Frustration</span>
+          <p>Blocked voice and low instrumentality produce anger, resignation, or an oscillation between the two. Neither state is productive; both damage performance and wellbeing.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Patience</span>
+          <p>Degrades into waiting without agency; action is permanently deferred. What began as tactical restraint calcifies into an assumption that nothing will ever change.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Self-perception</span>
+          <p>Slides from "I am constrained" to "I am incapable" — internalised helplessness in which the person no longer believes their actions have consequences.</p>
+        </div>
+        <div class="traj-entry">
+          <span class="trait-pill bad">Survival strategy</span>
+          <p>Silence, appeasement, covert resistance and passive withdrawal. When voice is chronically unsafe, low-power actors exit the relationship psychologically even if they cannot exit physically.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="section fade-in" id="cases">
+  <div class="section-header">
+    <span class="section-number">05 &nbsp;·&nbsp; Real-World Cases</span>
+    <h2 class="section-title">Evidence from History and Institutions</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>The experimental literature is anchored by a series of real-world cases that illustrate both the pathological and prosocial possibilities. These examples are not cherry-picked parables; they represent the range of outcomes that the theoretical models predict under different moderating conditions.</p>
+
+  <div class="cases-grid">
+    <div class="case-card institutional">
+      <div class="case-type">Corporate / Institutional</div>
+      <div class="case-title">Wells Fargo — Sales Culture Collapse</div>
+      <div class="case-body">The board investigation concluded that an aggressive sales culture combined with distorted incentives pressured frontline employees to open unauthorised accounts and sell unwanted products. Senior leadership had sufficient discretion and organisational distance to misread — or actively deny — the behavioural cost. Employees adapted through compliance and concealment; those who raised concerns were sidelined.</div>
+      <div class="case-lesson">Power gradients without accountability channels produce exactly this failure: those below adapt silently, those above remain informationally insulated until forced disclosure.</div>
+    </div>
+
+    <div class="case-card institutional">
+      <div class="case-type">Corporate / Safety</div>
+      <div class="case-title">Boeing 737 MAX — Silenced Engineers</div>
+      <div class="case-body">A congressional whistleblower report described "relentless" schedule pressure in which safety warnings from engineers were ignored or sidelined. A subsequent FAA expert-panel report stressed the need for proactive voice channels. The pattern is consistent across power-hierarchy research: low-power people produce silence and tactical self-protection when speaking up is dangerous, while concentrated authority filters out inconvenient information until failure forces attention.</div>
+      <div class="case-lesson">Low power often produces silence when speaking up is risky; concentrated authority screens out inconvenient safety information until failure forces attention.</div>
+    </div>
+
+    <div class="case-card positive">
+      <div class="case-type">Political / Positive</div>
+      <div class="case-title">Nelson Mandela — Power in Service of Reconciliation</div>
+      <div class="case-body">After moving from prisoner and opposition leader to President of South Africa, Mandela backed the Truth and Reconciliation Commission despite pressure from elements of the old security establishment to weaken or avoid it. This is the prosocial side of acquired power: authority used to absorb grievance, legitimise process and convert vengeance incentives into institutional reconciliation. His moral identity and framing of authority as responsibility proved decisive.</div>
+      <div class="case-lesson">Power amplifies pre-existing moral identity. Where moral accountability is strong and authority is framed as responsibility, power enables genuine stewardship.</div>
+    </div>
+
+    <div class="case-card negative">
+      <div class="case-type">Political / Cautionary</div>
+      <div class="case-title">Robert Mugabe — Liberation Credentials and Consolidation</div>
+      <div class="case-body">Mugabe began with a more pragmatic coalition approach but progressively consolidated party control, moved towards one-party rule and ultimately presided over intimidation, violent elections and economic collapse. This arc illustrates that past victimhood or liberation credentials do not inoculate leaders against the self-reinforcing pull of concentrated power. The absence of effective accountability, not initial character, was the decisive variable.</div>
+      <div class="case-lesson">Past suffering or moral credentials offer no reliable protection against the long-run dynamics of unchecked power. Accountability structures matter more than biography.</div>
+    </div>
+
+    <div class="case-card positive">
+      <div class="case-type">Historical / Positive</div>
+      <div class="case-title">George Washington — Voluntary Relinquishment</div>
+      <div class="case-body">Washington twice modelled relinquished power: first by resigning his military commission after the Revolutionary War, and later by declining a third presidential term. That mattered psychologically as well as constitutionally. Voluntary self-limitation demonstrates that humility is most meaningful — and most influential as a norm — when the option not to be humble is genuinely available. His decisions shaped the entire presidential succession tradition.</div>
+      <div class="case-lesson">Voluntary self-limitation under conditions of genuine optionality is the clearest signal of moral identity operating as a real constraint on power's natural self-expansion.</div>
+    </div>
+
+    <div class="case-card laboratory">
+      <div class="case-type">Laboratory / Obedience</div>
+      <div class="case-title">Milgram Obedience Experiments</div>
+      <div class="case-body">Participants frequently complied with harmful instructions from an authority figure despite visible distress. The key mechanism was not wholehearted endorsement of harm but agency transfer upward: fear, duty and situational dependence overrode private moral discomfort. Low-power individuals did not become cruel — they became compliant, handing moral responsibility to the authority above them. Variants showed compliance fell sharply when authority was contested or the victim became more visible.</div>
+      <div class="case-lesson">Low power under authority pressure produces compliance through agency transfer, not endorsement. Breaking compliance requires either contested authority or heightened victim salience.</div>
+    </div>
+  </div>
+
+  <p>The Stanford Prison Experiment remains culturally influential as a dramatisation of what can happen when people are assigned powerful and powerless roles with scripted expectations. However, serious archival reanalysis has significantly undermined its scientific force. It is best treated as a public-history caution about institutions and situational scripts rather than as clean experimental proof that role assignment automatically transforms character.</p>
+</section>
+
+<!-- MODERATORS -->
+<section class="section fade-in" id="moderators">
+  <div class="section-header">
+    <span class="section-number">06 &nbsp;·&nbsp; Moderating Variables</span>
+    <h2 class="section-title">What Determines Which Path Is Taken</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>Power's behavioural effects depend decisively on the context in which it is exercised. Six moderators are well-documented across workplace, political and cross-cultural research — each capable of tilting the outcome towards the adaptive or maladaptive trajectory.</p>
+
+  <div class="moderators-list">
+
+    <div class="mod-entry">
+      <div class="mod-name">Moral identity and personality</div>
+      <div class="mod-body">
+        <p>This is the single most powerful moderator in the literature. When morality is central to how a person defines themselves, power amplifies stewardship, fairness and duty rather than self-interest. Prosocial orientation and a service-framed understanding of authority consistently produce cooperative, protective behaviour even at high levels of authority. Conversely, when entitlement, narcissism or Machiavellian orientation is dominant, power acts as a disinhibitor — it does not create these dispositions, but removes the situational constraints that previously held them in check. The practical implication is that selection for moral identity matters enormously, and that framing appointments as service roles from the outset changes what gets amplified.</p>
+      </div>
+    </div>
+
+    <div class="mod-entry">
+      <div class="mod-name">Culture and power distance</div>
+      <div class="mod-body">
+        <p>The meaning of authority is not universal. In cultures with socialised conceptions of power — where leaders are expected to protect, provide for and remain accountable to those below — high power-distance can coexist with genuine stewardship. The duty-to-protect norm channels power towards collective benefit rather than personal advantage. In cultures or organisations where authority is read as personal licence and social distance, leaders face little normative pressure to constrain themselves, and subordinates have fewer legitimate channels through which to demand it. Understanding which cultural frame is operative is essential to predicting how power will be exercised.</p>
+      </div>
+    </div>
+
+    <div class="mod-entry">
+      <div class="mod-name">Accountability and challenge rights</div>
+      <div class="mod-body">
+        <p>Protected reporting lines, independent review, role separation and regular reverse feedback keep empathy, reality-testing and moral calibration alive at every level. The mechanism works in both directions: voice improves outcomes instrumentally by surfacing information that authority would otherwise miss, and it restores autonomy and dignity in asymmetrical relationships, reducing the helplessness spiral at the bottom. Where escalation channels are weak, silent, or penalised, moral hazard compounds at the top while disengagement compounds at the bottom. The evidence consistently shows that challenge rights are not a soft cultural feature — they are a structural load-bearing element of any institution that needs to maintain accuracy and integrity over time.</p>
+      </div>
+    </div>
+
+    <div class="mod-entry">
+      <div class="mod-name">Stability and duration of power</div>
+      <div class="mod-body">
+        <p>Time-bounded, reviewable and transparently transferred authority substantially reduces succession anxiety, in-group consolidation and the temptation to extend reach defensively. When authority feels permanent or precarious — two seemingly opposite conditions that produce similar pathologies — leaders shift resources towards self-preservation rather than performance. Fear of losing power triggers in-group stacking, information control and the delegitimisation of rivals. Lame-duck periods and tenure accumulation both increase corruption risk, though through different mechanisms. Transparent succession planning and finite tenure are therefore not merely procedural courtesies; they remove the environmental cues that trigger defensive, self-serving behaviour.</p>
+      </div>
+    </div>
+
+    <div class="mod-entry">
+      <div class="mod-name">Duration of low power</div>
+      <div class="mod-body">
+        <p>The effects of powerlessness are not static — they change substantially with time and perceived futility. Short-term low power can sharpen sensitivity, calibrate social perception and, in certain unstable hierarchies, stimulate creative problem-solving under cognitive pressure. The constraints of low power force resourcefulness. However, chronic low power with ineffective voice and unresponsive authority follows a different trajectory: first motivational withdrawal, then cognitive deficit (failing to learn even when new contingencies emerge), and finally depressive drift. The harm scales with duration and with how thoroughly the person believes that action is futile. Small, visible demonstrations of controllability interrupt this progression; their absence accelerates it.</p>
+      </div>
+    </div>
+
+    <div class="mod-entry">
+      <div class="mod-name">Framing of authority</div>
+      <div class="mod-body">
+        <p>How authority is defined at the moment of appointment turns out to matter more than most institutions recognise. When decision rights are explicitly coupled with duty-of-care language and downstream accountability — when authority is framed as responsibility for specific dependants rather than as earned reward — prosocial orientation consistently rises and self-interested behaviour falls. The framing effect appears to work partly by activating a different self-concept (steward vs. beneficiary) and partly by changing what counts as success. When authority is framed instead as opportunity or licence — something owned rather than borrowed — it activates an entitlement schema that reduces the felt weight of others' interests. The timing of this framing appears important: it is most effective when installed at or before the moment of appointment, not retrofitted later.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p>Recent evidence also suggests that elevated power can promote costly helping more than mere status does — reinforcing that control (the ability to act freely) and responsibility (felt obligation to others) are not psychologically identical and should be distinguished in any institutional analysis.</p>
+</section>
+
+<!-- INTERVENTIONS -->
+<section class="section fade-in" id="interventions">
+  <div class="section-header">
+    <span class="section-number">07 &nbsp;·&nbsp; Practical Interventions</span>
+    <h2 class="section-title">Structural and Behavioural Safeguards</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>The research base supports six evidence-grounded interventions — applicable in organisational, political and personal contexts — that reduce the maladaptive effects of power asymmetry at both ends of the hierarchy.</p>
+
+  <div class="interventions">
+    <div class="intervention">
+      <div class="iv-num">1</div>
+      <div class="iv-body">
+        <div class="iv-title">Define authority as stewardship, not licence</div>
+        <div class="iv-text">Organisational research shows that when people construe authority as responsibility to dependants rather than as licence for extraction, prosocial orientation rises and self-interested behaviour falls. In operational terms, decision rights should be coupled with explicit duty-of-care language and downstream accountability. This reframing is most effective when installed at the moment of appointment, not added later.</div>
+      </div>
+    </div>
+    <div class="intervention">
+      <div class="iv-num">2</div>
+      <div class="iv-body">
+        <div class="iv-title">Build challenge rights into the operating model</div>
+        <div class="iv-text">Protected reporting lines, independent review, role separation and routine reverse feedback reduce moral hazard at the top and restore agency at the bottom. Voice improves outcomes instrumentally, but it also restores autonomy and dignity in asymmetrical relationships — both effects matter. Psychological safety research consistently shows that where challenge rights are explicit and modelled from the top, information quality and error detection improve substantially.</div>
+      </div>
+    </div>
+    <div class="intervention">
+      <div class="iv-num">3</div>
+      <div class="iv-body">
+        <div class="iv-title">Make perspective-taking procedural rather than optional</div>
+        <div class="iv-text">High-power people should not be expected to remain empathic by default — the evidence shows that spontaneous perspective-taking reliably declines under power. Pre-mortems, affected-party briefings, explicit "downstream impact" review steps and rotating junior participation in senior decisions are better safeguards than relying on individual good intentions. Structured perspective-taking interventions have been shown to increase empathy and team satisfaction over time.</div>
+      </div>
+    </div>
+    <div class="intervention">
+      <div class="iv-num">4</div>
+      <div class="iv-body">
+        <div class="iv-title">Treat leader humility as an operational competency</div>
+        <div class="iv-text">Research on leader humility links open admission of limits, active appreciation of others' contributions and willingness to share credit to improvements in psychological safety, information exchange and team performance. Humility is therefore not weakness or self-deprecation — it is an anti-distortion mechanism that keeps reality-testing alive at the top of a hierarchy. It should be assessed, developed and rewarded as a concrete skill, not treated as a personality disposition beyond intervention.</div>
+      </div>
+    </div>
+    <div class="intervention">
+      <div class="iv-num">5</div>
+      <div class="iv-body">
+        <div class="iv-title">Restore controllability in small, visible steps</div>
+        <div class="iv-text">When someone lacks power, the most effective intervention is not pep talks or reframing but actual, tangible restoration of agency. Shared decision-making, real voice in relevant matters, bounded choices and "small wins" interrupt the learned helplessness cycle by re-establishing the contingency between action and outcome. This principle is consistent across the learned-helplessness literature and procedural-justice research: what matters is not the scale of the gain but the experience of genuine effectiveness.</div>
+      </div>
+    </div>
+    <div class="intervention">
+      <div class="iv-num">6</div>
+      <div class="iv-body">
+        <div class="iv-title">Reduce instability and "rank panic"</div>
+        <div class="iv-text">Fear of losing power pushes leaders towards self-serving behaviour — in-group protection, information hoarding and delegitimisation of rivals. Chronic voicelessness pushes subordinates towards resignation. Transparent succession planning, finite tenure, clear handover rules and consistent performance review address both pathologies. The goal is to make authority feel time-bounded and legitimate rather than personally precarious — reducing the defensive, self-preserving responses that destabilise institutions and individuals alike.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING ETHIC -->
+<div class="ethic-box fade-in">
+  <div class="ethic-eyebrow">The Practical Ethic</div>
+  <p class="ethic-text">When you have power: <strong>slow yourself down</strong>, widen the circle of people whose interests count, and keep dissent close. When you lack power: <strong>protect agency</strong>, seek voice and allies, and refuse to mistake constraint for incapacity. Fairness in either state is less a personality trait than a <strong>disciplined system of checks, self-awareness and habits</strong> that preserve dignity — for yourself and for others. The architecture matters more than the person inside it.</p>
+</div>
+
+<!-- SOURCES -->
+<section class="section fade-in" id="sources">
+  <div class="section-header">
+    <span class="section-number">08 &nbsp;·&nbsp; Prioritised Sources</span>
+    <h2 class="section-title">Research Base</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p>The following sources form the primary empirical and theoretical backbone of this report, ranked by directness of relevance to the central claims.</p>
+
+  <div class="sources-grid">
+    <div class="source-group">
+      <h4>Core Empirical</h4>
+      <div class="source-item"><em>Power, approach, and inhibition</em> — Anderson & Galinsky (foundational A/I theory)</div>
+      <div class="source-item"><em>From power to action</em> — Galinsky et al. (approach/action effects)</div>
+      <div class="source-item"><em>Power and perspectives not taken</em> — Galinsky et al. (perspective-taking deficits)</div>
+      <div class="source-item"><em>Power and loss aversion</em> — Magee et al. (decision-making)</div>
+      <div class="source-item"><em>Power, distress, and compassion</em> — van Kleef et al. (empathy reduction)</div>
+      <div class="source-item"><em>Does power corrupt or enable?</em> — DeCelles et al. (moral identity moderator)</div>
+      <div class="source-item"><em>Learned helplessness at fifty</em> — Maier & Seligman (neuroscience update)</div>
+      <div class="source-item"><em>The prosocial side of power</em> — Côté et al. (costly helping)</div>
+    </div>
+    <div class="source-group">
+      <h4>Reviews and Synthesis</h4>
+      <div class="source-item"><em>How power affects people: Activating, wanting, and goal seeking</em> — Magee & Galinsky</div>
+      <div class="source-item"><em>Power and perspective-taking: A critical examination</em> — Blader & Chen</div>
+      <div class="source-item"><em>How hierarchy shapes our emotional lives</em> — Keltner et al.</div>
+      <div class="source-item"><em>Power and status across cultures</em> — Smith & Hofstede synthesis</div>
+      <div class="source-item"><em>The Power Paradox</em> — Dacher Keltner (book)</div>
+      <div class="source-item"><em>Psychological Safety Comes of Age</em> — Edmondson & Bransby</div>
+      <div class="source-item"><em>Leader humility and team performance</em> — Owens et al.</div>
+    </div>
+    <div class="source-group">
+      <h4>Primary Documents</h4>
+      <div class="source-item"><em>Wells Fargo Board Investigation Report</em> — Independent review, 2017</div>
+      <div class="source-item"><em>737 MAX Whistleblower Report</em> — US House Committee on Transportation, 2020</div>
+      <div class="source-item"><em>FAA Expert Panel Report on Boeing</em> — Federal Aviation Administration</div>
+      <div class="source-item"><em>Taguba Investigation Materials</em> — Maj. Gen. Antonio Taguba, Abu Ghraib inquiry, 2004</div>
+      <div class="source-item"><em>Milgram Obedience Studies</em> — APA archive summary</div>
+      <div class="source-item"><em>Truth and Reconciliation Commission</em> — South Africa TRC archives</div>
+      <div class="source-item"><em>Washington Resignation Materials</em> — US House Historian archive</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer style="background: var(--ink); color: rgba(255,255,255,0.35); text-align:center; padding: 2rem; font-size: 0.8rem;">
+  Deep Research Report &nbsp;·&nbsp; Power, Behaviour and Social Psychology &nbsp;·&nbsp; Synthesised from experimental, archival and review evidence
+</footer>
+
+<script>
+  // Sticky nav active state
+  const sections = document.querySelectorAll('section[id], .ethic-box');
+  const links = document.querySelectorAll('.toc-link');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const id = e.target.id || 'interventions';
+        const active = document.querySelector('.toc-link[href="#' + e.target.id + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+
+  // Fade-in on scroll
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+</script>
+</body>
+</html>
