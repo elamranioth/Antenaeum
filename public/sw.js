@@ -1,5 +1,5 @@
-const CACHE_NAME = "athenaeum-app-v9";
-const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest"];
+const CACHE_NAME = "athenaeum-app-v10";
+const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./config.js"];
 
 const cacheResponse = async (request, response) => {
   if (!response || !response.ok || response.type !== "basic") return;

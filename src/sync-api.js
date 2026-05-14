@@ -1,13 +1,43 @@
 const AUTH_STORAGE_KEY = "athenaeum-auth-v1";
 const API_BASE_STORAGE_KEY = "athenaeum-api-base-url";
 
+function getRuntimeApiUrl() {
+  try {
+    return globalThis.ATHENAEUM_CONFIG?.API_URL || globalThis.ATHENAEUM_API_URL || "";
+  } catch {
+    return "";
+  }
+}
+
+function isLocalAppOrigin() {
+  try {
+    const { protocol, hostname } = globalThis.location || {};
+    return protocol === "file:" || hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+  } catch {
+    return false;
+  }
+}
+
+function isLoopbackUrl(url) {
+  try {
+    const hostname = new URL(url).hostname;
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+  } catch {
+    return false;
+  }
+}
+
 export function getApiBaseUrl() {
   const envUrl = import.meta.env?.VITE_ATHENAEUM_API_URL || "";
-  const storedUrl = (() => {
+  const runtimeUrl = getRuntimeApiUrl();
+  const rawStoredUrl = (() => {
     try { return window.localStorage?.getItem(API_BASE_STORAGE_KEY) || ""; }
     catch { return ""; }
   })();
-  return (envUrl || storedUrl || "http://localhost:8787").replace(/\/+$/, "");
+  const localOrigin = isLocalAppOrigin();
+  const storedUrl = !localOrigin && isLoopbackUrl(rawStoredUrl) ? "" : rawStoredUrl;
+  const localFallback = localOrigin ? "http://localhost:8787" : "";
+  return (storedUrl || runtimeUrl || envUrl || localFallback).replace(/\/+$/, "");
 }
 
 export function setApiBaseUrl(url) {
@@ -83,7 +113,11 @@ async function parseResponse(response) {
 }
 
 export async function apiFetch(path, { method = "GET", body, token } = {}) {
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new ApiError("Add your Cloud Sync URL to sign in across devices.", 0, null);
+  }
+  const response = await fetch(`${baseUrl}${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",
@@ -165,5 +199,20 @@ export const highlightApi = {
   },
   remove(session, id, onSessionChange) {
     return requestWithAuth(`/api/highlights/${encodeURIComponent(id)}`, { method: "DELETE" }, session, onSessionChange);
+  },
+};
+
+export const vocabularyApi = {
+  list(session, onSessionChange) {
+    return requestWithAuth("/api/vocabulary", {}, session, onSessionChange);
+  },
+  create(session, payload, onSessionChange) {
+    return requestWithAuth("/api/vocabulary", { method: "POST", body: payload }, session, onSessionChange);
+  },
+  update(session, id, payload, onSessionChange) {
+    return requestWithAuth(`/api/vocabulary/${encodeURIComponent(id)}`, { method: "PATCH", body: payload }, session, onSessionChange);
+  },
+  remove(session, id, onSessionChange) {
+    return requestWithAuth(`/api/vocabulary/${encodeURIComponent(id)}`, { method: "DELETE" }, session, onSessionChange);
   },
 };

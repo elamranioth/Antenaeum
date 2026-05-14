@@ -7,6 +7,7 @@ const builtIndex = await readFile("dist/index.html", "utf8");
 const portableIndex = builtIndex
   .replaceAll("/Antenaeum/assets/", "assets/")
   .replaceAll("/Antenaeum/manifest.webmanifest", "manifest.webmanifest")
+  .replaceAll("/Antenaeum/config.js", "config.js")
   .replaceAll("/Antenaeum/icons/", "icons/");
 
 await writeFile("dist/index.html", portableIndex);
@@ -22,6 +23,7 @@ await Promise.all(
 
 await copyFile("dist/manifest.webmanifest", "manifest.webmanifest");
 await copyFile("dist/sw.js", "sw.js");
+await copyFile("dist/config.js", "config.js");
 await mkdir("icons", { recursive: true });
 
 const builtIcons = await readdir("dist/icons");

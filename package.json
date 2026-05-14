@@ -9,7 +9,11 @@
     "dev:api": "node server/index.js",
     "build": "vite build && node scripts/copy-built-index.mjs",
     "preview": "vite preview --host 0.0.0.0",
-    "preview:static": "node scripts/static-preview.mjs"
+    "preview:static": "node scripts/static-preview.mjs",
+    "sync:d1:create": "npx wrangler d1 create athenaeum_sync",
+    "sync:d1:migrate": "npx wrangler d1 migrations apply athenaeum_sync --remote --config wrangler.jsonc",
+    "sync:dev": "npx wrangler dev --config wrangler.jsonc --port 8787",
+    "sync:deploy": "npx wrangler deploy --config wrangler.jsonc"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.4",

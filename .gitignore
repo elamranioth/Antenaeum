@@ -2,3 +2,5 @@ dist/
 node_modules/
 vite-dev*.log
 server/data/
+.dev.vars
+.wrangler/

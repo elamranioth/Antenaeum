@@ -57,6 +57,26 @@ CREATE TABLE IF NOT EXISTS highlights (
 
 CREATE INDEX IF NOT EXISTS idx_highlights_user_updated ON highlights(user_id, updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_highlights_user_article ON highlights(user_id, article_id);
+
+CREATE TABLE IF NOT EXISTS vocabulary (
+  id TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  client_id TEXT NOT NULL,
+  word TEXT NOT NULL,
+  ipa TEXT,
+  ar TEXT,
+  def TEXT,
+  source_url TEXT,
+  source_section TEXT,
+  note TEXT,
+  tag TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, client_id),
+  UNIQUE(user_id, word)
+);
+
+CREATE INDEX IF NOT EXISTS idx_vocabulary_user_updated ON vocabulary(user_id, updated_at DESC);
 `);
 
 class HttpError extends Error {
@@ -222,6 +242,40 @@ function mapHighlight(row) {
   };
 }
 
+function normalizeVocabularyInput(body, fallbackId = randomUUID()) {
+  const word = String(body.word || "").trim().toLowerCase().replace(/[^a-z'-]/g, "").slice(0, 64);
+  if (!word) throw new HttpError(400, "Vocabulary word is required");
+  return {
+    id: body.id || fallbackId,
+    clientId: String(body.clientId || body.id || fallbackId),
+    word,
+    ipa: String(body.ipa || ""),
+    ar: String(body.ar || ""),
+    def: String(body.def || "Saved from your reading. Add a definition later."),
+    sourceUrl: String(body.sourceUrl || ""),
+    sourceSection: String(body.sourceSection || ""),
+    note: String(body.note || ""),
+    tag: String(body.tag || ""),
+  };
+}
+
+function mapVocabulary(row) {
+  return {
+    id: row.id,
+    clientId: row.client_id,
+    word: row.word,
+    ipa: row.ipa || "",
+    ar: row.ar || "",
+    def: row.def || "",
+    sourceUrl: row.source_url || "",
+    sourceSection: row.source_section || "",
+    note: row.note || "",
+    tag: row.tag || "",
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 async function handleSignup(req, res) {
   const body = await readJson(req);
   const email = String(body.email || "").trim().toLowerCase();
@@ -363,6 +417,72 @@ function deleteHighlight(res, user, id) {
   send(res, 204);
 }
 
+function listVocabulary(res, user) {
+  const rows = db.prepare("SELECT * FROM vocabulary WHERE user_id = ? ORDER BY updated_at DESC").all(user.id);
+  send(res, 200, { vocabulary: rows.map(mapVocabulary) });
+}
+
+async function createVocabulary(req, res, user) {
+  const item = normalizeVocabularyInput(await readJson(req));
+  const row = db.prepare(`
+    INSERT INTO vocabulary (
+      id, user_id, client_id, word, ipa, ar, def, source_url,
+      source_section, note, tag, updated_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT(user_id, word) DO UPDATE SET
+      client_id = excluded.client_id,
+      ipa = excluded.ipa,
+      ar = excluded.ar,
+      def = excluded.def,
+      source_url = excluded.source_url,
+      source_section = excluded.source_section,
+      note = excluded.note,
+      tag = excluded.tag,
+      updated_at = datetime('now')
+    RETURNING *
+  `).get(
+    item.id, user.id, item.clientId, item.word, item.ipa, item.ar, item.def,
+    item.sourceUrl, item.sourceSection, item.note, item.tag
+  );
+  send(res, 201, { item: mapVocabulary(row) });
+}
+
+async function updateVocabulary(req, res, user, id) {
+  const current = db.prepare("SELECT * FROM vocabulary WHERE id = ? AND user_id = ?").get(id, user.id);
+  if (!current) throw new HttpError(404, "Vocabulary item not found");
+  const body = await readJson(req);
+  const next = normalizeVocabularyInput({
+    id,
+    clientId: current.client_id,
+    word: body.word ?? current.word,
+    ipa: body.ipa ?? current.ipa,
+    ar: body.ar ?? current.ar,
+    def: body.def ?? current.def,
+    sourceUrl: body.sourceUrl ?? current.source_url,
+    sourceSection: body.sourceSection ?? current.source_section,
+    note: body.note ?? current.note,
+    tag: body.tag ?? current.tag,
+  }, id);
+  const row = db.prepare(`
+    UPDATE vocabulary SET
+      word = ?, ipa = ?, ar = ?, def = ?, source_url = ?,
+      source_section = ?, note = ?, tag = ?, updated_at = datetime('now')
+    WHERE id = ? AND user_id = ?
+    RETURNING *
+  `).get(
+    next.word, next.ipa, next.ar, next.def, next.sourceUrl,
+    next.sourceSection, next.note, next.tag, id, user.id
+  );
+  send(res, 200, { item: mapVocabulary(row) });
+}
+
+function deleteVocabulary(res, user, id) {
+  const result = db.prepare("DELETE FROM vocabulary WHERE id = ? AND user_id = ?").run(id, user.id);
+  if (!result.changes) throw new HttpError(404, "Vocabulary item not found");
+  send(res, 204);
+}
+
 export const server = createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -385,13 +505,20 @@ export const server = createServer(async (req, res) => {
       return send(res, 200, { user: publicUser(requireUser(req)) });
     }
 
-    const user = path.startsWith("/api/highlights") ? requireUser(req) : null;
+    const user = path.startsWith("/api/highlights") || path.startsWith("/api/vocabulary") ? requireUser(req) : null;
     if (req.method === "GET" && path === "/api/highlights") return listHighlights(req, res, user, url);
     if (req.method === "POST" && path === "/api/highlights") return createHighlight(req, res, user);
 
     const match = path.match(/^\/api\/highlights\/([^/]+)$/);
     if (match && req.method === "PATCH") return updateHighlight(req, res, user, decodeURIComponent(match[1]));
     if (match && req.method === "DELETE") return deleteHighlight(res, user, decodeURIComponent(match[1]));
+
+    if (req.method === "GET" && path === "/api/vocabulary") return listVocabulary(res, user);
+    if (req.method === "POST" && path === "/api/vocabulary") return createVocabulary(req, res, user);
+
+    const vocabularyMatch = path.match(/^\/api\/vocabulary\/([^/]+)$/);
+    if (vocabularyMatch && req.method === "PATCH") return updateVocabulary(req, res, user, decodeURIComponent(vocabularyMatch[1]));
+    if (vocabularyMatch && req.method === "DELETE") return deleteVocabulary(res, user, decodeURIComponent(vocabularyMatch[1]));
 
     send(res, 404, { error: "Not found" });
   } catch (error) {
