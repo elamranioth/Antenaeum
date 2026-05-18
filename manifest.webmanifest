@@ -8,7 +8,7 @@
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "background_color": "#FFFFFF",
-  "theme_color": "#0A0A0A",
+  "theme_color": "#13130F",
   "orientation": "any",
   "categories": ["books", "education", "productivity"],
   "icons": [
