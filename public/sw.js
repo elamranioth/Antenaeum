@@ -1,4 +1,4 @@
-const CACHE_NAME = "athenaeum-app-v10";
+const CACHE_NAME = "athenaeum-app-v11";
 const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./config.js"];
 
 const cacheResponse = async (request, response) => {
