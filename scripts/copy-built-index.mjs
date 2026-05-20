@@ -17,7 +17,7 @@ await mkdir("assets", { recursive: true });
 const builtAssets = await readdir("dist/assets");
 await Promise.all(
   builtAssets
-    .filter((name) => name.startsWith("index-") && name.endsWith(".js"))
+    .filter((name) => name.startsWith("index-") && (name.endsWith(".js") || name.endsWith(".css")))
     .map((name) => copyFile(join("dist/assets", name), join("assets", name)))
 );
 
