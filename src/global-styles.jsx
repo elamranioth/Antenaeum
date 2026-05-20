@@ -2120,13 +2120,13 @@ const GlobalStyles = () => (
         order: initial;
       }
       .app-header > .header-reading-controls {
-        grid-column: 2;
-        grid-row: 1;
-        width: 100%;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: auto;
         min-width: 0;
         justify-content: center;
         justify-self: center;
-        gap: 0.24rem;
+        gap: 0.3rem;
       }
       .account-shell {
         grid-column: 3;
@@ -2151,7 +2151,7 @@ const GlobalStyles = () => (
       }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
-        gap: 0.24rem;
+        gap: 0.3rem;
       }
       .font-step-btn {
         width: 26px;
