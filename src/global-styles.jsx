@@ -2106,7 +2106,9 @@ const GlobalStyles = () => (
         display: grid !important;
         grid-template-columns: 38px minmax(0, 1fr) 38px;
         align-items: center;
-        gap: 0.38rem;
+        justify-items: center;
+        gap: 0.42rem 0.38rem;
+        padding: 0.5rem 0.55rem 0.58rem !important;
       }
       .header-menu-btn {
         grid-column: 1;
@@ -2114,14 +2116,17 @@ const GlobalStyles = () => (
         width: 38px;
         height: 38px;
         flex-basis: 38px;
+        justify-self: start;
         order: initial;
       }
       .app-header > .header-reading-controls {
-        grid-column: 2;
-        grid-row: 1;
-        width: 100%;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: auto;
         min-width: 0;
         justify-content: center;
+        justify-self: center;
+        gap: 0.3rem;
       }
       .account-shell {
         grid-column: 3;
@@ -2143,14 +2148,15 @@ const GlobalStyles = () => (
       }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
+        gap: 0.3rem;
       }
       .font-step-btn {
-        width: 27px;
-        height: 27px;
+        width: 28px;
+        height: 28px;
       }
       .mode-toggle-btn {
-        min-height: 32px;
-        padding-inline: 0.42rem;
+        min-height: 33px;
+        padding-inline: 0.46rem;
         font-size: 9px;
       }
       .mode-toggle-btn svg {
