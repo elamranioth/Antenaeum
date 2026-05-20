@@ -1150,28 +1150,84 @@ const GlobalStyles = () => (
       text-transform: uppercase;
       text-align: center;
     }
-    .mode-toggle-group {
+    .header-reading-controls {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.32rem;
+      flex: 0 0 auto;
       flex-wrap: nowrap;
+      padding: 0.22rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 999px;
+      background: var(--cream-3);
     }
-    .mode-toggle-btn {
-      min-height: 38px;
+    .header-font-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.12rem;
+      flex: 0 0 auto;
+      padding: 0.12rem 0.18rem;
+      border: 1px solid var(--rule-soft);
+      border-radius: 999px;
+      background: var(--cream-2);
+    }
+    .font-step-btn {
+      width: 31px;
+      height: 31px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.42rem;
-      padding: 0.45rem 0.62rem;
-      border: 1px solid #A89F87;
-      border-radius: 7px;
-      background: var(--cream-3);
-      color: var(--ink-2);
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
       font-family: 'Cormorant Garamond', 'Lora', Georgia, serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
       cursor: pointer;
+    }
+    .font-step-btn--large {
+      font-size: 17px;
+    }
+    .font-step-btn:hover:not(:disabled) {
+      background: var(--cream-3);
+      outline: 1px solid var(--gold);
+    }
+    .font-step-btn:disabled {
+      color: var(--ink-3);
+      cursor: default;
+      opacity: 0.45;
+    }
+    .font-step-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--rule-soft);
+    }
+    .mode-toggle-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.26rem;
+      flex: 0 0 auto;
+      flex-wrap: nowrap;
+    }
+    .mode-toggle-btn {
+      min-height: 33px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.32rem;
+      padding: 0.32rem 0.52rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink-2);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-transform: uppercase;
       white-space: nowrap;
     }
     .mode-toggle-btn svg {
@@ -1415,6 +1471,14 @@ const GlobalStyles = () => (
     .ink-mode-shell .account-trigger {
       min-height: 44px !important;
       border-width: 1.5px !important;
+    }
+    .ink-mode-shell .app-header .mode-toggle-btn {
+      min-height: 33px !important;
+    }
+    .ink-mode-shell .header-reading-controls,
+    .ink-mode-shell .header-font-stepper {
+      background: #FFFFFF !important;
+      border-color: #000000 !important;
     }
     .ink-mode-shell .tag,
     .ink-mode-shell .archive-list__header,
@@ -1932,6 +1996,7 @@ const GlobalStyles = () => (
       min-width: 0;
       width: 100%;
     }
+    .header-reading-controls,
     .header-font-stepper,
     .header-mode-toggle,
     .header-menu-btn {
@@ -1982,26 +2047,20 @@ const GlobalStyles = () => (
       .account-trigger {
         min-height: 42px;
       }
-      .header-font-stepper {
+      .app-header > .header-reading-controls {
         order: 4;
-        flex: 1 1 160px;
-        justify-content: space-between;
+        flex: 0 0 auto;
       }
       .app-header .mode-toggle-group {
-        order: 5;
-        flex: 1 1 210px;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.5rem;
+        flex: 0 0 auto;
       }
       .app-header .mode-toggle-btn {
-        width: 100%;
+        width: auto;
         min-width: 0;
-        min-height: 42px;
+        min-height: 33px;
       }
-      .is-reader-view .header-font-stepper,
-      .is-reader-view .app-header .mode-toggle-group {
-        flex-basis: calc(50% - 0.3rem);
+      .is-reader-view .app-header > .header-reading-controls {
+        flex-basis: auto;
       }
     }
     @media (max-width: 760px) {
@@ -2045,22 +2104,19 @@ const GlobalStyles = () => (
         width: 30px;
         height: 30px;
       }
-      .header-font-stepper {
+      .app-header > .header-reading-controls {
         order: 4;
+        width: 100%;
+        justify-content: flex-start;
       }
       .app-header .mode-toggle-group {
-        order: 5;
-        width: 100%;
-        flex: 1 1 100%;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.5rem;
+        flex: 1 1 auto;
       }
       .app-header .mode-toggle-btn {
-        width: 100%;
+        width: auto;
         min-width: 0;
-        min-height: 42px;
-        padding: 0.45rem 0.5rem;
+        min-height: 33px;
+        padding: 0.32rem 0.5rem;
       }
     }
     @media (max-width: 420px) {
@@ -2097,13 +2153,26 @@ const GlobalStyles = () => (
         justify-self: end;
         order: initial;
       }
-      .header-font-stepper {
+      .app-header > .header-reading-controls {
         grid-column: 1 / -1;
         grid-row: 2;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.28rem;
+      }
+      .header-reading-controls .header-font-stepper {
+        grid-column: auto;
+        grid-row: auto;
+        width: auto;
+        flex: 0 0 auto;
+        justify-content: flex-start;
       }
       .app-header .mode-toggle-group {
-        grid-column: 1 / -1;
-        grid-row: 3;
+        grid-column: auto;
+        grid-row: auto;
+        flex: 1 1 auto;
+        justify-content: flex-end;
       }
       .section-masthead {
         border-radius: 10px;
@@ -2131,14 +2200,8 @@ const GlobalStyles = () => (
       .sidebar-fixed {
         width: min(86vw, 304px) !important;
       }
-      .header-font-stepper {
-        width: 100%;
-        flex: 1 1 100%;
-        justify-content: space-between;
-      }
       .header-font-stepper button {
-        flex: 1 1 0;
-        min-width: 0;
+        flex: 0 0 auto;
       }
       .reader-rich-article,
       .reader-standard-article {
