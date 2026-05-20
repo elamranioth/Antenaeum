@@ -2120,13 +2120,13 @@ const GlobalStyles = () => (
         order: initial;
       }
       .app-header > .header-reading-controls {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        width: auto;
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
         min-width: 0;
         justify-content: center;
         justify-self: center;
-        gap: 0.3rem;
+        gap: 0.24rem;
       }
       .account-shell {
         grid-column: 3;
@@ -2138,30 +2138,38 @@ const GlobalStyles = () => (
         width: 38px;
         min-width: 38px;
         height: 38px;
+        min-height: 38px;
+        padding: 0.2rem;
       }
       .account-avatar {
-        width: 28px;
-        height: 28px;
+        width: 27px;
+        height: 27px;
       }
       .header-reading-controls .header-font-stepper {
         flex: 0 0 auto;
+        padding: 0.1rem;
       }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
-        gap: 0.3rem;
+        gap: 0.24rem;
       }
       .font-step-btn {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+      }
+      .font-step-btn--large {
+        font-size: 16px;
       }
       .mode-toggle-btn {
-        min-height: 33px;
-        padding-inline: 0.46rem;
-        font-size: 9px;
+        min-height: 31px;
+        padding-inline: 0.36rem;
+        font-size: 8.5px;
+        gap: 0.24rem;
       }
       .mode-toggle-btn svg {
-        width: 13px;
-        height: 13px;
+        width: 12px;
+        height: 12px;
       }
       .section-masthead {
         border-radius: 10px;
