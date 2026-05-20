@@ -236,6 +236,28 @@ const GlobalStyles = () => (
     .slide-r { animation: slideR 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
     /* Sidebar nav button */
+    .sidebar-brand {
+      background: var(--cream-3);
+      border-color: var(--gold) !important;
+      color: var(--ink);
+    }
+    .sidebar-brand .logo-mark {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--cream-3);
+    }
+    .sidebar-brand-kicker {
+      color: var(--gold-deep);
+      font-weight: 800;
+    }
+    .sidebar-brand-title {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .sidebar-section-title {
+      color: var(--cream-3);
+      font-weight: 800;
+    }
     .nav-btn:hover { background: var(--navy-soft); }
     .nav-btn[data-active="true"] {
       background: var(--navy-soft);
