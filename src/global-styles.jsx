@@ -237,7 +237,7 @@ const GlobalStyles = () => (
 
     /* Sidebar nav button */
     .sidebar-brand {
-      background: var(--cream-3);
+      background: var(--cream-2);
       border-color: var(--gold) !important;
       color: var(--ink);
     }
@@ -255,12 +255,15 @@ const GlobalStyles = () => (
       font-weight: 700;
     }
     .sidebar-section-title {
-      color: var(--cream-3);
+      color: var(--gold-deep);
       font-weight: 800;
     }
-    .nav-btn:hover { background: var(--navy-soft); }
+    .nav-btn {
+      color: var(--ink);
+    }
+    .nav-btn:hover { background: var(--cream-2); }
     .nav-btn[data-active="true"] {
-      background: var(--navy-soft);
+      background: var(--cream-tag);
       box-shadow: inset 4px 0 0 var(--gold);
     }
 
