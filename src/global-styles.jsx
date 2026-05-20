@@ -1153,32 +1153,29 @@ const GlobalStyles = () => (
     .header-reading-controls {
       display: inline-flex;
       align-items: center;
-      gap: 0.32rem;
+      gap: 0.38rem;
       flex: 0 0 auto;
       flex-wrap: nowrap;
-      padding: 0.22rem;
-      border: 1.5px solid var(--rule);
-      border-radius: 999px;
-      background: var(--cream-3);
+      min-width: 0;
     }
     .header-font-stepper {
       display: inline-flex;
       align-items: center;
-      gap: 0.12rem;
+      gap: 0.08rem;
       flex: 0 0 auto;
-      padding: 0.12rem 0.18rem;
-      border: 1px solid var(--rule-soft);
-      border-radius: 999px;
-      background: var(--cream-2);
+      padding: 0.14rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 8px;
+      background: var(--cream-3);
     }
     .font-step-btn {
-      width: 31px;
-      height: 31px;
+      width: 29px;
+      height: 29px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 0;
-      border-radius: 999px;
+      border-radius: 6px;
       background: transparent;
       color: var(--ink);
       font-family: 'Cormorant Garamond', 'Lora', Georgia, serif;
@@ -1191,8 +1188,7 @@ const GlobalStyles = () => (
       font-size: 17px;
     }
     .font-step-btn:hover:not(:disabled) {
-      background: var(--cream-3);
-      outline: 1px solid var(--gold);
+      background: var(--cream-2);
     }
     .font-step-btn:disabled {
       color: var(--ink-3);
@@ -1207,23 +1203,23 @@ const GlobalStyles = () => (
     .mode-toggle-group {
       display: inline-flex;
       align-items: center;
-      gap: 0.26rem;
+      gap: 0.34rem;
       flex: 0 0 auto;
       flex-wrap: nowrap;
     }
     .mode-toggle-btn {
-      min-height: 33px;
+      min-height: 34px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.32rem;
-      padding: 0.32rem 0.52rem;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      background: transparent;
+      padding: 0.34rem 0.56rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 8px;
+      background: var(--cream-3);
       color: var(--ink-2);
       font-family: 'DM Mono', ui-monospace, monospace;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
       letter-spacing: 0.08em;
       cursor: pointer;
@@ -1237,8 +1233,8 @@ const GlobalStyles = () => (
       stroke-width: 1.7;
     }
     .mode-toggle-btn[data-active="true"] {
-      background: var(--ink);
-      border-color: var(--ink);
+      background: var(--navy);
+      border-color: var(--navy);
       color: var(--cream-3);
     }
     .mode-toggle-btn[data-active="true"] svg {
@@ -1989,13 +1985,6 @@ const GlobalStyles = () => (
       flex: 1 1 auto;
       min-width: 0;
     }
-    .app-header__search {
-      min-width: 0;
-    }
-    .app-header__search input {
-      min-width: 0;
-      width: 100%;
-    }
     .header-reading-controls,
     .header-font-stepper,
     .header-mode-toggle,
@@ -2007,8 +1996,7 @@ const GlobalStyles = () => (
       padding-bottom: 0.55rem !important;
       gap: 0.6rem;
     }
-    .is-reader-view .brand-lockup,
-    .is-reader-view .app-header__search {
+    .is-reader-view .brand-lockup {
       display: none !important;
     }
     .is-reader-view .header-spacer {
@@ -2033,12 +2021,10 @@ const GlobalStyles = () => (
         height: 42px;
         flex-basis: 42px;
       }
-      .app-header__search {
+      .app-header > .header-reading-controls {
         order: 2;
-        flex: 1 1 min(320px, calc(100% - 110px));
-        max-width: none;
-        min-height: 42px;
-        padding: 0.55rem 0.75rem;
+        flex: 1 1 auto;
+        justify-content: flex-start;
       }
       .account-shell {
         order: 3;
@@ -2047,17 +2033,13 @@ const GlobalStyles = () => (
       .account-trigger {
         min-height: 42px;
       }
-      .app-header > .header-reading-controls {
-        order: 4;
-        flex: 0 0 auto;
-      }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
       }
       .app-header .mode-toggle-btn {
         width: auto;
         min-width: 0;
-        min-height: 33px;
+        min-height: 34px;
       }
       .is-reader-view .app-header > .header-reading-controls {
         flex-basis: auto;
@@ -2080,13 +2062,10 @@ const GlobalStyles = () => (
         height: 42px;
         flex-basis: 42px;
       }
-      .app-header__search {
+      .app-header > .header-reading-controls {
         order: 2;
-        flex: 1 1 0;
-        max-width: none;
-        min-width: 0;
-        min-height: 42px;
-        padding: 0.55rem 0.75rem;
+        flex: 1 1 auto;
+        justify-content: flex-start;
       }
       .account-shell {
         order: 3;
@@ -2104,18 +2083,13 @@ const GlobalStyles = () => (
         width: 30px;
         height: 30px;
       }
-      .app-header > .header-reading-controls {
-        order: 4;
-        width: 100%;
-        justify-content: flex-start;
-      }
       .app-header .mode-toggle-group {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
       }
       .app-header .mode-toggle-btn {
         width: auto;
         min-width: 0;
-        min-height: 33px;
+        min-height: 34px;
         padding: 0.32rem 0.5rem;
       }
     }
@@ -2123,29 +2097,31 @@ const GlobalStyles = () => (
       .app-header {
         gap: 0.45rem;
       }
-      .app-header__search {
-        padding-inline: 0.6rem;
-      }
-      .app-header__search input::placeholder {
-        color: transparent;
+      .mode-toggle-btn {
+        padding-inline: 0.45rem;
       }
     }
     @media (max-width: 430px) {
       .app-header {
         display: grid !important;
-        grid-template-columns: 42px minmax(0, 1fr) 42px;
+        grid-template-columns: 38px minmax(0, 1fr) 38px;
         align-items: center;
+        gap: 0.38rem;
       }
       .header-menu-btn {
         grid-column: 1;
         grid-row: 1;
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
         order: initial;
       }
-      .app-header__search {
+      .app-header > .header-reading-controls {
         grid-column: 2;
         grid-row: 1;
         width: 100%;
-        order: initial;
+        min-width: 0;
+        justify-content: center;
       }
       .account-shell {
         grid-column: 3;
@@ -2153,26 +2129,33 @@ const GlobalStyles = () => (
         justify-self: end;
         order: initial;
       }
-      .app-header > .header-reading-controls {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        gap: 0.28rem;
+      .account-trigger {
+        width: 38px;
+        min-width: 38px;
+        height: 38px;
+      }
+      .account-avatar {
+        width: 28px;
+        height: 28px;
       }
       .header-reading-controls .header-font-stepper {
-        grid-column: auto;
-        grid-row: auto;
-        width: auto;
         flex: 0 0 auto;
-        justify-content: flex-start;
       }
       .app-header .mode-toggle-group {
-        grid-column: auto;
-        grid-row: auto;
-        flex: 1 1 auto;
-        justify-content: flex-end;
+        flex: 0 0 auto;
+      }
+      .font-step-btn {
+        width: 27px;
+        height: 27px;
+      }
+      .mode-toggle-btn {
+        min-height: 32px;
+        padding-inline: 0.42rem;
+        font-size: 9px;
+      }
+      .mode-toggle-btn svg {
+        width: 13px;
+        height: 13px;
       }
       .section-masthead {
         border-radius: 10px;
