@@ -20,7 +20,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     const baseUrl = import.meta.env.BASE_URL || "/";
     navigator.serviceWorker
-      .register(`${baseUrl}sw.js?v=17`, { updateViaCache: "none" })
+      .register(`${baseUrl}sw.js?v=18`, { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });

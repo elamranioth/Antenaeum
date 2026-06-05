@@ -1,10 +1,12 @@
-const CACHE_NAME = "athenaeum-app-v17";
+const CACHE_NAME = "athenaeum-app-v18";
 const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./config.js"];
 
 const cacheResponse = async (request, response) => {
   if (!response || !response.ok || response.type !== "basic") return;
-  const cache = await caches.open(CACHE_NAME);
-  await cache.put(request, response.clone());
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response.clone());
+  } catch {}
 };
 
 self.addEventListener("install", (event) => {
@@ -39,7 +41,7 @@ self.addEventListener("fetch", (event) => {
   const isNavigation = request.mode === "navigate" || request.destination === "document";
 
   event.respondWith(
-    fetch(request)
+    fetch(isNavigation ? new Request(request, { cache: "reload" }) : request)
       .then((response) => {
         cacheResponse(request, response);
         return response;

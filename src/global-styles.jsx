@@ -1499,11 +1499,6 @@ const GlobalStyles = () => (
       .reader-mode-btn {
         flex: 1 1 auto;
       }
-      .mode-toggle-group {
-        order: 5;
-        width: 100%;
-        justify-content: flex-end;
-      }
     }
 
     .login-overlay {
@@ -1517,6 +1512,8 @@ const GlobalStyles = () => (
         radial-gradient(circle at 16% 18%, rgba(216,195,106,0.16), transparent 26rem),
         rgba(0, 0, 0, 0.62);
       backdrop-filter: blur(4px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .login-card {
       width: min(820px, 100%);
@@ -1745,9 +1742,15 @@ const GlobalStyles = () => (
       padding: 1rem;
     }
     @media (max-width: 760px) {
+      .login-overlay {
+        place-items: start center;
+        padding: 0.75rem;
+      }
       .login-card {
         grid-template-columns: 1fr;
         min-height: auto;
+        max-height: calc(100dvh - 1.5rem);
+        overflow-y: auto;
       }
       .login-brand-panel {
         min-height: 190px;
@@ -2035,6 +2038,9 @@ const GlobalStyles = () => (
       }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
+        width: auto;
+        order: initial;
+        justify-content: center;
       }
       .app-header .mode-toggle-btn {
         width: auto;
@@ -2085,6 +2091,9 @@ const GlobalStyles = () => (
       }
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
+        width: auto;
+        order: initial;
+        justify-content: center;
       }
       .app-header .mode-toggle-btn {
         width: auto;
@@ -2152,6 +2161,9 @@ const GlobalStyles = () => (
       .app-header .mode-toggle-group {
         flex: 0 0 auto;
         gap: 0.3rem;
+        width: auto;
+        order: initial;
+        justify-content: center;
       }
       .font-step-btn {
         width: 26px;
@@ -2298,7 +2310,8 @@ const GlobalStyles = () => (
         grid-row: 1;
       }
       .selection-popover {
-        min-width: calc(100vw - 20px);
+        width: calc(100vw - 20px);
+        min-width: 0;
         max-width: calc(100vw - 20px);
       }
     }
@@ -2323,7 +2336,9 @@ const GlobalStyles = () => (
     }
 
     .selection-popover {
-      min-width: min(92vw, 420px);
+      width: min(92vw, 420px);
+      min-width: 0;
+      max-width: calc(100vw - 20px);
       padding: 7px;
       background: color-mix(in srgb, var(--cream-3) 94%, white);
       border: 2px solid var(--ink);
@@ -2381,7 +2396,7 @@ const GlobalStyles = () => (
       border-color: var(--ink);
     }
     @media (max-width: 540px) {
-      .selection-popover { min-width: min(94vw, 340px); }
+      .selection-popover { width: min(94vw, 340px); }
       .selection-popover__actions { grid-template-columns: 1fr; }
     }
 
